@@ -1,0 +1,55 @@
+{
+  "mode": "local_database_and_simulated_provider",
+  "results": [
+    {
+      "mutation": "noncanonical payload hash",
+      "caught": true,
+      "exitCode": 1
+    },
+    {
+      "mutation": "ownership guard removed",
+      "caught": true,
+      "exitCode": 1
+    },
+    {
+      "mutation": "expired offer accepted",
+      "caught": true,
+      "exitCode": 1
+    },
+    {
+      "mutation": "failed capture ignored",
+      "caught": true,
+      "exitCode": 1
+    },
+    {
+      "mutation": "private resource overlap allowed",
+      "caught": true,
+      "exitCode": 1
+    },
+    {
+      "mutation": "webhook signature guard removed",
+      "caught": true,
+      "exitCode": 1
+    },
+    {
+      "mutation": "provider amount guard removed",
+      "caught": true,
+      "exitCode": 1
+    },
+    {
+      "mutation": "refund parent guard removed",
+      "caught": true,
+      "exitCode": 1
+    },
+    {
+      "mutation": "webhook duplicate guard removed",
+      "caught": true,
+      "exitCode": 1
+    },
+    {
+      "mutation": "stale worker response allowed",
+      "caught": true,
+      "exitCode": 1
+    }
+  ]
+}

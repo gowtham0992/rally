@@ -1,0 +1,67 @@
+{
+  "status": "in_progress",
+  "scope": "Full Rally product and hackathon submission package; payment-engine progress does not redefine completion.",
+  "completed_local_work": [
+    "Isolated Git repository, MIT license, pinned Node/TypeScript dependencies and reproducible payment setup guide",
+    "PostgreSQL payment operations, reservation exclusion constraint, safe command identity and owner-scoped status projections",
+    "Sandbox-only PayPal REST adapter, signature verification, durable sequential settlement and compensation worker",
+    "Sandbox CLI for three-buyer approval, partial failure, deliberately dropped response and sanitized evidence export"
+  ],
+  "evidence": {
+    "scope": "Real PostgreSQL with controlled simulated provider; adapter transport tests use fixture HTTP responses.",
+    "payment_tests": {
+      "passed": 24,
+      "consecutive_green_runs": 2
+    },
+    "mutation_checks": {
+      "caught": 10,
+      "total": 10,
+      "file": "evidence/local-mutation-results.json"
+    },
+    "typescript": "passed",
+    "production_dependency_audit": "0 reported vulnerabilities",
+    "actual_paypal_sandbox": "not_executed",
+    "credentials_doctor": "missing PayPal client ID, client secret, merchant ID, and three sandbox buyer IDs"
+  },
+  "external_dependencies": [
+    {
+      "name": "PayPal sandbox business app and three personal buyer accounts",
+      "state": "awaiting_configuration",
+      "setup": "README.md",
+      "template": ".env.example"
+    },
+    {
+      "name": "Managed authentication/PostgreSQL hosting configuration",
+      "state": "not_yet_configured"
+    },
+    {
+      "name": "No-charge model endpoint or approved credits",
+      "state": "not_yet_verified"
+    },
+    {
+      "name": "Deployment and public repository account access",
+      "state": "not_yet_verified"
+    }
+  ],
+  "remaining_requirements": [
+    "Execute and review actual three-buyer PayPal sandbox lifecycle and recovery evidence",
+    "Managed participant identity, private preference intake and consent",
+    "Deterministic grounded candidate validation and equal structured baseline",
+    "Bounded AI clarification plus 24-case evaluation repeated three times",
+    "Merchant catalog, frozen offer approval, reservation and financial exception experience",
+    "Complete polished mobile participant journey and meaningful end-to-end verification",
+    "Current official rules review and submission compliance audit",
+    "Observed usability and merchant validation; authorization before external contact",
+    "Deployed sandbox application with isolated, rate-limited judge/demo access",
+    "Public open-source repository and verified setup",
+    "Polished public demo video under three minutes",
+    "Complete Devpost draft materials; human approval before entry submission"
+  ],
+  "next_independent_slice": "Private planning domain and deterministic catalog validation while sandbox credentials are pending.",
+  "release_restrictions": [
+    "No actual PayPal integration claim yet",
+    "No live customer payments",
+    "No paid-service charges without authorization",
+    "No external contact or entry submission without authorization"
+  ]
+}
