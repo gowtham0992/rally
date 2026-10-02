@@ -154,7 +154,7 @@ test('PostgreSQL exclusion constraint gives one winner to simultaneous overlappi
 test('a missing authorization at deadline expires without capturing any buyer',async () => {
   const x = await setup(); await x.engine.accept(x.command(0)); await x.engine.step(x.offer.id);
   await x.engine.authorize(x.command(0)); await x.engine.step(x.offer.id);
-  await pool.query("UPDATE offers SET deadline=opened_at+interval '1 millisecond' WHERE id=$1",[x.offer.id]);
+  await pool.query("UPDATE offers SET opened_at=clock_timestamp()-interval '3 hours',deadline=clock_timestamp()-interval '2 hours' WHERE id=$1",[x.offer.id]);
   await x.settle(); assert.deepEqual(await x.state(),{state:'EXPIRED',cleanup:'COMPLETE'});
   assert.equal(x.provider.financialEffects.captures,0);assert.equal(x.provider.financialEffects.voids,1);
 });

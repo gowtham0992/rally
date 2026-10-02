@@ -3,51 +3,109 @@
   "results": [
     {
       "mutation": "noncanonical payload hash",
+      "baselinePassed": true,
       "caught": true,
       "exitCode": 1
     },
     {
       "mutation": "ownership guard removed",
+      "baselinePassed": true,
       "caught": true,
       "exitCode": 1
     },
     {
       "mutation": "expired offer accepted",
+      "baselinePassed": true,
       "caught": true,
       "exitCode": 1
     },
     {
       "mutation": "failed capture ignored",
+      "baselinePassed": true,
       "caught": true,
       "exitCode": 1
     },
     {
       "mutation": "private resource overlap allowed",
+      "baselinePassed": true,
       "caught": true,
       "exitCode": 1
     },
     {
       "mutation": "webhook signature guard removed",
+      "baselinePassed": true,
       "caught": true,
       "exitCode": 1
     },
     {
       "mutation": "provider amount guard removed",
+      "baselinePassed": true,
       "caught": true,
       "exitCode": 1
     },
     {
       "mutation": "refund parent guard removed",
+      "baselinePassed": true,
       "caught": true,
       "exitCode": 1
     },
     {
       "mutation": "webhook duplicate guard removed",
+      "baselinePassed": true,
       "caught": true,
       "exitCode": 1
     },
     {
       "mutation": "stale worker response allowed",
+      "baselinePassed": true,
+      "caught": true,
+      "exitCode": 1
+    },
+    {
+      "mutation": "private spending ceiling ignored",
+      "baselinePassed": true,
+      "caught": true,
+      "exitCode": 1
+    },
+    {
+      "mutation": "essential technique relaxed",
+      "baselinePassed": true,
+      "caught": true,
+      "exitCode": 1
+    },
+    {
+      "mutation": "finish deadline ignored",
+      "baselinePassed": true,
+      "caught": true,
+      "exitCode": 1
+    },
+    {
+      "mutation": "nominee consent ignored",
+      "baselinePassed": true,
+      "caught": true,
+      "exitCode": 1
+    },
+    {
+      "mutation": "same-day need ignored",
+      "baselinePassed": true,
+      "caught": true,
+      "exitCode": 1
+    },
+    {
+      "mutation": "unverified catalog offered",
+      "baselinePassed": true,
+      "caught": true,
+      "exitCode": 1
+    },
+    {
+      "mutation": "private budget added to shared card",
+      "baselinePassed": true,
+      "caught": true,
+      "exitCode": 1
+    },
+    {
+      "mutation": "interpretation source evidence ignored",
+      "baselinePassed": true,
       "caught": true,
       "exitCode": 1
     }

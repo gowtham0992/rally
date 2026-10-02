@@ -5,7 +5,9 @@
     "Isolated Git repository, MIT license, pinned Node/TypeScript dependencies and reproducible payment setup guide",
     "PostgreSQL payment operations, reservation exclusion constraint, safe command identity and owner-scoped status projections",
     "Sandbox-only PayPal REST adapter, signature verification, durable sequential settlement and compensation worker",
-    "Sandbox CLI for three-buyer approval, partial failure, deliberately dropped response and sanitized evidence export"
+    "Sandbox CLI for three-buyer approval, partial failure, deliberately dropped response and sanitized evidence export",
+    "Shared deterministic studio-candidate planner with fixed published prices, hard-constraint filtering, current collection-consent checks and safe shared projection",
+    "Closed model-interpretation validation with exact text evidence, revision binding and public catalog boundaries; no model calls executed"
   ],
   "evidence": {
     "scope": "Real PostgreSQL with controlled simulated provider; adapter transport tests use fixture HTTP responses.",
@@ -14,14 +16,22 @@
       "consecutive_green_runs": 2
     },
     "mutation_checks": {
-      "caught": 10,
-      "total": 10,
+      "caught": 18,
+      "total": 18,
+      "targeted_unmodified_baselines_passed": true,
       "file": "evidence/local-mutation-results.json"
     },
     "typescript": "passed",
     "production_dependency_audit": "0 reported vulnerabilities",
     "actual_paypal_sandbox": "not_executed",
-    "credentials_doctor": "missing PayPal client ID, client secret, merchant ID, and three sandbox buyer IDs"
+    "credentials_doctor": "missing PayPal client ID, client secret, merchant ID, and three sandbox buyer IDs",
+    "tests": {
+      "passed": 33,
+      "payment_and_adapter": 24,
+      "planning_and_model_boundary": 9
+    },
+    "model_api_calls": 0,
+    "ai_quality_and_24_case_evaluation": "not_executed"
   },
   "external_dependencies": [
     {
@@ -57,7 +67,7 @@
     "Polished public demo video under three minutes",
     "Complete Devpost draft materials; human approval before entry submission"
   ],
-  "next_independent_slice": "Private planning domain and deterministic catalog validation while sandbox credentials are pending.",
+  "next_independent_slice": "Managed identity and persistent private intake, followed by the merchant approval and mobile experience; actual sandbox proof remains a required gate.",
   "release_restrictions": [
     "No actual PayPal integration claim yet",
     "No live customer payments",

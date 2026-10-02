@@ -11,16 +11,30 @@ const mutations = [
   {name:'refund parent guard removed',file:'src/payments/paypal.ts',from:'url.pathname !== expected',to:'false',pattern:'same-amount refund'},
   {name:'webhook duplicate guard removed',file:'src/payments/engine.ts',from:'if (!inserted.rowCount) return {duplicate:true};',to:'if (false) return {duplicate:true};',pattern:'verified webhooks deduplicate'},
   {name:'stale worker response allowed',file:'src/payments/engine.ts',from:'if (current.lease_token !== token) return;',to:'if (false) return;',pattern:'expired worker lease'},
+  {name:'private spending ceiling ignored',file:'src/planning/domain.ts',from:'p.budgetMinor>=offering.priceMinor',to:'true',pattern:'confirmed cup-making requirement'},
+  {name:'essential technique relaxed',file:'src/planning/domain.ts',from:"(p.technique==='ANY'||p.technique===offering.technique)",to:'true',pattern:'wheel-essential'},
+  {name:'finish deadline ignored',file:'src/planning/domain.ts',from:'(!p.latestFinishAt||Date.parse(endAt)<=Date.parse(p.latestFinishAt))',to:'true',pattern:'incompatible finish time'},
+  {name:'nominee consent ignored',file:'src/planning/domain.ts',from:'!consent.nomineeAgreed',to:'false',pattern:'collection nominee requires'},
+  {name:'same-day need ignored',file:'src/planning/domain.ts',from:"(!offering.requiresLaterCollection||p.collection!=='SAME_DAY_REQUIRED')",to:'true',pattern:'same-day collection'},
+  {name:'unverified catalog offered',file:'src/planning/domain.ts',from:'if(!offering.verified) continue;',to:'if(false) continue;',pattern:'unverified facts'},
+  {name:'private budget added to shared card',file:'src/planning/domain.ts',from:"amountMinor:offering.priceMinor,currency:'USD'",to:"amountMinor:offering.priceMinor,budgetMinor:preferences[0].budgetMinor,currency:'USD'",pattern:'confirmed cup-making requirement'},
+  {name:'interpretation source evidence ignored',file:'src/planning/interpretation.ts',from:'input.text.slice(item.sourceStart,item.sourceEnd)!==item.sourceSpan',to:'false',pattern:'interpretations need exact evidence'},
 ];
 const results=[];
 for(const mutation of mutations) {
   const file=new URL(`../${mutation.file}`,import.meta.url),original=await readFile(file,'utf8');
   if (!original.includes(mutation.from)) throw new Error(`Mutation target missing: ${mutation.name}`);
+  const testFile=mutation.file.includes('/planning/') ? 'test/planning.test.ts' : mutation.file.endsWith('/paypal.ts') ? 'test/paypal.test.ts' : 'test/payments.test.ts';
+  const args=['--import','tsx','--test','--test-concurrency=1',`--test-name-pattern=${mutation.pattern}`,testFile];
+  const baseline=spawnSync(process.execPath,args,{encoding:'utf8',timeout:20000});
+  if(baseline.status!==0) throw new Error(`Unmodified targeted test failed: ${mutation.name}`);
   try {
     await writeFile(file,original.replace(mutation.from,mutation.to));
-    const run=spawnSync(process.execPath,['--import','tsx','--test','--test-concurrency=1',`--test-name-pattern=${mutation.pattern}`,'test/payments.test.ts','test/paypal.test.ts'],{encoding:'utf8',timeout:20000});
-    const caught=run.status !== 0 && run.status !== null && /fail [1-9]/.test(run.stdout+run.stderr);
-    results.push({mutation:mutation.name,caught,exitCode:run.status});
+    const run=spawnSync(process.execPath,args,{encoding:'utf8',timeout:20000});
+    const output=run.stdout+run.stderr;
+    const intendedFailure=output.split('\n').some(line=>/^(not ok|✖)/.test(line)&&new RegExp(mutation.pattern).test(line));
+    const caught=run.status !== 0 && run.status !== null && /fail [1-9]/.test(output)&&intendedFailure;
+    results.push({mutation:mutation.name,baselinePassed:true,caught,exitCode:run.status});
     console.log(`${caught ? 'CAUGHT' : 'MISSED'}: ${mutation.name}`);
   } finally {await writeFile(file,original);}
 }

@@ -2,7 +2,7 @@
 
 Rally helps a group agree on a studio experience privately, then book with each person paying their own share through PayPal.
 
-The first implementation slice is the durable payment engine. There is no participant web application yet. Local PostgreSQL tests exercise group settlement and recovery with a simulated provider; an actual PayPal sandbox run is still required. Synthetic offers are not real studio availability.
+The current implementation covers the durable payment engine and shared planning rules. There is no participant web application yet. Local PostgreSQL tests exercise group settlement and recovery with a simulated provider; an actual PayPal sandbox run is still required. Synthetic offers are not real studio availability.
 
 ## Run the local checks
 
@@ -67,6 +67,10 @@ Dispatch intent, operation identity, and results are durable in PostgreSQL. Unkn
 Webhook signatures are verified through PayPal, events are deduplicated, and event status claims do not directly mark payments complete. Amounts, currency, merchant, invoice or parent-resource binding, and current provider status must match. [Authorization and capture](https://developer.paypal.com/v5/checkout/auth-capture/), [idempotency limitations](https://developer.paypal.com/api/rest/reference/idempotency/).
 
 ## What remains
+
+The shared planner enforces confirmed budgets, availability, technique, outcome, finish times, and collection consent against published catalog facts. It excludes unverified offerings and produces a shared projection without private budgets or participant identities. The synthetic catalog lives in `fixtures/studio.json`.
+
+The model boundary accepts only finite interpretations with matching source text and revisions. It cannot accept payment actions or invented offering identities. A model endpoint, automatic question selection and its two-question limit, managed authentication, and persistent private intake are not implemented yet. The local planning checks are not the required 24-case model evaluation and establish no AI superiority.
 
 The [build contract](build-contract.json) retains the full product scope. Remaining gates include the actual sandbox lifecycle, managed participant authentication, private planning and model evaluation, the merchant and mobile participant experience, deployment, observed usability and merchant validation, and submission materials. None is implied complete by green local payment tests.
 

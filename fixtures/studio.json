@@ -1,0 +1,16 @@
+{
+  "versionId": "willow-synthetic-v1",
+  "studioId": "willow-synthetic",
+  "studioName": "Willow Studio",
+  "timezone": "America/Denver",
+  "synthetic": true,
+  "slots": [
+    {"id":"thu-evening","startAt":"2026-11-20T01:15:00Z"},
+    {"id":"fri-evening","startAt":"2026-11-21T01:00:00Z"}
+  ],
+  "offerings": [
+    {"id":"wheel","name":"Wheel workshop","verified":true,"technique":"WHEEL","outcome":"FORM_OWN_CUP","priceMinor":7200,"durationMinutes":120,"minPeople":6,"maxPeople":8,"slotIds":["thu-evening","fri-evening"],"requiresLaterCollection":true,"nomineeCollectionAllowed":true,"collectionDescription":"Firing included; collection after the studio confirms pieces are ready.","cancellationTerms":"Synthetic demo policy: merchant cancellation gives a full refund; participant changes require studio review."},
+    {"id":"handbuild","name":"Hand-build a cup","verified":true,"technique":"HANDBUILD","outcome":"FORM_OWN_CUP","priceMinor":4800,"durationMinutes":90,"minPeople":6,"maxPeople":8,"slotIds":["thu-evening","fri-evening"],"requiresLaterCollection":true,"nomineeCollectionAllowed":true,"collectionDescription":"Firing included; collection after the studio confirms pieces are ready.","cancellationTerms":"Synthetic demo policy: merchant cancellation gives a full refund; participant changes require studio review."},
+    {"id":"decorate","name":"Decorate a ready-made piece","verified":true,"technique":"DECORATE","outcome":"DECORATE_EXISTING","priceMinor":4200,"durationMinutes":75,"minPeople":6,"maxPeople":8,"slotIds":["thu-evening","fri-evening"],"requiresLaterCollection":true,"nomineeCollectionAllowed":true,"collectionDescription":"Firing included; collection after the studio confirms pieces are ready.","cancellationTerms":"Synthetic demo policy: merchant cancellation gives a full refund; participant changes require studio review."}
+  ]
+}
