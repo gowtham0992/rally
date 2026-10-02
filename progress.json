@@ -9,7 +9,8 @@
     "Shared deterministic studio-candidate planner with fixed published prices, hard-constraint filtering, current collection-consent checks and safe shared projection",
     "Closed model-interpretation validation with exact text evidence, revision binding and public catalog boundaries; no model calls executed",
     "Persistent private intake service: verified-actor boundary, immutable preferences, idempotent commands, organizer batch roster closure and safe candidate caching; managed authentication routes remain unimplemented",
-    "Persistent two-party collection consent with explicit disclosure, actor-specific approval, revocation, revision invalidation and append-only consent events; issued-offer cancellation wiring remains required"
+    "Persistent two-party collection consent with explicit disclosure, actor-specific approval, revocation, revision invalidation and append-only consent events; issued-offer cancellation wiring remains required",
+    "Merchant approval service connects validated fixed-roster planning to immutable offer snapshots, atomic buffered reservation, two-hour authorization window and existing settlement worker"
   ],
   "evidence": {
     "scope": "Real PostgreSQL with controlled simulated provider; adapter transport tests use fixture HTTP responses.",
@@ -26,22 +27,24 @@
     "typescript": "passed",
     "production_dependency_audit": "0 reported vulnerabilities",
     "actual_paypal_sandbox": "not_executed",
-    "credentials_doctor": "missing PayPal client ID, client secret, merchant ID, and three sandbox buyer IDs",
+    "credentials_doctor": "Sandbox client ID and secret privately configured; merchant ownership verified; identifying three buyer account IDs and approvals.",
     "tests": {
-      "passed": 43,
+      "passed": 52,
       "payment_and_adapter": 24,
       "planning_and_model_boundary": 9,
-      "persistent_intake": 10
+      "persistent_intake": 10,
+      "merchant_booking_loop": 9
     },
     "model_api_calls": 0,
     "ai_quality_and_24_case_evaluation": "not_executed",
     "intake_scope": "Real PostgreSQL service tests with trusted test actors; not managed email-auth or browser end-to-end proof.",
-    "latest_full_test_run": "43 passed; TypeScript passed. Collection consent uses actual PostgreSQL with trusted test actors; no browser or managed-auth proof."
+    "latest_full_test_run": "52 passed; TypeScript passed. Six-person intake to approval/settlement plus compensation exercised with real PostgreSQL and simulated payment provider.",
+    "sandbox_oauth": "HTTP 200 access token issued with user-supplied credentials; supplied Client ID matches Rally app on sandbox Business seller. Actual three-buyer lifecycle not yet executed."
   },
   "external_dependencies": [
     {
       "name": "PayPal sandbox business app and three personal buyer accounts",
-      "state": "awaiting_configuration",
+      "state": "credentials_validated_buyer_configuration_in_progress",
       "setup": "README.md",
       "template": ".env.example"
     },

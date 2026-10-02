@@ -1,0 +1,6 @@
+{
+  "scope": "local PostgreSQL service test",
+  "mutation": "Removed configured studio-owner binding from approval",
+  "caught": true,
+  "test": "request and approval reject foreign actors, invented candidates, changed amounts and absent attestation"
+}

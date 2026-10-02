@@ -3,7 +3,8 @@ import type pg from 'pg';
 import { z } from 'zod';
 import { transaction } from '../db.ts';
 import { fingerprint } from '../payments/types.ts';
-import { catalogSchema,preferenceSchema,planGroup } from '../planning/domain.ts';
+import { catalogSchema,preferenceSchema } from '../planning/domain.ts';
+import { confirmedPlan } from '../planning/persisted.ts';
 
 // Only server-authenticated identity may construct this input. Request bodies must
 // never supply actorId/verified. Managed Auth route binding remains a separate gate.
@@ -33,7 +34,7 @@ export class IntakeService {
  }
  private async group(c:pg.PoolClient,id:string){const row=(await c.query('SELECT * FROM planning_groups WHERE id=$1 FOR UPDATE',[id])).rows[0];if(!row)throw new IntakeError('NOT_FOUND');return row;}
  private async changed(c:pg.PoolClient,id:string,kind:string){
-  const row=(await c.query('UPDATE planning_groups SET revision=revision+1,candidate=NULL WHERE id=$1 RETURNING revision',[id])).rows[0];
+  const row=(await c.query("UPDATE planning_groups SET revision=revision+1,candidate=NULL,state=CASE WHEN state='MERCHANT_REVIEW' THEN 'CLOSED' ELSE state END WHERE id=$1 RETURNING revision",[id])).rows[0];
   await c.query('INSERT INTO planning_events(group_id,revision,kind) VALUES($1,$2,$3)',[id,row.revision,kind]);return row.revision as number;
  }
  async create(actor:IntakeActor,value:unknown){const p=createSchema.parse(value);return this.command(actor,p.commandId,{kind:'CREATE',...p},async c=>{
@@ -55,8 +56,8 @@ export class IntakeService {
   const g=await this.group(c,p.groupId);
   const m=(await c.query('SELECT id,current_preference_id,admitted FROM planning_members WHERE group_id=$1 AND user_id=$2',[p.groupId,actor.userId])).rows[0];
   if(!m)throw new IntakeError('NOT_FOUND');
-  if(!['COLLECTING','CLOSED'].includes(g.state))throw new IntakeError('PLANNING_LOCKED');
-  if(g.state==='CLOSED'&&!m.admitted)throw new IntakeError('NOT_FOUND');
+  if(!['COLLECTING','CLOSED','MERCHANT_REVIEW'].includes(g.state))throw new IntakeError('PLANNING_LOCKED');
+  if(g.state!=='COLLECTING'&&!m.admitted)throw new IntakeError('NOT_FOUND');
   if(g.revision!==p.expectedRevision||m.current_preference_id!==p.expectedPreferenceId)throw new IntakeError('STALE_REVISION');
   const catalog=catalogSchema.parse(g.catalog);
   if(p.preference.availableSlotIds.some(id=>!catalog.slots.some(s=>s.id===id)))throw new IntakeError('UNKNOWN_SLOT');
@@ -94,7 +95,7 @@ export class IntakeService {
   if(pref.collection!=='NOMINEE_LATER'||!pref.nomineeMemberId)throw new IntakeError('NO_COLLECTION_ARRANGEMENT');
   const nominee=(await c.query('SELECT id FROM planning_members WHERE group_id=$1 AND id=$2 AND admitted',[g.id,pref.nomineeMemberId])).rows[0];
   if(!nominee||![owner.id,nominee.id].includes(caller.id))throw new IntakeError('NOT_FOUND');
-  if(g.state!=='CLOSED')throw new IntakeError('COLLECTION_REVIEW_REQUIRED');
+  if(!['CLOSED','MERCHANT_REVIEW'].includes(g.state))throw new IntakeError('COLLECTION_REVIEW_REQUIRED');
   if(g.revision!==p.expectedRevision)throw new IntakeError('STALE_REVISION');
   await c.query('INSERT INTO collection_consents(preference_id,owner_member_id,nominee_member_id) VALUES($1,$2,$3) ON CONFLICT DO NOTHING',[p.preferenceId,owner.id,nominee.id]);
   const consent=(await c.query('SELECT * FROM collection_consents WHERE preference_id=$1 FOR UPDATE',[p.preferenceId])).rows[0];
@@ -130,13 +131,7 @@ export class IntakeService {
  async plan(actor:IntakeActor,groupId:string){this.actor(actor);uuid.parse(groupId);return transaction(this.pool,async c=>{
   const g=await this.group(c,groupId);const member=(await c.query('SELECT admitted FROM planning_members WHERE group_id=$1 AND user_id=$2',[groupId,actor.userId])).rows[0];
   if(!member?.admitted)throw new IntakeError('NOT_FOUND');if(g.state!=='CLOSED')throw new IntakeError('PLANNING_LOCKED');
-  const rows=(await c.query('SELECT p.confirmed FROM planning_members m JOIN preference_revisions p ON p.id=m.current_preference_id WHERE m.group_id=$1 AND m.admitted ORDER BY m.id',[groupId])).rows;
-  const consentRows=(await c.query(`SELECT cs.* FROM collection_consents cs
-    JOIN planning_members m ON m.id=cs.owner_member_id AND m.current_preference_id=cs.preference_id
-    WHERE m.group_id=$1 AND m.admitted`,[groupId])).rows;
-  const consents=consentRows.map(r=>({ownerMemberId:r.owner_member_id,nomineeMemberId:r.nominee_member_id,preferenceRevisionId:r.preference_id,
-    ownerAgreed:r.owner_agreed,nomineeAgreed:r.nominee_agreed,disclosureAgreed:r.disclosure_agreed,revoked:r.revoked}));
-  const result=planGroup(g.catalog,rows.map(r=>r.confirmed),consents);
+  const {result}=await confirmedPlan(c,groupId,g.catalog);
   await c.query('UPDATE planning_groups SET candidate=$2 WHERE id=$1',[groupId,JSON.stringify(result)]);
   return {revision:g.revision,result};
  });}

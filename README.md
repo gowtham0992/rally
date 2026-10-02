@@ -114,3 +114,36 @@ Consent changes invalidate cached candidates and retain append-only events.
 Issued offers currently return `COLLECTION_REVIEW_REQUIRED` for consent changes.
 The cancellation/financial cleanup workflow must be connected before this path
 can be exposed as a working product. No issued offer is silently revised.
+
+### Merchant approval and frozen offers (service layer)
+
+`BookingService.request` binds an organizer-selected candidate to a closed,
+ready roster, current preference/consent revisions and an immutable published
+catalog. Preference edits or collection revocation before issuance invalidate
+pending review and return the group to planning. Merchant request views contain
+published facts, agreed names and collection arrangements; no private ceilings
+or participant wording.
+
+`BookingService.approve` requires the configured studio operator to explicitly
+confirm facts, block the external calendar, permit automatic settlement and
+agree to collection arrangements. It revalidates the current source, serializes
+this studio's resource, then creates the offer, member payment identities,
+immutable snapshot and exclusive buffered hold transactionally. The window is
+two hours plus thirty minutes for confirmation; the session must begin at least
+24 hours after that window. The existing payment worker handles these issued
+offers. Concurrent overlapping approvals return a reservation conflict.
+
+Database triggers protect published catalog versions, offer snapshots, issued
+money/time terms and roster identities, and confirmed preference history. Raw
+optional text can be cleared by a retention job. State/payment fields remain
+mutable for settlement and recovery. Browser access remains disabled by RLS.
+Studio ownership, PayPal merchant identity and published catalog provisioning
+are trusted server configuration; no browser can grant itself merchant access.
+Managed identity binding, merchant setup UI, cancellation flows and participant
+web checkout are still required before these services constitute a product.
+
+Nine merchant-loop tests use real PostgreSQL and a **simulated payment provider**.
+They cover six-person successful settlement, partial-payment compensation,
+overlapping reservations, immutable snapshots, unauthorized access, required
+merchant attestation, unsupported catalogs, session lead time and invalidated
+review. They do not establish actual PayPal sandbox payment or real availability.
