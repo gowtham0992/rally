@@ -27,7 +27,7 @@ export function errorResponse(error:unknown){
  if(error instanceof WebError)return Response.json({error:error.code},{status:error.status,headers:{'Cache-Control':'no-store'}});
  if(error instanceof z.ZodError)return Response.json({error:'INVALID_REQUEST'},{status:400,headers:{'Cache-Control':'no-store'}});
  const code=error instanceof Error&&'code' in error?String(error.code):'';
- const allowed=['NOT_FOUND','STALE_REVISION','COMMAND_CONFLICT','PLANNING_LOCKED','ROSTER_CLOSED','INVALID_ROSTER','GROUP_FULL','UNKNOWN_SLOT','INVALID_NOMINEE','VERIFIED_IDENTITY_REQUIRED','COLLECTION_REVIEW_REQUIRED','OWNER_CONSENT_REQUIRED','DISCLOSURE_REQUIRED','CONSENT_REVOKED','STALE_PREFERENCE','NO_COLLECTION_ARRANGEMENT'];
+ const allowed=['NOT_FOUND','STALE_REVISION','COMMAND_CONFLICT','PLANNING_LOCKED','ROSTER_CLOSED','INVALID_ROSTER','GROUP_FULL','UNKNOWN_SLOT','INVALID_NOMINEE','VERIFIED_IDENTITY_REQUIRED','COLLECTION_REVIEW_REQUIRED','OWNER_CONSENT_REQUIRED','DISCLOSURE_REQUIRED','CONSENT_REVOKED','STALE_PREFERENCE','NO_COLLECTION_ARRANGEMENT','NO_NOTE','NOTE_TOO_LONG','NOTE_ALREADY_REVIEWED','CLARIFICATION_LIMIT','STALE_CLARIFICATION','INVALID_ANSWER'];
  if(allowed.includes(code))return Response.json({error:code},{status:code==='NOT_FOUND'?404:409,headers:{'Cache-Control':'no-store'}});
  // No raw database/provider error, payload or credential crosses the HTTP boundary.
  return Response.json({error:'TEMPORARILY_UNAVAILABLE'},{status:503,headers:{'Cache-Control':'no-store'}});

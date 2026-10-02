@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import {randomUUID} from 'node:crypto';
 import {readFile} from 'node:fs/promises';
 import {database,localDatabaseUrl} from '../src/db.ts';
+import {ClarificationService} from '../src/intake/clarifications.ts';
 import {IntakeService,type IntakeActor} from '../src/intake/service.ts';
 const schema=`intake_test_${randomUUID().replaceAll('-','')}`,admin=database(process.env.TEST_DATABASE_URL??localDatabaseUrl);
 const url=new URL(process.env.TEST_DATABASE_URL??localDatabaseUrl);url.searchParams.set('options',`-c search_path=${schema},public`);
@@ -10,13 +11,13 @@ const pool=database(url.toString()),service=new IntakeService(pool);
 const catalog=JSON.parse(await readFile(new URL('../fixtures/studio.json',import.meta.url),'utf8'));
 // Two-person fixture is explicitly synthetic; production keeps merchant capacity.
 for(const o of catalog.offerings)o.minPeople=2;
-before(async()=>{await admin.query(`CREATE SCHEMA ${schema}`);await pool.query(await readFile(new URL('../db/004_private_intake.sql',import.meta.url),'utf8'));await pool.query(await readFile(new URL('../db/005_collection_consent.sql',import.meta.url),'utf8'));});
+before(async()=>{await admin.query(`CREATE SCHEMA ${schema}`);await pool.query(await readFile(new URL('../db/004_private_intake.sql',import.meta.url),'utf8'));await pool.query(await readFile(new URL('../db/005_collection_consent.sql',import.meta.url),'utf8'));await pool.query(await readFile(new URL('../db/007_clarifications.sql',import.meta.url),'utf8'));});
 after(async()=>{await pool.end();await admin.query(`DROP SCHEMA ${schema} CASCADE`);await admin.end();});
 const actor=():IntakeActor=>({userId:randomUUID(),emailVerified:true});
 const pref={budgetMinor:5000,availableSlotIds:['thu-evening'],latestFinishAt:null,technique:'ANY',outcome:'FORM_OWN_CUP',collection:'SELF_LATER',nomineeMemberId:null,extraRequirement:'NONE',unresolvedKeys:[]};
 async function setup(){const a=actor(),b=actor();const g=await service.create(a,{commandId:randomUUID(),targetSize:2,displayName:'Organizer',catalog});const joined=await service.join(b,{commandId:randomUUID(),invite:g.invite,displayName:'Participant'});return {a,b,g,joined};}
 async function ready(){const x=await setup();let rev=x.joined.revision;
- const first=await service.save(x.a,{commandId:randomUUID(),groupId:x.g.groupId,expectedRevision:rev,expectedPreferenceId:null,preference:pref,optionalText:'Private sentence'});rev=first.revision;
+ const draft=await service.save(x.a,{commandId:randomUUID(),groupId:x.g.groupId,expectedRevision:rev,expectedPreferenceId:null,preference:pref,optionalText:'Private sentence'});const first=await new ClarificationService(pool).confirmStructuredNote(x.a,{commandId:randomUUID(),groupId:x.g.groupId,expectedRevision:draft.revision,preferenceId:draft.preferenceId,declaresNoAdditionalMustHaves:true});rev=first.revision;
  const second=await service.save(x.b,{commandId:randomUUID(),groupId:x.g.groupId,expectedRevision:rev,expectedPreferenceId:null,preference:pref,optionalText:null});
  const closed=await service.closeRoster(x.a,{commandId:randomUUID(),groupId:x.g.groupId,expectedRevision:second.revision,memberIds:[x.g.memberId,x.joined.memberId]});return {...x,first,second,closed};}
 test('organizer roster cannot expose private ceilings or text; reads and writes are actor scoped',async()=>{
@@ -67,11 +68,11 @@ test('private intake schema can migrate down and back up in an isolated empty sc
  await admin.query(`CREATE SCHEMA ${temporary}`);
  const migrationUrl=new URL(process.env.TEST_DATABASE_URL??localDatabaseUrl);migrationUrl.searchParams.set('options',`-c search_path=${temporary},public`);
  const migrated=database(migrationUrl.toString());
- try{for(const file of ['004_private_intake.sql','005_collection_consent.sql','005_collection_consent.down.sql','004_private_intake.down.sql','004_private_intake.sql','005_collection_consent.sql'])await migrated.query(await readFile(new URL('../db/'+file,import.meta.url),'utf8'));
+ try{for(const file of ['004_private_intake.sql','005_collection_consent.sql','007_clarifications.sql','007_clarifications.down.sql','005_collection_consent.down.sql','004_private_intake.down.sql','004_private_intake.sql','005_collection_consent.sql','007_clarifications.sql'])await migrated.query(await readFile(new URL('../db/'+file,import.meta.url),'utf8'));
  assert.equal((await migrated.query('SELECT count(*) FROM preference_revisions')).rows[0].count,'0');
  }finally{await migrated.end();await admin.query(`DROP SCHEMA ${temporary} CASCADE`);}
 });
-async function nomination(){const x=await ready();const saved=await service.save(x.a,{commandId:randomUUID(),groupId:x.g.groupId,expectedRevision:x.closed.revision,expectedPreferenceId:x.first.preferenceId,preference:{...pref,collection:'NOMINEE_LATER',nomineeMemberId:x.joined.memberId},optionalText:'Private travel story'});
+async function nomination(){const x=await ready();const draft=await service.save(x.a,{commandId:randomUUID(),groupId:x.g.groupId,expectedRevision:x.closed.revision,expectedPreferenceId:x.first.preferenceId,preference:{...pref,collection:'NOMINEE_LATER',nomineeMemberId:x.joined.memberId},optionalText:'Private travel story'});const saved=await new ClarificationService(pool).confirmStructuredNote(x.a,{commandId:randomUUID(),groupId:x.g.groupId,expectedRevision:draft.revision,preferenceId:draft.preferenceId,declaresNoAdditionalMustHaves:true});
  const command=(revision:number,action:string)=>({commandId:randomUUID(),groupId:x.g.groupId,expectedRevision:revision,preferenceId:saved.preferenceId,action,disclosureAgreed:true});return {...x,saved,command};}
 test('nominated collection requires current owner disclosure and separate nominee agreement',async()=>{
  const x=await nomination();assert.equal((await service.plan(x.a,x.g.groupId)).result.state,'NEEDS_CLARIFICATION');

@@ -7,13 +7,14 @@
     "Sandbox-only PayPal REST adapter, signature verification, durable sequential settlement and compensation worker",
     "Sandbox CLI for three-buyer approval, partial failure, deliberately dropped response and sanitized evidence export",
     "Shared deterministic studio-candidate planner with fixed published prices, hard-constraint filtering, current collection-consent checks and safe shared projection",
-    "Closed model-interpretation validation with exact text evidence, revision binding and public catalog boundaries; no model calls executed",
+    "Closed model-interpretation validation with exact text evidence, revision binding and public catalog boundaries; actual synthetic connection and participant calls now recorded",
     "Persistent private intake service: verified-actor boundary, immutable preferences, idempotent commands, organizer batch roster closure and safe candidate caching; managed authentication now connected through verified Supabase sessions",
     "Persistent two-party collection consent with explicit disclosure, actor-specific approval, revocation, revision invalidation and append-only consent events; issued-offer cancellation wiring remains required",
     "Merchant approval service connects validated fixed-roster planning to immutable offer snapshots, atomic buffered reservation, two-hour authorization window and existing settlement worker",
     "Next.js application with Supabase managed email login and server-validated identity; actual authenticated synthetic group creation and private requirements save persisted across browser refresh. Mobile home/login/intake screens, roster and structured candidate routes implemented; remaining journey gates stay open.",
     "Friend-oriented product UI: actual people/readiness, private details, natural copy and restrained demo label. Mobile/tablet/desktop reviewed; stale-save draft retention observed through two browser views.",
-    "Astropods authenticated, $10 period spend limit saved, server-side bounded model adapter and actual validated synthetic clarification call; Render Blueprint and shallow database readiness route prepared. Hosting remains undeployed."
+    "Astropods authenticated, $10 period spend limit saved, server-side bounded model adapter and actual validated synthetic clarification call; Render Blueprint and shallow database readiness route prepared. Hosting remains undeployed.",
+    "Persistent owner-scoped grounded AI clarification with explicit processing and meaning confirmation, revision invalidation, duplicate protection, bounded questions/calls, interrupted-request recovery and an equal structured-only path. Actual synthetic authenticated AI and baseline flow observed; collection volunteer/consent never invented."
   ],
   "evidence": {
     "scope": "Local service tests use real PostgreSQL and a simulated provider; separate reviewed records prove three actual PayPal sandbox scenarios.",
@@ -40,18 +41,19 @@
     },
     "credentials_doctor": "All sandbox app, merchant and three distinct personal buyer identifiers configured privately; no credentials committed.",
     "tests": {
-      "passed": 59,
+      "passed": 65,
       "payment_and_adapter": 24,
       "planning_and_model_boundary": 9,
       "persistent_intake": 12,
       "merchant_booking_loop": 9,
       "web_request_boundaries": 2,
-      "bounded_ai_gateway": 3
+      "bounded_ai_gateway": 3,
+      "persistent_clarification": 6
     },
-    "model_api_calls": 4,
+    "model_api_calls": 5,
     "ai_quality_and_24_case_evaluation": "not_executed",
     "intake_scope": "Real PostgreSQL service tests with trusted test actors; not managed email-auth or browser end-to-end proof.",
-    "latest_full_test_run": "59 passed; production build and TypeScript passed. Actual Astropods connection and local readiness additionally observed; hosted deployment and participant AI UI remain pending.",
+    "latest_full_test_run": "65 passed; TypeScript passed. Production build passed for the clarification UI; recovery fix verified by the full suite. Hosted deployment, quality evaluation and remaining browser journey are incomplete.",
     "sandbox_oauth": "Sandbox HTTP 200 access token; supplied Client ID matched Rally app on the selected Business seller.",
     "managed_auth_browser": {
       "scope": "Existing healthy Rally Supabase Auth project; local Next.js app and local PostgreSQL; synthetic studio/name/preferences. User completed email login, agent used resulting verified session.",
@@ -62,7 +64,10 @@
         "Unsigned/forged-identity and cross-site HTTP requests rejected",
         "No private credential matches found in the browser bundle",
         "Conflicting update preserved unsaved draft until explicit reload",
-        "Friend-oriented home at 374/768/1280 CSS pixels without horizontal overflow"
+        "Friend-oriented home at 374/768/1280 CSS pixels without horizontal overflow",
+        "Actual Astropods clarification: original selections unchanged until owner confirmation; saved meaning survived reload",
+        "Explicit structured-only note confirmation without an additional model call",
+        "Clarification layout checked at 374/768/1280 CSS pixels without horizontal overflow"
       ],
       "not_yet_proven": [
         "Multi-account managed-auth intake and join",
@@ -76,10 +81,11 @@
       "model": "claude-sonnet-4-6",
       "file": "evidence/ai/connection.json",
       "validated_proposal": true,
-      "remaining_credit_usd": 9.98,
       "quality_evaluation": "not_executed",
-      "participant_ui": "not_integrated"
-    }
+      "participant_ui": "Integrated and actual synthetic owner-confirmed travel clarification observed; structured-only confirmation issued no additional model call",
+      "remaining_credit_usd_at_connection_check": 9.98
+    },
+    "participant_clarification_report": "evidence/ai/participant-flow.json"
   },
   "external_dependencies": [
     {
@@ -94,11 +100,11 @@
     },
     {
       "name": "No-charge model endpoint or approved credits",
-      "state": "not_yet_verified"
+      "state": "Astropods account connected, $10 limit saved, actual synthetic model and participant calls verified; quality evaluation pending"
     },
     {
       "name": "Deployment and public repository account access",
-      "state": "not_yet_verified"
+      "state": "Private gowtham0992/rally repository pushed; Render GitHub connection observed and draft web configuration prepared. No hosted service deployed."
     }
   ],
   "remaining_requirements": [
@@ -116,7 +122,7 @@
     "Polished public demo video under three minutes",
     "Complete Devpost draft materials; human approval before entry submission"
   ],
-  "next_independent_slice": "Complete collection-consent and merchant/checkout UI integration, grounded AI clarification and evaluation; provision restricted hosted database connection and judge access.",
+  "next_independent_slice": "Provision a restricted durable hosted database, finish collection consent and merchant/checkout UI, run grounded AI quality evaluation, then deploy isolated judge access.",
   "release_restrictions": [
     "Core PayPal sandbox scenarios verified; full authenticated application and remaining provider recovery gates are incomplete",
     "No live customer payments",

@@ -1,0 +1,35 @@
+{
+  "scope": "User-completed managed email login; local Next.js and PostgreSQL, synthetic note and studio catalog; actual Astropods inference. Not a hosted or multi-member checkout proof.",
+  "observedAt": "2026-10-02T04:49:45.277Z",
+  "ai": {
+    "syntheticNote": "I leave Friday.",
+    "status": "ANSWERED",
+    "question": "TRAVEL_MEANING",
+    "ownerConfirmedAnswer": "COLLECTION_ONLY",
+    "savedCollection": "NOMINEE_LATER",
+    "nomineeInvented": false,
+    "budgetChanged": false,
+    "modelCalls": 1,
+    "questionsAsked": 1
+  },
+  "structured": {
+    "syntheticNote": "The wheel sounds fun.",
+    "explicitNoAdditionalMustHavesAcknowledgment": true,
+    "extraRequirement": "NONE",
+    "additionalModelCalls": 0,
+    "budgetChanged": false
+  },
+  "responsiveCssWidths": [
+    374,
+    768,
+    1280
+  ],
+  "horizontalOverflow": false,
+  "remaining": [
+    "24-case quality evaluation repeated three times",
+    "Collection consent browser integration",
+    "Multi-member managed authentication",
+    "Merchant and PayPal checkout browser journey",
+    "Hosted database and deployed access"
+  ]
+}

@@ -182,7 +182,7 @@ private confirmed requirements, one organizer roster review, and shared
 structured candidate checks. It uses Supabase **Auth** with server-validated
 `getUser()` identity and an HTTP-only cookie session; the current application
 **database remains the isolated local PostgreSQL instance**. Hosted database
-migration, merchant/checkout browser screens, AI clarification and deployment
+migration, merchant/checkout browser screens, AI quality evaluation and deployment
 remain separate unfinished gates.
 
 In `.env.local`, set `SUPABASE_URL`, `SUPABASE_PUBLISHABLE_KEY` (a modern
@@ -203,9 +203,11 @@ sender may restrict recipients/rate; configuring judge access is a release gate.
 All mutation routes require the configured exact Origin. Identity and email
 verification are derived server-side, never accepted from request bodies. Private
 responses use `no-store`; streamed JSON request size is bounded. Additional
-wording currently requires review and blocks an offer until grounded clarification
-is integrated. The UI clearly labels synthetic studio facts and unfinished offer
-and payment screens. This is a running implementation slice, not a deployed or
+wording requires review and blocks an offer until its owner confirms a grounded
+clarification, updates their selections, or explicitly states that the selected
+controls capture every essential requirement. A caller cannot clear review by
+sending a “no extra requirement” flag. The UI labels the demo studio and PayPal
+sandbox, and keeps offer and payment states truthful. This is a running implementation slice, not a deployed or
 submission-ready product. Public deployment also requires durable application
 rate limits and isolated judge access.
 
@@ -218,7 +220,21 @@ schema. Exact quotations are grounded in the supplied text; missing or ambiguous
 quotation locations fail closed. The model cannot update confirmed requirements,
 book a session, call tools, or authorize payment. Model failure returns review.
 The actual connection check is recorded in `evidence/ai/connection.json`; the
-72-run quality evaluation and participant clarification UI remain unfinished.
+72-run quality evaluation remains unfinished. The private participant UI now
+requires model-processing consent, shows a finite grounded proposal, and saves
+changes only after owner confirmation. One actual synthetic travel clarification
+and the structured-only alternative were observed in the authenticated browser;
+see `evidence/ai/participant-flow.json`. These are connection/journey checks,
+not evidence of model quality or conversion lift.
+
+Clarifications are bound to immutable source revisions. Duplicate requests
+dispatch at most once; late or interrupted responses return to review. Limits
+persist in PostgreSQL: two questions and four calls per member per round, and
+six requests per verified actor in a rolling day. Collection clarification never
+selects a volunteer or grants either party’s consent. `?mode=structured` hides
+the AI option while preserving the same private fields and explicit note review.
+Apply migration `007_clarifications` before starting the updated application;
+the database role must be server-only.
 
 `render.yaml` prepares one web service and one settlement worker, with manual
 deploys and secrets supplied in Render. `/api/health` checks the app database

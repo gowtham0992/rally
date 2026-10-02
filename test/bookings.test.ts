@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import {randomUUID} from 'node:crypto';
 import {readFile} from 'node:fs/promises';
 import {database,localDatabaseUrl} from '../src/db.ts';
+import {ClarificationService} from '../src/intake/clarifications.ts';
 import {IntakeService,type IntakeActor} from '../src/intake/service.ts';
 import {BookingService} from '../src/bookings/service.ts';
 import {PaymentEngine} from '../src/payments/engine.ts';
@@ -14,7 +15,7 @@ const actor=():IntakeActor=>({userId:randomUUID(),emailVerified:true});
 const merchant=actor();
 const baseCatalog=JSON.parse(await readFile(new URL('../fixtures/studio.json',import.meta.url),'utf8'));
 const catalog={...baseCatalog,slots:baseCatalog.slots.map((s:{id:string},i:number)=>({...s,startAt:new Date(Date.now()+(3+i)*86400000).toISOString()}))};
-const migrations=['001_payments','004_private_intake','005_collection_consent','006_merchant_offers'];
+const migrations=['001_payments','004_private_intake','005_collection_consent','006_merchant_offers','007_clarifications'];
 before(async()=>{await admin.query(`CREATE SCHEMA ${schema}`);for(const file of migrations)await pool.query(await readFile(new URL('../db/'+file+'.sql',import.meta.url),'utf8'));
  await pool.query('INSERT INTO merchant_studios VALUES($1,$2,$3,$4,$5,$6)',[catalog.studioId,merchant.userId,'synthetic_merchant','studio-exclusive',15,20]);
  await pool.query('INSERT INTO merchant_catalog_versions(studio_id,version_id,catalog) VALUES($1,$2,$3)',[catalog.studioId,catalog.versionId,JSON.stringify(catalog)]);
@@ -24,7 +25,7 @@ const preference={budgetMinor:5000,availableSlotIds:['thu-evening'],latestFinish
 async function setup(cat=catalog){const actors=Array.from({length:6},actor),g=await intake.create(actors[0],{commandId:randomUUID(),targetSize:6,displayName:'Organizer',catalog:cat});
  const memberIds=[g.memberId];for(let i=1;i<6;i++)memberIds.push((await intake.join(actors[i],{commandId:randomUUID(),invite:g.invite,displayName:`Person ${i}`})).memberId);
  let revision=(await intake.roster(actors[0],g.groupId)).revision;const preferenceIds:string[]=[];
- for(const a of actors){const save=await intake.save(a,{commandId:randomUUID(),groupId:g.groupId,expectedRevision:revision,expectedPreferenceId:null,preference,optionalText:'Private words never shared'});revision=save.revision;preferenceIds.push(save.preferenceId);}
+ for(const a of actors){const draft=await intake.save(a,{commandId:randomUUID(),groupId:g.groupId,expectedRevision:revision,expectedPreferenceId:null,preference,optionalText:'Private words never shared'});const save=await new ClarificationService(pool).confirmStructuredNote(a,{commandId:randomUUID(),groupId:g.groupId,expectedRevision:draft.revision,preferenceId:draft.preferenceId,declaresNoAdditionalMustHaves:true});revision=save.revision;preferenceIds.push(save.preferenceId);}
  const closed=await intake.closeRoster(actors[0],{commandId:randomUUID(),groupId:g.groupId,expectedRevision:revision,memberIds});
  return {actors,g,memberIds,preferenceIds,revision:closed.revision};
 }
@@ -111,7 +112,7 @@ test('merchant offer migration reverses and reapplies in an isolated empty schem
  }finally{await temp.end();await admin.query(`DROP SCHEMA ${temporary} CASCADE`);}
 });
 test('revoked collection arrangement invalidates merchant review and cannot enter a frozen offer',async()=>{
- const x=await setup();const saved=await intake.save(x.actors[0],{commandId:randomUUID(),groupId:x.g.groupId,expectedRevision:x.revision,expectedPreferenceId:x.preferenceIds[0],preference:{...preference,collection:'NOMINEE_LATER',nomineeMemberId:x.memberIds[1]},optionalText:'Private travel detail'});
+ const x=await setup();const draft=await intake.save(x.actors[0],{commandId:randomUUID(),groupId:x.g.groupId,expectedRevision:x.revision,expectedPreferenceId:x.preferenceIds[0],preference:{...preference,collection:'NOMINEE_LATER',nomineeMemberId:x.memberIds[1]},optionalText:'Private travel detail'});const saved=await new ClarificationService(pool).confirmStructuredNote(x.actors[0],{commandId:randomUUID(),groupId:x.g.groupId,expectedRevision:draft.revision,preferenceId:draft.preferenceId,declaresNoAdditionalMustHaves:true});
  const consent=(revision:number,action:string)=>({commandId:randomUUID(),groupId:x.g.groupId,expectedRevision:revision,preferenceId:saved.preferenceId,action,disclosureAgreed:true});
  const owner=await intake.collectionConsent(x.actors[0],consent(saved.revision,'OWNER_AGREE')),nominee=await intake.collectionConsent(x.actors[1],consent(owner.revision,'NOMINEE_AGREE'));
  const r=await bookings.request(x.actors[0],{commandId:randomUUID(),groupId:x.g.groupId,expectedRevision:nominee.revision,offeringId:'handbuild',slotId:'thu-evening'});
