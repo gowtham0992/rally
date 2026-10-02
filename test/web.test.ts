@@ -1,4 +1,5 @@
 import {test} from 'node:test';
+import {DomainError} from '../src/payments/types.ts';
 import assert from 'node:assert/strict';
 import {appOrigin,sameOrigin,safeNext,body,errorResponse,WebError} from '../src/web/security.ts';
 test('web mutations reject foreign and absent Origin; redirects remain on site',()=>{
@@ -16,4 +17,9 @@ test('web request body bounds streamed payloads and does not reflect private err
  await assert.rejects(body(request('"'+'x'.repeat(12001)+'"')),/REQUEST_TOO_LARGE/);
  const response=errorResponse(new Error('postgres password and private budget'));assert.equal(response.status,503);assert.deepEqual(await response.json(),{error:'TEMPORARILY_UNAVAILABLE'});
  assert.equal(errorResponse(new WebError('SIGN_IN_REQUIRED',401)).status,401);
+});
+
+test('booking HTTP errors expose only finite actionable codes',async()=>{
+ for(const [code,status] of [['STALE_PLANNING',409],['RESERVATION_CONFLICT',409],['NO_VALID_CANDIDATE',422],['UNVERIFIED_CATALOG',422],['SESSION_TOO_SOON',422]] as const){const response=errorResponse(new DomainError(code));assert.equal(response.status,status);assert.deepEqual(await response.json(),{error:code});}
+ assert.deepEqual(await errorResponse(new DomainError('private merchant secret')).json(),{error:'TEMPORARILY_UNAVAILABLE'});
 });

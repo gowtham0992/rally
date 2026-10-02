@@ -1,0 +1,46 @@
+{
+  "observedAt": "2026-10-02T06:01:20.897Z",
+  "scope": "Actual local managed-auth organizer and studio UI; one account deliberately assigned both local demo roles. Synthetic three-person group, other people and collection agreements seeded through trusted service actors. No independent merchant, multi-account browser or PayPal checkout proof.",
+  "observed": [
+    "Unassigned managed account denied studio queue before local test assignment",
+    "Organizer requested published $48 candidate",
+    "Studio queue and exact review omitted private budgets and raw participant notes",
+    "All four studio attestations initially unchecked; three alone left approval disabled",
+    "A trusted synthetic friend changed a preference while approval was open",
+    "Stale approval rejected; checked inputs retained and approval disabled",
+    "Explicit refresh showed obsolete-request explanation",
+    "Organizer recalculated and requested current candidate",
+    "Current studio approval opened frozen offer and HELD reservation",
+    "Offer screen remained unconfirmed and displayed two-hour deadline"
+  ],
+  "amountMinor": 4800,
+  "rosterSize": 3,
+  "offerCount": 1,
+  "bookingState": "OPEN",
+  "reservationState": "HELD",
+  "paymentOperations": 0,
+  "paypalOrders": 0,
+  "authorizationWindowMinutes": 120,
+  "recoveryAllowanceMinutes": 30,
+  "approvedRequestRemovedFromQueue": true,
+  "reviewWidthsCss": [
+    374,
+    768,
+    1280
+  ],
+  "horizontalOverflow": false,
+  "remaining": [
+    "Actual participant PayPal checkout and financial-status UI",
+    "Independent operator/participant and nominee managed browser sessions",
+    "Merchant cancellation and planning-round reopening",
+    "Hosted judge access and deployment"
+  ],
+  "http_boundaries": {
+    "unauthenticated_queue_get": 401,
+    "unauthenticated_request_get": 401,
+    "unauthenticated_offer_get": 401,
+    "approval_without_origin": 403,
+    "approval_foreign_origin": 403
+  },
+  "reproducible_demo_setup": "Executed twice against local PostgreSQL without replacing existing operator/catalog"
+}

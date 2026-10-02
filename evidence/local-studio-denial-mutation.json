@@ -1,0 +1,8 @@
+{
+  "scope": "Isolated real local PostgreSQL test schemas; deliberate temporary removal of studio assignment guard, restored afterward. No actual merchant or browser identity proof.",
+  "mutation": "Remove merchantQueue operator-assignment rejection",
+  "test": "studio queue is owner-scoped, bounded, cursor-stable and excludes invalidated requests",
+  "caught": true,
+  "mutatedTestExitCode": 1,
+  "sourceRestored": true
+}

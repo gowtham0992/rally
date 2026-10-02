@@ -1,5 +1,6 @@
 import 'server-only';
 import {database} from '../db.ts';
+import {BookingService} from '../bookings/service.ts';
 import {ClarificationService} from '../intake/clarifications.ts';
 import {IntakeService} from '../intake/service.ts';
 import {catalogSchema} from '../planning/domain.ts';
@@ -12,3 +13,5 @@ export function applicationDatabase(){return globalDb.rallyPool??=database();}
 export function intake(){return new IntakeService(applicationDatabase());}
 
 export function clarifications(){return new ClarificationService(applicationDatabase());}
+
+export function bookings(){return new BookingService(applicationDatabase());}

@@ -86,25 +86,48 @@ export class BookingService {
    return {offerId,offerHash:hash,revision:g.revision+1};
   });}catch(error){if((error as {code?:string}).code==='23P01')throw new DomainError('RESERVATION_CONFLICT');throw error;}
  }
+ async merchantQueue(actor:IntakeActor,cursor:string|null=null){this.actor(actor);if(cursor)uuid.parse(cursor);
+  return transaction(this.pool,async c=>{
+   const studios=(await c.query('SELECT studio_id FROM merchant_studios WHERE owner_user_id=$1',[actor.userId])).rows;
+   if(!studios.length)throw new DomainError('NOT_FOUND',404);
+   let before:{created_at:Date;id:string}|undefined;
+   if(cursor){before=(await c.query('SELECT r.created_at,r.id FROM merchant_requests r JOIN merchant_studios s ON s.studio_id=r.studio_id WHERE r.id=$1 AND s.owner_user_id=$2',[cursor,actor.userId])).rows[0];if(!before)throw new DomainError('NOT_FOUND',404);}
+   const rows=(await c.query(`SELECT r.id,r.created_at,r.offering_id,r.slot_id,v.catalog,g.target_size
+    FROM merchant_requests r JOIN merchant_studios s ON s.studio_id=r.studio_id
+    JOIN merchant_catalog_versions v ON v.studio_id=r.studio_id AND v.version_id=r.catalog_version_id
+    JOIN planning_groups g ON g.id=r.group_id
+    WHERE s.owner_user_id=$1 AND r.state='PENDING' AND g.state='MERCHANT_REVIEW' AND g.revision=r.planning_revision
+    AND ($2::timestamptz IS NULL OR (r.created_at,r.id)<($2::timestamptz,$3::uuid))
+    ORDER BY r.created_at DESC,r.id DESC LIMIT 21`,[actor.userId,before?.created_at??null,before?.id??null])).rows;
+   const requests=rows.slice(0,20).map(r=>{const catalog=catalogSchema.parse(r.catalog),offering=catalog.offerings.find(o=>o.id===r.offering_id),slot=catalog.slots.find(s=>s.id===r.slot_id);
+    if(!offering||!slot)throw new DomainError('UNVERIFIED_CATALOG',422);
+    return {requestId:r.id as string,studioName:catalog.studioName,activity:offering.name,startAt:slot.startAt,timezone:catalog.timezone,amountMinor:offering.priceMinor,groupSize:r.target_size as number};});
+   return {requests,nextCursor:rows.length>20?requests.at(-1)!.requestId:null};
+  });
+ }
  async merchantRequest(actor:IntakeActor,requestId:string){this.actor(actor);uuid.parse(requestId);
   return transaction(this.pool,async c=>{
-   const request=(await c.query('SELECT r.*,s.owner_user_id FROM merchant_requests r JOIN merchant_studios s ON s.studio_id=r.studio_id WHERE r.id=$1',[requestId])).rows[0];
+   const request=(await c.query('SELECT r.*,s.owner_user_id,s.setup_minutes,s.cleanup_minutes FROM merchant_requests r JOIN merchant_studios s ON s.studio_id=r.studio_id WHERE r.id=$1',[requestId])).rows[0];
    if(!request||request.owner_user_id!==actor.userId)throw new DomainError('NOT_FOUND',404);
    const g=await this.group(c,request.group_id);
    if(request.state==='APPROVED')return {requestId,state:'APPROVED' as const,offerId:request.approved_offer_id};
    if(g.state!=='MERCHANT_REVIEW'||g.revision!==request.planning_revision)return {requestId,state:'STALE' as const};
    const plan=await confirmedPlan(c,g.id,g.catalog);if(plan.sourceHash!==request.source_hash)return {requestId,state:'STALE' as const};
    const candidate=this.selected(plan,request.offering_id,request.slot_id);
-   return {requestId,state:'PENDING' as const,revision:g.revision,candidate,roster:plan.rows.map(r=>({memberId:r.id,displayName:r.display_name})),
+   return {requestId,state:'PENDING' as const,revision:g.revision,candidate,
+    reservation:{occupiedStart:new Date(Date.parse(candidate.startAt)-request.setup_minutes*60000).toISOString(),occupiedEnd:new Date(Date.parse(candidate.endAt)+request.cleanup_minutes*60000).toISOString(),setupMinutes:request.setup_minutes as number,cleanupMinutes:request.cleanup_minutes as number},roster:plan.rows.map(r=>({memberId:r.id,displayName:r.display_name})),
     collectionArrangements:plan.preferences.filter(pref=>pref.collection==='NOMINEE_LATER').map(pref=>({ownerName:plan.rows.find(r=>r.id===pref.memberId)!.display_name,nomineeName:plan.rows.find(r=>r.id===pref.nomineeMemberId)!.display_name}))};
   });
  }
  async offer(actor:IntakeActor,offerId:string){this.actor(actor);uuid.parse(offerId);
-  const row=(await this.pool.query(`SELECT os.snapshot,o.offer_hash,o.state FROM offer_snapshots os JOIN offers o ON o.id=os.offer_id
+  const row=(await this.pool.query(`SELECT os.snapshot,o.offer_hash,o.state,
+    EXISTS(SELECT 1 FROM offer_members m WHERE m.offer_id=o.id AND m.user_id=$2) AS is_participant,
+    EXISTS(SELECT 1 FROM merchant_studios s WHERE s.studio_id=os.snapshot->'candidate'->>'studioId' AND s.owner_user_id=$2) AS is_merchant
+    FROM offer_snapshots os JOIN offers o ON o.id=os.offer_id
     WHERE os.offer_id=$1 AND (EXISTS(SELECT 1 FROM offer_members m WHERE m.offer_id=o.id AND m.user_id=$2)
     OR EXISTS(SELECT 1 FROM merchant_studios s WHERE s.studio_id=os.snapshot->'candidate'->>'studioId' AND s.owner_user_id=$2))`,[offerId,actor.userId])).rows[0];
   if(!row)throw new DomainError('NOT_FOUND',404);const snapshot=snapshotSchema.parse(row.snapshot);
   if(fingerprint(snapshot)!==row.offer_hash)throw new DomainError('OFFER_INTEGRITY_FAILURE',500);
-  return {offerHash:row.offer_hash,booking:row.state,snapshot};
+  return {offerHash:row.offer_hash,booking:row.state,snapshot,isParticipant:row.is_participant as boolean,isMerchant:row.is_merchant as boolean};
  }
 }

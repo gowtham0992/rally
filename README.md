@@ -265,3 +265,21 @@ The plan refreshes every ten seconds while viewing saved details, pauses during
 edits or mutations, and preserves drafts on failures. Owner browser actions were
 checked with managed authentication; collector actions used a synthetic trusted
 service actor. Multi-account managed-auth browser verification remains pending.
+
+### Studio review and issued offers
+
+The organizer can request a published candidate from the group card. The
+operator's `/studio` queue is owner-scoped and paginated. The exact review shows
+the fixed roster, price, collection agreements, cancellation terms and buffered
+calendar interval; four unchecked attestations gate the single approval. A
+changed preference invalidates an open review. The issued `/offers/:id` view
+shows the frozen terms and authoritative booking status, with no confirmation
+while payments are incomplete. The group card links to that offer and reads its
+status directly. [Studio setup](docs/studio-setup.md) is server-only and
+idempotent; it never assigns the first signed-in user automatically.
+
+The scoped [studio browser record](evidence/web/studio-flow.json) uses one managed
+account as organizer and local test operator, with seeded synthetic peers. It
+proves request, stale rejection, approval and one hold; it created zero payment
+operations. Individual checkout, merchant cancellation, independent-account
+browser verification and deployment remain open.
