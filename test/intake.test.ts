@@ -10,7 +10,7 @@ const pool=database(url.toString()),service=new IntakeService(pool);
 const catalog=JSON.parse(await readFile(new URL('../fixtures/studio.json',import.meta.url),'utf8'));
 // Two-person fixture is explicitly synthetic; production keeps merchant capacity.
 for(const o of catalog.offerings)o.minPeople=2;
-before(async()=>{await admin.query(`CREATE SCHEMA ${schema}`);await pool.query(await readFile(new URL('../db/004_private_intake.sql',import.meta.url),'utf8'));});
+before(async()=>{await admin.query(`CREATE SCHEMA ${schema}`);await pool.query(await readFile(new URL('../db/004_private_intake.sql',import.meta.url),'utf8'));await pool.query(await readFile(new URL('../db/005_collection_consent.sql',import.meta.url),'utf8'));});
 after(async()=>{await pool.end();await admin.query(`DROP SCHEMA ${schema} CASCADE`);await admin.end();});
 const actor=():IntakeActor=>({userId:randomUUID(),emailVerified:true});
 const pref={budgetMinor:5000,availableSlotIds:['thu-evening'],latestFinishAt:null,technique:'ANY',outcome:'FORM_OWN_CUP',collection:'SELF_LATER',nomineeMemberId:null,extraRequirement:'NONE',unresolvedKeys:[]};
@@ -67,9 +67,42 @@ test('private intake schema can migrate down and back up in an isolated empty sc
  await admin.query(`CREATE SCHEMA ${temporary}`);
  const migrationUrl=new URL(process.env.TEST_DATABASE_URL??localDatabaseUrl);migrationUrl.searchParams.set('options',`-c search_path=${temporary},public`);
  const migrated=database(migrationUrl.toString());
- try{await migrated.query(await readFile(new URL('../db/004_private_intake.sql',import.meta.url),'utf8'));
- await migrated.query(await readFile(new URL('../db/004_private_intake.down.sql',import.meta.url),'utf8'));
- await migrated.query(await readFile(new URL('../db/004_private_intake.sql',import.meta.url),'utf8'));
+ try{for(const file of ['004_private_intake.sql','005_collection_consent.sql','005_collection_consent.down.sql','004_private_intake.down.sql','004_private_intake.sql','005_collection_consent.sql'])await migrated.query(await readFile(new URL('../db/'+file,import.meta.url),'utf8'));
  assert.equal((await migrated.query('SELECT count(*) FROM preference_revisions')).rows[0].count,'0');
  }finally{await migrated.end();await admin.query(`DROP SCHEMA ${temporary} CASCADE`);}
+});
+async function nomination(){const x=await ready();const saved=await service.save(x.a,{commandId:randomUUID(),groupId:x.g.groupId,expectedRevision:x.closed.revision,expectedPreferenceId:x.first.preferenceId,preference:{...pref,collection:'NOMINEE_LATER',nomineeMemberId:x.joined.memberId},optionalText:'Private travel story'});
+ const command=(revision:number,action:string)=>({commandId:randomUUID(),groupId:x.g.groupId,expectedRevision:revision,preferenceId:saved.preferenceId,action,disclosureAgreed:true});return {...x,saved,command};}
+test('nominated collection requires current owner disclosure and separate nominee agreement',async()=>{
+ const x=await nomination();assert.equal((await service.plan(x.a,x.g.groupId)).result.state,'NEEDS_CLARIFICATION');
+ assert.deepEqual(await service.collectionRequests(x.b,x.g.groupId),[]);
+ await assert.rejects(service.collectionConsent(x.b,x.command(x.saved.revision,'NOMINEE_AGREE')),/OWNER_CONSENT_REQUIRED/);
+ await assert.rejects(service.collectionConsent(x.b,x.command(x.saved.revision,'OWNER_AGREE')),/NOT_FOUND/);
+ await assert.rejects(service.collectionConsent(x.a,{...x.command(x.saved.revision,'OWNER_AGREE'),disclosureAgreed:false}),/DISCLOSURE_REQUIRED/);
+ const ownerCommand=x.command(x.saved.revision,'OWNER_AGREE'),owner=await service.collectionConsent(x.a,ownerCommand);
+ assert.deepEqual(await new IntakeService(pool).collectionConsent(x.a,ownerCommand),owner);
+ const requests=await service.collectionRequests(x.b,x.g.groupId);assert.equal(requests[0].role,'NOMINEE');assert.equal(requests[0].ownerName,'Organizer');assert.ok(!JSON.stringify(requests).includes('budget'));assert.ok(!JSON.stringify(requests).includes('Private travel'));
+ assert.equal((await service.plan(x.a,x.g.groupId)).result.state,'NEEDS_CLARIFICATION');
+ await assert.rejects(service.collectionConsent(x.a,x.command(owner.revision,'NOMINEE_AGREE')),/NOT_FOUND/);
+ await service.collectionConsent(x.b,x.command(owner.revision,'NOMINEE_AGREE'));
+ assert.equal((await service.plan(x.a,x.g.groupId)).result.state,'CANDIDATE_READY');
+});
+test('either collection party may revoke; stale consent cannot be revived or satisfy a changed preference',async()=>{
+ const x=await nomination(),a=await service.collectionConsent(x.a,x.command(x.saved.revision,'OWNER_AGREE')),b=await service.collectionConsent(x.b,x.command(a.revision,'NOMINEE_AGREE'));
+ await service.plan(x.a,x.g.groupId);const revoked=await service.collectionConsent(x.b,x.command(b.revision,'REVOKE'));
+ assert.equal((await pool.query('SELECT candidate FROM planning_groups WHERE id=$1',[x.g.groupId])).rows[0].candidate,null);
+ assert.equal((await service.plan(x.a,x.g.groupId)).result.state,'NEEDS_CLARIFICATION');
+ await assert.rejects(service.collectionConsent(x.a,x.command(revoked.revision,'OWNER_AGREE')),/CONSENT_REVOKED/);
+ const saved=await service.save(x.a,{commandId:randomUUID(),groupId:x.g.groupId,expectedRevision:revoked.revision,expectedPreferenceId:x.saved.preferenceId,preference:{...pref,collection:'NOMINEE_LATER',nomineeMemberId:x.joined.memberId},optionalText:null});
+ assert.equal((await service.plan(x.a,x.g.groupId)).result.state,'NEEDS_CLARIFICATION');assert.deepEqual(await service.collectionRequests(x.b,x.g.groupId),[]);
+ await assert.rejects(service.collectionConsent(x.a,x.command(saved.revision,'OWNER_AGREE')),/STALE_PREFERENCE/);
+ assert.equal(Number((await pool.query('SELECT count(*) FROM collection_consent_events WHERE preference_id=$1',[x.saved.preferenceId])).rows[0].count),3);
+});
+test('collection commands reject outsiders and races; frozen offers require cancellation review',async()=>{
+ const x=await nomination();await assert.rejects(service.collectionConsent(actor(),x.command(x.saved.revision,'OWNER_AGREE')),/NOT_FOUND/);
+ const owner=await service.collectionConsent(x.a,x.command(x.saved.revision,'OWNER_AGREE'));
+ const competing=await Promise.allSettled([service.collectionConsent(x.b,x.command(owner.revision,'NOMINEE_AGREE')),service.collectionConsent(x.a,x.command(owner.revision,'REVOKE'))]);
+ assert.equal(competing.filter(r=>r.status==='fulfilled').length,1);assert.ok(competing.some(r=>r.status==='rejected'&&r.reason.code==='STALE_REVISION'));
+ const roster=await service.roster(x.a,x.g.groupId);await pool.query("UPDATE planning_groups SET state='OFFER_ISSUED' WHERE id=$1",[x.g.groupId]);
+ await assert.rejects(service.collectionConsent(x.a,x.command(roster.revision,'REVOKE')),/COLLECTION_REVIEW_REQUIRED/);
 });

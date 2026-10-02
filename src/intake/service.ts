@@ -15,6 +15,7 @@ const joinSchema=z.strictObject({commandId:uuid,invite:z.string().regex(/^[a-f0-
 const saveSchema=z.strictObject({commandId:uuid,groupId:uuid,expectedRevision:z.number().int().nonnegative(),expectedPreferenceId:uuid.nullable(),
  preference:preferenceSchema.omit({memberId:true,revisionId:true}),optionalText:z.string().max(2000).nullable()});
 const closeSchema=z.strictObject({commandId:uuid,groupId:uuid,expectedRevision:z.number().int().nonnegative(),memberIds:z.array(uuid).min(1).max(8)});
+const consentCommandSchema=z.strictObject({commandId:uuid,groupId:uuid,expectedRevision:z.number().int().nonnegative(),preferenceId:uuid,action:z.enum(['OWNER_AGREE','NOMINEE_AGREE','REVOKE']),disclosureAgreed:z.boolean()});
 const digest=(s:string)=>createHash('sha256').update(s).digest('hex');
 export class IntakeService {
  constructor(private pool:pg.Pool){}
@@ -83,11 +84,59 @@ export class IntakeService {
   await c.query('UPDATE planning_members SET admitted=(id=ANY($2::uuid[])) WHERE group_id=$1',[g.id,p.memberIds]);
   await c.query("UPDATE planning_groups SET state='CLOSED' WHERE id=$1",[g.id]);return {revision:await this.changed(c,g.id,'ROSTER_CLOSED')};
  });}
+ async collectionConsent(actor:IntakeActor,value:unknown){const p=consentCommandSchema.parse(value);return this.command(actor,p.commandId,{kind:'CONSENT',...p},async c=>{
+  const g=await this.group(c,p.groupId);
+  const caller=(await c.query('SELECT id,admitted FROM planning_members WHERE group_id=$1 AND user_id=$2',[g.id,actor.userId])).rows[0];
+  if(!caller?.admitted)throw new IntakeError('NOT_FOUND');
+  const owner=(await c.query('SELECT m.id,p.confirmed FROM planning_members m JOIN preference_revisions p ON p.id=m.current_preference_id WHERE m.group_id=$1 AND m.admitted AND p.id=$2',[g.id,p.preferenceId])).rows[0];
+  if(!owner)throw new IntakeError('STALE_PREFERENCE');
+  const pref=preferenceSchema.parse(owner.confirmed);
+  if(pref.collection!=='NOMINEE_LATER'||!pref.nomineeMemberId)throw new IntakeError('NO_COLLECTION_ARRANGEMENT');
+  const nominee=(await c.query('SELECT id FROM planning_members WHERE group_id=$1 AND id=$2 AND admitted',[g.id,pref.nomineeMemberId])).rows[0];
+  if(!nominee||![owner.id,nominee.id].includes(caller.id))throw new IntakeError('NOT_FOUND');
+  if(g.state!=='CLOSED')throw new IntakeError('COLLECTION_REVIEW_REQUIRED');
+  if(g.revision!==p.expectedRevision)throw new IntakeError('STALE_REVISION');
+  await c.query('INSERT INTO collection_consents(preference_id,owner_member_id,nominee_member_id) VALUES($1,$2,$3) ON CONFLICT DO NOTHING',[p.preferenceId,owner.id,nominee.id]);
+  const consent=(await c.query('SELECT * FROM collection_consents WHERE preference_id=$1 FOR UPDATE',[p.preferenceId])).rows[0];
+  if(p.action==='REVOKE')await c.query('UPDATE collection_consents SET revoked=true WHERE preference_id=$1',[p.preferenceId]);
+  else {
+   if(consent.revoked)throw new IntakeError('CONSENT_REVOKED');
+   if(!p.disclosureAgreed)throw new IntakeError('DISCLOSURE_REQUIRED');
+   if(p.action==='OWNER_AGREE'){
+    if(caller.id!==owner.id)throw new IntakeError('NOT_FOUND');
+    await c.query('UPDATE collection_consents SET owner_agreed=true,disclosure_agreed=true WHERE preference_id=$1',[p.preferenceId]);
+   }else{
+    if(caller.id!==nominee.id)throw new IntakeError('NOT_FOUND');
+    if(!consent.owner_agreed||!consent.disclosure_agreed)throw new IntakeError('OWNER_CONSENT_REQUIRED');
+    await c.query('UPDATE collection_consents SET nominee_agreed=true WHERE preference_id=$1',[p.preferenceId]);
+   }
+  }
+  await c.query('INSERT INTO collection_consent_events(preference_id,actor_member_id,action) VALUES($1,$2,$3)',[p.preferenceId,caller.id,p.action]);
+  return {revision:await this.changed(c,g.id,'COLLECTION_CONSENT_CHANGED')};
+ });}
+ async collectionRequests(actor:IntakeActor,groupId:string){this.actor(actor);uuid.parse(groupId);
+  // Only an explicitly consenting owner can disclose a collection request to its
+  // nominee. Names are never accompanied by private text, ceilings or constraints.
+  const rows=(await this.pool.query(`SELECT p.id AS "preferenceId",o.display_name AS "ownerName",
+    n.display_name AS "nomineeName",cs.owner_agreed AS "ownerAgreed",cs.nominee_agreed AS "nomineeAgreed",cs.revoked,
+    CASE WHEN o.user_id=$2 THEN 'OWNER' ELSE 'NOMINEE' END AS role
+    FROM collection_consents cs JOIN preference_revisions p ON p.id=cs.preference_id
+    JOIN planning_members o ON o.id=cs.owner_member_id AND o.current_preference_id=p.id
+    JOIN planning_members n ON n.id=cs.nominee_member_id AND n.group_id=o.group_id
+    WHERE o.group_id=$1 AND o.admitted AND n.admitted
+    AND (o.user_id=$2 OR (n.user_id=$2 AND cs.owner_agreed AND cs.disclosure_agreed)) ORDER BY p.id`,[groupId,actor.userId])).rows;
+  return rows;
+ }
  async plan(actor:IntakeActor,groupId:string){this.actor(actor);uuid.parse(groupId);return transaction(this.pool,async c=>{
   const g=await this.group(c,groupId);const member=(await c.query('SELECT admitted FROM planning_members WHERE group_id=$1 AND user_id=$2',[groupId,actor.userId])).rows[0];
   if(!member?.admitted)throw new IntakeError('NOT_FOUND');if(g.state!=='CLOSED')throw new IntakeError('PLANNING_LOCKED');
   const rows=(await c.query('SELECT p.confirmed FROM planning_members m JOIN preference_revisions p ON p.id=m.current_preference_id WHERE m.group_id=$1 AND m.admitted ORDER BY m.id',[groupId])).rows;
-  const result=planGroup(g.catalog,rows.map(r=>r.confirmed));
+  const consentRows=(await c.query(`SELECT cs.* FROM collection_consents cs
+    JOIN planning_members m ON m.id=cs.owner_member_id AND m.current_preference_id=cs.preference_id
+    WHERE m.group_id=$1 AND m.admitted`,[groupId])).rows;
+  const consents=consentRows.map(r=>({ownerMemberId:r.owner_member_id,nomineeMemberId:r.nominee_member_id,preferenceRevisionId:r.preference_id,
+    ownerAgreed:r.owner_agreed,nomineeAgreed:r.nominee_agreed,disclosureAgreed:r.disclosure_agreed,revoked:r.revoked}));
+  const result=planGroup(g.catalog,rows.map(r=>r.confirmed),consents);
   await c.query('UPDATE planning_groups SET candidate=$2 WHERE id=$1',[groupId,JSON.stringify(result)]);
   return {revision:g.revision,result};
  });}

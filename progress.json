@@ -8,7 +8,8 @@
     "Sandbox CLI for three-buyer approval, partial failure, deliberately dropped response and sanitized evidence export",
     "Shared deterministic studio-candidate planner with fixed published prices, hard-constraint filtering, current collection-consent checks and safe shared projection",
     "Closed model-interpretation validation with exact text evidence, revision binding and public catalog boundaries; no model calls executed",
-    "Persistent private intake service: verified-actor boundary, immutable preferences, idempotent commands, organizer batch roster closure and safe candidate caching; managed authentication routes remain unimplemented"
+    "Persistent private intake service: verified-actor boundary, immutable preferences, idempotent commands, organizer batch roster closure and safe candidate caching; managed authentication routes remain unimplemented",
+    "Persistent two-party collection consent with explicit disclosure, actor-specific approval, revocation, revision invalidation and append-only consent events; issued-offer cancellation wiring remains required"
   ],
   "evidence": {
     "scope": "Real PostgreSQL with controlled simulated provider; adapter transport tests use fixture HTTP responses.",
@@ -27,15 +28,15 @@
     "actual_paypal_sandbox": "not_executed",
     "credentials_doctor": "missing PayPal client ID, client secret, merchant ID, and three sandbox buyer IDs",
     "tests": {
-      "passed": 40,
+      "passed": 43,
       "payment_and_adapter": 24,
       "planning_and_model_boundary": 9,
-      "persistent_intake": 7
+      "persistent_intake": 10
     },
     "model_api_calls": 0,
     "ai_quality_and_24_case_evaluation": "not_executed",
     "intake_scope": "Real PostgreSQL service tests with trusted test actors; not managed email-auth or browser end-to-end proof.",
-    "latest_full_test_run": "40 passed; TypeScript passed. Reservation race asserts one persisted winner and accepts exclusion rejection or transaction deadlock."
+    "latest_full_test_run": "43 passed; TypeScript passed. Collection consent uses actual PostgreSQL with trusted test actors; no browser or managed-auth proof."
   },
   "external_dependencies": [
     {

@@ -91,13 +91,26 @@ web application. Managed Auth verification must construct `IntakeActor` on the
 server; request bodies must never supply it. Published catalog selection must
 also come from trusted server configuration, rather than participant-supplied
 catalog JSON. The tables have RLS enabled with no browser policies, for
-server-only access. Collection consent persistence, clarification commands,
+server-only access. Clarification commands,
 private-text retention scheduling and merchant offer issuance remain separate
 required work. A nomination without consent remains unresolved.
 
-The seven intake tests exercise cross-user denial, safe organizer projections,
+The ten intake tests exercise cross-user denial, safe organizer projections,
 concurrent edits, retry after restart, exact roster closure, immutable history,
 candidate invalidation, infeasibility and isolated migration reversal. The
 reservation concurrency test verifies exactly one persisted reservation; its
 loser can receive an exclusion violation or a transaction deadlock. Production
 merchant approval will need to report or retry these conflicts safely.
+
+Collection consent is bound to the current preference revision and admitted
+roster. The owner explicitly permits name disclosure and proposes the nominated
+collection; the nominee separately accepts the undertaking and disclosure. Only
+these two parties can mutate it. Either can revoke it; a revoked revision cannot
+be revived. A new preference revision requires new agreements. Requests disclose
+names and consent status only, and appear to the nominee after owner disclosure
+consent. The deterministic planner consumes these persisted consent records.
+Consent changes invalidate cached candidates and retain append-only events.
+
+Issued offers currently return `COLLECTION_REVIEW_REQUIRED` for consent changes.
+The cancellation/financial cleanup workflow must be connected before this path
+can be exposed as a working product. No issued offer is silently revised.
