@@ -71,6 +71,18 @@ export class IntakeService {
   const m=(await this.pool.query('SELECT p.confirmed,p.optional_text FROM planning_members m LEFT JOIN preference_revisions p ON p.id=m.current_preference_id WHERE m.group_id=$1 AND m.user_id=$2',[groupId,actor.userId])).rows[0];
   if(!m)throw new IntakeError('NOT_FOUND');return {preference:m.confirmed,optionalText:m.optional_text};
  }
+ async participantContext(actor:IntakeActor,groupId:string){this.actor(actor);uuid.parse(groupId);return transaction(this.pool,async c=>{
+  const g=await this.group(c,groupId);
+  const own=(await c.query('SELECT m.id,m.display_name,m.admitted,p.confirmed,p.optional_text FROM planning_members m LEFT JOIN preference_revisions p ON p.id=m.current_preference_id WHERE m.group_id=$1 AND m.user_id=$2',[groupId,actor.userId])).rows[0];
+  if(!own||(g.state!=='COLLECTING'&&!own.admitted))throw new IntakeError('NOT_FOUND');
+  // Names and readiness are public within the group; only this authenticated
+  // participant's confirmed fields/text enter this private response.
+  const members=(await c.query('SELECT id,display_name AS "displayName",admitted,current_preference_id IS NOT NULL AS ready FROM planning_members WHERE group_id=$1 AND ($2 OR admitted) ORDER BY id',[groupId,g.state==='COLLECTING'])).rows;
+  return {groupId,revision:g.revision,state:g.state,targetSize:g.target_size,isOrganizer:g.organizer_id===actor.userId,
+   memberId:own.id,displayName:own.display_name,preference:own.confirmed?preferenceSchema.parse(own.confirmed):null,optionalText:own.optional_text??null,
+   catalog:catalogSchema.parse(g.catalog),members,candidate:g.candidate,
+   organizerInvite:g.organizer_id===actor.userId?(await c.query("SELECT result->>'invite' AS invite FROM intake_commands WHERE actor_id=$1 AND result->>'groupId'=$2 AND result ? 'invite' LIMIT 1",[actor.userId,groupId])).rows[0]?.invite??null:null};
+ });}
  async roster(actor:IntakeActor,groupId:string){this.actor(actor);uuid.parse(groupId);
   const g=(await this.pool.query('SELECT organizer_id,revision,state,target_size FROM planning_groups WHERE id=$1',[groupId])).rows[0];if(!g||g.organizer_id!==actor.userId)throw new IntakeError('NOT_FOUND');
   // This is the ONLY organizer intake projection; budgets and text never enter it.

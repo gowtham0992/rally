@@ -5,3 +5,4 @@ evidence/private/
 .next/
 coverage/
 *.tsbuildinfo
+next-env.d.ts

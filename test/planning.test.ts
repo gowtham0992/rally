@@ -64,6 +64,7 @@ test('interpretations need exact evidence and cannot invent capability or paymen
   assert.deepEqual(validateInterpretation(valid,{revisionId,text,catalog}),valid);
   assert.throws(()=>validateInterpretation({...valid,preferenceRevisionId:randomUUID()},{revisionId,text,catalog}));
   assert.throws(()=>validateInterpretation({...valid,interpretations:[{...valid.interpretations[0],sourceSpan:'invented text'}]},{revisionId,text,catalog}));
+  assert.throws(()=>validateInterpretation({...valid,interpretations:[{...valid.interpretations[0],sourceEnd:text.length+1}]},{revisionId,text,catalog}));
   assert.throws(()=>validateInterpretation({...valid,question:{...valid.question,relevantOfferingIds:['invented']}},{revisionId,text,catalog}));
   assert.throws(()=>validateInterpretation({...valid,capturePayment:true},{revisionId,text,catalog}));
 });

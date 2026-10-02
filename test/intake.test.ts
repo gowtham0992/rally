@@ -106,3 +106,20 @@ test('collection commands reject outsiders and races; frozen offers require canc
  const roster=await service.roster(x.a,x.g.groupId);await pool.query("UPDATE planning_groups SET state='OFFER_ISSUED' WHERE id=$1",[x.g.groupId]);
  await assert.rejects(service.collectionConsent(x.a,x.command(roster.revision,'REVOKE')),/COLLECTION_REVIEW_REQUIRED/);
 });
+test('browser participant context combines consistent revision with only caller private inputs',async()=>{
+ const x=await ready();const a=await service.participantContext(x.a,x.g.groupId),b=await service.participantContext(x.b,x.g.groupId);
+ assert.equal(a.optionalText,'Private sentence');assert.equal(b.optionalText,null);assert.equal(b.isOrganizer,false);assert.equal(a.members.length,2);
+ assert.equal(a.organizerInvite,x.g.invite);assert.equal(b.organizerInvite,null);assert.ok(!JSON.stringify(b).includes(x.g.invite));
+ assert.equal(a.revision,x.closed.revision);assert.equal(a.preference?.revisionId,x.first.preferenceId);
+ assert.ok(!JSON.stringify(b).includes('Private sentence'));assert.ok(!JSON.stringify(b.members).includes('budgetMinor'));
+ await assert.rejects(service.participantContext(actor(),x.g.groupId),/NOT_FOUND/);
+ await assert.rejects(service.participantContext({...x.a,emailVerified:false},x.g.groupId),/VERIFIED_IDENTITY_REQUIRED/);
+});
+test('closed browser context shows only the admitted roster and rejects an excluded joiner',async()=>{
+ const x=await setup(),excluded=actor();const joined=await service.join(excluded,{commandId:randomUUID(),invite:x.g.invite,displayName:'Excluded joiner'});
+ const a=await service.save(x.a,{commandId:randomUUID(),groupId:x.g.groupId,expectedRevision:joined.revision,expectedPreferenceId:null,preference:pref,optionalText:null});
+ const b=await service.save(x.b,{commandId:randomUUID(),groupId:x.g.groupId,expectedRevision:a.revision,expectedPreferenceId:null,preference:pref,optionalText:null});
+ await service.closeRoster(x.a,{commandId:randomUUID(),groupId:x.g.groupId,expectedRevision:b.revision,memberIds:[x.g.memberId,x.joined.memberId]});
+ const context=await service.participantContext(x.a,x.g.groupId);assert.equal(context.members.length,2);assert.ok(context.members.every(m=>m.admitted));assert.ok(!JSON.stringify(context.members).includes('Excluded joiner'));
+ await assert.rejects(service.participantContext(excluded,x.g.groupId),/NOT_FOUND/);
+});

@@ -1,0 +1,83 @@
+{
+  "scope": "First running web application slice; full product and submission remain in progress",
+  "dependencies": {
+    "@supabase/ssr": "0.12.7",
+    "@supabase/supabase-js": "2.117.2",
+    "next": "16.3.8",
+    "pg": "8.23.1",
+    "react": "19.3.0",
+    "react-dom": "19.3.0",
+    "server-only": "0.0.1",
+    "zod": "4.6.5"
+  },
+  "tests": {
+    "passed": 59,
+    "build": "passed",
+    "typescript": "passed"
+  },
+  "responsive": {
+    "effective_css_widths": [
+      374,
+      768,
+      1280
+    ],
+    "horizontal_overflow_observed": false,
+    "scope": "Latest home at 374/768/1280 CSS pixels; authenticated intake inspected at all three widths (one-member demo group). Prior login responsive checks retained."
+  },
+  "design_refinement": [
+    "Reduced mobile heading to keep the phrase on two lines",
+    "Darkened clay text accent for AA contrast",
+    "Removed development indicator from product screenshots",
+    "Replaced abstract marketing and repeated synthetic-fixture paragraphs with friend-oriented copy",
+    "Actual member initials, names, readiness and progress replace numbered roster dots",
+    "Saved versus unsaved status is explicit; real stale-save conflict preserves draft until explicit discard"
+  ],
+  "auth": {
+    "project": "Rally",
+    "healthy": true,
+    "public_key_auth_settings_http": 200,
+    "email_verification_enabled": true,
+    "callback": "http://localhost:3000/auth/callback",
+    "wildcard_redirect_added": false,
+    "user_reported_signed_in": true,
+    "authenticated_group_create_save_refresh": "observed"
+  },
+  "limitations": [
+    "Application database is still local PostgreSQL",
+    "Multi-member managed-auth browser test not executed",
+    "AI model not called",
+    "Merchant/checkout/consent browser screens incomplete",
+    "Application not deployed",
+    "No measured usability or conversion claim",
+    "No real merchant inventory validation"
+  ],
+  "screenshots": [
+    "home-mobile.jpg",
+    "home-tablet.jpg",
+    "home-desktop.jpg",
+    "login-mobile.jpg",
+    "login-tablet.jpg",
+    "intake-mobile.jpg",
+    "friends-home-mobile.jpg",
+    "friends-home-desktop.jpg",
+    "friends-intake-mobile.jpg",
+    "friends-intake-desktop.jpg",
+    "friends-save-conflict.jpg"
+  ],
+  "save_conflict": {
+    "scope": "Two browser views using the same actual verified session and agent-entered demo preferences",
+    "draft_budget": "53",
+    "other_view_saved_budget": "49",
+    "stale_draft_retained": true,
+    "explicit_reload_showed_saved_budget": "49",
+    "baseline_restored_to": "50",
+    "no_real_budget_claim": true
+  },
+  "readiness_endpoint": {
+    "path": "/api/health",
+    "observed_response": {
+      "ready": true
+    },
+    "scope": "Local development application with local PostgreSQL; not a hosted deployment."
+  }
+}

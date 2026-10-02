@@ -1,0 +1,51 @@
+{
+  "scope": "One actual Astropods model call using synthetic wording and catalog, not a participant\u2019s private input. This is connection proof, not the required quality evaluation.",
+  "model": "claude-sonnet-4-6",
+  "result": {
+    "status": "PROPOSAL",
+    "proposal": {
+      "schemaVersion": 1,
+      "preferenceRevisionId": "4649b3d9-bcdb-470c-806e-921f0ca6333e",
+      "interpretations": [
+        {
+          "requirementKey": "TRAVEL",
+          "proposedValue": "CANNOT_ATTEND",
+          "sourceStart": 0,
+          "sourceEnd": 15,
+          "sourceSpan": "I leave Friday.",
+          "certainty": "ambiguous"
+        }
+      ],
+      "question": {
+        "templateId": "TRAVEL_MEANING",
+        "requirementKey": "TRAVEL",
+        "relevantOfferingIds": [
+          "wheel",
+          "handbuild",
+          "decorate"
+        ],
+        "options": [
+          {
+            "id": "attendance",
+            "value": "CANNOT_ATTEND"
+          },
+          {
+            "id": "collection",
+            "value": "COLLECTION_ONLY"
+          }
+        ]
+      }
+    }
+  },
+  "observations": {
+    "actual_calls_this_slice": 4,
+    "early_checks": "Three replies routed to review before transport-format and exact-quote grounding refinements. No preference or payment state changed.",
+    "final_check": "Validated proposal with TRAVEL_MEANING question",
+    "account_credit_remaining_usd": 9.98,
+    "account_usage_usd": 0.02,
+    "period_spend_limit_usd": 10,
+    "no_payment_method_on_file": true,
+    "participant_ui_integrated": false,
+    "quality_evaluation_complete": false
+  }
+}

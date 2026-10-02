@@ -1,0 +1,22 @@
+{
+  "scope": "Actual local application database following user-completed Supabase email login and browser form submission. Preferences are an agent-entered synthetic fixture, not the user’s real budget.",
+  "groupId": "331a02d5-b8ae-47b6-ac4e-5787de108d95",
+  "state": "COLLECTING",
+  "targetSize": 6,
+  "groupRevision": 2,
+  "preferenceRevisions": 2,
+  "fixtureMatched": true,
+  "confirmedPreference": {
+    "outcome": "FORM_OWN_CUP",
+    "technique": "ANY",
+    "collection": "SELF_LATER",
+    "budgetMinor": 5000,
+    "latestFinishAt": null,
+    "unresolvedKeys": [],
+    "nomineeMemberId": null,
+    "availableSlotIds": [
+      "thu-evening"
+    ],
+    "extraRequirement": "NONE"
+  }
+}

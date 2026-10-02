@@ -8,9 +8,12 @@
     "Sandbox CLI for three-buyer approval, partial failure, deliberately dropped response and sanitized evidence export",
     "Shared deterministic studio-candidate planner with fixed published prices, hard-constraint filtering, current collection-consent checks and safe shared projection",
     "Closed model-interpretation validation with exact text evidence, revision binding and public catalog boundaries; no model calls executed",
-    "Persistent private intake service: verified-actor boundary, immutable preferences, idempotent commands, organizer batch roster closure and safe candidate caching; managed authentication routes remain unimplemented",
+    "Persistent private intake service: verified-actor boundary, immutable preferences, idempotent commands, organizer batch roster closure and safe candidate caching; managed authentication now connected through verified Supabase sessions",
     "Persistent two-party collection consent with explicit disclosure, actor-specific approval, revocation, revision invalidation and append-only consent events; issued-offer cancellation wiring remains required",
-    "Merchant approval service connects validated fixed-roster planning to immutable offer snapshots, atomic buffered reservation, two-hour authorization window and existing settlement worker"
+    "Merchant approval service connects validated fixed-roster planning to immutable offer snapshots, atomic buffered reservation, two-hour authorization window and existing settlement worker",
+    "Next.js application with Supabase managed email login and server-validated identity; actual authenticated synthetic group creation and private requirements save persisted across browser refresh. Mobile home/login/intake screens, roster and structured candidate routes implemented; remaining journey gates stay open.",
+    "Friend-oriented product UI: actual people/readiness, private details, natural copy and restrained demo label. Mobile/tablet/desktop reviewed; stale-save draft retention observed through two browser views.",
+    "Astropods authenticated, $10 period spend limit saved, server-side bounded model adapter and actual validated synthetic clarification call; Render Blueprint and shallow database readiness route prepared. Hosting remains undeployed."
   ],
   "evidence": {
     "scope": "Local service tests use real PostgreSQL and a simulated provider; separate reviewed records prove three actual PayPal sandbox scenarios.",
@@ -37,17 +40,46 @@
     },
     "credentials_doctor": "All sandbox app, merchant and three distinct personal buyer identifiers configured privately; no credentials committed.",
     "tests": {
-      "passed": 52,
+      "passed": 59,
       "payment_and_adapter": 24,
       "planning_and_model_boundary": 9,
-      "persistent_intake": 10,
-      "merchant_booking_loop": 9
+      "persistent_intake": 12,
+      "merchant_booking_loop": 9,
+      "web_request_boundaries": 2,
+      "bounded_ai_gateway": 3
     },
-    "model_api_calls": 0,
+    "model_api_calls": 4,
     "ai_quality_and_24_case_evaluation": "not_executed",
     "intake_scope": "Real PostgreSQL service tests with trusted test actors; not managed email-auth or browser end-to-end proof.",
-    "latest_full_test_run": "52 passed; TypeScript passed. Six-person intake to approval/settlement plus compensation exercised with real PostgreSQL and simulated payment provider.",
-    "sandbox_oauth": "Sandbox HTTP 200 access token; supplied Client ID matched Rally app on the selected Business seller."
+    "latest_full_test_run": "59 passed; production build and TypeScript passed. Actual Astropods connection and local readiness additionally observed; hosted deployment and participant AI UI remain pending.",
+    "sandbox_oauth": "Sandbox HTTP 200 access token; supplied Client ID matched Rally app on the selected Business seller.",
+    "managed_auth_browser": {
+      "scope": "Existing healthy Rally Supabase Auth project; local Next.js app and local PostgreSQL; synthetic studio/name/preferences. User completed email login, agent used resulting verified session.",
+      "observed": [
+        "Authenticated group creation",
+        "Private structured requirement save",
+        "Confirmed input persisted after refresh",
+        "Unsigned/forged-identity and cross-site HTTP requests rejected",
+        "No private credential matches found in the browser bundle",
+        "Conflicting update preserved unsaved draft until explicit reload",
+        "Friend-oriented home at 374/768/1280 CSS pixels without horizontal overflow"
+      ],
+      "not_yet_proven": [
+        "Multi-account managed-auth intake and join",
+        "Collection consent/merchant/PayPal product browser flow",
+        "Hosted application database and deployed judge login"
+      ],
+      "screenshots": "evidence/web/"
+    },
+    "actual_ai_connection": {
+      "provider": "Astropods AI Gateway",
+      "model": "claude-sonnet-4-6",
+      "file": "evidence/ai/connection.json",
+      "validated_proposal": true,
+      "remaining_credit_usd": 9.98,
+      "quality_evaluation": "not_executed",
+      "participant_ui": "not_integrated"
+    }
   },
   "external_dependencies": [
     {
@@ -58,7 +90,7 @@
     },
     {
       "name": "Managed authentication/PostgreSQL hosting configuration",
-      "state": "not_yet_configured"
+      "state": "Supabase Auth connected and login observed; hosted PostgreSQL application connection remains unconfigured"
     },
     {
       "name": "No-charge model endpoint or approved credits",
@@ -84,7 +116,7 @@
     "Polished public demo video under three minutes",
     "Complete Devpost draft materials; human approval before entry submission"
   ],
-  "next_independent_slice": "Next.js mobile journey and managed identity binding, followed by bounded AI clarification/evaluation; connect merchant cancellation and public sandbox demo.",
+  "next_independent_slice": "Complete collection-consent and merchant/checkout UI integration, grounded AI clarification and evaluation; provision restricted hosted database connection and judge access.",
   "release_restrictions": [
     "Core PayPal sandbox scenarios verified; full authenticated application and remaining provider recovery gates are incomplete",
     "No live customer payments",

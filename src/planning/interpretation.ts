@@ -19,7 +19,7 @@ export function validateInterpretation(output:unknown,input:{revisionId:string;t
   const result=interpretationSchema.parse(output),catalog=catalogSchema.parse(input.catalog);
   if(result.preferenceRevisionId!==input.revisionId) throw new Error('Stale interpretation');
   for(const item of result.interpretations) {
-    if(!allowed[item.requirementKey].includes(item.proposedValue)||input.text.slice(item.sourceStart,item.sourceEnd)!==item.sourceSpan) throw new Error('Unsupported interpretation evidence');
+    if(item.sourceStart>=item.sourceEnd||item.sourceEnd>input.text.length||!allowed[item.requirementKey].includes(item.proposedValue)||input.text.slice(item.sourceStart,item.sourceEnd)!==item.sourceSpan) throw new Error('Unsupported interpretation evidence');
   }
   if(result.question) {
     const q=result.question;

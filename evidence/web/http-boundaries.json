@@ -1,0 +1,33 @@
+{
+  "scope": "Actual local HTTP; unsigned requests only, not delivered-email session proof",
+  "checks": [
+    {
+      "method": "GET",
+      "path": "/api/auth/session",
+      "status": 200,
+      "error": null,
+      "cacheControl": "private, no-store"
+    },
+    {
+      "method": "POST",
+      "path": "/api/groups",
+      "status": 401,
+      "error": "SIGN_IN_REQUIRED",
+      "cacheControl": "no-store"
+    },
+    {
+      "method": "POST",
+      "path": "/api/groups",
+      "status": 403,
+      "error": "REQUEST_NOT_ALLOWED",
+      "cacheControl": "no-store"
+    },
+    {
+      "method": "GET",
+      "path": "/api/groups/00000000-0000-4000-8000-000000000001",
+      "status": 401,
+      "error": "SIGN_IN_REQUIRED",
+      "cacheControl": "no-store"
+    }
+  ]
+}

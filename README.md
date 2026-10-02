@@ -174,3 +174,62 @@ conversion lift. Those gates remain open.
 Reviewed actual sandbox records and their execution/verification source metadata
 are in [the evidence report](evidence/paypal-sandbox/index.html). Private app
 credentials, generated buyer passwords and buyer emails are excluded.
+
+## Local web application (in progress)
+
+The Next.js app now includes email magic-link login, group creation/joining,
+private confirmed requirements, one organizer roster review, and shared
+structured candidate checks. It uses Supabase **Auth** with server-validated
+`getUser()` identity and an HTTP-only cookie session; the current application
+**database remains the isolated local PostgreSQL instance**. Hosted database
+migration, merchant/checkout browser screens, AI clarification and deployment
+remain separate unfinished gates.
+
+In `.env.local`, set `SUPABASE_URL`, `SUPABASE_PUBLISHABLE_KEY` (a modern
+publishable key or legacy anon key), `APP_ORIGIN=http://localhost:3000` and
+`DATABASE_URL`. Add the exact `http://localhost:3000/auth/callback` redirect in
+Supabase Auth settings. Keep email verification enabled. Do not use a management
+token or service-role secret as the browser/client key. Rally’s supplied project
+configuration has been checked privately and that exact callback added.
+
+Run `npm run dev`, then open `http://localhost:3000`. Open email links in the same
+browser that requested them; the login uses PKCE. `npm run build` verifies the
+production compilation; `npm start` starts that compiled app. No email has been
+sent by automated verification. The user completed email sign-in, and authenticated synthetic group creation,
+requirement saving and persistence after refresh have been observed. Multi-member
+joining, the full roster/consent journey and checkout still need browser proof. Supabase’s default email
+sender may restrict recipients/rate; configuring judge access is a release gate.
+
+All mutation routes require the configured exact Origin. Identity and email
+verification are derived server-side, never accepted from request bodies. Private
+responses use `no-store`; streamed JSON request size is bounded. Additional
+wording currently requires review and blocks an offer until grounded clarification
+is integrated. The UI clearly labels synthetic studio facts and unfinished offer
+and payment screens. This is a running implementation slice, not a deployed or
+submission-ready product. Public deployment also requires durable application
+rate limits and isolated judge access.
+
+### Credited AI and hosting
+
+The Astropods account is connected with its official CLI. Gateway credentials
+live only in ignored `.env.local`. `src/ai/clarifier.ts` makes a single bounded
+model call and validates the proposed meaning against the closed interpretation
+schema. Exact quotations are grounded in the supplied text; missing or ambiguous
+quotation locations fail closed. The model cannot update confirmed requirements,
+book a session, call tools, or authorize payment. Model failure returns review.
+The actual connection check is recorded in `evidence/ai/connection.json`; the
+72-run quality evaluation and participant clarification UI remain unfinished.
+
+`render.yaml` prepares one web service and one settlement worker, with manual
+deploys and secrets supplied in Render. `/api/health` checks the app database
+without exposing database errors. The hosted database must be provisioned and
+migrated with a restricted application role before deployment. Set `APP_ORIGIN`
+to the final HTTPS address and allow exactly its `/auth/callback` in Supabase.
+Do not deploy with the local database URL. No real payments are enabled.
+
+Rollback for this first sandbox deployment: suspend the worker before stopping
+the web service; keep the hosted database and unresolved payment records intact.
+Redeploy the previous compatible commit to resume. This remains a planned
+procedure until exercised against a hosted deployment. Do not discard unknown
+payment results during a redeploy. Observe health failures and worker step failures
+immediately after deployment; do not enable checkout while these are unresolved.
