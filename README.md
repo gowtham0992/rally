@@ -170,3 +170,7 @@ evidence remains under ignored `evidence/private/` until reviewed for sharing.
 Actual sandbox results do not establish managed-auth correctness, real merchant
 availability, mobile usability, model quality, incoming webhook verification or
 conversion lift. Those gates remain open.
+
+Reviewed actual sandbox records and their execution/verification source metadata
+are in [the evidence report](evidence/paypal-sandbox/index.html). Private app
+credentials, generated buyer passwords and buyer emails are excluded.

@@ -1,0 +1,393 @@
+{
+  "codeHashes": {
+    "src/payments/engine.ts": "227ea64967286b6b3b2d44e65e88e40734668a2945b82b509b0760758485b613",
+    "src/payments/paypal.ts": "7bdf691464c332a3bcc7b94176ea21c63d36b24000539785da6521d8a72aaa6c",
+    "scripts/sandbox.ts": "a98de01b1253e628bf8b1c08a779cc4263d9d5ddaefb366e0e7af48dd33f8803",
+    "scripts/verify-sandbox.ts": "fdf56279990e7e2876a08367056ac33aed0d6197fcd8e4a27adf702879223bbf"
+  },
+  "mode": "actual_paypal_sandbox",
+  "scenario": "lost-response",
+  "syntheticOffering": true,
+  "scope": "Actual sandbox orders, authorizations and financial resources with local PostgreSQL application; no live payments or merchant validation.",
+  "verifiedAt": "2026-10-02T02:55:51.965Z",
+  "commit": "d88d1f2f3f9ad778f9879e1105a4550a40544402",
+  "verifier": "scripts/verify-sandbox.ts",
+  "offer": {
+    "id": "83ee0309-39b7-4e5c-9bf8-b57ad60ae260",
+    "state": "CONFIRMED",
+    "cleanup": "NOT_REQUIRED",
+    "amount_minor": 4800,
+    "currency": "USD",
+    "offer_hash": "f33764a5d44964a3c07197cd8c6e6870dbd4f90f0041757dc5adc7ebc6477ce3",
+    "deadline": "2026-10-02T04:45:38.529Z",
+    "reservation_end": "2026-10-02T05:15:38.529Z"
+  },
+  "observations": [
+    {
+      "orderCaptureIds": [
+        "7XF51058HS073642D"
+      ],
+      "buyer": 1,
+      "expectedBuyerMatched": true,
+      "payerDigest": "9f3db3aa54e4e8a47fa3ad53178ce395eba24c6a200f366a72e88e542d16caa3",
+      "orderId": "93M07758NL823535W",
+      "orderStatus": "COMPLETED",
+      "merchantMatched": true,
+      "expectedAmountMinor": 4800,
+      "observedOrderAmountMinor": 4800,
+      "currency": "USD",
+      "authorization": {
+        "id": "54B63539V08219405",
+        "status": "CAPTURED"
+      },
+      "financial": [
+        {
+          "operationId": "4bf7718d-e781-406e-bb1f-06aefb39471b",
+          "kind": "CAPTURE",
+          "resourceId": "7XF51058HS073642D",
+          "status": "COMPLETED",
+          "amountMinor": 4800,
+          "currency": "USD",
+          "sellerReceivable": {
+            "grossAmount": {
+              "currency_code": "USD",
+              "value": "48.00"
+            },
+            "paypalFee": {
+              "currency_code": "USD",
+              "value": "2.17"
+            },
+            "netAmount": {
+              "currency_code": "USD",
+              "value": "45.83"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "orderCaptureIds": [
+        "1G397121XN5096051"
+      ],
+      "buyer": 2,
+      "expectedBuyerMatched": true,
+      "payerDigest": "1f5126176f99e855ed8083e176dca60bd4e004761088ca27b0a61240468101f4",
+      "orderId": "55237652H73094232",
+      "orderStatus": "COMPLETED",
+      "merchantMatched": true,
+      "expectedAmountMinor": 4800,
+      "observedOrderAmountMinor": 4800,
+      "currency": "USD",
+      "authorization": {
+        "id": "4MF70006JF421694R",
+        "status": "CAPTURED"
+      },
+      "financial": [
+        {
+          "operationId": "2fab8aa2-493e-4dc9-af26-d9ea42aee47d",
+          "kind": "CAPTURE",
+          "resourceId": "1G397121XN5096051",
+          "status": "COMPLETED",
+          "amountMinor": 4800,
+          "currency": "USD",
+          "sellerReceivable": {
+            "grossAmount": {
+              "currency_code": "USD",
+              "value": "48.00"
+            },
+            "paypalFee": {
+              "currency_code": "USD",
+              "value": "2.17"
+            },
+            "netAmount": {
+              "currency_code": "USD",
+              "value": "45.83"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "orderCaptureIds": [
+        "3P828561XD1699057"
+      ],
+      "buyer": 3,
+      "expectedBuyerMatched": true,
+      "payerDigest": "a75e3e3c5ce0949d9763e684b0296df60b9e7177948cf0a8ad5a64afc14f6a5e",
+      "orderId": "4LF87359M4513733V",
+      "orderStatus": "COMPLETED",
+      "merchantMatched": true,
+      "expectedAmountMinor": 4800,
+      "observedOrderAmountMinor": 4800,
+      "currency": "USD",
+      "authorization": {
+        "id": "2L258340V09889228",
+        "status": "CAPTURED"
+      },
+      "financial": [
+        {
+          "operationId": "e8f6d69f-66e7-4237-8c3e-1b980a92161e",
+          "kind": "CAPTURE",
+          "resourceId": "3P828561XD1699057",
+          "status": "COMPLETED",
+          "amountMinor": 4800,
+          "currency": "USD",
+          "sellerReceivable": {
+            "grossAmount": {
+              "currency_code": "USD",
+              "value": "48.00"
+            },
+            "paypalFee": {
+              "currency_code": "USD",
+              "value": "2.17"
+            },
+            "netAmount": {
+              "currency_code": "USD",
+              "value": "45.83"
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "operations": [
+    {
+      "id": "64400b0d-14c8-4091-ba8c-848ffcef19db",
+      "kind": "CREATE_ORDER",
+      "state": "SUCCEEDED",
+      "request_id": "c9d751aa-0108-4e5a-97d1-8b50638945f5",
+      "provider_id": "93M07758NL823535W",
+      "provider_status": "PAYER_ACTION_REQUIRED",
+      "safe_code": "OUTCOME_UNKNOWN"
+    },
+    {
+      "id": "7cf0f3b0-5333-4c63-b80f-15770189ff99",
+      "kind": "CREATE_ORDER",
+      "state": "SUCCEEDED",
+      "request_id": "c3600ac7-26d1-4fcf-a945-2881c4e25219",
+      "provider_id": "55237652H73094232",
+      "provider_status": "PAYER_ACTION_REQUIRED",
+      "safe_code": "OUTCOME_UNKNOWN"
+    },
+    {
+      "id": "6c4195ee-8c9c-4e20-aaec-ee81a2949053",
+      "kind": "CREATE_ORDER",
+      "state": "SUCCEEDED",
+      "request_id": "24f4a2da-e4d6-43eb-b90d-7330d0972ff3",
+      "provider_id": "4LF87359M4513733V",
+      "provider_status": "PAYER_ACTION_REQUIRED",
+      "safe_code": "OUTCOME_UNKNOWN"
+    },
+    {
+      "id": "2303470f-3bcf-4d4c-bc20-5cea18fafcb4",
+      "kind": "AUTHORIZE",
+      "state": "SUCCEEDED",
+      "request_id": "3b466850-abbd-40a2-ac11-c1e52339eeb8",
+      "provider_id": "54B63539V08219405",
+      "provider_status": "CREATED",
+      "safe_code": "OUTCOME_UNKNOWN"
+    },
+    {
+      "id": "86d38d8b-1de9-4ce7-8d82-d11d7862edfa",
+      "kind": "AUTHORIZE",
+      "state": "SUCCEEDED",
+      "request_id": "1949fdf2-dbbf-4f4b-b23f-7127bee44291",
+      "provider_id": "4MF70006JF421694R",
+      "provider_status": "CREATED",
+      "safe_code": "OUTCOME_UNKNOWN"
+    },
+    {
+      "id": "1ab2c4f6-86d6-470c-b4f2-09d9be9fc20c",
+      "kind": "AUTHORIZE",
+      "state": "SUCCEEDED",
+      "request_id": "be111b29-1077-42d4-a494-eb98cf8f9a7c",
+      "provider_id": "2L258340V09889228",
+      "provider_status": "CREATED",
+      "safe_code": "OUTCOME_UNKNOWN"
+    },
+    {
+      "id": "4bf7718d-e781-406e-bb1f-06aefb39471b",
+      "kind": "CAPTURE",
+      "state": "SUCCEEDED",
+      "request_id": "48175a61-dd62-4285-8a4a-b90952aae9e0",
+      "provider_id": "7XF51058HS073642D",
+      "provider_status": "COMPLETED",
+      "safe_code": "OUTCOME_UNKNOWN"
+    },
+    {
+      "id": "2fab8aa2-493e-4dc9-af26-d9ea42aee47d",
+      "kind": "CAPTURE",
+      "state": "SUCCEEDED",
+      "request_id": "1a724f53-630d-4cc2-b7b5-25f80e695b98",
+      "provider_id": "1G397121XN5096051",
+      "provider_status": "COMPLETED",
+      "safe_code": "OUTCOME_UNKNOWN"
+    },
+    {
+      "id": "e8f6d69f-66e7-4237-8c3e-1b980a92161e",
+      "kind": "CAPTURE",
+      "state": "SUCCEEDED",
+      "request_id": "318beeb0-3621-467d-bb72-39140e95eaa4",
+      "provider_id": "3P828561XD1699057",
+      "provider_status": "COMPLETED",
+      "safe_code": "OUTCOME_UNKNOWN"
+    }
+  ],
+  "events": [
+    {
+      "event_type": "ACCEPTED",
+      "state": "OPEN",
+      "operation_id": "64400b0d-14c8-4091-ba8c-848ffcef19db",
+      "occurred_at": "2026-10-02T02:45:38.565Z"
+    },
+    {
+      "event_type": "DISPATCHED",
+      "state": "OPEN",
+      "operation_id": "64400b0d-14c8-4091-ba8c-848ffcef19db",
+      "occurred_at": "2026-10-02T02:45:38.581Z"
+    },
+    {
+      "event_type": "SUCCEEDED",
+      "state": "OPEN",
+      "operation_id": "64400b0d-14c8-4091-ba8c-848ffcef19db",
+      "occurred_at": "2026-10-02T02:45:39.742Z"
+    },
+    {
+      "event_type": "ACCEPTED",
+      "state": "OPEN",
+      "operation_id": "7cf0f3b0-5333-4c63-b80f-15770189ff99",
+      "occurred_at": "2026-10-02T02:45:39.757Z"
+    },
+    {
+      "event_type": "DISPATCHED",
+      "state": "OPEN",
+      "operation_id": "7cf0f3b0-5333-4c63-b80f-15770189ff99",
+      "occurred_at": "2026-10-02T02:45:39.772Z"
+    },
+    {
+      "event_type": "SUCCEEDED",
+      "state": "OPEN",
+      "operation_id": "7cf0f3b0-5333-4c63-b80f-15770189ff99",
+      "occurred_at": "2026-10-02T02:45:40.514Z"
+    },
+    {
+      "event_type": "ACCEPTED",
+      "state": "OPEN",
+      "operation_id": "6c4195ee-8c9c-4e20-aaec-ee81a2949053",
+      "occurred_at": "2026-10-02T02:45:40.528Z"
+    },
+    {
+      "event_type": "DISPATCHED",
+      "state": "OPEN",
+      "operation_id": "6c4195ee-8c9c-4e20-aaec-ee81a2949053",
+      "occurred_at": "2026-10-02T02:45:40.540Z"
+    },
+    {
+      "event_type": "SUCCEEDED",
+      "state": "OPEN",
+      "operation_id": "6c4195ee-8c9c-4e20-aaec-ee81a2949053",
+      "occurred_at": "2026-10-02T02:45:41.275Z"
+    },
+    {
+      "event_type": "DISPATCHED",
+      "state": "OPEN",
+      "operation_id": "2303470f-3bcf-4d4c-bc20-5cea18fafcb4",
+      "occurred_at": "2026-10-02T02:49:20.425Z"
+    },
+    {
+      "event_type": "SUCCEEDED",
+      "state": "OPEN",
+      "operation_id": "2303470f-3bcf-4d4c-bc20-5cea18fafcb4",
+      "occurred_at": "2026-10-02T02:49:23.196Z"
+    },
+    {
+      "event_type": "DISPATCHED",
+      "state": "OPEN",
+      "operation_id": "86d38d8b-1de9-4ce7-8d82-d11d7862edfa",
+      "occurred_at": "2026-10-02T02:49:23.211Z"
+    },
+    {
+      "event_type": "SUCCEEDED",
+      "state": "OPEN",
+      "operation_id": "86d38d8b-1de9-4ce7-8d82-d11d7862edfa",
+      "occurred_at": "2026-10-02T02:49:25.236Z"
+    },
+    {
+      "event_type": "DISPATCHED",
+      "state": "OPEN",
+      "operation_id": "1ab2c4f6-86d6-470c-b4f2-09d9be9fc20c",
+      "occurred_at": "2026-10-02T02:49:25.254Z"
+    },
+    {
+      "event_type": "SETTLING",
+      "state": "SETTLING",
+      "operation_id": null,
+      "occurred_at": "2026-10-02T02:49:27.088Z"
+    },
+    {
+      "event_type": "SUCCEEDED",
+      "state": "SETTLING",
+      "operation_id": "1ab2c4f6-86d6-470c-b4f2-09d9be9fc20c",
+      "occurred_at": "2026-10-02T02:49:27.089Z"
+    },
+    {
+      "event_type": "DISPATCHED",
+      "state": "SETTLING",
+      "operation_id": "4bf7718d-e781-406e-bb1f-06aefb39471b",
+      "occurred_at": "2026-10-02T02:49:27.400Z"
+    },
+    {
+      "event_type": "UNKNOWN",
+      "state": "SETTLING",
+      "operation_id": "4bf7718d-e781-406e-bb1f-06aefb39471b",
+      "occurred_at": "2026-10-02T02:49:30.051Z"
+    },
+    {
+      "event_type": "RECONCILING",
+      "state": "SETTLING",
+      "operation_id": "4bf7718d-e781-406e-bb1f-06aefb39471b",
+      "occurred_at": "2026-10-02T02:49:33.278Z"
+    },
+    {
+      "event_type": "SUCCEEDED",
+      "state": "SETTLING",
+      "operation_id": "4bf7718d-e781-406e-bb1f-06aefb39471b",
+      "occurred_at": "2026-10-02T02:49:34.964Z"
+    },
+    {
+      "event_type": "DISPATCHED",
+      "state": "SETTLING",
+      "operation_id": "2fab8aa2-493e-4dc9-af26-d9ea42aee47d",
+      "occurred_at": "2026-10-02T02:49:34.984Z"
+    },
+    {
+      "event_type": "SUCCEEDED",
+      "state": "SETTLING",
+      "operation_id": "2fab8aa2-493e-4dc9-af26-d9ea42aee47d",
+      "occurred_at": "2026-10-02T02:49:36.598Z"
+    },
+    {
+      "event_type": "DISPATCHED",
+      "state": "SETTLING",
+      "operation_id": "e8f6d69f-66e7-4237-8c3e-1b980a92161e",
+      "occurred_at": "2026-10-02T02:49:36.614Z"
+    },
+    {
+      "event_type": "SUCCEEDED",
+      "state": "SETTLING",
+      "operation_id": "e8f6d69f-66e7-4237-8c3e-1b980a92161e",
+      "occurred_at": "2026-10-02T02:49:38.095Z"
+    },
+    {
+      "event_type": "CONFIRMED",
+      "state": "CONFIRMED",
+      "operation_id": null,
+      "occurred_at": "2026-10-02T02:49:38.112Z"
+    }
+  ],
+  "totals": {
+    "capturedGrossMinor": 14400,
+    "refundedGrossMinor": 0,
+    "currency": "USD"
+  }
+}

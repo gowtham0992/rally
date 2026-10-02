@@ -13,7 +13,7 @@
     "Merchant approval service connects validated fixed-roster planning to immutable offer snapshots, atomic buffered reservation, two-hour authorization window and existing settlement worker"
   ],
   "evidence": {
-    "scope": "Real PostgreSQL with controlled simulated provider; adapter transport tests use fixture HTTP responses.",
+    "scope": "Local service tests use real PostgreSQL and a simulated provider; separate reviewed records prove three actual PayPal sandbox scenarios.",
     "payment_tests": {
       "passed": 24,
       "consecutive_green_runs": 2

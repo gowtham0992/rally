@@ -1,0 +1,393 @@
+{
+  "codeHashes": {
+    "src/payments/engine.ts": "227ea64967286b6b3b2d44e65e88e40734668a2945b82b509b0760758485b613",
+    "src/payments/paypal.ts": "7bdf691464c332a3bcc7b94176ea21c63d36b24000539785da6521d8a72aaa6c",
+    "scripts/sandbox.ts": "a98de01b1253e628bf8b1c08a779cc4263d9d5ddaefb366e0e7af48dd33f8803",
+    "scripts/verify-sandbox.ts": "fdf56279990e7e2876a08367056ac33aed0d6197fcd8e4a27adf702879223bbf"
+  },
+  "mode": "actual_paypal_sandbox",
+  "scenario": "partial-failure",
+  "syntheticOffering": true,
+  "scope": "Actual sandbox orders, authorizations and financial resources with local PostgreSQL application; no live payments or merchant validation.",
+  "verifiedAt": "2026-10-02T02:55:50.571Z",
+  "commit": "d88d1f2f3f9ad778f9879e1105a4550a40544402",
+  "verifier": "scripts/verify-sandbox.ts",
+  "offer": {
+    "id": "c6f805bd-9b27-4f1d-9807-30bdefcd4af3",
+    "state": "ABORTED",
+    "cleanup": "COMPLETE",
+    "amount_minor": 4800,
+    "currency": "USD",
+    "offer_hash": "e405ed3e9158f5e5e25339cf11579ee8388201700c3b91794e4bc8fae91d6e63",
+    "deadline": "2026-10-02T04:41:22.445Z",
+    "reservation_end": "2026-10-02T05:11:22.445Z"
+  },
+  "observations": [
+    {
+      "orderCaptureIds": [
+        "3BC82471CR811792T"
+      ],
+      "buyer": 1,
+      "expectedBuyerMatched": true,
+      "payerDigest": "9f3db3aa54e4e8a47fa3ad53178ce395eba24c6a200f366a72e88e542d16caa3",
+      "orderId": "8A7799842E7556247",
+      "orderStatus": "COMPLETED",
+      "merchantMatched": true,
+      "expectedAmountMinor": 4800,
+      "observedOrderAmountMinor": 4800,
+      "currency": "USD",
+      "authorization": {
+        "id": "86374463BE3954620",
+        "status": "CAPTURED"
+      },
+      "financial": [
+        {
+          "operationId": "9f57e7da-3905-487f-a15a-04e2031d657c",
+          "kind": "CAPTURE",
+          "resourceId": "3BC82471CR811792T",
+          "status": "REFUNDED",
+          "amountMinor": 4800,
+          "currency": "USD",
+          "sellerReceivable": {
+            "grossAmount": {
+              "currency_code": "USD",
+              "value": "48.00"
+            },
+            "paypalFee": {
+              "currency_code": "USD",
+              "value": "2.17"
+            },
+            "netAmount": {
+              "currency_code": "USD",
+              "value": "45.83"
+            }
+          }
+        },
+        {
+          "operationId": "6c03c49f-49f4-4b7d-adb1-5226249f653b",
+          "kind": "REFUND",
+          "resourceId": "9N518974ME282223R",
+          "status": "COMPLETED",
+          "amountMinor": 4800,
+          "currency": "USD"
+        }
+      ]
+    },
+    {
+      "orderCaptureIds": [],
+      "buyer": 2,
+      "expectedBuyerMatched": true,
+      "payerDigest": "1f5126176f99e855ed8083e176dca60bd4e004761088ca27b0a61240468101f4",
+      "orderId": "3PV516020F721793Y",
+      "orderStatus": "COMPLETED",
+      "merchantMatched": true,
+      "expectedAmountMinor": 4800,
+      "observedOrderAmountMinor": 4800,
+      "currency": "USD",
+      "authorization": {
+        "id": "78G345785A104661P",
+        "status": "VOIDED"
+      },
+      "financial": []
+    },
+    {
+      "orderCaptureIds": [],
+      "buyer": 3,
+      "expectedBuyerMatched": true,
+      "payerDigest": "a75e3e3c5ce0949d9763e684b0296df60b9e7177948cf0a8ad5a64afc14f6a5e",
+      "orderId": "4TX60147RR1485131",
+      "orderStatus": "COMPLETED",
+      "merchantMatched": true,
+      "expectedAmountMinor": 4800,
+      "observedOrderAmountMinor": 4800,
+      "currency": "USD",
+      "authorization": {
+        "id": "4CR13082JV7568412",
+        "status": "VOIDED"
+      },
+      "financial": []
+    }
+  ],
+  "operations": [
+    {
+      "id": "2f88cc0c-a76d-4144-b82b-00b0e97405a2",
+      "kind": "CREATE_ORDER",
+      "state": "SUCCEEDED",
+      "request_id": "a4125106-8a8b-4532-9986-b0155062762b",
+      "provider_id": "8A7799842E7556247",
+      "provider_status": "PAYER_ACTION_REQUIRED",
+      "safe_code": "OUTCOME_UNKNOWN"
+    },
+    {
+      "id": "c1af8f06-c35b-456e-89b2-ca69319f6097",
+      "kind": "CREATE_ORDER",
+      "state": "SUCCEEDED",
+      "request_id": "0293757c-f978-4e73-8afc-e797c7e5feb3",
+      "provider_id": "3PV516020F721793Y",
+      "provider_status": "PAYER_ACTION_REQUIRED",
+      "safe_code": "OUTCOME_UNKNOWN"
+    },
+    {
+      "id": "0bee8ac4-ae03-4752-a08b-705e14bd6df2",
+      "kind": "CREATE_ORDER",
+      "state": "SUCCEEDED",
+      "request_id": "c7b77796-4941-4985-8b7d-cdb8b2d205e0",
+      "provider_id": "4TX60147RR1485131",
+      "provider_status": "PAYER_ACTION_REQUIRED",
+      "safe_code": "OUTCOME_UNKNOWN"
+    },
+    {
+      "id": "0f130a7b-8033-4d20-8547-9c325ab8565a",
+      "kind": "AUTHORIZE",
+      "state": "SUCCEEDED",
+      "request_id": "ceee6838-7f9d-4868-af31-bd99aebe4ace",
+      "provider_id": "86374463BE3954620",
+      "provider_status": "CREATED",
+      "safe_code": "OUTCOME_UNKNOWN"
+    },
+    {
+      "id": "619792c1-1a1c-46c1-b873-9ce8a87c73e1",
+      "kind": "AUTHORIZE",
+      "state": "SUCCEEDED",
+      "request_id": "0d5d8896-9a95-420a-8998-6206d53c4c62",
+      "provider_id": "78G345785A104661P",
+      "provider_status": "CREATED",
+      "safe_code": "OUTCOME_UNKNOWN"
+    },
+    {
+      "id": "86b9f360-e290-4f7c-98c8-28dd67ab1f9c",
+      "kind": "AUTHORIZE",
+      "state": "SUCCEEDED",
+      "request_id": "dd24de5b-88c0-4c00-b41f-dc841047324d",
+      "provider_id": "4CR13082JV7568412",
+      "provider_status": "CREATED",
+      "safe_code": "OUTCOME_UNKNOWN"
+    },
+    {
+      "id": "9f57e7da-3905-487f-a15a-04e2031d657c",
+      "kind": "CAPTURE",
+      "state": "SUCCEEDED",
+      "request_id": "423b1574-fe16-4eef-9861-741276252382",
+      "provider_id": "3BC82471CR811792T",
+      "provider_status": "COMPLETED",
+      "safe_code": "OUTCOME_UNKNOWN"
+    },
+    {
+      "id": "78a34f61-fdac-457b-84b7-a7cc937544ac",
+      "kind": "CAPTURE",
+      "state": "FAILED",
+      "request_id": "ef5cd6c6-f642-4814-805e-51ca87a86bd6",
+      "provider_id": null,
+      "provider_status": "VOIDED",
+      "safe_code": "AUTHORIZATION_UNAVAILABLE"
+    },
+    {
+      "id": "6c03c49f-49f4-4b7d-adb1-5226249f653b",
+      "kind": "REFUND",
+      "state": "SUCCEEDED",
+      "request_id": "7c6d95cf-3a44-4647-8d18-9f07b2fcfd34",
+      "provider_id": "9N518974ME282223R",
+      "provider_status": "COMPLETED",
+      "safe_code": "OUTCOME_UNKNOWN"
+    },
+    {
+      "id": "8a33ba4a-4ba6-40d3-9a94-014215f70b93",
+      "kind": "VOID",
+      "state": "SUCCEEDED",
+      "request_id": "9f4c0c77-cbae-48f8-90ef-7595e792cf02",
+      "provider_id": "78G345785A104661P",
+      "provider_status": "VOIDED",
+      "safe_code": "OUTCOME_UNKNOWN"
+    },
+    {
+      "id": "c771950c-4345-4bf0-b2ea-7dd00af80379",
+      "kind": "VOID",
+      "state": "SUCCEEDED",
+      "request_id": "86723061-bde1-4fc7-b734-246c97fede19",
+      "provider_id": "4CR13082JV7568412",
+      "provider_status": "VOIDED",
+      "safe_code": "OUTCOME_UNKNOWN"
+    }
+  ],
+  "events": [
+    {
+      "event_type": "ACCEPTED",
+      "state": "OPEN",
+      "operation_id": "2f88cc0c-a76d-4144-b82b-00b0e97405a2",
+      "occurred_at": "2026-10-02T02:41:22.463Z"
+    },
+    {
+      "event_type": "DISPATCHED",
+      "state": "OPEN",
+      "operation_id": "2f88cc0c-a76d-4144-b82b-00b0e97405a2",
+      "occurred_at": "2026-10-02T02:41:22.469Z"
+    },
+    {
+      "event_type": "SUCCEEDED",
+      "state": "OPEN",
+      "operation_id": "2f88cc0c-a76d-4144-b82b-00b0e97405a2",
+      "occurred_at": "2026-10-02T02:41:23.640Z"
+    },
+    {
+      "event_type": "ACCEPTED",
+      "state": "OPEN",
+      "operation_id": "c1af8f06-c35b-456e-89b2-ca69319f6097",
+      "occurred_at": "2026-10-02T02:41:23.661Z"
+    },
+    {
+      "event_type": "DISPATCHED",
+      "state": "OPEN",
+      "operation_id": "c1af8f06-c35b-456e-89b2-ca69319f6097",
+      "occurred_at": "2026-10-02T02:41:23.670Z"
+    },
+    {
+      "event_type": "SUCCEEDED",
+      "state": "OPEN",
+      "operation_id": "c1af8f06-c35b-456e-89b2-ca69319f6097",
+      "occurred_at": "2026-10-02T02:41:24.556Z"
+    },
+    {
+      "event_type": "ACCEPTED",
+      "state": "OPEN",
+      "operation_id": "0bee8ac4-ae03-4752-a08b-705e14bd6df2",
+      "occurred_at": "2026-10-02T02:41:24.569Z"
+    },
+    {
+      "event_type": "DISPATCHED",
+      "state": "OPEN",
+      "operation_id": "0bee8ac4-ae03-4752-a08b-705e14bd6df2",
+      "occurred_at": "2026-10-02T02:41:24.583Z"
+    },
+    {
+      "event_type": "SUCCEEDED",
+      "state": "OPEN",
+      "operation_id": "0bee8ac4-ae03-4752-a08b-705e14bd6df2",
+      "occurred_at": "2026-10-02T02:41:25.377Z"
+    },
+    {
+      "event_type": "DISPATCHED",
+      "state": "OPEN",
+      "operation_id": "0f130a7b-8033-4d20-8547-9c325ab8565a",
+      "occurred_at": "2026-10-02T02:44:20.226Z"
+    },
+    {
+      "event_type": "SUCCEEDED",
+      "state": "OPEN",
+      "operation_id": "0f130a7b-8033-4d20-8547-9c325ab8565a",
+      "occurred_at": "2026-10-02T02:44:23.151Z"
+    },
+    {
+      "event_type": "DISPATCHED",
+      "state": "OPEN",
+      "operation_id": "619792c1-1a1c-46c1-b873-9ce8a87c73e1",
+      "occurred_at": "2026-10-02T02:44:23.172Z"
+    },
+    {
+      "event_type": "SUCCEEDED",
+      "state": "OPEN",
+      "operation_id": "619792c1-1a1c-46c1-b873-9ce8a87c73e1",
+      "occurred_at": "2026-10-02T02:44:25.226Z"
+    },
+    {
+      "event_type": "DISPATCHED",
+      "state": "OPEN",
+      "operation_id": "86b9f360-e290-4f7c-98c8-28dd67ab1f9c",
+      "occurred_at": "2026-10-02T02:44:25.245Z"
+    },
+    {
+      "event_type": "SETTLING",
+      "state": "SETTLING",
+      "operation_id": null,
+      "occurred_at": "2026-10-02T02:44:27.123Z"
+    },
+    {
+      "event_type": "SUCCEEDED",
+      "state": "SETTLING",
+      "operation_id": "86b9f360-e290-4f7c-98c8-28dd67ab1f9c",
+      "occurred_at": "2026-10-02T02:44:27.125Z"
+    },
+    {
+      "event_type": "DISPATCHED",
+      "state": "SETTLING",
+      "operation_id": "9f57e7da-3905-487f-a15a-04e2031d657c",
+      "occurred_at": "2026-10-02T02:44:27.402Z"
+    },
+    {
+      "event_type": "SUCCEEDED",
+      "state": "SETTLING",
+      "operation_id": "9f57e7da-3905-487f-a15a-04e2031d657c",
+      "occurred_at": "2026-10-02T02:44:29.421Z"
+    },
+    {
+      "event_type": "DISPATCHED",
+      "state": "SETTLING",
+      "operation_id": "78a34f61-fdac-457b-84b7-a7cc937544ac",
+      "occurred_at": "2026-10-02T02:44:31.133Z"
+    },
+    {
+      "event_type": "FAILED",
+      "state": "SETTLING",
+      "operation_id": "78a34f61-fdac-457b-84b7-a7cc937544ac",
+      "occurred_at": "2026-10-02T02:44:32.882Z"
+    },
+    {
+      "event_type": "ABORTED",
+      "state": "ABORTED",
+      "operation_id": null,
+      "occurred_at": "2026-10-02T02:44:32.894Z"
+    },
+    {
+      "event_type": "CLEANUP_RUNNING",
+      "state": "ABORTED",
+      "operation_id": null,
+      "occurred_at": "2026-10-02T02:44:32.901Z"
+    },
+    {
+      "event_type": "DISPATCHED",
+      "state": "ABORTED",
+      "operation_id": "6c03c49f-49f4-4b7d-adb1-5226249f653b",
+      "occurred_at": "2026-10-02T02:44:32.903Z"
+    },
+    {
+      "event_type": "SUCCEEDED",
+      "state": "ABORTED",
+      "operation_id": "6c03c49f-49f4-4b7d-adb1-5226249f653b",
+      "occurred_at": "2026-10-02T02:44:34.626Z"
+    },
+    {
+      "event_type": "DISPATCHED",
+      "state": "ABORTED",
+      "operation_id": "8a33ba4a-4ba6-40d3-9a94-014215f70b93",
+      "occurred_at": "2026-10-02T02:44:34.639Z"
+    },
+    {
+      "event_type": "SUCCEEDED",
+      "state": "ABORTED",
+      "operation_id": "8a33ba4a-4ba6-40d3-9a94-014215f70b93",
+      "occurred_at": "2026-10-02T02:44:35.065Z"
+    },
+    {
+      "event_type": "DISPATCHED",
+      "state": "ABORTED",
+      "operation_id": "c771950c-4345-4bf0-b2ea-7dd00af80379",
+      "occurred_at": "2026-10-02T02:44:35.087Z"
+    },
+    {
+      "event_type": "SUCCEEDED",
+      "state": "ABORTED",
+      "operation_id": "c771950c-4345-4bf0-b2ea-7dd00af80379",
+      "occurred_at": "2026-10-02T02:44:36.675Z"
+    },
+    {
+      "event_type": "CLEANUP_COMPLETE",
+      "state": "ABORTED",
+      "operation_id": null,
+      "occurred_at": "2026-10-02T02:44:36.685Z"
+    }
+  ],
+  "totals": {
+    "capturedGrossMinor": 4800,
+    "refundedGrossMinor": 4800,
+    "currency": "USD"
+  }
+}

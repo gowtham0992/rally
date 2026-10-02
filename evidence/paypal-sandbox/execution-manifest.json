@@ -1,0 +1,10 @@
+{
+  "executionPaymentAndHarnessCommit": "98fa977",
+  "verificationCommit": "d88d1f2",
+  "scope": "Financial scenarios executed with the payment engine, adapter and original CLI at 98fa977; provider records independently re-read with the committed verifier at d88d1f2. Verifier records code hashes at verification time. Later CLI changes improve fault logging only.",
+  "executionCodeHashes": {
+    "src/payments/engine.ts": "227ea64967286b6b3b2d44e65e88e40734668a2945b82b509b0760758485b613",
+    "src/payments/paypal.ts": "7bdf691464c332a3bcc7b94176ea21c63d36b24000539785da6521d8a72aaa6c",
+    "scripts/sandbox.ts": "ec9c77ab3811cdb0ff609a17a8193a3d1a3b204ccff97f53b7f5112e77aba2c9"
+  }
+}
