@@ -6,6 +6,7 @@ import { fingerprint } from '../payments/types.ts';
 import { catalogSchema,preferenceSchema } from '../planning/domain.ts';
 import {respectsMeaning,type MeaningBound} from '../planning/meaning.ts';
 import { confirmedPlan } from '../planning/persisted.ts';
+import type {CollectionRequest} from './projections.ts';
 
 // Only server-authenticated identity may construct this input. Request bodies must
 // never supply actorId/verified. Managed Auth route binding remains a separate gate.
@@ -62,7 +63,7 @@ export class IntakeService {
   if(g.revision!==p.expectedRevision||m.current_preference_id!==p.expectedPreferenceId)throw new IntakeError('STALE_REVISION');
   const catalog=catalogSchema.parse(g.catalog);
   if(p.preference.availableSlotIds.some(id=>!catalog.slots.some(s=>s.id===id)))throw new IntakeError('UNKNOWN_SLOT');
-  if(p.preference.nomineeMemberId){const nominee=(await c.query('SELECT id FROM planning_members WHERE group_id=$1 AND id=$2',[g.id,p.preference.nomineeMemberId])).rows[0];if(!nominee||nominee.id===m.id)throw new IntakeError('INVALID_NOMINEE');}
+  if(p.preference.nomineeMemberId){const nominee=(await c.query('SELECT id,admitted FROM planning_members WHERE group_id=$1 AND id=$2',[g.id,p.preference.nomineeMemberId])).rows[0];if(!nominee||nominee.id===m.id||(g.state!=='COLLECTING'&&!nominee.admitted))throw new IntakeError('INVALID_NOMINEE');}
   const preferenceId=randomUUID(),confirmed={...p.preference,memberId:m.id,revisionId:preferenceId};
   const wordingBound=p.optionalText===m.optional_text&&m.wording_bound&&respectsMeaning(confirmed,m.wording_bound as MeaningBound)?m.wording_bound:null;
   if(p.optionalText?.trim())confirmed.extraRequirement=wordingBound?'NONE':'MERCHANT_REVIEW_REQUIRED';
@@ -83,7 +84,7 @@ export class IntakeService {
   const members=(await c.query('SELECT id,display_name AS "displayName",admitted,current_preference_id IS NOT NULL AS ready FROM planning_members WHERE group_id=$1 AND ($2 OR admitted) ORDER BY id',[groupId,g.state==='COLLECTING'])).rows;
   return {groupId,revision:g.revision,state:g.state,targetSize:g.target_size,isOrganizer:g.organizer_id===actor.userId,
    memberId:own.id,displayName:own.display_name,preference:own.confirmed?preferenceSchema.parse(own.confirmed):null,optionalText:own.optional_text??null,wordingReviewed:Boolean(own.wording_bound),
-   catalog:catalogSchema.parse(g.catalog),members,candidate:g.candidate,
+   catalog:catalogSchema.parse(g.catalog),members,candidate:g.candidate,collectionRequests:await this.collectionProjection(c,actor,groupId),
    organizerInvite:g.organizer_id===actor.userId?(await c.query("SELECT result->>'invite' AS invite FROM intake_commands WHERE actor_id=$1 AND result->>'groupId'=$2 AND result ? 'invite' LIMIT 1",[actor.userId,groupId])).rows[0]?.invite??null:null};
  });}
  async roster(actor:IntakeActor,groupId:string){this.actor(actor);uuid.parse(groupId);
@@ -131,15 +132,18 @@ export class IntakeService {
   return {revision:await this.changed(c,g.id,'COLLECTION_CONSENT_CHANGED')};
  });}
  async collectionRequests(actor:IntakeActor,groupId:string){this.actor(actor);uuid.parse(groupId);
+  return this.collectionProjection(this.pool,actor,groupId);
+ }
+ private async collectionProjection(c:pg.Pool|pg.PoolClient,actor:IntakeActor,groupId:string):Promise<CollectionRequest[]>{
   // Only an explicitly consenting owner can disclose a collection request to its
   // nominee. Names are never accompanied by private text, ceilings or constraints.
-  const rows=(await this.pool.query(`SELECT p.id AS "preferenceId",o.display_name AS "ownerName",
-    n.display_name AS "nomineeName",cs.owner_agreed AS "ownerAgreed",cs.nominee_agreed AS "nomineeAgreed",cs.revoked,
+  const rows=(await c.query(`SELECT p.id AS "preferenceId",o.display_name AS "ownerName",
+    n.display_name AS "nomineeName",coalesce(cs.owner_agreed,false) AS "ownerAgreed",coalesce(cs.nominee_agreed,false) AS "nomineeAgreed",coalesce(cs.revoked,false) AS revoked,
     CASE WHEN o.user_id=$2 THEN 'OWNER' ELSE 'NOMINEE' END AS role
-    FROM collection_consents cs JOIN preference_revisions p ON p.id=cs.preference_id
-    JOIN planning_members o ON o.id=cs.owner_member_id AND o.current_preference_id=p.id
-    JOIN planning_members n ON n.id=cs.nominee_member_id AND n.group_id=o.group_id
-    WHERE o.group_id=$1 AND o.admitted AND n.admitted
+    FROM planning_members o JOIN preference_revisions p ON o.current_preference_id=p.id
+    JOIN planning_members n ON n.id=(p.confirmed->>'nomineeMemberId')::uuid AND n.group_id=o.group_id
+    LEFT JOIN collection_consents cs ON cs.preference_id=p.id AND cs.owner_member_id=o.id AND cs.nominee_member_id=n.id
+    WHERE o.group_id=$1 AND o.admitted AND n.admitted AND p.confirmed->>'collection'='NOMINEE_LATER'
     AND (o.user_id=$2 OR (n.user_id=$2 AND cs.owner_agreed AND cs.disclosure_agreed)) ORDER BY p.id`,[groupId,actor.userId])).rows;
   return rows;
  }

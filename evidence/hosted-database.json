@@ -1,0 +1,17 @@
+{
+  "observedAt": "2026-10-02T05:25:47.492Z",
+  "scope": "Actual existing Rally Supabase Postgres; restricted server role over certificate-verified TLS using session pooler. Synthetic write rolled back; no production customer or payment data moved.",
+  "serverRole": "rally_app",
+  "schema": "rally_private",
+  "migrations": 7,
+  "clientToPoolerTls": true,
+  "providerPoolerToDatabaseTls": false,
+  "certificateVerification": "sslmode=verify-full",
+  "runtimeCanCreateSchema": false,
+  "runtimeCanReadAuthUsers": false,
+  "runtimeElevated": false,
+  "browserRolesCanUseSchema": false,
+  "privateSchemaRestHttp": 406,
+  "writeAndRollbackVerified": true,
+  "applicationDeployed": false
+}

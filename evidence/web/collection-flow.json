@@ -1,0 +1,18 @@
+{
+  "scope": "Local Next.js and PostgreSQL, synthetic two-person catalog/group. Owner actions used the existing verified Supabase session; collector agreement and revocation used a trusted synthetic service actor. No nominee managed-login/browser proof or actual merchant booking claimed.",
+  "observed": [
+    "Owner request visible before consent; nominee projection hidden until explicit owner disclosure",
+    "Owner checked disclosure and asked nominated friend; waiting state remained blocked",
+    "Trusted collector agreement plus planning produced CANDIDATE_READY",
+    "Owner edited budget from saved $50 to unsaved $60",
+    "Trusted collector revoked; draft remained $60 across the polling interval",
+    "Owner explicitly discarded edits, restoring saved $50",
+    "Without reloading, saved-view polling displayed withdrawn arrangement and removed ready options"
+  ],
+  "screenshot": "evidence/web/collection-withdrawn-mobile.jpg",
+  "remaining": [
+    "Multi-account managed-auth nominee browser journey",
+    "Issued-offer cancellation and payment integration",
+    "Hosted app deployment"
+  ]
+}

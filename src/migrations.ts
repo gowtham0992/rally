@@ -1,0 +1,1 @@
+export const migrationVersions=['001_payments','002_qualified_payers','003_reconciliation_schedule','004_private_intake','005_collection_consent','006_merchant_offers','007_clarifications'] as const;

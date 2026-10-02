@@ -76,12 +76,16 @@ async function nomination(){const x=await ready();const draft=await service.save
  const command=(revision:number,action:string)=>({commandId:randomUUID(),groupId:x.g.groupId,expectedRevision:revision,preferenceId:saved.preferenceId,action,disclosureAgreed:true});return {...x,saved,command};}
 test('nominated collection requires current owner disclosure and separate nominee agreement',async()=>{
  const x=await nomination();assert.equal((await service.plan(x.a,x.g.groupId)).result.state,'NEEDS_CLARIFICATION');
+ const pendingOwner=await service.collectionRequests(x.a,x.g.groupId);assert.equal(pendingOwner.length,1);assert.equal(pendingOwner[0].ownerAgreed,false);assert.equal(pendingOwner[0].nomineeAgreed,false);
+ assert.equal((await service.participantContext(x.a,x.g.groupId)).collectionRequests.length,1);
+ assert.deepEqual((await service.participantContext(x.b,x.g.groupId)).collectionRequests,[]);
  assert.deepEqual(await service.collectionRequests(x.b,x.g.groupId),[]);
  await assert.rejects(service.collectionConsent(x.b,x.command(x.saved.revision,'NOMINEE_AGREE')),/OWNER_CONSENT_REQUIRED/);
  await assert.rejects(service.collectionConsent(x.b,x.command(x.saved.revision,'OWNER_AGREE')),/NOT_FOUND/);
  await assert.rejects(service.collectionConsent(x.a,{...x.command(x.saved.revision,'OWNER_AGREE'),disclosureAgreed:false}),/DISCLOSURE_REQUIRED/);
  const ownerCommand=x.command(x.saved.revision,'OWNER_AGREE'),owner=await service.collectionConsent(x.a,ownerCommand);
  assert.deepEqual(await new IntakeService(pool).collectionConsent(x.a,ownerCommand),owner);
+ const browserRequests=(await service.participantContext(x.b,x.g.groupId)).collectionRequests;assert.equal(browserRequests.length,1);assert.equal(browserRequests[0].ownerAgreed,true);assert.equal(browserRequests[0].nomineeAgreed,false);assert.ok(!JSON.stringify(browserRequests).includes('Private travel'));assert.ok(!JSON.stringify(browserRequests).includes('budget'));
  const requests=await service.collectionRequests(x.b,x.g.groupId);assert.equal(requests[0].role,'NOMINEE');assert.equal(requests[0].ownerName,'Organizer');assert.ok(!JSON.stringify(requests).includes('budget'));assert.ok(!JSON.stringify(requests).includes('Private travel'));
  assert.equal((await service.plan(x.a,x.g.groupId)).result.state,'NEEDS_CLARIFICATION');
  await assert.rejects(service.collectionConsent(x.a,x.command(owner.revision,'NOMINEE_AGREE')),/NOT_FOUND/);
@@ -123,4 +127,17 @@ test('closed browser context shows only the admitted roster and rejects an exclu
  await service.closeRoster(x.a,{commandId:randomUUID(),groupId:x.g.groupId,expectedRevision:b.revision,memberIds:[x.g.memberId,x.joined.memberId]});
  const context=await service.participantContext(x.a,x.g.groupId);assert.equal(context.members.length,2);assert.ok(context.members.every(m=>m.admitted));assert.ok(!JSON.stringify(context.members).includes('Excluded joiner'));
  await assert.rejects(service.participantContext(excluded,x.g.groupId),/NOT_FOUND/);
+});
+
+test('a closed roster never counts or asks an excluded collector; the owner must choose an admitted friend',async()=>{
+ const x=await setup(),excluded=actor();const joined=await service.join(excluded,{commandId:randomUUID(),invite:x.g.invite,displayName:'Excluded collector'});
+ const a=await service.save(x.a,{commandId:randomUUID(),groupId:x.g.groupId,expectedRevision:joined.revision,expectedPreferenceId:null,preference:{...pref,collection:'NOMINEE_LATER',nomineeMemberId:joined.memberId},optionalText:null});
+ const b=await service.save(x.b,{commandId:randomUUID(),groupId:x.g.groupId,expectedRevision:a.revision,expectedPreferenceId:null,preference:pref,optionalText:null});
+ const closed=await service.closeRoster(x.a,{commandId:randomUUID(),groupId:x.g.groupId,expectedRevision:b.revision,memberIds:[x.g.memberId,x.joined.memberId]});
+ assert.deepEqual((await service.participantContext(x.a,x.g.groupId)).collectionRequests,[]);
+ assert.equal((await service.plan(x.a,x.g.groupId)).result.state,'NEEDS_CLARIFICATION');
+ await assert.rejects(service.save(x.a,{commandId:randomUUID(),groupId:x.g.groupId,expectedRevision:closed.revision,expectedPreferenceId:a.preferenceId,preference:{...pref,collection:'NOMINEE_LATER',nomineeMemberId:joined.memberId},optionalText:null}),/INVALID_NOMINEE/);
+ await service.save(x.a,{commandId:randomUUID(),groupId:x.g.groupId,expectedRevision:closed.revision,expectedPreferenceId:a.preferenceId,preference:{...pref,collection:'NOMINEE_LATER',nomineeMemberId:x.joined.memberId},optionalText:null});
+ assert.equal((await service.participantContext(x.a,x.g.groupId)).collectionRequests[0].ownerAgreed,false);
+ assert.deepEqual((await service.participantContext(x.b,x.g.groupId)).collectionRequests,[]);
 });

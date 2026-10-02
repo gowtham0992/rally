@@ -70,9 +70,9 @@ Webhook signatures are verified through PayPal, events are deduplicated, and eve
 
 The shared planner enforces confirmed budgets, availability, technique, outcome, finish times, and collection consent against published catalog facts. It excludes unverified offerings and produces a shared projection without private budgets or participant identities. The synthetic catalog lives in `fixtures/studio.json`.
 
-The model boundary accepts only finite interpretations with matching source text and revisions. It cannot accept payment actions or invented offering identities. A model endpoint, automatic question selection and its two-question limit, and managed authentication are not implemented yet. Private intake, collection consent and merchant approval are implemented at the PostgreSQL service layer. The local planning checks are not the required 24-case model evaluation and establish no AI superiority.
+The model boundary accepts only finite interpretations with matching source text and revisions. It cannot accept payment actions or invented offering identities. Managed Supabase authentication and bounded Astropods clarification are integrated. The owner explicitly confirms any interpreted requirement; a structured-only path is also available. Private intake, collection consent and merchant approval are implemented at the PostgreSQL service layer. The local planning checks are not the required 24-case model evaluation and establish no AI superiority.
 
-The [build contract](build-contract.json) retains the full product scope. Remaining gates include webhook delivery/signature testing against PayPal, managed participant authentication, private planning and model evaluation, the merchant and mobile participant experience, deployment, observed usability and merchant validation, and submission materials. None is implied complete by green local payment tests.
+The [build contract](build-contract.json) retains the full product scope. Remaining gates include webhook delivery/signature testing against PayPal, multi-account managed-auth verification, model evaluation, the merchant and mobile participant experience, deployment, observed usability and merchant validation, and submission materials. None is implied complete by green local payment tests.
 
 Code is licensed under MIT. Dependencies retain their respective licenses.
 
@@ -91,11 +91,10 @@ web application. Managed Auth verification must construct `IntakeActor` on the
 server; request bodies must never supply it. Published catalog selection must
 also come from trusted server configuration, rather than participant-supplied
 catalog JSON. The tables have RLS enabled with no browser policies, for
-server-only access. Clarification commands,
-private-text retention scheduling and managed authentication remain separate
-required work. A nomination without consent remains unresolved.
+server-only access. Grounded clarification commands and managed authentication are integrated;
+private-text retention scheduling remains required work. A nomination without consent remains unresolved.
 
-The ten intake tests exercise cross-user denial, safe organizer projections,
+The intake tests exercise cross-user denial, safe organizer projections,
 concurrent edits, retry after restart, exact roster closure, immutable history,
 candidate invalidation, infeasibility and isolated migration reversal. The
 reservation concurrency test verifies exactly one persisted reservation; its
@@ -238,7 +237,7 @@ the database role must be server-only.
 
 `render.yaml` prepares one web service and one settlement worker, with manual
 deploys and secrets supplied in Render. `/api/health` checks the app database
-without exposing database errors. The hosted database must be provisioned and
+without exposing database errors. The hosted database has been provisioned; deployment configuration must be
 migrated with a restricted application role before deployment. Set `APP_ORIGIN`
 to the final HTTPS address and allow exactly its `/auth/callback` in Supabase.
 Do not deploy with the local database URL. No real payments are enabled.
@@ -249,3 +248,20 @@ Redeploy the previous compatible commit to resume. This remains a planned
 procedure until exercised against a hosted deployment. Do not discard unknown
 payment results during a redeploy. Observe health failures and worker step failures
 immediately after deployment; do not enable checkout while these are unresolved.
+
+### Hosted database and collection UI
+
+The existing Rally Supabase project has a private application schema and a
+restricted server login. All seven migrations are installed. The connection
+verifies the provider certificate and hostname using the bundled public root.
+Browser roles cannot access this schema. See [hosted database setup](docs/hosted-database.md)
+and the scoped [hosted audit](evidence/hosted-database.json). The local app still
+uses local PostgreSQL; Render deployment remains pending.
+
+Saved participant details now collapse into a private summary. Collection
+requests require separate owner and nominee agreements; the owner sees a pending
+request before disclosure, while the nominee sees it only after owner consent.
+The plan refreshes every ten seconds while viewing saved details, pauses during
+edits or mutations, and preserves drafts on failures. Owner browser actions were
+checked with managed authentication; collector actions used a synthetic trusted
+service actor. Multi-account managed-auth browser verification remains pending.
