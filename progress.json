@@ -26,8 +26,16 @@
     },
     "typescript": "passed",
     "production_dependency_audit": "0 reported vulnerabilities",
-    "actual_paypal_sandbox": "not_executed",
-    "credentials_doctor": "Sandbox client ID and secret privately configured; merchant ownership verified; identifying three buyer account IDs and approvals.",
+    "actual_paypal_sandbox": {
+      "scope": "Actual three-buyer sandbox CLI/payment-service composition; synthetic offering and local PostgreSQL; no live payments or merchant availability validation.",
+      "success": "CONFIRMED; three COMPLETED $48 captures; $144 gross",
+      "partial_failure": "ABORTED; one $48 capture refunded COMPLETED; two authorizations VOIDED; cleanup COMPLETE",
+      "lost_response_and_process_restart": "CONFIRMED after UNKNOWN and RECONCILING; provider orders contain exactly three captures totaling $144; no extra capture found",
+      "verification": "Independent PayPal GET of each order, authorization, capture and refund; exact configured buyers, merchant, currency, amounts and resource ownership checked.",
+      "report": "evidence/paypal-sandbox/index.html",
+      "remaining": "Incoming signed webhook delivery, actual deadline/withdrawal races, seller wallet/balance reconciliation and product browser journey remain unverified against PayPal."
+    },
+    "credentials_doctor": "All sandbox app, merchant and three distinct personal buyer identifiers configured privately; no credentials committed.",
     "tests": {
       "passed": 52,
       "payment_and_adapter": 24,
@@ -39,12 +47,12 @@
     "ai_quality_and_24_case_evaluation": "not_executed",
     "intake_scope": "Real PostgreSQL service tests with trusted test actors; not managed email-auth or browser end-to-end proof.",
     "latest_full_test_run": "52 passed; TypeScript passed. Six-person intake to approval/settlement plus compensation exercised with real PostgreSQL and simulated payment provider.",
-    "sandbox_oauth": "HTTP 200 access token issued with user-supplied credentials; supplied Client ID matches Rally app on sandbox Business seller. Actual three-buyer lifecycle not yet executed."
+    "sandbox_oauth": "Sandbox HTTP 200 access token; supplied Client ID matched Rally app on the selected Business seller."
   },
   "external_dependencies": [
     {
       "name": "PayPal sandbox business app and three personal buyer accounts",
-      "state": "credentials_validated_buyer_configuration_in_progress",
+      "state": "configured_and_core_scenarios_verified",
       "setup": "README.md",
       "template": ".env.example"
     },
@@ -62,11 +70,12 @@
     }
   ],
   "remaining_requirements": [
-    "Execute and review actual three-buyer PayPal sandbox lifecycle and recovery evidence",
-    "Managed participant identity, private preference intake and consent",
+    "Verify incoming PayPal webhook signature/deduplication, actual deadline/withdrawal races and seller balance reconciliation; core three-buyer scenarios passed",
+    "Managed participant identity and browser integration of private intake and consent",
     "Deterministic grounded candidate validation and equal structured baseline",
     "Bounded AI clarification plus 24-case evaluation repeated three times",
     "Merchant catalog, frozen offer approval, reservation and financial exception experience",
+    "Merchant cancellation, participant withdrawal/revision and truthful financial exception handling integrated end to end",
     "Complete polished mobile participant journey and meaningful end-to-end verification",
     "Current official rules review and submission compliance audit",
     "Observed usability and merchant validation; authorization before external contact",
@@ -75,11 +84,17 @@
     "Polished public demo video under three minutes",
     "Complete Devpost draft materials; human approval before entry submission"
   ],
-  "next_independent_slice": "Managed identity and persistent private intake, followed by the merchant approval and mobile experience; actual sandbox proof remains a required gate.",
+  "next_independent_slice": "Next.js mobile journey and managed identity binding, followed by bounded AI clarification/evaluation; connect merchant cancellation and public sandbox demo.",
   "release_restrictions": [
-    "No actual PayPal integration claim yet",
+    "Core PayPal sandbox scenarios verified; full authenticated application and remaining provider recovery gates are incomplete",
     "No live customer payments",
     "No paid-service charges without authorization",
     "No external contact or entry submission without authorization"
+  ],
+  "completed_sandbox_work": [
+    "Three independently authorized buyers successfully captured sequentially before booking confirmation",
+    "Deliberately voided authorization after first capture: real refund and remaining voids completed",
+    "Deliberately dropped successful capture response: a restarted process discovered its existing capture and completed remaining shares",
+    "Independent resource verification found exactly the recorded captures on all nine PayPal orders"
   ]
 }

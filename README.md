@@ -2,7 +2,7 @@
 
 Rally helps a group agree on a studio experience privately, then book with each person paying their own share through PayPal.
 
-The current implementation covers the durable payment engine and shared planning rules. There is no participant web application yet. Local PostgreSQL tests exercise group settlement and recovery with a simulated provider; an actual PayPal sandbox run is still required. Synthetic offers are not real studio availability.
+The current implementation covers durable payments, persistent private intake, collection consent, deterministic planning and merchant-approved frozen offers. There is no participant web application yet. Three distinct buyers completed actual PayPal sandbox success, partial-failure compensation and dropped-response reconciliation after a worker restart. Synthetic offers are not real studio availability.
 
 ## Run the local checks
 
@@ -41,7 +41,7 @@ The doctor prints whether values are configured, never their contents. It exits 
 
 ## Execute the three-buyer lifecycle
 
-The following procedure is implemented but has **not yet been executed against PayPal**. Do not run the background worker during these fault scenarios: the command runner supplies the deliberate pause between captures.
+The three scenarios below have been executed against **actual PayPal sandbox**. This proves the CLI/payment-service composition, not a finished web application. Do not run the background worker during these fault scenarios: the command runner supplies the deliberate pause between captures.
 
 1. Run `npm run sandbox -- init`. It creates a labeled synthetic $48-per-person offer and prints three sandbox approval links.
 2. Approve each link with its corresponding distinct personal sandbox account.
@@ -70,9 +70,9 @@ Webhook signatures are verified through PayPal, events are deduplicated, and eve
 
 The shared planner enforces confirmed budgets, availability, technique, outcome, finish times, and collection consent against published catalog facts. It excludes unverified offerings and produces a shared projection without private budgets or participant identities. The synthetic catalog lives in `fixtures/studio.json`.
 
-The model boundary accepts only finite interpretations with matching source text and revisions. It cannot accept payment actions or invented offering identities. A model endpoint, automatic question selection and its two-question limit, managed authentication, and persistent private intake are not implemented yet. The local planning checks are not the required 24-case model evaluation and establish no AI superiority.
+The model boundary accepts only finite interpretations with matching source text and revisions. It cannot accept payment actions or invented offering identities. A model endpoint, automatic question selection and its two-question limit, and managed authentication are not implemented yet. Private intake, collection consent and merchant approval are implemented at the PostgreSQL service layer. The local planning checks are not the required 24-case model evaluation and establish no AI superiority.
 
-The [build contract](build-contract.json) retains the full product scope. Remaining gates include the actual sandbox lifecycle, managed participant authentication, private planning and model evaluation, the merchant and mobile participant experience, deployment, observed usability and merchant validation, and submission materials. None is implied complete by green local payment tests.
+The [build contract](build-contract.json) retains the full product scope. Remaining gates include webhook delivery/signature testing against PayPal, managed participant authentication, private planning and model evaluation, the merchant and mobile participant experience, deployment, observed usability and merchant validation, and submission materials. None is implied complete by green local payment tests.
 
 Code is licensed under MIT. Dependencies retain their respective licenses.
 
@@ -92,7 +92,7 @@ server; request bodies must never supply it. Published catalog selection must
 also come from trusted server configuration, rather than participant-supplied
 catalog JSON. The tables have RLS enabled with no browser policies, for
 server-only access. Clarification commands,
-private-text retention scheduling and merchant offer issuance remain separate
+private-text retention scheduling and managed authentication remain separate
 required work. A nomination without consent remains unresolved.
 
 The ten intake tests exercise cross-user denial, safe organizer projections,
@@ -147,3 +147,26 @@ They cover six-person successful settlement, partial-payment compensation,
 overlapping reservations, immutable snapshots, unauthorized access, required
 merchant attestation, unsupported catalogs, session lead time and invalidated
 review. They do not establish actual PayPal sandbox payment or real availability.
+
+### Independently verify a sandbox run
+
+```sh
+npm run sandbox:verify -- success
+npm run sandbox:verify -- partial-failure OFFER_UUID
+npm run sandbox:verify -- lost-response OFFER_UUID
+```
+
+The optional UUID selects a recorded run; without it the current CLI session is
+used. Verification performs read-only PayPal resource queries, checks exact
+merchant/order/member bindings, configured distinct buyers, USD amounts,
+authorization ownership and every provider capture ID. It verifies refunds and
+voids for the deliberate failure; for the dropped response it also requires
+recorded unknown/reconciliation events. The application never replays the
+uncertain capture in these runs. Capture status can become `REFUNDED` after a
+completed full refund. Evidence includes source hashes, provider states, gross
+amounts, seller fee/net details and the application event history. Generated
+evidence remains under ignored `evidence/private/` until reviewed for sharing.
+
+Actual sandbox results do not establish managed-auth correctness, real merchant
+availability, mobile usability, model quality, incoming webhook verification or
+conversion lift. Those gates remain open.

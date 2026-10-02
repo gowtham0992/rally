@@ -75,10 +75,14 @@ try {
       const wrapper = {mode:provider.mode,retentionMs:provider.retentionMs.bind(provider),observe:provider.observe.bind(provider),
         execute:async(op:Operation):Promise<Observation> => {
           const result=await provider.execute(op);
-          if (op.kind === 'CAPTURE' && result.outcome === 'success' && !dropped) {dropped=true;throw new Error('Local fault: successful provider response deliberately dropped');}
+          if (op.kind === 'CAPTURE' && result.outcome === 'success' && !dropped) {
+            await writeFile(new URL(`local-fault-${session.id}.json`,directory),JSON.stringify({label:'Local fault: successful provider response deliberately dropped',offerId:session.id,operationId:op.id,observedResult:result},null,2),{mode:0o600});
+            dropped=true;throw new Error('Local fault: successful provider response deliberately dropped');
+          }
           return result;
         }};
       await new PaymentEngine(pool,wrapper).step(session.id);
+      if(!dropped) throw new Error('Capture did not complete successfully; dropped-response fault was not injected.');
       console.log('Local fault: successful provider response deliberately dropped.');
       for(let i=0;i<20;i++) if(!await engine.step(session.id)) break;
     }
