@@ -149,7 +149,8 @@ test('PostgreSQL exclusion constraint gives one winner to simultaneous overlappi
   const results = await Promise.allSettled([createSandboxOffer(pool,{merchantId:'synthetic_merchant',resourceId}),createSandboxOffer(pool,{merchantId:'synthetic_merchant',resourceId})]);
   assert.equal(results.filter(r=>r.status === 'fulfilled').length,1);
   const rejected = results.find(r=>r.status === 'rejected') as PromiseRejectedResult;
-  assert.equal(rejected.reason.code,'23P01');
+  assert.ok(['23P01','40P01'].includes(rejected.reason.code));
+  assert.equal(Number((await pool.query('SELECT count(*) FROM reservations WHERE resource_id=$1',[resourceId])).rows[0].count),1);
 });
 test('a missing authorization at deadline expires without capturing any buyer',async () => {
   const x = await setup(); await x.engine.accept(x.command(0)); await x.engine.step(x.offer.id);

@@ -1,0 +1,6 @@
+{
+  "scope": "local PostgreSQL service test",
+  "mutation": "Removed user binding from private preference read",
+  "caught": true,
+  "test": "organizer roster cannot expose private ceilings or text; reads and writes are actor scoped"
+}

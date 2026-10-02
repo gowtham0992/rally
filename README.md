@@ -75,3 +75,29 @@ The model boundary accepts only finite interpretations with matching source text
 The [build contract](build-contract.json) retains the full product scope. Remaining gates include the actual sandbox lifecycle, managed participant authentication, private planning and model evaluation, the merchant and mobile participant experience, deployment, observed usability and merchant validation, and submission materials. None is implied complete by green local payment tests.
 
 Code is licensed under MIT. Dependencies retain their respective licenses.
+
+### Persistent private intake (service layer)
+
+`src/intake/service.ts` stores groups, memberships and immutable confirmed
+preference revisions. Mutations bind a trusted verified actor, record command
+results transactionally, reject conflicting retries and stale aggregate or
+preference revisions, and invalidate cached planning after changes. Organizer
+roster projections contain display names and readiness only. Exact roster
+closure requires every selected member to have saved preferences and includes
+the organizer. Shared planning uses the existing deterministic validator.
+
+These are **service-level PostgreSQL checks**, not a completed authenticated
+web application. Managed Auth verification must construct `IntakeActor` on the
+server; request bodies must never supply it. Published catalog selection must
+also come from trusted server configuration, rather than participant-supplied
+catalog JSON. The tables have RLS enabled with no browser policies, for
+server-only access. Collection consent persistence, clarification commands,
+private-text retention scheduling and merchant offer issuance remain separate
+required work. A nomination without consent remains unresolved.
+
+The seven intake tests exercise cross-user denial, safe organizer projections,
+concurrent edits, retry after restart, exact roster closure, immutable history,
+candidate invalidation, infeasibility and isolated migration reversal. The
+reservation concurrency test verifies exactly one persisted reservation; its
+loser can receive an exclusion violation or a transaction deadlock. Production
+merchant approval will need to report or retry these conflicts safely.
