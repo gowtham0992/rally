@@ -13,16 +13,17 @@ export function sameOrigin(request:Request,origin=appOrigin()){
 export function safeNext(value:unknown):string {
  return typeof value==='string'&&/^\/(?!\/)[A-Za-z0-9/_?=&%-]*$/.test(value)&&value.length<512?value:'/';
 }
-export async function body(request:Request){
+export async function rawJsonBody(request:Request,maxBytes=12000){
  if(!request.headers.get('content-type')?.startsWith('application/json'))throw new WebError('JSON_REQUIRED',415);
  // Bound streamed input as well as Content-Length; private wording is never logged.
- if(Number(request.headers.get('content-length')??0)>12000)throw new WebError('REQUEST_TOO_LARGE',413);
+ if(Number(request.headers.get('content-length')??0)>maxBytes)throw new WebError('REQUEST_TOO_LARGE',413);
  const reader=request.body?.getReader();if(!reader)throw new WebError('INVALID_REQUEST');
  let bytes=0;const chunks:Uint8Array[]=[];
- try{while(true){const {done,value}=await reader.read();if(done)break;bytes+=value.length;if(bytes>12000){await reader.cancel();throw new WebError('REQUEST_TOO_LARGE',413);}chunks.push(value);}}
+ try{while(true){const {done,value}=await reader.read();if(done)break;bytes+=value.length;if(bytes>maxBytes){await reader.cancel();throw new WebError('REQUEST_TOO_LARGE',413);}chunks.push(value);}}
  finally{reader.releaseLock();}
- try{return JSON.parse(Buffer.concat(chunks).toString('utf8'));}catch{throw new WebError('INVALID_REQUEST');}
+ try{const raw=Buffer.concat(chunks);return {value:JSON.parse(new TextDecoder('utf-8',{fatal:true}).decode(raw)),raw};}catch{throw new WebError('INVALID_REQUEST');}
 }
+export async function body(request:Request){return (await rawJsonBody(request)).value;}
 export function errorResponse(error:unknown){
  if(error instanceof WebError){
   const headers:Record<string,string>={'Cache-Control':'no-store'};

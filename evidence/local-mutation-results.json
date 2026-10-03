@@ -38,6 +38,18 @@
       "exitCode": 1
     },
     {
+      "mutation": "webhook RSA signature verification removed",
+      "baselinePassed": true,
+      "caught": true,
+      "exitCode": 1
+    },
+    {
+      "mutation": "webhook body reformatted before verification",
+      "baselinePassed": true,
+      "caught": true,
+      "exitCode": 1
+    },
+    {
       "mutation": "provider amount guard removed",
       "baselinePassed": true,
       "caught": true,

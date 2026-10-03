@@ -302,12 +302,12 @@ export class PaymentEngine {
       payerApprovalRequired:auth?.state==='FAILED'&&auth.safe_code==='PAYER_APPROVAL_REQUIRED'};
   }
 
-  async webhook(headers:Record<string,string>,value:unknown) {
+  async webhook(headers:Record<string,string>,value:unknown,raw?:Uint8Array) {
     if (JSON.stringify(value).length > 256000) throw new DomainError('WEBHOOK_TOO_LARGE',413);
-    if (!this.provider.verifyWebhook || !await this.provider.verifyWebhook(headers,value)) throw new DomainError('INVALID_WEBHOOK_SIGNATURE',403);
+    if (!this.provider.verifyWebhook || !await this.provider.verifyWebhook(headers,value,raw)) throw new DomainError('INVALID_WEBHOOK_SIGNATURE',403);
     const input = z.object({id:z.string().min(1).max(128),event_type:z.string().max(128),
-      resource:z.object({id:z.string().min(1).max(128),invoice_id:z.string().optional()}).passthrough() }).parse(value);
-    const kind = input.event_type === 'PAYMENT.CAPTURE.REFUNDED' ? 'REFUND'
+      resource:z.object({id:z.string().min(1).max(128),invoice_id:z.string().max(128).optional()}).passthrough() }).parse(value);
+    const kind = ['PAYMENT.CAPTURE.REFUNDED','PAYMENT.REFUND.PENDING','PAYMENT.REFUND.FAILED'].includes(input.event_type) ? 'REFUND'
       : ['PAYMENT.CAPTURE.COMPLETED','PAYMENT.CAPTURE.PENDING','PAYMENT.CAPTURE.DECLINED'].includes(input.event_type) ? 'CAPTURE' : null;
     return transaction(this.pool,async client => {
       const inserted = await client.query('INSERT INTO provider_webhooks(event_id,event_type,resource_id) VALUES($1,$2,$3) ON CONFLICT DO NOTHING RETURNING event_id',

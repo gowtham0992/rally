@@ -28,17 +28,18 @@
     "Applied participant-provided hackathon advice to an explicit narrow execution focus and eight-scene 155-second demo plan. Current official judging criteria, dates and packaging requirements checked via Devpost connector; factual metadata recorded. Main six-person browser recording, public video, full rules/eligibility audit and final submission packet remain unfinished; no customer/consent/payment outcome fabricated.",
     "Free-hosting adaptation after participant declined card/payment: one Render Free web Blueprint, private bounded scheduled payment runner, offline Supabase Cron/Vault setup command; seven new scheduler and four resumable judge-preparation tests. Actual idle production HTTP boundary verified; 107 full tests, typecheck and production build passed. Hosted scheduler and managed judge identities are not created yet.",
     "Managed judge entry and role switching: 35 approved fictional Supabase Auth accounts on verified Free plan, five hosted isolated workspaces, migration 011 active-identity fence, separate HttpOnly cookies and immutable document viewer. Actual seven-role HTTP proof and browser stale-save draft retention passed; 110 full tests and mutation guard passed. No emails, AI calls or payments from this slice.",
-    "Approved free sandbox preview deployed as a78783f on one Render Free Node service at rally.gowthamsarveswaran.com; exact DNS-only CNAME, valid HTTPS, managed browser switching for all seven fictional roles, local/Auth redirects preserved. Private synchronous Supabase Cron/Vault installed after queue-based setup failed closed; actual idle database HTTPS request returned 200, Cron receipts succeeded, zero payment operations. Full browser payments and hosted cold-wake/recovery gates remain open."
+    "Approved free sandbox preview deployed as a78783f on one Render Free Node service at rally.gowthamsarveswaran.com; exact DNS-only CNAME, valid HTTPS, managed browser switching for all seven fictional roles, local/Auth redirects preserved. Private synchronous Supabase Cron/Vault installed after queue-based setup failed closed; actual idle database HTTPS request returned 200, Cron receipts succeeded, zero payment operations. Full browser payments and hosted cold-wake/recovery gates remain open.",
+    "PayPal HTTPS webhook route implemented with raw-byte RSA-SHA256 verification, strict PayPal certificate URL allowlist, bounded downloads/cache/body, durable quota and safe error responses. Seven new local cryptographic/HTTP tests and a lost-refund notification recovery regression, all 118 tests, 20 caught mutations, TypeScript and production build passed. Local certificates are disposable test fixtures; deployed subscription and genuine signed Sandbox delivery remain pending."
   ],
   "evidence": {
     "scope": "Local service tests use real PostgreSQL and a simulated provider; separate reviewed records prove three actual PayPal sandbox scenarios.",
     "payment_tests": {
-      "passed": 26,
+      "passed": 27,
       "consecutive_green_runs": 1
     },
     "mutation_checks": {
-      "caught": 18,
-      "total": 18,
+      "caught": 20,
+      "total": 20,
       "targeted_unmodified_baselines_passed": true,
       "file": "evidence/local-mutation-results.json"
     },
@@ -55,8 +56,8 @@
     },
     "credentials_doctor": "All sandbox app, merchant and three distinct personal buyer identifiers configured privately; no credentials committed.",
     "tests": {
-      "passed": 110,
-      "payment_and_adapter": 26,
+      "passed": 118,
+      "payment_and_adapter": 27,
       "planning_and_model_boundary": 9,
       "persistent_intake": 13,
       "merchant_booking_loop": 16,
@@ -67,12 +68,13 @@
       "shared_request_limits": 6,
       "judge_workspace_foundation": 11,
       "scheduled_payment_processing": 7,
-      "offline_judge_preparation": 4
+      "offline_judge_preparation": 4,
+      "webhook_crypto_and_http": 7
     },
     "model_api_calls": 221,
     "ai_quality_and_24_case_evaluation": "passed_actual_72_run_final_prompt",
     "intake_scope": "Real PostgreSQL service tests with trusted test actors; not managed email-auth or browser end-to-end proof.",
-    "latest_full_test_run": "110 local tests passed; weakened active-identity guard caught. TypeScript and production build passed. Actual managed HTTP proof covers seven roles, scope, stale cookies, restore and exit; browser verifies friend/studio switching and stale draft protection. Complete six-buyer journey and hosted payment recovery remain pending.",
+    "latest_full_test_run": "118 local tests passed; 20 weakened safeguards caught including RSA verification and raw-body integrity. TypeScript and production build passed. Actual webhook subscription and signed Sandbox delivery remain pending.",
     "sandbox_oauth": "Sandbox HTTP 200 access token; supplied Client ID matched Rally app on the selected Business seller.",
     "managed_auth_browser": {
       "scope": "Existing healthy Rally Supabase Auth project; local Next.js app and local PostgreSQL; synthetic studio/name/preferences. User completed email login, agent used resulting verified session.",

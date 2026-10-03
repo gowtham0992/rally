@@ -33,7 +33,7 @@ export interface PaymentProvider {
   retentionMs(kind: Kind): number | null;
   execute(operation: Operation): Promise<Observation>;
   observe(operation: Operation): Promise<Observation | null>;
-  verifyWebhook?(headers:Record<string,string>,event:unknown):Promise<boolean>;
+  verifyWebhook?(headers:Record<string,string>,event:unknown,raw?:Uint8Array):Promise<boolean>;
 }
 export class DomainError extends Error {
   constructor(public code: string, public status = 409) { super(code); }

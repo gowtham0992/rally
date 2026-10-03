@@ -181,6 +181,23 @@ test('unverified webhook cannot change financial state',async () => {
   await assert.rejects(x.engine.webhook({},{id:'attack',event_type:'PAYMENT.CAPTURE.COMPLETED',resource:{id:'fake'}}),{code:'INVALID_WEBHOOK_SIGNATURE'});
   assert.equal((await pool.query('SELECT count(*)::int AS count FROM provider_webhooks WHERE event_id=$1',['attack'])).rows[0].count,0);
 });
+test('verified refund notifications locate lost refund responses without trusting claimed status',async()=>{
+ const x=await setup();await x.prepare();x.provider.failedMembers.add(x.offer.members[1].id);x.provider.lostResponses.add('REFUND');
+ let op: {id:string;state:string;provider_id:string|null}|undefined;
+ for(let i=0;i<10;i++){
+  await x.engine.step(x.offer.id);
+  op=(await pool.query("SELECT id,state,provider_id FROM payment_operations WHERE offer_id=$1 AND kind='REFUND'",[x.offer.id])).rows[0];
+  if(op?.state==='UNKNOWN')break;
+ }
+ assert.ok(op);assert.equal(op.state,'UNKNOWN');assert.equal(op.provider_id,null);x.provider.verifyWebhook=async()=>true;
+ for(const eventType of ['PAYMENT.REFUND.PENDING','PAYMENT.REFUND.FAILED','PAYMENT.CAPTURE.REFUNDED']){
+  await x.engine.webhook({},{id:randomUUID(),event_type:eventType,resource:{id:'REFUND_'+op.id,invoice_id:op.id,status:'COMPLETED'}});
+  const stored=(await pool.query('SELECT state,provider_id FROM payment_operations WHERE id=$1',[op.id])).rows[0];
+  assert.equal(stored.state,'UNKNOWN');assert.equal(stored.provider_id,'REFUND_'+op.id);
+ }
+ await x.settle();assert.deepEqual(await x.state(),{state:'ABORTED',cleanup:'COMPLETE'});
+ assert.equal(x.provider.financialEffects.refunds,1);
+});
 test('migration down and up succeeds in an isolated empty schema',async () => {
   const name = `rally_migration_${randomUUID().replaceAll('-','')}`;
   const client = await admin.connect();

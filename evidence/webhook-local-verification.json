@@ -1,0 +1,19 @@
+{
+  "checkedAt": "2026-10-03T06:09:38.529Z",
+  "scope": "local_disposable_rsa_certificate_and_http_fixtures",
+  "fullTestsPassed": 118,
+  "newWebhookTestsPassed": 7,
+  "mutationChecksCaught": 20,
+  "mutationChecksTotal": 20,
+  "typecheck": "passed",
+  "productionBuild": "passed",
+  "exactRawBodyBound": true,
+  "signatureBypassMutationCaught": true,
+  "bodyReserializationMutationCaught": true,
+  "unsafeCertificateURLsRejected": true,
+  "streamedBodyAndCertificateBoundsVerified": true,
+  "durableDatabaseDedupTestsPassed": true,
+  "actualPayPalCertificateUsed": false,
+  "signedSandboxDeliveryVerified": false,
+  "refundNotificationRecoveryRegressionPassed": true
+}

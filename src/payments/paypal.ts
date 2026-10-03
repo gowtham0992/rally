@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import {appOrigin} from '../web/security.ts';
+import {verifyPayPalWebhook} from './webhook-signature.ts';
 import { ProviderError, decimal, parseMinor, type Kind, type Observation, type Operation, type PaymentProvider } from './types.ts';
 
 const id = z.string().regex(/^[A-Za-z0-9_-]{1,127}$/);
@@ -182,13 +183,8 @@ export class PayPalSandbox implements PaymentProvider {
     if (['VOIDED','EXPIRED','DENIED'].includes(auth.status)) return {outcome:'failure',status:auth.status,code:'AUTHORIZATION_UNAVAILABLE'};
     return null;
   }
-  async verifyWebhook(headers:Record<string,string>,event:unknown):Promise<boolean> {
+  async verifyWebhook(headers:Record<string,string>,event:unknown,raw?:Uint8Array):Promise<boolean> {
     if (!this.config.webhookId) throw new ProviderError('WEBHOOK_NOT_CONFIGURED');
-    const result = z.object({verification_status:z.string()}).parse(await this.request('/v1/notifications/verify-webhook-signature',{
-      transmission_id:headers['paypal-transmission-id'],transmission_time:headers['paypal-transmission-time'],
-      cert_url:headers['paypal-cert-url'],auth_algo:headers['paypal-auth-algo'],transmission_sig:headers['paypal-transmission-sig'],
-      webhook_id:this.config.webhookId,webhook_event:event
-    }));
-    return result.verification_status === 'SUCCESS';
+    return verifyPayPalWebhook(this.config.webhookId,headers,event,raw,this.transport);
   }
 }
