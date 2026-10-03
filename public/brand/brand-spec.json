@@ -1,0 +1,26 @@
+{
+  "mode": "built-in image_gen",
+  "symbol_prompt": "Use case: logo-brand. Asset type: production app logo symbol for Rally, a consumer product where friends agree on plans and everyone pays their own share. Create one exceptionally well-designed original compact symbol: a bold continuous lowercase r / rally knot made from three rounded, confident paths converging into one forward-moving form. It should communicate people coming together, shared momentum and ease, with a clever memorable negative-space cut. Think a distinctive designer-drawn monogram rather than a literal illustration. Strong simple silhouette, balanced optical weight, recognizable at 24 pixels. Flat solid deep green #117b35 only, clean crisp vector-like edges. Square composition, symbol filling about 85% of the canvas with even tight clear space. Real transparent background. No words, no letters apart from the implicit r shape, no frame or background tile, no shadows, no gradient, no 3D, no outline-only drawing. Avoid an upward stock-chart arrow, generic chain-link or infinity icon, handshake, people-head dots, leaves, stars or sparkle. One final symbol, not a concept sheet. It must feel confident and beautifully crafted alongside black modern sans-serif lowercase wordmark typography and lime UI actions.",
+  "lockup_prompt": "Use case: logo-brand. Edit the provided Rally symbol into a final premium horizontal logo lockup on a genuinely transparent background. Preserve its distinctive exact silhouette and negative space: three rounded streams meeting into one forward-moving form. Clean up the green to a single perfectly flat solid #117b35, crisp vector-like edges, zero grain or texture. Place this symbol at the left and the exact lowercase word 'rally' at the right, spelled r a l l y. Draw the wordmark in a beautiful confident modern sans-serif: bold but not chunky, tightly and optically kerned, near-black #111714, subtly rounded terminals, readable at small sizes. The icon and wordmark should have equal visual weight, with the mark only a little taller than the lowercase text. Carefully balance the gap so it feels like one coherent brand. Use a wide landscape canvas, tight composition, the horizontal logo filling about 90% of canvas width and 75% of canvas height with even clear space. One final usable logo only. No tagline, mockup, extra logos, border, tile, background color, shadow, glow, gradient, bevel, 3D, or texture. Preserve transparency. This is the finished logo for a polished app used by groups of friends.",
+  "white_background_prompt": "Use case: logo-brand. Create a white-background presentation/export version of the provided finished Rally logo. Preserve exactly the existing three-stream green symbol, the lowercase rally wordmark, their spacing, silhouette, proportions and colors. Change only the transparent backdrop to pure solid white #ffffff. Center the complete lockup on a wide 3:1 landscape canvas with modest even clear space, the full lockup filling about 85% of the canvas width. Flat crisp artwork. No extra text, tagline, mockup, shadows, border, texture or embellishment. One logo only.",
+  "concept": "Three paths become one shared plan; a green convergence mark and rounded lowercase wordmark.",
+  "assets": {
+    "transparent_lockup": "rally-logo-v1.png",
+    "transparent_symbol": "rally-mark-v1.png",
+    "white_background_export": "rally-logo-white-v1.png",
+    "app_icon": "../../app/icon.png"
+  },
+  "verification": {
+    "transparent_pngs": "RGBA, alpha includes both 0 and 255",
+    "browser_widths_css_px": [
+      374,
+      768,
+      1280
+    ],
+    "image_loaded": true,
+    "horizontal_overflow": false,
+    "typecheck": "passed",
+    "production_build": "passed"
+  },
+  "constraints": "Original raster artwork generated with the built-in image_gen tool. Keep alpha, proportions and clear space; use dark wordmark on white or light backgrounds."
+}

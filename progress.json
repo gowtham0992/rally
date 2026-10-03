@@ -20,7 +20,8 @@
     "Managed-auth organizer request, owner-scoped paginated studio queue and explicit four-attestation approval UI; exact buffered calendar interval, stale-plan rejection, immutable issued-offer view and authoritative group booking status. Local synthetic owner/operator browser fixture created exactly one held offer and zero payment operations.",
     "Managed-auth individual checkout with explicit frozen-offer acceptance, owned sandbox redirect and worker authorization; coherent private payment status snapshot. Actual browser created one sandbox order and rejected approval before PayPal sign-in with zero authorizations/captures. Phone/tablet/desktop reviewed; complete multi-buyer browser lifecycle remains required.",
     "Studio-owned cancellation, private participant cancellation requests, worker compensation for late captures and organizer reopening gated on complete recovery; bounded studio booking history. Actual single-account synthetic cancellation/reopening observed with zero payments; six new PostgreSQL tests and six isolated mutations cover financial/ownership boundaries. Hosted migration 008 and restricted-runtime audit passed.",
-    "User-requested Robinhood-inspired UI redesign across catalog, private intake, frozen offer and studio: white/black sans-serif, large prices/readiness, lime actions, compact rows and native roster disclosure. Reviewed at 374/768/1280 CSS pixels; keyboard focus, required validation, invalid budget draft retention and explicit discard observed. TypeScript and production build passed."
+    "User-requested Robinhood-inspired UI redesign across catalog, private intake, frozen offer and studio: white/black sans-serif, large prices/readiness, lime actions, compact rows and native roster disclosure. Reviewed at 374/768/1280 CSS pixels; keyboard focus, required validation, invalid budget draft retention and explicit discard observed. TypeScript and production build passed.",
+    "Created original Rally convergence logo with the built-in image generator; transparent symbol/wordmark and white-background export saved in public/brand. Header and browser icon integrated, rendered at 374/768/1280 CSS pixels without overflow; TypeScript and production build passed."
   ],
   "evidence": {
     "scope": "Local service tests use real PostgreSQL and a simulated provider; separate reviewed records prove three actual PayPal sandbox scenarios.",
@@ -115,7 +116,8 @@
       "scope": "Managed owner/operator synthetic browser with zero payments; financial recovery in real PostgreSQL using simulated provider",
       "actual_paypal_cancellation_browser": "Not verified"
     },
-    "ui_redesign": "evidence/web/redesign.json"
+    "ui_redesign": "evidence/web/redesign.json",
+    "rally_brand": "public/brand/brand-spec.json"
   },
   "external_dependencies": [
     {
