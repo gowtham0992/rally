@@ -6,6 +6,8 @@ services:
     runtime: node
     plan: starter
     region: oregon
+    domains:
+      - rally.gowthamsarveswaran.com
     buildCommand: npm ci && npm run build
     startCommand: npm run start -- --hostname 0.0.0.0 --port $PORT
     healthCheckPath: /api/health
@@ -14,7 +16,7 @@ services:
       - key: NODE_VERSION
         value: 22.22.0
       - key: APP_ORIGIN
-        sync: false
+        value: https://rally.gowthamsarveswaran.com
       - key: RALLY_RATE_LIMIT_KEY
         sync: false
       - key: DATABASE_URL

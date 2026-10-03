@@ -5,6 +5,11 @@ existing Supabase Auth/database and Astropods gateway. Deploy the existing
 Render web service and settlement worker from `render.yaml`; AWS adds no
 needed capability to this release.
 
+The participant authorized this domain on October 2, 2026. The web service's
+Blueprint now declares the exact hostname and fixed HTTPS `APP_ORIGIN`.
+Local development keeps its localhost origin. DNS and live HTTPS still require
+the actual assigned Render hostname; declaring a domain does not make it live.
+
 ## Verified account preflight
 
 Read-only checks on October 2, 2026 found:
@@ -44,14 +49,14 @@ hard spending cap based only on the absence of a card.
    private evidence. Keep automatic deployment off during verification.
 4. Verify readiness and recovery with the service's assigned `onrender.com`
    hostname. Obtain that actual hostname before configuring DNS.
-5. Add the exact custom hostname `rally.gowthamsarveswaran.com` to the web
-   service. Add one Cloudflare CNAME named `rally`, targeting the actual
+5. Confirm the Blueprint's exact custom hostname `rally.gowthamsarveswaran.com`
+   appears on the web service. Add one Cloudflare CNAME named `rally`, targeting the actual
    assigned hostname, with **DNS only** and TTL Auto. Do not use a guessed
    `rally.onrender.com` target. This single-subdomain release does not require
    an apex, `www`, wildcard, nameserver or global SSL-mode change.
 6. Verify the domain and valid TLS in Render. Review any conflicting record
    or CAA restriction for this hostname if verification fails.
-7. Set `APP_ORIGIN=https://rally.gowthamsarveswaran.com` on the web service.
+7. Verify the Blueprint's `APP_ORIGIN=https://rally.gowthamsarveswaran.com` on the web service.
    Register the matching Supabase login callback and site URL; check the
    application's generated sandbox PayPal return/cancel URLs and register
    the incoming sandbox webhook endpoint. Preserve useful local Auth

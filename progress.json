@@ -204,6 +204,14 @@
       "videoCreated": false,
       "devpostPacketComplete": false,
       "entrySent": false
+    },
+    "domain_configuration": {
+      "origin": "https://rally.gowthamsarveswaran.com",
+      "participantAuthorized": true,
+      "blueprintConfigured": true,
+      "dnsConnected": false,
+      "httpsVerified": false,
+      "localOriginUnchanged": true
     }
   },
   "external_dependencies": [
