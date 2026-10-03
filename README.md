@@ -2,7 +2,7 @@
 
 Rally helps a group agree on a studio experience privately, then book with each person paying their own share through PayPal.
 
-The current implementation covers durable payments, persistent private intake, collection consent, deterministic planning and merchant-approved frozen offers. There is no participant web application yet. Three distinct buyers completed actual PayPal sandbox success, partial-failure compensation and dropped-response reconciliation after a worker restart. Synthetic offers are not real studio availability.
+The current implementation covers durable payments, persistent private intake, collection consent, deterministic planning and merchant-approved frozen offers. The local participant web application supports managed login, private intake, studio offers and individual sandbox checkout; complete multi-account browser verification remains pending. Three distinct buyers completed actual PayPal sandbox success, partial-failure compensation and dropped-response reconciliation after a worker restart. Synthetic offers are not real studio availability.
 
 ## Run the local checks
 
@@ -336,3 +336,7 @@ Migration 008 adds the CANCELED terminal state and one private cancellation
 request per participant. Its down migration refuses populated cancellation
 history; use forward fixes after real use. The hosted private schema now has
 eight migrations and retains the audited restricted runtime/browsers boundary.
+
+### Consumer UI redesign
+
+The user requested a Robinhood-inspired app. Rally now uses white surfaces, black sans-serif type, large prices and readiness values, lime primary actions, compact lists and thin dividers across the home, private intake, offer and studio screens. Prices and people come from the catalog or stored group data. Native disclosure controls keep rosters accessible without pushing mobile forms down the page. The local checks and screenshots are recorded in `evidence/web/redesign.json`; they establish visual and interaction verification, not complete payment or usability proof.

@@ -1,0 +1,142 @@
+{
+  "recorded_at": "2026-10-03T02:26:08.357894+00:00",
+  "scope": "Local Next.js product; managed owner login; synthetic stored studio/group fixtures. Visual and interaction verification only. No new PayPal approvals, captures, AI calls or hosted deployment.",
+  "direction": "User-requested Robinhood-inspired light consumer app: white, black sans-serif type, large tabular values, compact rows, thin separators and lime actions.",
+  "references": [
+    "https://robinhood.com/us/en/",
+    "https://x.com/RobinhoodApp/status/1956022850126581975"
+  ],
+  "screens_checked": [
+    "Home/catalog",
+    "Private group saved summary and edit form",
+    "Frozen booking offer with pending PayPal approval",
+    "Studio empty request queue and real stored booking history",
+    "New group form"
+  ],
+  "responsive_checks": {
+    "home": {
+      "374": {
+        "viewport_css_px": 374,
+        "document_scroll_width_css_px": 374,
+        "horizontal_overflow": false
+      },
+      "768": {
+        "viewport_css_px": 768,
+        "document_scroll_width_css_px": 768,
+        "horizontal_overflow": false
+      },
+      "1280": {
+        "viewport_css_px": 1280,
+        "document_scroll_width_css_px": 1280,
+        "horizontal_overflow": false
+      }
+    },
+    "group": {
+      "374": {
+        "viewport_css_px": 374,
+        "document_scroll_width_css_px": 374,
+        "horizontal_overflow": false
+      },
+      "768": {
+        "viewport_css_px": 768,
+        "document_scroll_width_css_px": 768,
+        "horizontal_overflow": false
+      },
+      "1280": {
+        "viewport_css_px": 1280,
+        "document_scroll_width_css_px": 1280,
+        "horizontal_overflow": false
+      }
+    },
+    "offer": {
+      "374": {
+        "viewport_css_px": 374,
+        "document_scroll_width_css_px": 374,
+        "horizontal_overflow": false
+      },
+      "768": {
+        "viewport_css_px": 768,
+        "document_scroll_width_css_px": 768,
+        "horizontal_overflow": false
+      },
+      "1280": {
+        "viewport_css_px": 1280,
+        "document_scroll_width_css_px": 1280,
+        "horizontal_overflow": false
+      }
+    },
+    "studio": {
+      "374": {
+        "viewport_css_px": 374,
+        "document_scroll_width_css_px": 374,
+        "horizontal_overflow": false
+      },
+      "768": {
+        "viewport_css_px": 768,
+        "document_scroll_width_css_px": 768,
+        "horizontal_overflow": false
+      },
+      "1280": {
+        "viewport_css_px": 1280,
+        "document_scroll_width_css_px": 1280,
+        "horizontal_overflow": false
+      }
+    },
+    "new_group": {
+      "374": {
+        "viewport_css_px": 374,
+        "document_scroll_width_css_px": 374,
+        "horizontal_overflow": false
+      },
+      "768": {
+        "viewport_css_px": 768,
+        "document_scroll_width_css_px": 768,
+        "horizontal_overflow": false
+      },
+      "1280": {
+        "viewport_css_px": 1280,
+        "document_scroll_width_css_px": 1280,
+        "horizontal_overflow": false
+      }
+    }
+  },
+  "interactions": [
+    "Home logo and New plan links navigate to the correct screens.",
+    "Collapsed actual roster expands and collapses with Enter, showing the three stored fixture members.",
+    "Empty new-group submission is blocked by native required-field validation before group creation; visible focus outline observed.",
+    "Keyboard Tab from group name reaches group-size select with visible green outline.",
+    "Invalid private budget oops remains in the draft, shows a numeric validation error, and disables consent/planning actions while dirty.",
+    "Explicit Discard my edits restores stored $50 summary without saving invalid input.",
+    "Studio booking history opens the owned frozen offer; pending payment remains unconfirmed."
+  ],
+  "contrast_ratios": {
+    "body on white": 18.16,
+    "secondary on white": 5.15,
+    "green action text on white": 5.37,
+    "button text on green": 13.38,
+    "error on white": 6.05,
+    "secondary on soft": 4.77
+  },
+  "checks": {
+    "typescript": "passed",
+    "production_build": "passed",
+    "financial_tests": "No domain/payment logic changes in this redesign; prior 76-test cancellation checkpoint remains separate."
+  },
+  "screenshots": [
+    "redesign-group-desktop.jpg",
+    "redesign-group-mobile.jpg",
+    "redesign-home-desktop.jpg",
+    "redesign-home-mobile.jpg",
+    "redesign-intake-error.jpg",
+    "redesign-new-group-mobile.jpg",
+    "redesign-offer-desktop.jpg",
+    "redesign-offer-mobile.jpg",
+    "redesign-studio-desktop.jpg",
+    "redesign-studio-mobile.jpg"
+  ],
+  "limitations": [
+    "One managed owner/operator session; peers are seeded synthetic fixtures.",
+    "No live friend usability observation.",
+    "Complete multi-account PayPal browser flow and deployment remain pending."
+  ]
+}
