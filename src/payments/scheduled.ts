@@ -2,6 +2,7 @@ import {createHash,timingSafeEqual} from 'node:crypto';
 import type pg from 'pg';
 import {z} from 'zod';
 import {purgeRequestLimits} from '../web/rate-limits.ts';
+import {purgeExpiredPrivateText} from '../intake/retention.ts';
 import {WebError} from '../web/security.ts';
 
 export function authorizeSettlementTrigger(request:Request,mode=process.env.RALLY_SETTLEMENT_MODE,key=process.env.RALLY_SETTLEMENT_TRIGGER_KEY){
@@ -17,6 +18,7 @@ export async function scheduledSettlement(pool:pg.Pool,engine:{step(id:string):P
   if(!acquired)return {state:'BUSY' as const,steps:0,failures:0};
   const started=now();let steps=0,failures=0;
   await purgeRequestLimits(pool);
+  await purgeExpiredPrivateText(pool);
   // Skip open offers with no due work. Future unresolved operations retain their
   // original retry timestamps; the scheduler is not permission to dispatch early.
   const offers=(await pool.query(`SELECT o.id FROM offers o WHERE

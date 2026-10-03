@@ -62,7 +62,9 @@ export class IntakeService {
  });}
  async save(actor:IntakeActor,value:unknown){const p=saveSchema.parse(value);return this.recordCommand(actor,p.commandId,{kind:'SAVE',...p},async c=>{
   const g=await this.group(c,p.groupId,actor);
-  const m=(await c.query('SELECT m.id,m.current_preference_id,m.admitted,p.optional_text,p.wording_bound FROM planning_members m LEFT JOIN preference_revisions p ON p.id=m.current_preference_id WHERE m.group_id=$1 AND m.user_id=$2',[p.groupId,actor.userId])).rows[0];
+  const m=(await c.query(`SELECT m.id,m.current_preference_id,m.admitted,p.wording_bound,
+   CASE WHEN coalesce((to_jsonb(p)->>'private_text_expires_at')::timestamptz<=clock_timestamp(),false) THEN NULL ELSE p.optional_text END AS optional_text
+   FROM planning_members m LEFT JOIN preference_revisions p ON p.id=m.current_preference_id WHERE m.group_id=$1 AND m.user_id=$2`,[p.groupId,actor.userId])).rows[0];
   if(!m)throw new IntakeError('NOT_FOUND');
   if(!['COLLECTING','CLOSED','MERCHANT_REVIEW'].includes(g.state))throw new IntakeError('PLANNING_LOCKED');
   if(g.state!=='COLLECTING'&&!m.admitted)throw new IntakeError('NOT_FOUND');
@@ -79,19 +81,24 @@ export class IntakeService {
  });}
  async ownPreferences(actor:IntakeActor,groupId:string){this.actor(actor);uuid.parse(groupId);
   const group=(await this.pool.query('SELECT * FROM planning_groups WHERE id=$1',[groupId])).rows[0];if(!group)throw new IntakeError('NOT_FOUND');assertWorkspaceScope(actor,group);
-  const m=(await this.pool.query('SELECT p.confirmed,p.optional_text,p.wording_bound FROM planning_members m LEFT JOIN preference_revisions p ON p.id=m.current_preference_id WHERE m.group_id=$1 AND m.user_id=$2',[groupId,actor.userId])).rows[0];
+  const m=(await this.pool.query(`SELECT p.confirmed,p.wording_bound,
+   CASE WHEN coalesce((to_jsonb(p)->>'private_text_expires_at')::timestamptz<=clock_timestamp(),false) THEN NULL ELSE p.optional_text END AS optional_text
+   FROM planning_members m LEFT JOIN preference_revisions p ON p.id=m.current_preference_id WHERE m.group_id=$1 AND m.user_id=$2`,[groupId,actor.userId])).rows[0];
   if(!m)throw new IntakeError('NOT_FOUND');return {preference:m.confirmed,optionalText:m.optional_text};
  }
  async participantContext(actor:IntakeActor,groupId:string){this.actor(actor);uuid.parse(groupId);return transaction(this.pool,async c=>{
   const g=await this.group(c,groupId,actor);
-  const own=(await c.query('SELECT m.id,m.display_name,m.admitted,p.confirmed,p.optional_text,p.wording_bound FROM planning_members m LEFT JOIN preference_revisions p ON p.id=m.current_preference_id WHERE m.group_id=$1 AND m.user_id=$2',[groupId,actor.userId])).rows[0];
+  const own=(await c.query(`SELECT m.id,m.display_name,m.admitted,p.confirmed,p.wording_bound,
+   coalesce((to_jsonb(p)->>'private_text_expires_at')::timestamptz<=clock_timestamp(),false) AS private_text_expired,
+   CASE WHEN coalesce((to_jsonb(p)->>'private_text_expires_at')::timestamptz<=clock_timestamp(),false) THEN NULL ELSE p.optional_text END AS optional_text
+   FROM planning_members m LEFT JOIN preference_revisions p ON p.id=m.current_preference_id WHERE m.group_id=$1 AND m.user_id=$2`,[groupId,actor.userId])).rows[0];
   if(!own||(g.state!=='COLLECTING'&&!own.admitted))throw new IntakeError('NOT_FOUND');
   // Names and readiness are public within the group; only this authenticated
   // participant's confirmed fields/text enter this private response.
   const members=(await c.query('SELECT id,display_name AS "displayName",admitted,current_preference_id IS NOT NULL AS ready FROM planning_members WHERE group_id=$1 AND ($2 OR admitted) ORDER BY id',[groupId,g.state==='COLLECTING'])).rows;
   const issued=g.state==='OFFER_ISSUED'?(await c.query("SELECT r.approved_offer_id,o.state AS booking_state FROM merchant_requests r JOIN offers o ON o.id=r.approved_offer_id WHERE r.group_id=$1 AND r.state='APPROVED' ORDER BY r.planning_revision DESC LIMIT 1",[groupId])).rows[0]:null;
   return {groupId,revision:g.revision,state:g.state,targetSize:g.target_size,isOrganizer:g.organizer_id===actor.userId,
-   memberId:own.id,displayName:own.display_name,preference:own.confirmed?preferenceSchema.parse(own.confirmed):null,optionalText:own.optional_text??null,wordingReviewed:Boolean(own.wording_bound),
+   memberId:own.id,displayName:own.display_name,preference:own.confirmed?preferenceSchema.parse(own.confirmed):null,optionalText:own.optional_text??null,wordingReviewed:Boolean(own.wording_bound),privateTextExpired:Boolean(own.private_text_expired),
    catalog:catalogSchema.parse(g.catalog),members,candidate:g.candidate,studioReviewPending:g.state==='MERCHANT_REVIEW',
    offerId:issued?.approved_offer_id??null,bookingState:issued?.booking_state??null,collectionRequests:await this.collectionProjection(c,actor,groupId),
    organizerInvite:g.organizer_id===actor.userId?(await c.query("SELECT result->>'invite' AS invite FROM intake_commands WHERE actor_id=$1 AND result->>'groupId'=$2 AND result ? 'invite' LIMIT 1",[actor.userId,groupId])).rows[0]?.invite??null:null};

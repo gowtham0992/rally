@@ -56,7 +56,7 @@ request; payment state changes happen in the separate bounded web runner. Do not
   the provider. Those setup/diagnostic transactions rolled back; no queue
   extension or secret was left by the failed attempts.
 
-Local proof: 130 tests passed, including seven scheduled-processing tests
+Local proof: 142 tests passed, including seven scheduled-processing tests
 and seven offline judge-preparation tests with simulated provider/Auth accounts.
 Actual production-build HTTP checks rejected anonymous, wrong-key, query-key
 and wrong-method requests; the valid request returned IDLE with zero operations.

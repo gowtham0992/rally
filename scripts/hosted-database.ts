@@ -44,14 +44,23 @@ async function run(){
   ${migrations.join('\n')}
   DO $grant$ DECLARE t record;BEGIN FOR t IN SELECT tablename FROM pg_tables WHERE schemaname='rally_private' LOOP
    EXECUTE format('REVOKE ALL ON TABLE rally_private.%I FROM PUBLIC,anon,authenticated,service_role',t.tablename);
-   IF t.tablename='schema_migrations' THEN EXECUTE format('GRANT SELECT ON TABLE rally_private.%I TO rally_app',t.tablename);
+   IF t.tablename IN ('schema_migrations','private_text_retention_policy') THEN
+    EXECUTE format('GRANT SELECT ON TABLE rally_private.%I TO rally_app',t.tablename);
+    IF t.tablename='private_text_retention_policy' THEN
+     REVOKE INSERT,UPDATE,DELETE,TRUNCATE,REFERENCES,TRIGGER ON rally_private.private_text_retention_policy FROM rally_app;
+     IF NOT EXISTS(SELECT 1 FROM pg_policies WHERE schemaname='rally_private' AND tablename=t.tablename AND policyname='rally_policy_read') THEN
+      CREATE POLICY rally_policy_read ON rally_private.private_text_retention_policy FOR SELECT TO rally_app USING (true);
+     END IF;
+    END IF;
    ELSE
     EXECUTE format('GRANT SELECT,INSERT,UPDATE,DELETE ON TABLE rally_private.%I TO rally_app',t.tablename);
     EXECUTE format('ALTER TABLE rally_private.%I ENABLE ROW LEVEL SECURITY',t.tablename);
     IF NOT EXISTS(SELECT 1 FROM pg_policies WHERE schemaname='rally_private' AND tablename=t.tablename AND policyname='rally_server') THEN EXECUTE format('CREATE POLICY rally_server ON rally_private.%I FOR ALL TO rally_app USING (true) WITH CHECK (true)',t.tablename);END IF;
    END IF;
   END LOOP;END $grant$;
-  GRANT USAGE,SELECT ON ALL SEQUENCES IN SCHEMA rally_private TO rally_app;COMMIT;`);
+  GRANT USAGE,SELECT ON ALL SEQUENCES IN SCHEMA rally_private TO rally_app;
+  GRANT EXECUTE ON FUNCTION rally_private.purge_expired_private_text(integer) TO rally_app;
+  COMMIT;`);
  const poolers=await request('/config/database/pooler'),primary=poolers.find((p:{database_type:string})=>p.database_type==='PRIMARY');
  const connection=new URL(primary.connection_string);
  connection.username=`rally_app.${ref}`;connection.password=saved.password;connection.port='5432';

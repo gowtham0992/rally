@@ -22,8 +22,11 @@ export class ClarificationService {
  private async owned(c:pg.PoolClient,a:IntakeActor,id:string){
   this.actor(a);z.uuid().parse(id);
   const group=(await c.query('SELECT * FROM planning_groups WHERE id=$1 FOR UPDATE',[id])).rows[0];if(!group)throw new IntakeError('NOT_FOUND');assertWorkspaceScope(a,group);
-  const member=(await c.query(`SELECT m.*,p.confirmed,p.optional_text,p.wording_bound FROM planning_members m LEFT JOIN preference_revisions p ON p.id=m.current_preference_id WHERE m.group_id=$1 AND m.user_id=$2`,[id,a.userId])).rows[0];
+  const member=(await c.query(`SELECT m.*,p.confirmed,p.optional_text,p.wording_bound,
+   coalesce((to_jsonb(p)->>'private_text_expires_at')::timestamptz<=clock_timestamp(),false) AS private_text_expired
+   FROM planning_members m LEFT JOIN preference_revisions p ON p.id=m.current_preference_id WHERE m.group_id=$1 AND m.user_id=$2`,[id,a.userId])).rows[0];
   if(!member||(group.state!=='COLLECTING'&&!member.admitted))throw new IntakeError('NOT_FOUND');
+  if(member.private_text_expired)member.optional_text=null;
   return {group,member};
  }
  private editable(group:any){if(!['COLLECTING','CLOSED','MERCHANT_REVIEW'].includes(group.state))throw new IntakeError('PLANNING_LOCKED');}
@@ -32,6 +35,10 @@ export class ClarificationService {
   const {group,member}=await this.owned(c,a,groupId);
   const row=(await c.query(`SELECT * FROM planning_clarifications WHERE member_id=$1 AND (source_preference_id=$2 OR resolved_preference_id=$2) ORDER BY created_at DESC LIMIT 1`,[member.id,member.current_preference_id])).rows[0];
   if(!row)return null;
+  if(member.private_text_expired){
+   await c.query("UPDATE planning_clarifications SET result=NULL,status=CASE WHEN status IN ('RESERVED','DISPATCHED','READY') THEN 'STALE' ELSE status END WHERE id=$1",[row.id]);
+   row.result=null;if(['RESERVED','DISPATCHED','READY'].includes(row.status))row.status='STALE';
+  }
   if(['RESERVED','DISPATCHED','READY'].includes(row.status)&&(row.source_group_revision!==group.revision||row.source_preference_id!==member.current_preference_id)){
    await c.query("UPDATE planning_clarifications SET status='STALE',result=NULL WHERE id=$1",[row.id]);row.status='STALE';row.result=null;
   }
@@ -60,7 +67,7 @@ export class ClarificationService {
    const {group,member}=await this.owned(c,a,p.groupId);this.editable(group);
    const row=(await c.query('SELECT * FROM planning_clarifications WHERE id=$1 AND member_id=$2 FOR UPDATE',[reserved.id,member.id])).rows[0];if(!row)throw new IntakeError('NOT_FOUND');
    if(row.status!=='RESERVED')return null;
-   if(row.source_group_revision!==group.revision||row.source_preference_id!==member.current_preference_id){await c.query("UPDATE planning_clarifications SET status='STALE' WHERE id=$1",[row.id]);return null;}
+   if(member.private_text_expired||!member.optional_text?.trim()||row.source_group_revision!==group.revision||row.source_preference_id!==member.current_preference_id){await c.query("UPDATE planning_clarifications SET status='STALE',result=NULL WHERE id=$1",[row.id]);return null;}
    await c.query("UPDATE planning_clarifications SET status='DISPATCHED',started_at=clock_timestamp() WHERE id=$1",[row.id]);
    return {revisionId:member.current_preference_id,text:member.optional_text,catalog:group.catalog};
   });
@@ -69,7 +76,7 @@ export class ClarificationService {
    await transaction(this.pool,async c=>{
     const {group,member}=await this.owned(c,a,p.groupId);
     const row=(await c.query('SELECT * FROM planning_clarifications WHERE id=$1 AND member_id=$2 FOR UPDATE',[reserved.id,member.id])).rows[0];if(row.status!=='DISPATCHED')return;
-    if(group.revision!==row.source_group_revision||member.current_preference_id!==row.source_preference_id||!['COLLECTING','CLOSED','MERCHANT_REVIEW'].includes(group.state)){
+    if(member.private_text_expired||group.revision!==row.source_group_revision||member.current_preference_id!==row.source_preference_id||!['COLLECTING','CLOSED','MERCHANT_REVIEW'].includes(group.state)){
      await c.query("UPDATE planning_clarifications SET status='STALE',result=NULL WHERE id=$1",[row.id]);return;
     }
     let proposal:Proposal|null=null;

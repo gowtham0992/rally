@@ -23,14 +23,15 @@ Free may take about a minute to wake after inactivity.
 | [Hosted scheduler](evidence/hosted-settlement-schedule.json) | Private Supabase Cron/Vault transport reached the deployed settlement endpoint and completed idle runs. Cold wake and active payment recovery are still pending. |
 | [Webhook tests](evidence/webhook-local-verification.json) | Original-byte RSA verification, hostile certificate URLs, bounded input, duplicate authentication and safe errors. Disposable test certificates are used locally. |
 | [Hosted signature denial](evidence/hosted-webhook-signature-denial.json) | The live receiver rejected a forged signature using a real PayPal public certificate. Payment and notification records remained unchanged. |
+| [Private note expiry](evidence/web/private-text-retention.json) | Actual native hosted cleanup removed an isolated fictional note and AI quotation while preserving existing financial and consent history. [Policy and setup](docs/private-text-retention.md). |
 
-The latest full suite has **123 passing tests** using isolated local PostgreSQL
-schemas and controlled provider/Auth/model fixtures. Twenty-two deliberate mutations
+The latest full suite has **142 passing tests** using isolated local PostgreSQL
+schemas and controlled provider/Auth/model fixtures. All 31 deliberate guard mutations
 were caught. TypeScript and the production build pass.
 
-The complete six-buyer hosted browser booking, genuine signed webhook delivery,
-active hosted recovery, real user/merchant feedback and the finished demo video
-remain open gates. Prepared friends and studio facts are
+The six-buyer hosted browser booking and genuine signed webhook delivery are
+verified, including a delivered duplicate event. Active hosted failure recovery,
+real user/merchant feedback and the finished demo video remain open gates. Prepared friends and studio facts are
 fictional demo data. Engineering evidence is not a customer success rate.
 
 ## Run locally

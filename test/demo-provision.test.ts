@@ -71,6 +71,8 @@ test('judging preparation appends future catalogs and fresh untouched groups whi
  const {ids,accounts}=await fiveWorkspaces(),access=new DemoAccess(pool,{key:'a'.repeat(64),code:'synthetic-judge-code'}),lease=await access.claim(randomUUID(),'synthetic-judge-code');
  const before=(await pool.query('SELECT id,group_id,catalog,lease_digest,expires_at FROM demo_workspaces ORDER BY id')).rows;
  const preferences=(await pool.query('SELECT * FROM preference_revisions ORDER BY id')).rows;
+ const leasedPreferences=new Set((await pool.query('SELECT p.id FROM preference_revisions p JOIN planning_members m ON m.id=p.member_id JOIN demo_workspaces w ON w.group_id=m.group_id WHERE w.id=$1',[lease.workspaceId])).rows.map(p=>p.id));
+ const preparationStarted=Date.now();
  const published=(await pool.query('SELECT * FROM merchant_catalog_versions ORDER BY version_id')).rows;
  const preparation=new JudgingPreparation(pool,catalog,judgingCatalog(catalog));
  const dry=await preparation.run(ids);assert.equal(dry.filter(r=>r.status==='RELEASED').length,4);assert.equal((await pool.query('SELECT count(*) FROM planning_groups')).rows[0].count,'5');
@@ -88,7 +90,15 @@ test('judging preparation appends future catalogs and fresh untouched groups whi
   assert.equal(members.length,6);assert.equal(members.filter(m=>m.current_preference_id).length,4);assert.ok(members.every(m=>!m.admitted));
  }
  const allPrefs=(await pool.query('SELECT * FROM preference_revisions ORDER BY id')).rows;
- for(const p of preferences)assert.deepEqual(allPrefs.find(r=>r.id===p.id),p);
+ for(const p of preferences){
+  const current=allPrefs.find(r=>r.id===p.id);
+  if(leasedPreferences.has(p.id)){assert.deepEqual(current,p);continue;}
+  // Abandoning the old untouched round now starts its retention countdown;
+  // original choices, text, IDs and all other history remain identical.
+  assert.ok(current.private_text_expires_at.getTime()>=preparationStarted+30*86400000);
+  assert.ok(current.private_text_expires_at.getTime()<=Date.now()+30*86400000);
+  assert.deepEqual({...current,private_text_expires_at:p.private_text_expires_at},p);
+ }
  const allPublished=(await pool.query('SELECT * FROM merchant_catalog_versions ORDER BY version_id')).rows;
  for(const p of published)assert.deepEqual(allPublished.find(r=>r.version_id===p.version_id),p);
  for(const table of ['collection_consents','merchant_requests','offers','payment_operations'])assert.equal((await pool.query(`SELECT count(*) FROM ${table}`)).rows[0].count,'0');

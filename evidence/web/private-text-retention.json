@@ -1,0 +1,57 @@
+{
+  "observedAt": "2026-10-03T21:00:00Z",
+  "scope": "Local isolated PostgreSQL tests and production UI; separately verified existing hosted sandbox schema/native SQL Cron with aged fictional retention-only fixture. No external model call, Auth profile, email or payment created for this check.",
+  "retentionDays": 30,
+  "endsAt": [
+    "OFFER_ISSUED",
+    "ABANDONED"
+  ],
+  "notAt": [
+    "roster closure",
+    "merchant review"
+  ],
+  "configuredRangeDays": [
+    1,
+    365
+  ],
+  "immutableExistingDeadlines": true,
+  "localRetentionTestsPassed": 12,
+  "fullLocalTestsPassed": 142,
+  "guardMutationsCaught": 31,
+  "localProductionUi": {
+    "expiredNoteAbsent": true,
+    "confirmedChoicesVisible": true,
+    "budgetEditSavedWithoutRevivingText": true,
+    "mobileCssPixels": 374,
+    "horizontalOverflowPixels": 0,
+    "desktopVerified": true
+  },
+  "hosted": {
+    "migrationCount": 12,
+    "browserExecuteDenied": true,
+    "runtimePolicyMutationDenied": true,
+    "nativeCronSucceeded": true,
+    "cleanupHttpRequestsPerTick": 0,
+    "isolatedFictionalPhysicalRemoval": {
+      "observedAt": "2026-10-03T20:59:58.831Z",
+      "scope": "Two new fictional database-only participants; no Auth profiles, email, AI, PayPal or booking created. Only these fixture timestamps are aged.",
+      "nativeHostedRemovalObserved": true,
+      "removedRawNotes": 1,
+      "removedQuotationResults": 1,
+      "redactedRevisions": 2,
+      "confirmedFactsAndClocksPreserved": true,
+      "allExistingPaymentConsentAndCommandDigestsPreserved": true,
+      "metadataOnlyCleanupEvents": 1,
+      "httpOrModelCleanupCalls": 0
+    },
+    "originalConfirmedBookingPreserved": true,
+    "existingPaymentConsentAndCommandDigestsPreserved": true,
+    "runtimeUiDeploymentPending": true
+  },
+  "limitations": [
+    "Fixture elapsed time is simulated; no claim of a 30-day longitudinal observation.",
+    "Database cleanup does not prove deletion by external model providers or provider-managed backups.",
+    "Busy groups and a large backlog can require additional bounded ticks.",
+    "Runtime rollout/rollback verification remains pending at this snapshot."
+  ]
+}

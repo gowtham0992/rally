@@ -2,6 +2,42 @@
   "mode": "local_database_and_simulated_provider",
   "results": [
     {
+      "mutation": "expired AI quotations retained",
+      "baselinePassed": true,
+      "caught": true,
+      "exitCode": 1
+    },
+    {
+      "mutation": "expired private notes retained",
+      "baselinePassed": true,
+      "caught": true,
+      "exitCode": 1
+    },
+    {
+      "mutation": "private retention deadline extension allowed",
+      "baselinePassed": true,
+      "caught": true,
+      "exitCode": 1
+    },
+    {
+      "mutation": "expired owner projection exposes raw note",
+      "baselinePassed": true,
+      "caught": true,
+      "exitCode": 1
+    },
+    {
+      "mutation": "temporary tables shadow elevated cleanup relations",
+      "baselinePassed": true,
+      "caught": true,
+      "exitCode": 1
+    },
+    {
+      "mutation": "reserved AI retry dispatches expired wording",
+      "baselinePassed": true,
+      "caught": true,
+      "exitCode": 1
+    },
+    {
       "mutation": "studio exception ownership removed",
       "baselinePassed": true,
       "caught": true,

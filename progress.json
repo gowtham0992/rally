@@ -47,7 +47,8 @@
     "Actual hosted six-friend journey completed: one live AI clarification, explicit Sam/Jordan collection agreements, studio-approved $48 offer, six independently verified PayPal sandbox buyers, exactly one capture per order, $288 gross and $274.98 seller receivables. All six participant views confirm paid booking and all twelve genuine authorization/capture webhooks were received and processed. No live funds or real-world feedback claimed.",
     "Released tested queued-authorization status fix as e21cd60 on Render Free. Exercised cached-artifact rollback to 4ea6c9f and restoration to e21cd60 with no configuration/schema changes. HTTPS readiness and confirmed participant booking passed in each phase; six captures, eighteen operations and twelve processed webhook records preserved. Free instance and auto-deploy Off verified. In-flight recovery and cold wake remain separate gates.",
     "Implemented studio-owned Payments to check page/API with safe read-only reconciliation requests and payment references. Production-build mobile/desktop UI, duplicate clicks, connection recovery and local simulated resolution verified; 130 tests and 25 guard mutations passed. Hosted deployment and manual evidence remain separate gates.",
-    "Deployed payment-resolution runtime 6696eef on existing Render Free service; actual studio page and participant denial passed. Cached rollback to e21cd60 and restoration preserved confirmed $288 booking, six captures, eighteen operations and twelve webhooks. PayPal Developer independently confirms genuine capture event resend DELIVERED with HTTP 200; same event stored once with original receipt/processing timestamps unchanged. No new financial operations or judge leases."
+    "Deployed payment-resolution runtime 6696eef on existing Render Free service; actual studio page and participant denial passed. Cached rollback to e21cd60 and restoration preserved confirmed $288 booking, six captures, eighteen operations and twelve webhooks. PayPal Developer independently confirms genuine capture event resend DELIVERED with HTTP 200; same event stored once with original receipt/processing timestamps unchanged. No new financial operations or judge leases.",
+    "Implemented configurable 30-day raw note/AI quotation expiry after issued or abandoned planning; immutable deadlines, expiry-safe owner reads and AI retries, bounded group-first cleanup and native SQL Cron. Twelve local retention tests and six targeted mutations passed. Hosted isolated fictional note/quotation removed with existing financial history preserved; runtime rollout is next."
   ],
   "evidence": {
     "scope": "Local service tests use real PostgreSQL and a simulated provider; separate reviewed records prove three actual PayPal sandbox scenarios.",
@@ -56,8 +57,8 @@
       "consecutive_green_runs": 1
     },
     "mutation_checks": {
-      "caught": 25,
-      "total": 25,
+      "caught": 31,
+      "total": 31,
       "targeted_unmodified_baselines_passed": true,
       "file": "evidence/local-mutation-results.json"
     },
@@ -74,7 +75,7 @@
     },
     "credentials_doctor": "All sandbox app, merchant and three distinct personal buyer identifiers configured privately; no credentials committed.",
     "tests": {
-      "passed": 130,
+      "passed": 142,
       "payment_and_adapter": 28,
       "planning_and_model_boundary": 9,
       "persistent_intake": 13,
@@ -87,7 +88,8 @@
       "judge_workspace_foundation": 13,
       "scheduled_payment_processing": 7,
       "offline_judge_preparation": 7,
-      "webhook_crypto_and_http": 7
+      "webhook_crypto_and_http": 7,
+      "private_text_retention": 12
     },
     "model_api_calls": 221,
     "ai_quality_and_24_case_evaluation": "passed_actual_72_run_final_prompt",
@@ -488,9 +490,9 @@
     "contract_gap_audit": {
       "observedAt": "2026-10-03T20:18:14.327273Z",
       "merchant_exception_view_implemented": true,
-      "raw_private_text_retention_implemented": false,
+      "raw_private_text_retention_implemented": true,
       "next_slice_plan": "docs/payment-exceptions-plan.md",
-      "scope": "Source-backed implementation gaps; no existing historical evidence or successful booking changed.",
+      "scope": "Source-backed implementation gaps; raw text expiry and native hosted removal now verified. Merchant manual evidence remains open.",
       "manual_exception_evidence_implemented": false
     },
     "merchant_payment_resolution": {
@@ -500,6 +502,16 @@
       "hosted_deployed": true,
       "manual_evidence_workflow_implemented": false,
       "release_file": "evidence/web/payment-resolution-release.json"
+    },
+    "private_text_retention": {
+      "file": "evidence/web/private-text-retention.json",
+      "implemented": true,
+      "hosted_schema_migrations": 12,
+      "native_cleanup_verified": true,
+      "physical_hosted_removal_verified": true,
+      "runtime_ui_deployment_pending": true,
+      "raw_text_retention_days": 30,
+      "preserved_confirmed_choices_and_payment_history": true
     }
   },
   "external_dependencies": [
@@ -536,7 +548,7 @@
     "Polished public demo video under three minutes",
     "Complete Devpost draft materials; human approval before entry submission"
   ],
-  "next_independent_slice": "Implement raw private-text retention and merchant reconciliation evidence; verify hosted failure recovery, deadline/withdrawal races, seller balance delta, active worker restart and cold wake in isolated sandbox scenarios. Preserve the confirmed six-friend booking and lease. Keep the single repository private and Devpost owner-managed.",
+  "next_independent_slice": "Deploy and verify private-note expiry UI with compatible runtime rollback; then merchant reconciliation evidence and hosted failure/deadline/restart/cold-wake proof. Preserve the six-friend confirmed booking and judge lease; keep the sole repository private and Devpost owner-managed.",
   "release_restrictions": [
     "Core PayPal sandbox scenarios verified; full authenticated application and remaining provider recovery gates are incomplete",
     "No live customer payments",

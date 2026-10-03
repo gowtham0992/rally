@@ -23,7 +23,7 @@ Use isolated local PostgreSQL fixtures and the simulated provider for ownership,
 
 Exercise actual UI loading, empty, failed fetch/retry, expired identity, repeated clicks and a case resolved in another tab. Keep the successful hosted six-friend booking untouched; hosted failure proof belongs to a separate explicitly labeled sandbox scenario.
 
-Raw-text retention is a separate contract gap: redact all private text copies thirty days after planning closes while preserving confirmed structured facts and payment audit history. Implementation must inspect clarification source spans and persisted command results as well as `preference_revisions.optional_text`.
+[Raw-text retention](private-text-retention.md) now clears private notes and model quotations thirty days after planning ends while preserving confirmed structured facts and payment audit history. Native hosted cleanup has removed an isolated fictional note/quotation; command results were audited for copied text. Merchant manual evidence remains a separate contract gap.
 
 ## Implemented behavior
 
