@@ -50,7 +50,8 @@
     "Deployed payment-resolution runtime 6696eef on existing Render Free service; actual studio page and participant denial passed. Cached rollback to e21cd60 and restoration preserved confirmed $288 booking, six captures, eighteen operations and twelve webhooks. PayPal Developer independently confirms genuine capture event resend DELIVERED with HTTP 200; same event stored once with original receipt/processing timestamps unchanged. No new financial operations or judge leases.",
     "Implemented configurable 30-day raw note/AI quotation expiry after issued or abandoned planning; immutable deadlines, expiry-safe owner reads and AI retries, bounded group-first cleanup and native SQL Cron. Twelve local retention tests and six targeted mutations passed. Hosted isolated fictional note/quotation removed with existing financial history preserved; runtime 43215f7 deployed on Render Free, compatible rollback/restoration and restricted-role closure probe verified.",
     "Implemented and deployed append-only studio payment reports on Render Free. Nine new PostgreSQL tests and nine caught mutations; 151 full tests passed twice and forty mutations caught. Local authenticated simulated-report save, stale rejection, draft retention, failed refresh/retry and mobile layout verified. Hosted owner read and participant denial passed; thirteen-migration schema and protected financial/consent history preserved through forward 99bb9af, cached rollback 43215f7 and fresh-build restoration 6eccc29 with final copy corrections. No hosted report writes or new payments.",
-    "Product-only refinement: added optional private leave-by date/time entry, exact studio-timezone conversion, clock-change rejection, actor-scoped catalog-date validation and private saved summary. Fixed rounded cents in displayed budgets and false dirty state for saved $19.99 budgets. Observed local browser save/reload/discard/remove and mobile layouts; no model calls, payments, new identities, demo runs or submission work. All 158 local tests, 43 mutation checks and production build pass."
+    "Product-only refinement: added optional private leave-by date/time entry, exact studio-timezone conversion, clock-change rejection, actor-scoped catalog-date validation and private saved summary. Fixed rounded cents in displayed budgets and false dirty state for saved $19.99 budgets. Observed local browser save/reload/discard/remove and mobile layouts; no model calls, payments, new identities, demo runs or submission work. All 158 local tests, 43 mutation checks and production build pass.",
+    "Deployed product fixes at 00967e2 to the existing Render Free service: live in 79 seconds and HTTPS database readiness returned 200/ready:true. No configuration or schema changes and no hosted demo or payment steps."
   ],
   "evidence": {
     "scope": "Local service tests use real PostgreSQL and a simulated provider; separate reviewed records prove three actual PayPal sandbox scenarios.",
@@ -599,7 +600,20 @@
       "viewport_override_reset": true,
       "model_calls": 0,
       "provider_calls": 0,
-      "hosted_feature_deployed": false
+      "hosted_feature_deployed": true,
+      "runtime_commit": "00967e2cef814ec50ade10bb7c12fb63b611d1f3",
+      "deploy_id": "dep-db0orvgu01pc73bampsg",
+      "deploy_status": "Live",
+      "deploy_duration_seconds": 79,
+      "https_readiness": {
+        "observed_at": "2026-10-03T23:24:38.517Z",
+        "status": 200,
+        "ready": true,
+        "cache_control": "no-store"
+      },
+      "hosted_private_preference_save_observed": false,
+      "schema_migrations_added": 0,
+      "hosting_plan": "existing Render Free"
     }
   },
   "external_dependencies": [
@@ -623,13 +637,14 @@
     }
   ],
   "remaining_requirements": [
+    "Give returning participants an authenticated Your plans entry and normal sign-out control; the current home only starts new groups",
     "Complete missing participant-facing requirements and robust private edit/save flows",
     "Audit remaining participant, organizer and studio product flows for missing functionality, bugs and misleading states",
     "Finish mobile layout, accessibility and loading/error/empty/retry states",
     "Verify product correctness and payment recovery with local regression tests; no demo runs",
     "Deploy finished product updates within the already approved free sandbox hosting scope when locally verified"
   ],
-  "next_independent_slice": "Finish private leave-by control, browser-check save/edit/discard/remove and mobile layout, then audit product functionality and UI. Do not run demos, record video, prepare submission materials, contact testers or publish the repository.",
+  "next_independent_slice": "Product only: implement a private Your plans list so returning participants can reopen their groups, add normal sign-out access and route ordinary sign-in back to saved plans while preserving invite/checkout redirects. Audit authorization, excluded rosters, judge workspace isolation, bounded pagination and mobile navigation. No demo runs, video, submission work, outreach or repository publication.",
   "release_restrictions": [
     "Core PayPal sandbox scenarios verified; full authenticated application and remaining provider recovery gates are incomplete",
     "No live customer payments",
