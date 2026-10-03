@@ -48,7 +48,7 @@ export default function PaymentRecord({operationId,cursor}:{operationId:string;c
   finally{busy.current=false;setSaving(false);}
  }
  return <main className="studio-layout payment-record"><section className="studio-heading"><Link className="back-link" href="/m/exceptions">← Payments to check</Link><p className="eyebrow">Your studio</p><h1 className="page-title">Payment record.</h1>{data&&<><p className="muted">{data.memberName} · {kinds[data.kind]}</p><p className="field-help">{data.activity}</p><Link className="text-button" href={`/offers/${data.offerId}`}>View booking ↗</Link></>}</section>
- <section className="card" aria-label="Studio payment record"><div className="card-top"><p className="eyebrow">{error?"Last loaded payment status":"Current payment status"}</p><button className="text-button" onClick={refresh} disabled={loading||saving}>Refresh status</button></div>
+ <section className="card" aria-label="Studio payment record"><div className="card-top"><p className="eyebrow">{error&&data?"Last loaded payment status":"Current payment status"}</p><button className="text-button" onClick={refresh} disabled={loading||saving}>Refresh status</button></div>
  {loading&&!data&&<p aria-busy="true">Opening this payment…</p>}
  {error&&<><p className="error" role="alert">{error}</p><button className="secondary" disabled={loading||saving} onClick={refresh}>Try again</button></>}
  {data&&<><h2 className="payment-record-status">{paymentStatus(data)}</h2><p className="field-help">{money(data.amountMinor)} · {kinds[data.kind].toLowerCase()} for {data.memberName}</p>
@@ -65,7 +65,7 @@ export default function PaymentRecord({operationId,cursor}:{operationId:string;c
  {stale&&<p className="error" role="alert">The current status changed while you were writing. Review it above before saving.</p>}
  {stale&&data.canRecord&&<button type="button" className="text-button" onClick={()=>{setDraftState(data.state);setActionError('');}}>I’ve reviewed the current status</button>}
  <button className="button" disabled={stale||!reference.trim()}>{saving?'Saving record…':'Save studio report'}</button></fieldset></form></section>}
- {!data.canRecord&&<p className="field-help">{data.recordLimitReached?'This payment has reached its record limit. Previous reports are kept below.':'New reports are available while a payment needs resolution. Previous reports are kept below.'}</p>}
+ {!data.canRecord&&<p className="field-help">{data.recordLimitReached?'This payment has reached its record limit. Previous reports stay in the history.':'New reports are available while a payment needs resolution. Previous reports stay in the history.'}</p>}
 </>}
  {message&&<p role="status" className="saved-note">{message}</p>}{actionError&&<p role="alert" className="error">{actionError}</p>}{signIn&&<Link className="secondary" href={`/login?next=${encodeURIComponent(path)}`}>Sign in again →</Link>}
  </section></main>;
