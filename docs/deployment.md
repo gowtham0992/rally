@@ -56,7 +56,7 @@ request; payment state changes happen in the separate bounded web runner. Do not
   the provider. Those setup/diagnostic transactions rolled back; no queue
   extension or secret was left by the failed attempts.
 
-Local proof: 142 tests passed, including seven scheduled-processing tests
+Local proof: 151 tests passed, including seven scheduled-processing tests
 and seven offline judge-preparation tests with simulated provider/Auth accounts.
 Actual production-build HTTP checks rejected anonymous, wrong-key, query-key
 and wrong-method requests; the valid request returned IDLE with zero operations.
@@ -116,7 +116,7 @@ Sources: [Render Free](https://render.com/docs/free),
 
 Current preview: [Rally](https://rally.gowthamsarveswaran.com). Render assigned
 `rally-mx1y.onrender.com`; Cloudflare has one additional DNS-only CNAME for
-`rally`, with the eight previous records preserved. Build `43215f7` is live with studio payment resolution and private-note expiry. Its rollback to `6696eef` and restoration preserved the twelve-migration schema, native cleanup and existing financial/consent history.
+`rally`, with the eight previous records preserved. Build `6eccc29` is live with studio payment resolution, private-note expiry and append-only studio reports. The earlier retention release was `43215f7`. That retention release’s rollback to `6696eef` and restoration preserved the twelve-migration schema, native cleanup and existing financial/consent history.
 Judge access is gated by the private code in ignored `.env.demo`; one browser
 verification workspace is leased and four hosted workspaces remain available.
 The actual six-buyer journey is confirmed: $288 gross, six distinct buyers, one capture per order and all twelve genuine notifications processed. This is fictional PayPal sandbox evidence; actual customer feedback remains unverified. See [settlement evidence](../evidence/web/hosted-six-friend-settlement.json) and [initial rollout/rollback evidence](../evidence/web/hosted-rollout-rollback.json). The subsequent [payment-resolution release](../evidence/web/payment-resolution-release.json) verified studio ownership and participant denial and preserved the booking through rollback/restoration. PayPal Developer confirms [genuine resend delivery and duplicate handling](../evidence/web/hosted-webhook-retransmission.json); no JSON duplicate-response body was captured.
@@ -145,3 +145,14 @@ forward deployment, rollback and restoration. See
 [retention release evidence](../evidence/web/private-text-retention.json) and
 [policy/setup](private-text-retention.md). The runtime can assign deadlines but
 cannot change policy; a fictional closure probe was fully rolled back.
+
+The studio-report release added migration 013 without changing existing financial
+rows. Forward `99bb9af`, cached rollback `43215f7` and fresh-build restoration
+`6eccc29` all passed HTTPS readiness and protected-history checks. Render
+reported 80s, 21.7s and 83s deployment durations respectively; these exclude
+queue time. The final revision corrects two UI messages. The studio could read
+its completed sandbox payment record; a participant was denied. No report form
+is available for a completed operation. The report table stays during runtime
+rollback, with SELECT/INSERT-only runtime access and no browser schema access.
+No hosted report was written and no operation was in flight for this exercise.
+See [studio-report evidence](../evidence/web/payment-evidence.json).

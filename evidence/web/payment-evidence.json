@@ -1,6 +1,6 @@
 {
   "scope": "Actual authenticated local production-build UI and real isolated PostgreSQL integration tests; simulated provider and fictional studio report. Not actual PayPal support-case or hosted financial-failure proof.",
-  "observedAt": "2026-10-03T21:43:00Z",
+  "observedAt": "2026-10-03T21:52:08.579Z",
   "contract": "Final amendments section 5: manual resolution records evidence rather than declaring success.",
   "implementation": {
     "page": "/m/payments/[operationId]",
@@ -49,7 +49,13 @@
     "connectionFailurePreservesDraftAndHistory": true,
     "retryRecovered": true,
     "mobileCssWidth": 374,
-    "mobileHorizontalOverflowPixels": 0
+    "mobileHorizontalOverflowPixels": 0,
+    "consecutiveFullGreenRuns": 2,
+    "sourceSecretScan": {
+      "tool": "Gitleaks 8.30.1",
+      "scope": "Tracked and intended unignored source files, excluding local/private environment and evidence files",
+      "findings": 0
+    }
   },
   "hostedSchema": {
     "migrations": 13,
@@ -70,5 +76,90 @@
     "An actual lost-response UI retry and expired-identity navigation were not observed on this new page; idempotent service retries and identity rejection were tested.",
     "Hosted failure/restart/deadline/cold-wake drills and merchant feedback remain separate gates."
   ],
-  "runtimeDeploymentPending": true
+  "runtimeDeploymentPending": false,
+  "hostedRelease": {
+    "url": "https://rally.gowthamsarveswaran.com",
+    "service": "Existing Render Free service; no configuration changes, credential rotation, new services or paid plan",
+    "initialForward": {
+      "commit": "99bb9af442eabd6eb26466fab44671b027687a9f",
+      "deploy": "dep-db0ne29srm7s738c4dk0",
+      "providerDurationSeconds": 80
+    },
+    "compatibleRollback": {
+      "commit": "43215f77fd54e1edd3746ea11256c67a58b61f02",
+      "deploy": "dep-db0ng2k9v7es73c7ijng",
+      "providerDurationSeconds": 21.7,
+      "configurationChanges": false,
+      "schemaRetained": true
+    },
+    "restoration": {
+      "commit": "6eccc2958aba68151bf34aee3966d84919a43be2",
+      "deploy": "dep-db0nh2ugekts73ag3gl0",
+      "providerDurationSeconds": 83,
+      "method": "Fresh build of the feature with final UI copy corrections; not a cached-artifact restoration"
+    },
+    "phases": [
+      {
+        "stage": "before",
+        "observedAt": "2026-10-03T21:38:11.497Z",
+        "healthReady": true,
+        "migrations": 12,
+        "globalUnresolvedPayments": 0,
+        "protectedHistoryDigestsMatchBefore": true
+      },
+      {
+        "stage": "schema",
+        "observedAt": "2026-10-03T21:38:36.544Z",
+        "healthReady": true,
+        "migrations": 13,
+        "globalUnresolvedPayments": 0,
+        "protectedHistoryDigestsMatchBefore": true
+      },
+      {
+        "stage": "forward",
+        "observedAt": "2026-10-03T21:47:47.744Z",
+        "healthReady": true,
+        "migrations": 13,
+        "globalUnresolvedPayments": 0,
+        "protectedHistoryDigestsMatchBefore": true
+      },
+      {
+        "stage": "rollback",
+        "observedAt": "2026-10-03T21:48:56.592Z",
+        "healthReady": true,
+        "migrations": 13,
+        "globalUnresolvedPayments": 0,
+        "protectedHistoryDigestsMatchBefore": true
+      },
+      {
+        "stage": "restored",
+        "observedAt": "2026-10-03T21:52:08.579Z",
+        "healthReady": true,
+        "migrations": 13,
+        "globalUnresolvedPayments": 0,
+        "protectedHistoryDigestsMatchBefore": true
+      }
+    ],
+    "protectedBooking": {
+      "state": "CONFIRMED",
+      "cleanup": "NOT_REQUIRED",
+      "reservation_state": "BOOKED",
+      "captures": 6
+    },
+    "browserVerification": {
+      "participantDeniedStudioRecord": true,
+      "studioOwnerReadSucceeded": true,
+      "completedPaymentHasNoReportOrOverrideForm": true,
+      "bookingConfirmedDuringRollback": true,
+      "finalCopyObservedAfterRestoration": true
+    },
+    "hostedReportWrites": 0,
+    "existingFinancialAndConsentRowsPreserved": true,
+    "preferenceDigestScope": "Original preferences and raw notes, excluding the two database-only retention fixture participants; exclusion recorded in private audits",
+    "limitations": [
+      "Provider duration is deployment execution time, not total queue or request time.",
+      "No in-flight operation existed during this rollback exercise. Hosted uncertain/restarted payment recovery remains unverified.",
+      "Hosted report creation on an unresolved PayPal operation was not exercised."
+    ]
+  }
 }

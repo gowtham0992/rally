@@ -42,3 +42,9 @@ The same ownership/workspace, verified identity, Origin, bounded body and shared
 The command locks the owned offer before the existing operation, fences a changed state, and records one metadata-only event. A repeated command survives a new service instance; a fresh command repeating the same reference and outcome also returns the existing report. The evidence row is linked to the committed intake command with a deferred foreign key. UPDATE/DELETE are forbidden by its immutable trigger; the hosted runtime has only SELECT/INSERT privileges. Runtime rollback keeps this additive schema and any report history. Its down migration refuses populated evidence.
 
 Nine additional PostgreSQL tests and nine caught mutations cover financial truth, active leases, idempotency, ownership/workspaces, strict input, stale/resolved operations, rejected refunds, equal-timestamp pagination, the record cap and immutable command linkage. The 151-test full suite and all forty mutation checks passed. Actual authenticated local UI saved a fictional “completed” report on a simulated pending refund: one report and one audit event were added; payment operations, offers and reservations were unchanged. Refresh preserved a draft; an actual stale save was rejected; a failed connection retained the draft and history and recovered through retry. At 374 CSS pixels the page had no horizontal overflow. This is local simulated-provider evidence, not a hosted PayPal failure or an independently verified support case.
+
+The feature is now live on the existing Free preview as `6eccc29`. Hosted
+studio read and participant denial passed on an existing completed sandbox
+payment; no report form was offered for it. Forward, compatible rollback and
+restoration retained migration 013 and preserved protected history. No hosted
+report was written and no active financial recovery was involved.
