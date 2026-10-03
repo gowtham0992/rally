@@ -1,0 +1,29 @@
+{
+  "observedAt": "2026-10-03T18:19:18.030Z",
+  "scope": "Actual hosted six-friend offer after human approval of Alex’s sandbox checkout, Rally authorization command and hosted worker completion. Independent read-only PayPal order and authorization GETs; no financial write by this verification script.",
+  "offerId": "eba555ac-5c14-4544-a8dd-0f4d0376d9b7",
+  "member": "Alex",
+  "orderStatus": "COMPLETED",
+  "authorizationStatus": "CREATED",
+  "amount": "48.00",
+  "currency": "USD",
+  "configuredSellerMatched": true,
+  "payerMatched": true,
+  "recordedAuthorizationMatched": true,
+  "qualifiedMembers": 1,
+  "distinctQualifiedPayers": 1,
+  "offer": {
+    "state": "OPEN",
+    "reservation_state": "HELD",
+    "successful_captures": 0
+  },
+  "webhooks": [
+    {
+      "event_type": "PAYMENT.AUTHORIZATION.CREATED",
+      "received_at": "2026-10-03T18:13:16.659Z",
+      "processed_at": "2026-10-03T18:13:16.675Z"
+    }
+  ],
+  "genuineAuthorizationWebhookObserved": true,
+  "fullBookingVerified": false
+}

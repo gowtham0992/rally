@@ -413,6 +413,22 @@
       "currency": "USD",
       "configured_seller_matched": true,
       "buyer_approval_pending": true
+    },
+    "hosted_first_authorization": {
+      "file": "evidence/web/hosted-first-authorization.json",
+      "observed_at": "2026-10-03T18:19:18.030Z",
+      "member": "Alex",
+      "human_sandbox_approval_completed": true,
+      "independent_provider_order_and_authorization_verified": true,
+      "order_status": "COMPLETED",
+      "authorization_status": "CREATED",
+      "amount": "48.00",
+      "currency": "USD",
+      "configured_seller_and_payer_matched": true,
+      "distinct_qualified_payers": 1,
+      "successful_captures": 0,
+      "genuine_authorization_webhook_received_and_processed": true,
+      "full_booking_verified": false
     }
   },
   "external_dependencies": [
@@ -449,7 +465,7 @@
     "Polished public demo video under three minutes",
     "Complete Devpost draft materials; human approval before entry submission"
   ],
-  "next_independent_slice": "User completes Alex's $48 PayPal sandbox approval and checks it in Rally; verify the actual payer/authorization before proceeding through five other distinct Personal buyers. Then prove six captures, genuine signed webhook delivery and hosted recovery. Keep the only Rally repository private until the owner is ready to submit; all Devpost actions are owner-managed.",
+  "next_independent_slice": "Sam's actual hosted $48 offer is open for human acceptance and PayPal approval with a different Personal sandbox buyer. Verify all five remaining buyers, six distinct qualified payer IDs and actual captures before claiming the booking. Alex's authorization and genuine PAYMENT.AUTHORIZATION.CREATED delivery are independently proven; full settlement, capture webhook delivery and hosted recovery remain pending. Fix the observed queued-authorization status projection after preserving this flow. Keep the only Rally repository private; all Devpost actions are owner-managed.",
   "release_restrictions": [
     "Core PayPal sandbox scenarios verified; full authenticated application and remaining provider recovery gates are incomplete",
     "No live customer payments",
