@@ -1,0 +1,52 @@
+{
+  "observedAt": "2026-10-03T05:18:01.263Z",
+  "scope": "Actual Supabase managed Auth and local production HTTP server. Prepared fictional preferences; no emails, model calls, merchant approvals or payments.",
+  "supabasePlan": "Free",
+  "workspaces": 5,
+  "registeredSyntheticIdentities": 35,
+  "roles": [
+    {
+      "role": "ORGANIZER",
+      "managedLogin": true,
+      "ownProjectionVerified": true
+    },
+    {
+      "role": "TRAVELER",
+      "managedLogin": true,
+      "ownProjectionVerified": true
+    },
+    {
+      "role": "COLLECTOR",
+      "managedLogin": true,
+      "ownProjectionVerified": true
+    },
+    {
+      "role": "FRIEND_ONE",
+      "managedLogin": true,
+      "ownProjectionVerified": true
+    },
+    {
+      "role": "FRIEND_TWO",
+      "managedLogin": true,
+      "ownProjectionVerified": true
+    },
+    {
+      "role": "FRIEND_THREE",
+      "managedLogin": true,
+      "ownProjectionVerified": true
+    },
+    {
+      "role": "STUDIO",
+      "managedLogin": true,
+      "ownProjectionVerified": true
+    }
+  ],
+  "staleDocumentHttp": 409,
+  "oldCookieBootstrapHttp": 409,
+  "restorePreservedCurrentRole": true,
+  "normalNamespaceEscapeHttp": 403,
+  "crossWorkspaceGroupHttp": 404,
+  "missingViewerHttp": 409,
+  "exitClearsDemoSession": true,
+  "browserRoleSwitchVerified": false
+}

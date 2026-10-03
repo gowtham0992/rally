@@ -1,4 +1,5 @@
 'use client';
+import {apiFetch} from '../../lib/api-fetch';
 import {useEffect,useRef,useState} from 'react';
 import type {ClarificationView} from '../../../src/intake/clarifications';
 import type {Proposal} from '../../../src/planning/meaning';
@@ -21,7 +22,7 @@ export default function ClarificationPanel({groupId,revision,preferenceId,note,r
   if(reviewed)return;
   const controller=new AbortController();let timer:ReturnType<typeof setTimeout>|undefined;
   async function read(){try{
-   const r=await fetch(`/api/groups/${groupId}/clarification`,{signal:controller.signal,cache:'no-store'});
+   const r=await apiFetch(`/api/groups/${groupId}/clarification`,{signal:controller.signal,cache:'no-store'});
    if(!r.ok)throw new Error('We couldn’t load the note check. Your saved choices are safe.');
    const result:ClarificationView|null=await r.json();if(controller.signal.aborted)return;
    setView(result);setLoading(false);
@@ -34,7 +35,7 @@ export default function ClarificationPanel({groupId,revision,preferenceId,note,r
   const payload={groupId,expectedRevision:revision,preferenceId,...extra},fingerprint=JSON.stringify({action,payload});
   if(command.current?.fingerprint!==fingerprint)command.current={fingerprint,id:crypto.randomUUID()};
   try{
-   const r=await fetch(`/api/groups/${groupId}/clarification`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action,payload:{...payload,commandId:command.current.id}})});
+   const r=await apiFetch(`/api/groups/${groupId}/clarification`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action,payload:{...payload,commandId:command.current.id}})});
    const result=await r.json();if(!mounted.current)return;
    if(!r.ok){setStale(['STALE_REVISION','STALE_CLARIFICATION','NOTE_ALREADY_REVIEWED'].includes(result.error));throw new Error(errors[result.error]??'The note check couldn’t finish. Your saved choices are safe. Try again shortly.');}
    if(action==='ANSWER'||action==='STRUCTURED'){refresh();return;}

@@ -1,0 +1,16 @@
+'use client';
+import {useEffect,useRef,useState} from 'react';
+import {documentSession} from '../lib/api-fetch';
+export function DemoEntry(){
+ const [code,setCode]=useState(''),[busy,setBusy]=useState(false),[resume,setResume]=useState(false),[error,setError]=useState('');const command=useRef<string|null>(null);
+ useEffect(()=>{let active=true;documentSession().then(s=>{if(active)setResume(Boolean(s.demo));}).catch(e=>{if(active&&['VIEWER_CHANGED','DEMO_SESSION_EXPIRED'].includes(e.code))setResume(true);});return()=>{active=false;};},[]);
+ async function enter(e:React.FormEvent){e.preventDefault();if(busy)return;setBusy(true);setError('');command.current??=crypto.randomUUID();
+  try{const r=await fetch('/api/demo/start',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({commandId:command.current,accessCode:code})}),p=await r.json();
+   if(!r.ok)throw new Error(p.error==='DEMO_CODE_REQUIRED'?'That code doesn’t match. Check the judge instructions.':p.error==='DEMO_FULL'?'All demo groups are in use. Ask for a fresh group.':p.error==='DEMO_SESSION_EXPIRED'?'This group’s demo time ended. Use a fresh group code.':'The demo isn’t available right now. Your code is still here.');
+   location.assign(p.next);
+  }catch(e){setError(e instanceof Error?e.message:'Connection interrupted. Your code is still here.');}finally{setBusy(false);}
+ }
+ async function continueGroup(){setBusy(true);setError('');try{const r=await fetch('/api/demo/restore',{method:'POST'}),p=await r.json();if(!r.ok)throw new Error('This demo session ended. Exit it and use a fresh group.');location.assign(p.next);}catch(e){setError(e instanceof Error?e.message:'Could not resume this group.');}finally{setBusy(false);}}
+ async function exit(){setBusy(true);try{const r=await fetch('/api/demo/exit',{method:'POST'});if(!r.ok)throw new Error('Could not exit the demo. Try again.');location.assign('/');}catch(e){setError(e instanceof Error?e.message:'Connection interrupted.');setBusy(false);}}
+ return <main className="narrow"><a className="back-link" href="/">← Back to Rally</a><div className="card"><p className="eyebrow">Prepared fictional group · PayPal sandbox</p><h1 className="page-title">Try a plan<br/>with friends.</h1><p className="muted">Six friends, a pottery studio, and one plan. Switch between them to try each side.</p>{resume?<div className="notice"><p>Your demo group is already open.</p><button className="button full" onClick={continueGroup} disabled={busy}>{busy?'Opening…':'Continue with the current friend'}<span aria-hidden="true">→</span></button><button className="text-button" disabled={busy} onClick={exit}>Exit this demo</button></div>:<form onSubmit={enter}><label htmlFor="demo-code">Your judge access code</label><input id="demo-code" type="password" autoComplete="off" value={code} onChange={e=>{setCode(e.target.value);command.current=null;}} required maxLength={128}/><button className="button full" disabled={busy}>{busy?'Opening your group…':'Open my demo group'}<span aria-hidden="true">→</span></button></form>}{error&&<p className="error" role="alert">{error}</p>}<p className="small-note">Four friends have prepared details. You’ll enter Alex’s and Sam’s, agree collection arrangements, then ask the studio. Payment approvals are your own actions in PayPal sandbox.</p></div></main>;
+}

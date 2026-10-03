@@ -1,4 +1,5 @@
 'use client';
+import {apiFetch} from '../../lib/api-fetch';
 import {useRef,useState} from 'react';
 import type {PaymentEngine} from '../../../src/payments/engine';
 import {money} from '../../lib/format';
@@ -8,7 +9,7 @@ export default function Checkout({offerId,offerHash,status:s,disabled,returnStat
  async function act(action:'ACCEPT'|'AUTHORIZE'){
   if(busy||disabled||(action==='ACCEPT'&&!agreed))return;setBusy(true);setError('');
   if(command.current?.action!==action)command.current={action,id:crypto.randomUUID()};
-  try{const response=await fetch(`/api/offers/${offerId}`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action,commandId:command.current.id,offerHash,...(action==='ACCEPT'?{agreesToOffer:true}:{})})});const result=await response.json();
+  try{const response=await apiFetch(`/api/offers/${offerId}`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action,commandId:command.current.id,offerHash,...(action==='ACCEPT'?{agreesToOffer:true}:{})})});const result=await response.json();
    if(!response.ok)throw new Error(result.error==='OFFER_CLOSED'?'The booking window closed. Refresh to check your payment status.':['STALE_OFFER','STALE_ACCEPTANCE'].includes(result.error)?'This offer changed. Refresh before continuing.':result.error==='ORDER_NOT_READY'?'Your PayPal order is still being prepared. Check again shortly.':result.error==='SIGN_IN_REQUIRED'?'Sign in again before continuing.':'That request could not finish. Your confirmation is still here. Retry to check the same request.');
    command.current=null;refresh();
   }catch(e){setError(e instanceof Error?e.message:'Connection interrupted. Retry to check the same request.');}finally{setBusy(false);}

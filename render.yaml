@@ -19,6 +19,12 @@ services:
         value: https://rally.gowthamsarveswaran.com
       - key: RALLY_SETTLEMENT_MODE
         value: scheduled
+      - key: RALLY_DEMO_ENABLED
+        value: "true"
+      - key: RALLY_DEMO_KEY
+        sync: false
+      - key: RALLY_DEMO_ACCESS_CODE
+        sync: false
       - key: RALLY_SETTLEMENT_TRIGGER_KEY
         sync: false
       - key: RALLY_RATE_LIMIT_KEY
@@ -34,8 +40,6 @@ services:
       - key: PAYPAL_CLIENT_SECRET
         sync: false
       - key: PAYPAL_MERCHANT_ID
-        sync: false
-      - key: PAYPAL_WEBHOOK_ID
         sync: false
       - key: ASTRO_GATEWAY_URL
         sync: false

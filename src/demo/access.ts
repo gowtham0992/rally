@@ -30,7 +30,7 @@ export class DemoAccess {
      ORDER BY w.id LIMIT 1 FOR UPDATE OF w SKIP LOCKED`)).rows[0];
     if(!row)throw new WebError('DEMO_FULL',503);
     const token=this.token(commandId,row.id);
-    row=(await c.query("UPDATE demo_workspaces SET state='LEASED',lease_id=$2,lease_digest=$3,leased_at=clock_timestamp(),expires_at=clock_timestamp()+interval '24 hours' WHERE id=$1 RETURNING *",[row.id,commandId,hash(token)])).rows[0];row.active=true;
+    row=(await c.query("UPDATE demo_workspaces SET state='LEASED',lease_id=$2,lease_digest=$3,active_user_id=(SELECT user_id FROM demo_identities WHERE workspace_id=$1 AND role='ORGANIZER'),leased_at=clock_timestamp(),expires_at=clock_timestamp()+interval '24 hours' WHERE id=$1 RETURNING *",[row.id,commandId,hash(token)])).rows[0];row.active=true;
    }
    const token=this.token(commandId,row.id);
    if(!row.active||row.lease_digest!==hash(token))throw new WebError('DEMO_SESSION_EXPIRED',401);
@@ -39,9 +39,9 @@ export class DemoAccess {
  }
  async workspace(token:string){
   if(!/^[a-f0-9]{64}$/.test(token))throw new WebError('DEMO_SESSION_EXPIRED',401);
-  const row=(await this.pool.query("SELECT id,group_id,catalog,expires_at FROM demo_workspaces WHERE lease_digest=$1 AND state='LEASED' AND expires_at>clock_timestamp()",[hash(token)])).rows[0];
+  const row=(await this.pool.query("SELECT id,group_id,catalog,expires_at,active_user_id FROM demo_workspaces WHERE lease_digest=$1 AND state='LEASED' AND expires_at>clock_timestamp()",[hash(token)])).rows[0];
   if(!row)throw new WebError('DEMO_SESSION_EXPIRED',401);
-  return row as {id:string;group_id:string;catalog:unknown;expires_at:Date};
+  return row as {id:string;group_id:string;catalog:unknown;expires_at:Date;active_user_id:string};
  }
  async identity(token:string,role:DemoRole){
   if(!Object.hasOwn(demoRoles,role))throw new WebError('INVALID_REQUEST');
@@ -50,10 +50,20 @@ export class DemoAccess {
   if(!row)throw new WebError('DEMO_UNAVAILABLE',503);
   return {workspace,...row,role,password:demoPassword(this.config.key,workspace.id,role)} as {workspace:typeof workspace;user_id:string;email:string;display_name:string;role:DemoRole;password:string};
  }
- async bind(token:string,userId:string){
+ async currentIdentity(token:string){
+  const workspace=await this.workspace(token),row=(await this.pool.query('SELECT role FROM demo_identities WHERE workspace_id=$1 AND user_id=$2',[workspace.id,workspace.active_user_id])).rows[0];
+  if(!row)throw new WebError('DEMO_UNAVAILABLE',503);return this.identity(token,row.role);
+ }
+ async activate(token:string,previousUserId:string,userId:string){
+  z.uuid().parse(previousUserId);z.uuid().parse(userId);const workspace=await this.workspace(token);
+  const updated=await this.pool.query("UPDATE demo_workspaces SET active_user_id=$3 WHERE id=$1 AND active_user_id=$2 AND state='LEASED' AND expires_at>clock_timestamp() AND EXISTS(SELECT 1 FROM demo_identities WHERE workspace_id=$1 AND user_id=$3)",[workspace.id,previousUserId,userId]);
+  if(!updated.rowCount)throw new WebError('VIEWER_CHANGED',409);
+ }
+ async bind(token:string,userId:string,requireActive=false){
   z.uuid().parse(userId);const workspace=await this.workspace(token);
   const row=(await this.pool.query('SELECT role,display_name FROM demo_identities WHERE workspace_id=$1 AND user_id=$2',[workspace.id,userId])).rows[0];
   if(!row)throw new WebError('DEMO_SESSION_REQUIRED',403);
+  if(requireActive&&workspace.active_user_id!==userId)throw new WebError('VIEWER_CHANGED',409);
   return {workspaceId:workspace.id,groupId:workspace.group_id,role:row.role as DemoRole,displayName:row.display_name as string,expiresAt:workspace.expires_at.toISOString()};
  }
 }

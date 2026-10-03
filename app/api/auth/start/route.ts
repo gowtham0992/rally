@@ -5,7 +5,7 @@ import {requestLimiter} from '../../../../src/web/limits.ts';
 import {appOrigin,body,errorResponse,safeNext,sameOrigin,WebError} from '../../../../src/web/security.ts';
 export async function POST(request:Request){try{
  sameOrigin(request);const p=z.strictObject({email:z.email().max(254),next:z.string().max(512).optional()}).parse(await body(request));
- const a=await auth(request),callback=new URL('/auth/callback',appOrigin()),limiter=requestLimiter();
+ const a=await auth(request,{mode:'normal'}),callback=new URL('/auth/callback',appOrigin()),limiter=requestLimiter();
  await limiter.reserve('EMAIL_GLOBAL','application');
  await limiter.reserve('EMAIL_ACCOUNT',p.email.trim().toLowerCase());
  const {error}=await a.client.auth.signInWithOtp({email:p.email,options:{emailRedirectTo:callback.toString()}});

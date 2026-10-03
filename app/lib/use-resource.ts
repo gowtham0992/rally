@@ -1,4 +1,5 @@
 'use client';
+import {apiFetch} from './api-fetch';
 import {useEffect,useRef,useState} from 'react';
 import {useRouter} from 'next/navigation';
 export function useResource<T>(path:string,next:string,pollMs=0,retainOnRefresh=false){
@@ -8,7 +9,7 @@ export function useResource<T>(path:string,next:string,pollMs=0,retainOnRefresh=
   const controller=new AbortController();let timer:ReturnType<typeof setTimeout>|undefined;
   setLoading(true);setError('');if(!retainOnRefresh||loadedPath.current!==path)setData(null);
   async function load(initial:boolean){try{
-   const response=await fetch(path,{signal:controller.signal,cache:'no-store'});
+   const response=await apiFetch(path,{signal:controller.signal,cache:'no-store'});
    if(response.status===401){router.replace(`/login?next=${encodeURIComponent(next)}`);return;}
    if(!response.ok)throw new Error(response.status===404?'This page isn’t available to your account.':'We couldn’t load this page. Try again shortly.');
    const result:T=await response.json();if(controller.signal.aborted)return;loadedPath.current=path;setData(result);setError('');

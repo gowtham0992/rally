@@ -1,0 +1,24 @@
+{
+  "scope": "Actual local production build, managed Supabase fictional identities and Chrome. Prepared fixture details are not real human consent.",
+  "observedRoles": [
+    "ORGANIZER",
+    "COLLECTOR",
+    "FRIEND_ONE",
+    "STUDIO"
+  ],
+  "ownPrivatePreferenceDisplayed": true,
+  "staleDocumentSaveDenied": true,
+  "staleDraftRetained": true,
+  "studioQueueEmptyBeforeRequest": true,
+  "exitDemoVerified": true,
+  "phoneCssWidth": 374,
+  "phoneScrollWidth": 374,
+  "phoneScreenshot": "evidence/private/judge-phone.png",
+  "hostedWorkspacePreparation": {
+    "available": 5,
+    "identities": 35,
+    "sameAuthAccountsReused": true
+  },
+  "fullConsentAndPayPalBrowserJourneyVerified": false,
+  "recordedAt": "2026-10-03T05:21:22.457Z"
+}

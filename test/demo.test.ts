@@ -9,6 +9,7 @@ import {demoRoles,type DemoRole} from '../src/demo/roles.ts';
 import {IntakeService,type IntakeActor} from '../src/intake/service.ts';
 import {ClarificationService} from '../src/intake/clarifications.ts';
 import {BookingService} from '../src/bookings/service.ts';
+import {bindVerifiedSession,clearDemoSession,hasDemoSession,demoLease} from '../src/demo/session.ts';
 
 // Real isolated PostgreSQL; trusted synthetic actors. These tests do not create
 // managed Auth accounts, send emails, call a model, or authorize PayPal payments.
@@ -136,4 +137,40 @@ test('judge migration supports empty up/down/up and refuses to erase populated w
   assert.equal((await disposable.query('SELECT count(*) FROM demo_workspaces')).rows[0].count,'0');
   await assert.rejects(disposable.query("INSERT INTO demo_workspaces(id,studio_id,catalog,lease_id) VALUES($1,$2,'{}',$3)",[randomUUID(),'partial-lease',randomUUID()]),/check constraint/);
  }finally{await disposable.end();await admin.query(`DROP SCHEMA ${empty} CASCADE`);}
+});
+test('verified managed identity must match lease, trusted metadata and the document viewer',async()=>{
+ const a=await reserve(),b=await reserve(),user={id:a.actors.ORGANIZER.userId,email_confirmed_at:new Date().toISOString(),app_metadata:{rally_demo:true,rally_workspace:a.id,rally_role:'ORGANIZER'}};
+ const options={demo:true,token:a.lease.token,viewerId:user.id};
+ assert.equal((await bindVerifiedSession(user,options,access)).actor.demoWorkspaceId,a.id);
+ await assert.rejects(bindVerifiedSession(user,{demo:false}),/DEMO_SESSION_REQUIRED/);
+ await assert.rejects(bindVerifiedSession({...user,email_confirmed_at:undefined},options,access),/VERIFIED_IDENTITY_REQUIRED/);
+ for(const app_metadata of [{}, {...user.app_metadata,rally_workspace:b.id},{...user.app_metadata,rally_role:'TRAVELER'}])await assert.rejects(bindVerifiedSession({...user,app_metadata},options,access),/DEMO_SESSION_REQUIRED/);
+ await assert.rejects(bindVerifiedSession(user,{...options,token:b.lease.token},access),/DEMO_SESSION_REQUIRED/);
+ await assert.rejects(bindVerifiedSession(user,{...options,viewerId:a.actors.TRAVELER.userId},access),/VIEWER_CHANGED/);
+ await assert.rejects(bindVerifiedSession(user,{...options,viewerId:null},access),/VIEWER_CHANGED/);
+ assert.equal((await bindVerifiedSession(user,{...options,viewerId:null,requireViewer:false},access)).demo?.role,'ORGANIZER');
+ assert.deepEqual((await bindVerifiedSession({...user,app_metadata:{}},{demo:false})).actor,{userId:user.id,emailVerified:true});
+});
+test('active role is a server-side compare-and-set; an old refreshed cookie cannot restore its authority',async()=>{
+ const a=await reserve(),old=a.actors.ORGANIZER.userId,traveler=a.actors.TRAVELER.userId,collector=a.actors.COLLECTOR.userId;
+ const changes=await Promise.allSettled([access.activate(a.lease.token,old,traveler),other.activate(a.lease.token,old,collector)]);
+ assert.equal(changes.filter(r=>r.status==='fulfilled').length,1);assert.match((changes.find(r=>r.status==='rejected') as PromiseRejectedResult).reason.message,/VIEWER_CHANGED/);
+ const current=await access.currentIdentity(a.lease.token);assert.ok([traveler,collector].includes(current.user_id));
+ const stale={id:old,email_confirmed_at:new Date().toISOString(),app_metadata:{rally_demo:true,rally_workspace:a.id,rally_role:'ORGANIZER'}};
+ await assert.rejects(bindVerifiedSession(stale,{demo:true,token:a.lease.token,viewerId:old},access),/VIEWER_CHANGED/);
+ await assert.rejects(bindVerifiedSession(stale,{demo:true,token:a.lease.token,requireViewer:false},access),/VIEWER_CHANGED/);
+ const fresh={id:current.user_id,email_confirmed_at:new Date().toISOString(),app_metadata:{rally_demo:true,rally_workspace:a.id,rally_role:current.role}};
+ assert.equal((await bindVerifiedSession(fresh,{demo:true,token:a.lease.token,viewerId:current.user_id},access)).demo?.role,current.role);
+ await assert.rejects(access.activate(a.lease.token,current.user_id,randomUUID()),/VIEWER_CHANGED/);
+ await assert.rejects(transaction(pool,async c=>{await c.query(await readFile(new URL('../db/011_demo_active_identity.down.sql',import.meta.url),'utf8'));}),/Refuse to remove active/);
+});
+test('demo namespace detection fails closed and exit clears only its own lease and Auth chunks',()=>{
+ const personal='sb-personal-auth-token',request=new Request('https://rally.example',{headers:{Cookie:`${personal}=synthetic-personal; rally-demo-auth.0=synthetic-demo; rally-demo-auth.1=synthetic-chunk; rally-demo-lease=${'a'.repeat(64)}; rally-auth-next=%2Fstudio`}});
+ assert.equal(hasDemoSession(request),true);assert.equal(demoLease(request),'a'.repeat(64));
+ assert.equal(hasDemoSession(new Request('https://rally.example',{headers:{Cookie:`${personal}=synthetic-personal`}})),false);
+ assert.equal(hasDemoSession(new Request('https://rally.example',{headers:{Cookie:'rally-demo-auth.malformed=synthetic'}})),true);
+ const response=clearDemoSession(request,Response.json({next:'/'})),cookies=response.headers.getSetCookie();
+ assert.equal(cookies.length,4);assert.ok(cookies.every(c=>c.includes('Max-Age=0')&&c.includes('HttpOnly')&&c.includes('SameSite=Lax')));
+ assert.ok(!cookies.some(c=>c.startsWith(personal+'=')||c.startsWith('rally-auth-next=')));
+ assert.equal(response.headers.get('Cache-Control'),'private, no-store');
 });

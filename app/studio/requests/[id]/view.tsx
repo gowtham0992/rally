@@ -1,4 +1,5 @@
 'use client';
+import {apiFetch} from '../../../lib/api-fetch';
 import Link from 'next/link';
 import {useRef,useState} from 'react';
 import {useRouter} from 'next/navigation';
@@ -15,7 +16,7 @@ function Approval({review:r,refresh}:{review:Pending;refresh:()=>void}){
  const router=useRouter(),command=useRef<string|null>(null),[facts,setFacts]=useState(false),[calendar,setCalendar]=useState(false),[settlement,setSettlement]=useState(false),[collection,setCollection]=useState(false),[busy,setBusy]=useState(false),[error,setError]=useState(''),[stale,setStale]=useState(false);
  const candidate=r.candidate,all=facts&&calendar&&settlement&&collection;
  async function approve(e:React.FormEvent){e.preventDefault();if(!all||busy||stale)return;setBusy(true);setError('');command.current??=crypto.randomUUID();
-  try{const response=await fetch(`/api/studio/requests/${r.requestId}`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({commandId:command.current,requestId:r.requestId,expectedRevision:r.revision,factsConfirmed:true,externalCalendarBlocked:true,automaticSettlementAgreed:true,collectionArrangementsAgreed:true})});const result=await response.json();
+  try{const response=await apiFetch(`/api/studio/requests/${r.requestId}`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({commandId:command.current,requestId:r.requestId,expectedRevision:r.revision,factsConfirmed:true,externalCalendarBlocked:true,automaticSettlementAgreed:true,collectionArrangementsAgreed:true})});const result=await response.json();
    if(!response.ok){if(result.error==='STALE_PLANNING')setStale(true);throw new Error(result.error==='STALE_PLANNING'?'The group changed its plan. Refresh before reviewing it again.':result.error==='RESERVATION_CONFLICT'?'That time is already reserved in Rally. This group has not received an offer.':result.error==='SESSION_TOO_SOON'?'This session starts too soon to allow a booking window and the required notice.':result.error==='SIGN_IN_REQUIRED'?'Sign in again before approving this plan.':'Approval could not finish. Your confirmations are still here. Retry or refresh to check the request.');}
    router.push(`/offers/${result.offerId}`);
   }catch(e){setError(e instanceof Error?e.message:'Connection interrupted. Retry to check the same approval.');}finally{setBusy(false);}

@@ -26,7 +26,8 @@
     "Durable shared PostgreSQL request quotas for login, verified reads/writes, group creation and actual model dispatch; private HMAC subjects, no forwarded-IP trust, bounded expired-row cleanup and readiness config/migration checks. Actual local 12-route HTTP proof, mobile denial/input retention, seven new tests and one caught quota mutation; hosted migration 009 and restricted-role TLS audit passed. Judge isolation and deployment remain unfinished.",
     "Judge-workspace foundation: finite non-recycled 24-hour leases and seven synthetic role registrations, scoped group/catalog/intake/clarification/studio boundaries, command and invite isolation. Eight new PostgreSQL tests and caught scope mutation; 96 full tests, TypeScript and build passed. Hosted additive migration 010 and restricted-role/TLS audit passed. Managed Auth provisioning, separate cookies, role-switch/stale-tab UI and actual judge/browser journey remain unfinished; no public endpoint enabled.",
     "Applied participant-provided hackathon advice to an explicit narrow execution focus and eight-scene 155-second demo plan. Current official judging criteria, dates and packaging requirements checked via Devpost connector; factual metadata recorded. Main six-person browser recording, public video, full rules/eligibility audit and final submission packet remain unfinished; no customer/consent/payment outcome fabricated.",
-    "Free-hosting adaptation after participant declined card/payment: one Render Free web Blueprint, private bounded scheduled payment runner, offline Supabase Cron/Vault setup command; seven new scheduler and four resumable judge-preparation tests. Actual idle production HTTP boundary verified; 107 full tests, typecheck and production build passed. Hosted scheduler and managed judge identities are not created yet."
+    "Free-hosting adaptation after participant declined card/payment: one Render Free web Blueprint, private bounded scheduled payment runner, offline Supabase Cron/Vault setup command; seven new scheduler and four resumable judge-preparation tests. Actual idle production HTTP boundary verified; 107 full tests, typecheck and production build passed. Hosted scheduler and managed judge identities are not created yet.",
+    "Managed judge entry and role switching: 35 approved fictional Supabase Auth accounts on verified Free plan, five hosted isolated workspaces, migration 011 active-identity fence, separate HttpOnly cookies and immutable document viewer. Actual seven-role HTTP proof and browser stale-save draft retention passed; 110 full tests and mutation guard passed. No emails, AI calls or payments from this slice."
   ],
   "evidence": {
     "scope": "Local service tests use real PostgreSQL and a simulated provider; separate reviewed records prove three actual PayPal sandbox scenarios.",
@@ -53,7 +54,7 @@
     },
     "credentials_doctor": "All sandbox app, merchant and three distinct personal buyer identifiers configured privately; no credentials committed.",
     "tests": {
-      "passed": 107,
+      "passed": 110,
       "payment_and_adapter": 26,
       "planning_and_model_boundary": 9,
       "persistent_intake": 13,
@@ -63,14 +64,14 @@
       "persistent_clarification": 7,
       "evaluation_oracles": 5,
       "shared_request_limits": 6,
-      "judge_workspace_foundation": 8,
+      "judge_workspace_foundation": 11,
       "scheduled_payment_processing": 7,
       "offline_judge_preparation": 4
     },
     "model_api_calls": 221,
     "ai_quality_and_24_case_evaluation": "passed_actual_72_run_final_prompt",
     "intake_scope": "Real PostgreSQL service tests with trusted test actors; not managed email-auth or browser end-to-end proof.",
-    "latest_full_test_run": "107 full local tests passed; weakened scheduler authorization and judge metadata guards each caught. TypeScript and production build passed. Actual local authenticated idle HTTP scheduler boundary verified. Hosted schedule, full judge Auth/browser journey and deployment remain unfinished.",
+    "latest_full_test_run": "110 local tests passed; weakened active-identity guard caught. TypeScript and production build passed. Actual managed HTTP proof covers seven roles, scope, stale cookies, restore and exit; browser verifies friend/studio switching and stale draft protection. Complete six-buyer journey and hosted payment recovery remain pending.",
     "sandbox_oauth": "Sandbox HTTP 200 access token; supplied Client ID matched Rally app on the selected Business seller.",
     "managed_auth_browser": {
       "scope": "Existing healthy Rally Supabase Auth project; local Next.js app and local PostgreSQL; synthetic studio/name/preferences. User completed email login, agent used resulting verified session.",
@@ -215,7 +216,7 @@
       "dnsConnected": false,
       "httpsVerified": false,
       "localOriginUnchanged": true,
-      "hostingBlocker": "Render Free creation form verified without card; runtime-secret transmission/public sandbox preview approval pending, then hosted scheduler and DNS verification."
+      "hostingBlocker": "Participant approved runtime-secret transmission to Render private settings and the Free sandbox preview. Deployment and DNS underway."
     },
     "scheduled_processing": {
       "tests": "test/scheduled.test.ts",
@@ -223,6 +224,15 @@
       "hosted_preflight": "evidence/free-hosting-preflight.json",
       "hostedScheduleVerified": false,
       "provider": "simulated in scheduler regression tests; no new actual PayPal operations"
+    },
+    "judge_managed_sessions": {
+      "http": "evidence/web/judge-managed-sessions.json",
+      "browser": "evidence/web/judge-session-browser.json",
+      "accounts": 35,
+      "hostedWorkspacesReady": 5,
+      "outboundEmailCalls": 0,
+      "supabasePlan": "Free",
+      "participantApproved": true
     }
   },
   "external_dependencies": [
@@ -259,7 +269,7 @@
     "Polished public demo video under three minutes",
     "Complete Devpost draft materials; human approval before entry submission"
   ],
-  "next_independent_slice": "Finish managed judge identities, separate-cookie lease binding and role/stale-tab UI; prove distinct participants and the full sandbox browser journey. Record a rough demo immediately when that loop works, following docs/demo-plan.md; finish hosting/custom domain, then polish the recording and final submission packet.",
+  "next_independent_slice": "Deploy approved Render Free preview and verify the exact custom domain. Install and prove private scheduled processing. Complete six-participant planning/consent and independent sandbox buyer browser journey, then record the rough demo and finish submission packaging.",
   "release_restrictions": [
     "Core PayPal sandbox scenarios verified; full authenticated application and remaining provider recovery gates are incomplete",
     "No live customer payments",

@@ -1,0 +1,76 @@
+{
+  "observedAt": "2026-10-03T05:09:39.981Z",
+  "scope": "Actual local production-build HTTP boundary. Judge access remains disabled; no managed accounts, model calls, emails or payments created.",
+  "results": [
+    {
+      "case": "absent-origin",
+      "status": 403,
+      "response": {
+        "error": "REQUEST_NOT_ALLOWED"
+      }
+    },
+    {
+      "case": "foreign-origin",
+      "status": 403,
+      "response": {
+        "error": "REQUEST_NOT_ALLOWED"
+      }
+    },
+    {
+      "case": "unknown-identity-input",
+      "status": 400,
+      "response": {
+        "error": "INVALID_REQUEST"
+      }
+    },
+    {
+      "case": "disabled-entry",
+      "status": 503,
+      "response": {
+        "error": "DEMO_UNAVAILABLE"
+      }
+    },
+    {
+      "case": "unsigned-role-switch",
+      "status": 401,
+      "response": {
+        "error": "SIGN_IN_REQUIRED"
+      }
+    },
+    {
+      "case": "missing-lease-restore",
+      "status": 401,
+      "response": {
+        "error": "DEMO_SESSION_EXPIRED"
+      }
+    },
+    {
+      "case": "forged-demo-cookie",
+      "status": 401,
+      "response": {
+        "error": "DEMO_SESSION_EXPIRED"
+      }
+    },
+    {
+      "case": "normal-unsigned-session",
+      "status": 200,
+      "response": {
+        "signedIn": false
+      }
+    },
+    {
+      "case": "exit-preserves-normal-namespace",
+      "status": 200,
+      "response": {
+        "next": "/"
+      },
+      "clearedNames": [
+        "rally-demo-auth",
+        "rally-demo-lease",
+        "rally-demo-auth.0"
+      ]
+    }
+  ],
+  "managedPositiveLoginVerified": false,
+  "browserRoleSwitchVerified": false
+}
