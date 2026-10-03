@@ -17,8 +17,9 @@ validation remain unproven. A convincing demonstration cannot replace them.
 The core journey stays: private requirements, a useful clarification when
 needed, explicit collection consent, a fixed offer approved by the studio,
 individual sandbox payments and truthful booking/recovery status. Maintain the
-published six-to-eight-person capacity. Do not lower it to fit the three buyer
-accounts currently configured.
+published six-to-eight-person capacity. Six distinct Personal sandbox accounts
+are now visible in PayPal Developer; their independent checkout approvals and
+payer identities still need verification.
 
 Adopt existing Supabase Auth, PayPal sandbox, Astropods inference and Render
 hosting. Build the coordination, privacy and recovery behavior that makes this
@@ -81,7 +82,7 @@ priority over displaying a wall of test counts in the video.
 
 - [ ] Finish managed judge account provisioning, separate cookies, clear role identity and stale-tab protection.
 - [ ] Prove six distinct managed participants and an independent studio operator through the actual browser journey.
-- [ ] Configure enough distinct sandbox buyers to satisfy the unchanged six-person offer; three CLI buyers are insufficient for that booking.
+- [x] Observe six distinct Personal sandbox accounts for the unchanged six-person offer. The three CLI buyer IDs stay separate; actual independent checkout approval remains pending.
 - [ ] Record actual clarification and both collection agreements without exposing peer budgets or private credentials.
 - [ ] Prove all six captures and confirmation for the same fresh offer; prove browser recovery separately and retain the existing sandbox evidence.
 - [ ] Deploy within verified credit coverage and verify the custom domain, HTTPS, login and checkout returns.

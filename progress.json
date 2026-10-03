@@ -40,7 +40,8 @@
     "Published audited source snapshot to https://github.com/gowtham0992/rally-hackathon with a GitHub no-reply author. Initial public commit e989b63 has identical tracked-source tree to private source e0c6e7e; development history and personal author email are excluded. Anonymous GitHub API/raw requests verified public visibility, MIT license, exact commit/tree, README and LICENSE (all 200). Original private repository and Render deployment unchanged. No additional model call, buyer account, judge lease or payment operation.",
     "Added the verified public GitHub and hosted demo links to the existing Devpost project using conditional version 5 (saved as version 6). Browser verifies both links, Incomplete submission and hidden portfolio status; connector confirms submitted_at remains null and video absent. No form attestations, description change or final entry submission.",
     "Verified both Rally repositories are private at the owner's request. Remote main and tracked source trees match; duplicate has no unique branch/tag, issue/PR, release, webhook or workflow run. Backed up its complete Git history in an ignored private bundle. Rally is the sole working repository; duplicate removal awaits explicit deletion approval. Publication is deferred until the owner is ready to submit, and all Devpost actions belong to the owner. No app, deployment, payment or Devpost changes.",
-    "With explicit owner approval, deleted the duplicate rally-hackathon repository through the signed-in GitHub browser after the CLI reported missing delete_repo permission. GitHub confirmed deletion and retained rally as private. Removed only the clean duplicate local checkout after rechecking its complete Git bundle; ignored private backup preserved. No Devpost, runtime, deployment, payment or credential changes."
+    "With explicit owner approval, deleted the duplicate rally-hackathon repository through the signed-in GitHub browser after the CLI reported missing delete_repo permission. GitHub confirmed deletion and retained rally as private. Removed only the clean duplicate local checkout after rechecking its complete Git bundle; ignored private backup preserved. No Devpost, runtime, deployment, payment or credential changes.",
+    "Observed six distinct Personal sandbox logins in the actual PayPal Developer dashboard; no passwords read or accounts created. In the existing hosted fictional demo, Alex closed the six-person roster through Rally. Jordan, Riley, Casey and Taylor each showed their own saved requirements through managed role switches; Sam retained the exact fictional note I leave Friday. Read-only hosted observation confirms CLOSED revision 12, six admitted members and six saved preferences, MERCHANT_REVIEW_REQUIRED, zero model runs, agreed collection arrangements, studio requests, offers or payment operations. Specific Astropods note approval remains pending; no payment or consent outcome fabricated."
   ],
   "evidence": {
     "scope": "Local service tests use real PostgreSQL and a simulated provider; separate reviewed records prove three actual PayPal sandbox scenarios.",
@@ -347,12 +348,28 @@
       "initial_public_snapshot_commit": "e989b63",
       "initial_private_source_commit": "e0c6e7e",
       "current_visibility": "private"
+    },
+    "hosted_six_friend_flow": {
+      "file": "evidence/web/hosted-six-friend-flow.json",
+      "scope": "Actual hosted fictional six-friend workspace. Read-only database observation and browser roster/role checks; no PayPal payment approval or booking confirmation.",
+      "personal_sandbox_accounts_observed": 6,
+      "distinct_sandbox_logins_observed": 6,
+      "members": 6,
+      "admitted_members": 6,
+      "saved_preferences": 6,
+      "group_state": "CLOSED",
+      "planning_state": "MERCHANT_REVIEW_REQUIRED",
+      "live_ai_clarification_verified": false,
+      "issued_offers": 0,
+      "payment_operations": 0,
+      "six_distinct_payer_ids_verified": false,
+      "full_booking_verified": false
     }
   },
   "external_dependencies": [
     {
-      "name": "PayPal sandbox business app and three personal buyer accounts",
-      "state": "configured_and_core_scenarios_verified",
+      "name": "PayPal sandbox Business seller and six Personal buyer accounts",
+      "state": "Six distinct Personal test-account logins observed in PayPal Developer. Three-buyer CLI scenarios were previously verified; six-person product payment approval and payer-ID verification remain pending.",
       "setup": "README.md",
       "template": ".env.example"
     },
@@ -383,7 +400,7 @@
     "Polished public demo video under three minutes",
     "Complete Devpost draft materials; human approval before entry submission"
   ],
-  "next_independent_slice": "Finish hosted six-friend planning/consent and six distinct sandbox buyer approvals; verify genuine signed webhook delivery and hosted cold-wake/recovery. Specific fictional-note Astropods approval and three additional buyer identities remain pending. Public source exists; recording, video, judge-guide rehearsal and personal form attestations still required. No final Devpost submission authorized.",
+  "next_independent_slice": "With specific fictional-note Astropods approval, finish hosted clarification, owner/collector agreement and studio offer review. Six Personal sandbox accounts are now observed; prove six distinct payer identities through actual individual checkout approvals, genuine webhook delivery and active hosted recovery. Keep the sole Rally repository private until the owner is ready to submit. All Devpost edits/submission are owner-managed.",
   "release_restrictions": [
     "Core PayPal sandbox scenarios verified; full authenticated application and remaining provider recovery gates are incomplete",
     "No live customer payments",

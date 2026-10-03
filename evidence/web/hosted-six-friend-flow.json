@@ -1,0 +1,25 @@
+{
+  "observedAt": "2026-10-03T16:34:37.817Z",
+  "scope": "Actual hosted fictional six-friend workspace. Read-only database observation and browser roster/role checks; no PayPal payment approval or booking confirmation.",
+  "groupId": "c6740e0d-0c8d-46f8-883b-b2284c2dcca2",
+  "group": {
+    "state": "CLOSED",
+    "revision": 12,
+    "target_size": 6,
+    "planning_state": "MERCHANT_REVIEW_REQUIRED",
+    "members": 6,
+    "admitted_members": 6,
+    "saved_preferences": 6,
+    "clarification_runs": 0,
+    "agreed_collection_arrangements": 0,
+    "studio_requests": 0,
+    "issued_offers": 0,
+    "payment_operations": 0,
+    "existing_lease_expires_at": "2026-10-04T05:35:04.640Z"
+  },
+  "personalSandboxAccountsObserved": 6,
+  "distinctSandboxLoginsObserved": 6,
+  "allSixBuyerPayerIdsVerified": false,
+  "liveAiClarificationVerified": false,
+  "completeCheckoutVerified": false
+}
