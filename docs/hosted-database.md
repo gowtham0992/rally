@@ -46,7 +46,7 @@ The actual connection audit in `evidence/hosted-database.json` proves verified
 TLS **from Rally to the session pooler**. Supabase reports its internal
 pooler-to-database connection as non-TLS; the audit does not claim encryption on
 that provider-managed hop. The audit also verified a rolled-back synthetic write,
-seven applied migrations, denied browser schema privileges, and an HTTP 406 when
+eight applied migrations, denied browser schema privileges, and an HTTP 406 when
 a browser key requested the private schema through REST. It is not proof of
 application deployment, multi-account login, or a hosted payment journey.
 

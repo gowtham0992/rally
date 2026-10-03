@@ -15,10 +15,11 @@
     "Friend-oriented product UI: actual people/readiness, private details, natural copy and restrained demo label. Mobile/tablet/desktop reviewed; stale-save draft retention observed through two browser views.",
     "Astropods authenticated, $10 period spend limit saved, server-side bounded model adapter and actual validated synthetic clarification call; Render Blueprint and shallow database readiness route prepared. Hosting remains undeployed.",
     "Persistent owner-scoped grounded AI clarification with explicit processing and meaning confirmation, revision invalidation, duplicate protection, bounded questions/calls, interrupted-request recovery and an equal structured-only path. Actual synthetic authenticated AI and baseline flow observed; collection volunteer/consent never invented.",
-    "Private hosted Supabase application schema, restricted runtime login, seven migrations and actual certificate-verified connection audit; local development remains on local PostgreSQL and Render is undeployed.",
+    "Private hosted Supabase application schema, restricted runtime login, eight migrations and actual certificate-verified connection audit; local development remains on local PostgreSQL and Render is undeployed.",
     "Owner-first collection consent UI, compact private saved summary and bounded live refresh paused during editing; excluded nominees rejected for closed rosters.",
     "Managed-auth organizer request, owner-scoped paginated studio queue and explicit four-attestation approval UI; exact buffered calendar interval, stale-plan rejection, immutable issued-offer view and authoritative group booking status. Local synthetic owner/operator browser fixture created exactly one held offer and zero payment operations.",
-    "Managed-auth individual checkout with explicit frozen-offer acceptance, owned sandbox redirect and worker authorization; coherent private payment status snapshot. Actual browser created one sandbox order and rejected approval before PayPal sign-in with zero authorizations/captures. Phone/tablet/desktop reviewed; complete multi-buyer browser lifecycle remains required."
+    "Managed-auth individual checkout with explicit frozen-offer acceptance, owned sandbox redirect and worker authorization; coherent private payment status snapshot. Actual browser created one sandbox order and rejected approval before PayPal sign-in with zero authorizations/captures. Phone/tablet/desktop reviewed; complete multi-buyer browser lifecycle remains required.",
+    "Studio-owned cancellation, private participant cancellation requests, worker compensation for late captures and organizer reopening gated on complete recovery; bounded studio booking history. Actual single-account synthetic cancellation/reopening observed with zero payments; six new PostgreSQL tests and six isolated mutations cover financial/ownership boundaries. Hosted migration 008 and restricted-runtime audit passed."
   ],
   "evidence": {
     "scope": "Local service tests use real PostgreSQL and a simulated provider; separate reviewed records prove three actual PayPal sandbox scenarios.",
@@ -45,11 +46,11 @@
     },
     "credentials_doctor": "All sandbox app, merchant and three distinct personal buyer identifiers configured privately; no credentials committed.",
     "tests": {
-      "passed": 68,
-      "payment_and_adapter": 24,
+      "passed": 76,
+      "payment_and_adapter": 26,
       "planning_and_model_boundary": 9,
       "persistent_intake": 13,
-      "merchant_booking_loop": 10,
+      "merchant_booking_loop": 16,
       "web_request_boundaries": 3,
       "bounded_ai_gateway": 3,
       "persistent_clarification": 6
@@ -57,7 +58,7 @@
     "model_api_calls": 5,
     "ai_quality_and_24_case_evaluation": "not_executed",
     "intake_scope": "Real PostgreSQL service tests with trusted test actors; not managed email-auth or browser end-to-end proof.",
-    "latest_full_test_run": "68 tests passed; TypeScript passed; production build passed for studio review and issued-offer integration. Full checkout, hosted app and submission requirements remain incomplete.",
+    "latest_full_test_run": "76 tests passed; TypeScript and production build passed for cancellation/reopening. Full PayPal browser recovery, independent managed accounts, AI evaluation, hosted application and submission requirements remain incomplete.",
     "sandbox_oauth": "Sandbox HTTP 200 access token; supplied Client ID matched Rally app on the selected Business seller.",
     "managed_auth_browser": {
       "scope": "Existing healthy Rally Supabase Auth project; local Next.js app and local PostgreSQL; synthetic studio/name/preferences. User completed email login, agent used resulting verified session.",
@@ -106,6 +107,12 @@
       "file": "evidence/web/checkout-flow.json",
       "scope": "Managed-auth owner; synthetic group/studio approval; actual PayPal order creation and early-check rejection only",
       "full_browser_checkout": "Pending human sandbox buyer approval and distinct managed participants"
+    },
+    "cancellation": {
+      "browser": "evidence/web/cancellation-flow.json",
+      "mutations": "evidence/local-cancellation-mutations.json",
+      "scope": "Managed owner/operator synthetic browser with zero payments; financial recovery in real PostgreSQL using simulated provider",
+      "actual_paypal_cancellation_browser": "Not verified"
     }
   },
   "external_dependencies": [
@@ -143,7 +150,7 @@
     "Polished public demo video under three minutes",
     "Complete Devpost draft materials; human approval before entry submission"
   ],
-  "next_independent_slice": "Complete buyer approval return and multi-participant checkout proof; implement merchant cancellation and planning-round reopening; then isolated judge access, AI evaluation and deployment.",
+  "next_independent_slice": "Complete pending PayPal buyer approval/return and distinct managed sessions; implement isolated rate-limited judge access, run AI evaluation and deploy approved sandbox services.",
   "release_restrictions": [
     "Core PayPal sandbox scenarios verified; full authenticated application and remaining provider recovery gates are incomplete",
     "No live customer payments",

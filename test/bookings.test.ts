@@ -15,7 +15,7 @@ const actor=():IntakeActor=>({userId:randomUUID(),emailVerified:true});
 const merchant=actor();
 const baseCatalog=JSON.parse(await readFile(new URL('../fixtures/studio.json',import.meta.url),'utf8'));
 const catalog={...baseCatalog,slots:baseCatalog.slots.map((s:{id:string},i:number)=>({...s,startAt:new Date(Date.now()+(3+i)*86400000).toISOString()}))};
-const migrations=['001_payments','004_private_intake','005_collection_consent','006_merchant_offers','007_clarifications'];
+const migrations=['001_payments','004_private_intake','005_collection_consent','006_merchant_offers','007_clarifications','008_cancellations'];
 before(async()=>{await admin.query(`CREATE SCHEMA ${schema}`);for(const file of migrations)await pool.query(await readFile(new URL('../db/'+file+'.sql',import.meta.url),'utf8'));
  await pool.query('INSERT INTO merchant_studios VALUES($1,$2,$3,$4,$5,$6)',[catalog.studioId,merchant.userId,'synthetic_merchant','studio-exclusive',15,20]);
  await pool.query('INSERT INTO merchant_catalog_versions(studio_id,version_id,catalog) VALUES($1,$2,$3)',[catalog.studioId,catalog.versionId,JSON.stringify(catalog)]);
@@ -144,4 +144,96 @@ test('studio queue is owner-scoped, bounded, cursor-stable and excludes invalida
  const newest=items.at(-1)!;await intake.save(newest.x.actors[0],{commandId:randomUUID(),groupId:newest.x.g.groupId,expectedRevision:newest.r.revision,expectedPreferenceId:newest.x.preferenceIds[0],preference,optionalText:null});
  assert.ok(!(await bookings.merchantQueue(owner)).requests.some(r=>r.requestId===newest.r.requestId));
  await release(approved.offerId);
+});
+
+async function funded(){
+ const x=await setup(),r=await request(x),issued=await bookings.approve(merchant,approval(r));
+ const provider=new SimulatedProvider(),engine=new PaymentEngine(pool,provider,{reconcileDelayMs:0});
+ const command=(a:IntakeActor)=>({commandId:randomUUID(),actorId:a.userId,offerId:issued.offerId,offerHash:issued.offerHash});
+ for(const a of x.actors){await engine.accept(command(a));await engine.step(issued.offerId);}
+ for(const a of x.actors){await engine.authorize(command(a));await engine.step(issued.offerId);}
+ return {x,issued,provider,engine,command};
+}
+test('studio cancellation releases confirmed inventory, refunds every capture once and gates a separate planning round',async()=>{
+ const f=await funded();await settle(f.engine,f.issued.offerId);
+ assert.equal((await bookings.offer(f.x.actors[0],f.issued.offerId)).booking,'CONFIRMED');
+ await assert.rejects(f.engine.cancelByMerchant({...f.command(f.x.actors[0]),agreesToFullRefund:true}),/NOT_FOUND/);
+ await assert.rejects(f.engine.cancelByMerchant({...f.command(merchant),agreesToFullRefund:false}));
+ const cancel={...f.command(merchant),agreesToFullRefund:true},before=await bookings.offer(merchant,f.issued.offerId);
+ assert.equal((await f.engine.cancelByMerchant(cancel)).state,'CANCELED');
+ assert.equal((await pool.query('SELECT state FROM reservations WHERE offer_id=$1',[f.issued.offerId])).rows[0].state,'CANCELED');
+ assert.equal((await bookings.offer(f.x.actors[0],f.issued.offerId)).canReopen,false);
+ const reopen={commandId:randomUUID(),groupId:f.x.g.groupId,offerId:f.issued.offerId,offerHash:f.issued.offerHash,expectedRevision:f.issued.revision,acknowledgesNewApprovals:true};
+ await assert.rejects(bookings.reopen(f.x.actors[0],reopen),/PAYMENT_RECOVERY_REQUIRED/);
+ await settle(f.engine,f.issued.offerId);assert.deepEqual(f.provider.financialEffects,{captures:6,refunds:6,voids:0});
+ await f.engine.cancelByMerchant(cancel);await settle(f.engine,f.issued.offerId);assert.equal(f.provider.financialEffects.refunds,6);
+ assert.equal((await f.engine.participantStatus(f.issued.offerId,f.x.actors[0].userId)).payment,'REFUND_COMPLETED');
+ const after=await bookings.offer(f.x.actors[0],f.issued.offerId);assert.deepEqual(after.snapshot,before.snapshot);assert.equal(after.canReopen,true);
+ await assert.rejects(bookings.reopen(f.x.actors[1],{...reopen,commandId:randomUUID()}),/NOT_FOUND/);
+ const reopened=await bookings.reopen(f.x.actors[0],reopen);assert.deepEqual(await bookings.reopen(f.x.actors[0],reopen),reopened);
+ const next=await bookings.request(f.x.actors[0],{commandId:randomUUID(),groupId:f.x.g.groupId,expectedRevision:reopened.revision,offeringId:'handbuild',slotId:'thu-evening'});
+ const replacement=await bookings.approve(merchant,approval(next));assert.notEqual(replacement.offerId,f.issued.offerId);assert.notEqual(replacement.offerHash,f.issued.offerHash);
+ assert.equal((await f.engine.participantStatus(replacement.offerId,f.x.actors[0].userId)).canAccept,true);
+ assert.equal((await bookings.offer(f.x.actors[0],f.issued.offerId)).canReopen,false);await release(replacement.offerId);
+});
+test('participant cancellation requests require studio review and are private and naturally deduplicated',async()=>{
+ const f=await funded(),cmd=f.command(f.x.actors[0]);
+ await assert.rejects(f.engine.requestCancellation({...cmd,actorId:actor().userId}),/NOT_A_MEMBER/);
+ await f.engine.requestCancellation(cmd);await f.engine.requestCancellation({...cmd,commandId:randomUUID()});
+ assert.equal((await bookings.offer(f.x.actors[0],f.issued.offerId)).cancellationRequested,true);
+ const other=await bookings.offer(f.x.actors[1],f.issued.offerId);assert.equal(other.cancellationRequested,false);assert.equal(other.cancellationRequestCount,null);
+ assert.equal((await bookings.offer(merchant,f.issued.offerId)).cancellationRequestCount,1);
+ assert.equal((await pool.query("SELECT count(*) FROM payment_events WHERE offer_id=$1 AND event_type='CANCELLATION_REQUESTED'",[f.issued.offerId])).rows[0].count,'1');
+ assert.equal((await bookings.offer(merchant,f.issued.offerId)).booking,'SETTLING');
+ await f.engine.cancelByMerchant({...f.command(merchant),agreesToFullRefund:true});await settle(f.engine,f.issued.offerId);
+ assert.deepEqual(f.provider.financialEffects,{captures:0,refunds:0,voids:6});
+});
+test('a capture already in flight when the studio cancels is reconciled and refunded without confirmation',async()=>{
+ const f=await funded();await f.engine.step(f.issued.offerId);assert.equal(f.provider.financialEffects.captures,1);
+ let entered!:()=>void,finish!:()=>void;
+ const dispatched=new Promise<void>(r=>entered=r),resume=new Promise<void>(r=>finish=r),execute=f.provider.execute.bind(f.provider);
+ f.provider.execute=async op=>{if(op.kind==='CAPTURE'){entered();await resume;}return execute(op);};
+ const inFlight=f.engine.step(f.issued.offerId);await dispatched;
+ await f.engine.cancelByMerchant({...f.command(merchant),agreesToFullRefund:true});
+ assert.equal((await bookings.offer(f.x.actors[0],f.issued.offerId)).canReopen,false);
+ finish();await inFlight;await settle(f.engine,f.issued.offerId);
+ assert.deepEqual(f.provider.financialEffects,{captures:2,refunds:2,voids:4});
+ const view=await bookings.offer(f.x.actors[0],f.issued.offerId);assert.equal(view.booking,'CANCELED');assert.equal(view.cleanup,'COMPLETE');assert.equal(view.canReopen,true);
+ assert.equal((await pool.query("SELECT count(*) FROM payment_events WHERE offer_id=$1 AND event_type='CONFIRMED'",[f.issued.offerId])).rows[0].count,'0');
+});
+test('withdrawn offer can reopen only after recovery; unresolved refunds retain the old planning lock',async()=>{
+ const f=await funded();await f.engine.step(f.issued.offerId);
+ f.provider.pendingKinds.add('REFUND');await f.engine.cancelByMerchant({...f.command(merchant),agreesToFullRefund:true});await settle(f.engine,f.issued.offerId,10);
+ const reopen={commandId:randomUUID(),groupId:f.x.g.groupId,offerId:f.issued.offerId,offerHash:f.issued.offerHash,expectedRevision:f.issued.revision,acknowledgesNewApprovals:true};
+ await assert.rejects(bookings.reopen(f.x.actors[0],reopen),/PAYMENT_RECOVERY_REQUIRED/);
+ const captured=(await pool.query('SELECT user_id FROM offer_members WHERE offer_id=$1 ORDER BY ordinal LIMIT 1',[f.issued.offerId])).rows[0];
+ assert.equal((await f.engine.participantStatus(f.issued.offerId,captured.user_id)).payment,'REFUND_IN_PROGRESS');
+ f.provider.pendingKinds.delete('REFUND');const refund=(await pool.query("SELECT request_id FROM payment_operations WHERE offer_id=$1 AND kind='REFUND'",[f.issued.offerId])).rows[0];
+ const observed=f.provider.results.get(refund.request_id)!;f.provider.results.set(refund.request_id,{...observed,outcome:'success',status:'COMPLETED'});
+ await settle(f.engine,f.issued.offerId);await bookings.reopen(f.x.actors[0],reopen);
+ const x=await setup(),r=await request(x),issued=await bookings.approve(merchant,approval(r)),engine=new PaymentEngine(pool,new SimulatedProvider());
+ await engine.withdraw({commandId:randomUUID(),actorId:x.actors[1].userId,offerId:issued.offerId,offerHash:issued.offerHash});await engine.step(issued.offerId);
+ await bookings.reopen(x.actors[0],{commandId:randomUUID(),groupId:x.g.groupId,offerId:issued.offerId,offerHash:issued.offerHash,expectedRevision:issued.revision,acknowledgesNewApprovals:true});
+ assert.equal((await intake.roster(x.actors[0],x.g.groupId)).state,'CLOSED');
+});
+test('cancellation migration reverses only in an empty fixture and preserves populated history',async()=>{
+ const temporary=`cancel_migration_${randomUUID().replaceAll('-','')}`;await admin.query(`CREATE SCHEMA ${temporary}`);
+ const u=new URL(process.env.TEST_DATABASE_URL??localDatabaseUrl);u.searchParams.set('options',`-c search_path=${temporary},public`);const temp=database(u.toString());
+ try{for(const version of ['001_payments','008_cancellations','008_cancellations.down','008_cancellations'])await temp.query(await readFile(new URL('../db/'+version+'.sql',import.meta.url),'utf8'));
+ assert.equal((await temp.query('SELECT count(*) FROM cancellation_requests')).rows[0].count,'0');
+ }finally{await temp.end();await admin.query(`DROP SCHEMA ${temporary} CASCADE`);}
+ const x=await setup(),r=await request(x),issued=await bookings.approve(merchant,approval(r));
+ await new PaymentEngine(pool,new SimulatedProvider()).cancelByMerchant({commandId:randomUUID(),actorId:merchant.userId,offerId:issued.offerId,offerHash:issued.offerHash,agreesToFullRefund:true});
+ await assert.rejects(pool.query(await readFile(new URL('../db/008_cancellations.down.sql',import.meta.url),'utf8')),{code:'23514'});
+});
+test('studio booking history is bounded and exposes actionable states without private participant details',async()=>{
+ let newest!:Awaited<ReturnType<typeof bookings.approve>>,x!:Awaited<ReturnType<typeof setup>>;
+ for(let i=0;i<21;i++){x=await setup();const r=await request(x);newest=await bookings.approve(merchant,approval(r));await release(newest.offerId);}
+ const issued=newest;
+ await assert.rejects(bookings.merchantBookings(x.actors[0]),/NOT_FOUND/);
+ await assert.rejects(bookings.merchantBookings(merchant,randomUUID()),/NOT_FOUND/);
+ const page=await bookings.merchantBookings(merchant);assert.equal(page.bookings.length,20);assert.ok(page.nextCursor);assert.equal(page.bookings[0].offerId,issued.offerId);
+ assert.ok(!JSON.stringify(page).includes('budget'));assert.ok(!JSON.stringify(page).includes('Private words'));assert.ok(!JSON.stringify(page).includes(x.actors[0].userId));
+ if(page.nextCursor){const next=await bookings.merchantBookings(merchant,page.nextCursor);assert.ok(next.bookings.every(b=>!page.bookings.some(a=>a.offerId===b.offerId)));}
+ await release(issued.offerId);
 });

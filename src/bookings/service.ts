@@ -10,6 +10,8 @@ const uuid=z.uuid(),key=z.string().min(1).max(100);
 const requestSchema=z.strictObject({commandId:uuid,groupId:uuid,expectedRevision:z.number().int().nonnegative(),offeringId:key,slotId:key});
 const approveSchema=z.strictObject({commandId:uuid,requestId:uuid,expectedRevision:z.number().int().nonnegative(),
  factsConfirmed:z.literal(true),externalCalendarBlocked:z.literal(true),automaticSettlementAgreed:z.literal(true),collectionArrangementsAgreed:z.literal(true)});
+const reopenSchema=z.strictObject({commandId:uuid,groupId:uuid,offerId:uuid,expectedRevision:z.number().int().nonnegative(),offerHash:z.string().length(64),acknowledgesNewApprovals:z.literal(true)});
+const closedBookings=new Set(['EXPIRED','WITHDRAWN','SUPERSEDED','ABORTED','CANCELED']);
 const candidateSchema=z.strictObject({catalogVersionId:key,studioId:key,studioName:z.string().min(1).max(100),offeringId:key,activity:z.string().min(1).max(100),slotId:key,
  startAt:z.iso.datetime(),endAt:z.iso.datetime(),timezone:key,amountMinor:z.number().int().min(1).max(1000000),currency:z.literal('USD'),groupSize:z.number().int().min(1).max(8),
  collectionDescription:z.string().min(1).max(300),cancellationTerms:z.string().min(1).max(1000),synthetic:z.boolean()});
@@ -40,6 +42,7 @@ export class BookingService {
  async request(actor:IntakeActor,value:unknown){const p=requestSchema.parse(value);return this.command(actor,p.commandId,{kind:'REQUEST_OFFER',...p},async c=>{
   const g=await this.group(c,p.groupId);if(g.organizer_id!==actor.userId)throw new DomainError('NOT_FOUND',404);
   if(g.state!=='CLOSED'||g.revision!==p.expectedRevision)throw new DomainError('STALE_PLANNING');
+  await this.recovered(c,g.id);
   const plan=await confirmedPlan(c,g.id,g.catalog),candidate=this.selected(plan,p.offeringId,p.slotId);
   if(plan.rows.length!==g.target_size)throw new DomainError('INVALID_ROSTER');
   const published=(await c.query('SELECT catalog FROM merchant_catalog_versions WHERE studio_id=$1 AND version_id=$2',[plan.catalog.studioId,plan.catalog.versionId])).rows[0];
@@ -49,6 +52,25 @@ export class BookingService {
    [requestId,g.id,revision,candidate.studioId,candidate.catalogVersionId,p.offeringId,p.slotId,plan.sourceHash]);
   await c.query("UPDATE planning_groups SET state='MERCHANT_REVIEW',revision=$2,candidate=NULL WHERE id=$1",[g.id,revision]);
   await c.query("INSERT INTO planning_events(group_id,revision,kind) VALUES($1,$2,'MERCHANT_REVIEW_REQUESTED')",[g.id,revision]);return {requestId,revision};
+ });}
+ private async recovered(c:pg.PoolClient,groupId:string){
+  const prior=(await c.query('SELECT o.id,o.state,o.cleanup FROM offers o JOIN offer_snapshots os ON os.offer_id=o.id WHERE os.group_id=$1 FOR UPDATE OF o',[groupId])).rows;
+  if(prior.some(o=>!closedBookings.has(o.state)||o.cleanup!=='COMPLETE'))throw new DomainError('PAYMENT_RECOVERY_REQUIRED');
+  const unresolved=await c.query(`SELECT 1 FROM payment_operations p JOIN offer_snapshots os ON os.offer_id=p.offer_id
+   WHERE os.group_id=$1 AND p.kind IN ('AUTHORIZE','CAPTURE','VOID','REFUND')
+   AND p.state IN ('PLANNED','DISPATCHED','UNKNOWN','PENDING','ACTION_REQUIRED') LIMIT 1`,[groupId]);
+  if(unresolved.rowCount)throw new DomainError('PAYMENT_RECOVERY_REQUIRED');
+ }
+ async reopen(actor:IntakeActor,value:unknown){const p=reopenSchema.parse(value);return this.command(actor,p.commandId,{kind:'REOPEN_PLANNING',...p},async c=>{
+  const g=await this.group(c,p.groupId);if(g.organizer_id!==actor.userId)throw new DomainError('NOT_FOUND',404);
+  if(g.state!=='OFFER_ISSUED'||g.revision!==p.expectedRevision)throw new DomainError('STALE_PLANNING');
+  const latest=(await c.query(`SELECT o.id,o.offer_hash FROM merchant_requests r JOIN offers o ON o.id=r.approved_offer_id
+   WHERE r.group_id=$1 AND r.state='APPROVED' ORDER BY r.planning_revision DESC LIMIT 1`,[g.id])).rows[0];
+  if(!latest||latest.id!==p.offerId||latest.offer_hash!==p.offerHash)throw new DomainError('STALE_OFFER');
+  await this.recovered(c,g.id);
+  await c.query("UPDATE planning_groups SET state='CLOSED',revision=revision+1,candidate=NULL WHERE id=$1",[g.id]);
+  await c.query("INSERT INTO planning_events(group_id,revision,kind) VALUES($1,$2,'PLANNING_REOPENED')",[g.id,g.revision+1]);
+  return {groupId:g.id as string,revision:g.revision+1};
  });}
  async approve(actor:IntakeActor,value:unknown){const p=approveSchema.parse(value);
   try{return await this.command(actor,p.commandId,{kind:'APPROVE_OFFER',...p},async c=>{
@@ -105,6 +127,21 @@ export class BookingService {
    return {requests,nextCursor:rows.length>20?requests.at(-1)!.requestId:null};
   });
  }
+ async merchantBookings(actor:IntakeActor,cursor:string|null=null){this.actor(actor);if(cursor)uuid.parse(cursor);
+  return transaction(this.pool,async c=>{
+   if(!(await c.query('SELECT 1 FROM merchant_studios WHERE owner_user_id=$1 LIMIT 1',[actor.userId])).rowCount)throw new DomainError('NOT_FOUND',404);
+   let before:{opened_at:Date;id:string}|undefined;
+   if(cursor){before=(await c.query(`SELECT o.opened_at,o.id FROM offers o JOIN offer_snapshots os ON os.offer_id=o.id
+    JOIN merchant_studios s ON s.studio_id=os.snapshot->'candidate'->>'studioId' WHERE o.id=$1 AND s.owner_user_id=$2`,[cursor,actor.userId])).rows[0];if(!before)throw new DomainError('NOT_FOUND',404);}
+   const rows=(await c.query(`SELECT o.id,o.state,o.cleanup,os.snapshot,
+    (SELECT count(*)::integer FROM cancellation_requests cr JOIN offer_members m ON m.id=cr.member_id WHERE m.offer_id=o.id) AS requests
+    FROM offers o JOIN offer_snapshots os ON os.offer_id=o.id JOIN merchant_studios s ON s.studio_id=os.snapshot->'candidate'->>'studioId'
+    WHERE s.owner_user_id=$1 AND ($2::timestamptz IS NULL OR (o.opened_at,o.id)<($2::timestamptz,$3::uuid))
+    ORDER BY o.opened_at DESC,o.id DESC LIMIT 21`,[actor.userId,before?.opened_at??null,before?.id??null])).rows;
+   const bookings=rows.slice(0,20).map(r=>{const snapshot=snapshotSchema.parse(r.snapshot);return {offerId:r.id as string,booking:r.state as string,cleanup:r.cleanup as string,cancellationRequests:r.requests as number,activity:snapshot.candidate.activity,startAt:snapshot.candidate.startAt,timezone:snapshot.candidate.timezone,groupSize:snapshot.roster.length};});
+   return {bookings,nextCursor:rows.length>20?bookings.at(-1)!.offerId:null};
+  });
+ }
  async merchantRequest(actor:IntakeActor,requestId:string){this.actor(actor);uuid.parse(requestId);
   return transaction(this.pool,async c=>{
    const request=(await c.query('SELECT r.*,s.owner_user_id,s.setup_minutes,s.cleanup_minutes FROM merchant_requests r JOIN merchant_studios s ON s.studio_id=r.studio_id WHERE r.id=$1',[requestId])).rows[0];
@@ -120,14 +157,22 @@ export class BookingService {
   });
  }
  async offer(actor:IntakeActor,offerId:string){this.actor(actor);uuid.parse(offerId);
-  const row=(await this.pool.query(`SELECT os.snapshot,o.offer_hash,o.state,
+  const row=(await this.pool.query(`SELECT os.snapshot,o.offer_hash,o.state,o.cleanup,g.revision AS planning_revision,g.state AS planning_state,
+    g.organizer_id=$2 AS is_organizer,
+    NOT EXISTS(SELECT 1 FROM merchant_requests r WHERE r.group_id=g.id AND r.state='APPROVED' AND r.planning_revision>(os.snapshot->>'planningRevision')::integer) AS is_latest,
+    EXISTS(SELECT 1 FROM cancellation_requests cr JOIN offer_members m ON m.id=cr.member_id WHERE m.offer_id=o.id AND m.user_id=$2) AS cancellation_requested,
+    (SELECT count(*)::integer FROM cancellation_requests cr JOIN offer_members m ON m.id=cr.member_id WHERE m.offer_id=o.id) AS cancellation_request_count,
     EXISTS(SELECT 1 FROM offer_members m WHERE m.offer_id=o.id AND m.user_id=$2) AS is_participant,
     EXISTS(SELECT 1 FROM merchant_studios s WHERE s.studio_id=os.snapshot->'candidate'->>'studioId' AND s.owner_user_id=$2) AS is_merchant
-    FROM offer_snapshots os JOIN offers o ON o.id=os.offer_id
+    FROM offer_snapshots os JOIN offers o ON o.id=os.offer_id JOIN planning_groups g ON g.id=os.group_id
     WHERE os.offer_id=$1 AND (EXISTS(SELECT 1 FROM offer_members m WHERE m.offer_id=o.id AND m.user_id=$2)
     OR EXISTS(SELECT 1 FROM merchant_studios s WHERE s.studio_id=os.snapshot->'candidate'->>'studioId' AND s.owner_user_id=$2))`,[offerId,actor.userId])).rows[0];
   if(!row)throw new DomainError('NOT_FOUND',404);const snapshot=snapshotSchema.parse(row.snapshot);
   if(fingerprint(snapshot)!==row.offer_hash)throw new DomainError('OFFER_INTEGRITY_FAILURE',500);
-  return {offerHash:row.offer_hash,booking:row.state,snapshot,isParticipant:row.is_participant as boolean,isMerchant:row.is_merchant as boolean};
+  return {offerHash:row.offer_hash,booking:row.state,snapshot,cleanup:row.cleanup as string,planningRevision:row.planning_revision as number,
+   isParticipant:row.is_participant as boolean,isMerchant:row.is_merchant as boolean,isOrganizer:row.is_organizer as boolean,
+   cancellationRequested:row.is_participant?row.cancellation_requested as boolean:false,
+   cancellationRequestCount:row.is_merchant?row.cancellation_request_count as number:null,
+   canReopen:Boolean(row.is_organizer&&row.is_latest&&row.planning_state==='OFFER_ISSUED'&&closedBookings.has(row.state)&&row.cleanup==='COMPLETE')};
  }
 }

@@ -7,7 +7,7 @@ import { DomainError, ProviderError, fingerprint, type Kind, type Member, type O
 
 const commandSchema = z.strictObject({ commandId: z.uuid(), offerId: z.uuid(), actorId: z.uuid(), offerHash: z.string().length(64) });
 type Command = z.infer<typeof commandSchema>;
-const terminal = new Set(['EXPIRED','WITHDRAWN','SUPERSEDED','ABORTED']);
+const terminal = new Set(['EXPIRED','WITHDRAWN','SUPERSEDED','ABORTED','CANCELED']);
 const uncertain = new Set(['DISPATCHED','UNKNOWN','PENDING','ACTION_REQUIRED']);
 const at = <T extends { kind: Kind }>(ops: T[], kind: Kind) => ops.find(o => o.kind === kind);
 
@@ -35,6 +35,7 @@ export class PaymentEngine {
     await client.query('UPDATE offers SET state=$2,revision=revision+1 WHERE id=$1',[offer.id,state]);
     if (terminal.has(state)) {
       await client.query("UPDATE reservations SET state='RELEASED' WHERE offer_id=$1 AND state='HELD'",[offer.id]);
+      if(state==='CANCELED')await client.query("UPDATE reservations SET state='CANCELED' WHERE offer_id=$1 AND state='BOOKED'",[offer.id]);
       await client.query("UPDATE offers SET cleanup='REQUIRED' WHERE id=$1",[offer.id]);
     }
     await this.event(client,offer,state);
@@ -106,6 +107,38 @@ export class PaymentEngine {
         if (offer.state !== 'OPEN') throw new DomainError('CANCELLATION_REVIEW_REQUIRED');
         await this.transition(client,offer,'WITHDRAWN');
         return { state: 'WITHDRAWN' };
+      });
+    });
+  }
+
+  async requestCancellation(value:unknown){
+    const input=commandSchema.parse(value);
+    return transaction(this.pool,async client=>{
+      const offer=await this.lock(client,input.offerId),member=await this.member(client,input);
+      return this.recordCommand(client,input,'REQUEST_CANCELLATION',async()=>{
+        if(offer.offer_hash!==input.offerHash)throw new DomainError('STALE_OFFER');
+        if(!['SETTLING','CONFIRMED'].includes(offer.state))throw new DomainError('OFFER_CLOSED');
+        const inserted=await client.query('INSERT INTO cancellation_requests(member_id) VALUES($1) ON CONFLICT DO NOTHING RETURNING member_id',[member.id]);
+        if(inserted.rowCount)await this.event(client,offer,'CANCELLATION_REQUESTED');
+        return {requested:true};
+      });
+    });
+  }
+
+  async cancelByMerchant(value:unknown){
+    const {agreesToFullRefund,...input}=commandSchema.extend({agreesToFullRefund:z.literal(true)}).parse(value);
+    return transaction(this.pool,async client=>{
+      const offer=await this.lock(client,input.offerId);
+      const owns=await client.query(`SELECT 1 FROM offer_snapshots os JOIN merchant_studios s
+        ON s.studio_id=os.snapshot->'candidate'->>'studioId' WHERE os.offer_id=$1 AND s.owner_user_id=$2`,[input.offerId,input.actorId]);
+      if(!owns.rowCount)throw new DomainError('NOT_FOUND',404);
+      return this.recordCommand(client,input,'MERCHANT_CANCEL',async()=>{
+        if(offer.offer_hash!==input.offerHash)throw new DomainError('STALE_OFFER');
+        if(!['OPEN','SETTLING','CONFIRMED'].includes(offer.state))throw new DomainError('OFFER_CLOSED');
+        const reservation=(await client.query('SELECT state FROM reservations WHERE offer_id=$1 FOR UPDATE',[offer.id])).rows[0];
+        if(!reservation||!['HELD','BOOKED'].includes(reservation.state))throw new DomainError('CANCELLATION_REVIEW_REQUIRED');
+        await this.transition(client,offer,'CANCELED');
+        return {state:'CANCELED',cleanup:'REQUIRED'};
       });
     });
   }

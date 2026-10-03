@@ -4,7 +4,7 @@ export const money = z.number().int().min(1).max(1000000);
 export type Kind = 'CREATE_ORDER' | 'AUTHORIZE' | 'CAPTURE' | 'VOID' | 'REFUND';
 export type OperationState = 'PLANNED' | 'DISPATCHED' | 'UNKNOWN' | 'PENDING' | 'SUCCEEDED' | 'FAILED' | 'ACTION_REQUIRED';
 export type ParticipantPayment='STUDIO_ACTION_NEEDED'|'REFUND_COMPLETED'|'REFUND_IN_PROGRESS'|'PAYMENT_COMPLETED'|'CHECKING_PAYMENT'|'AUTHORIZATION_CANCELED'|'AUTHORIZED_NOT_CONFIRMED'|'APPROVAL_NEEDED';
-export type OfferState = 'OPEN' | 'SETTLING' | 'CONFIRMED' | 'EXPIRED' | 'WITHDRAWN' | 'SUPERSEDED' | 'ABORTED';
+export type OfferState = 'OPEN' | 'SETTLING' | 'CONFIRMED' | 'EXPIRED' | 'WITHDRAWN' | 'SUPERSEDED' | 'ABORTED' | 'CANCELED';
 export interface Offer {
   id: string; merchant_id: string; offer_hash: string; amount_minor: number; currency: 'USD';
   state: OfferState; cleanup: string; deadline: Date; reservation_end: Date; revision: number;

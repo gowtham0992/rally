@@ -27,3 +27,7 @@
 .checkout-panel{border-top:1px solid var(--line);margin-top:32px;padding-top:28px}.checkout-panel .eyebrow{margin-bottom:16px}.checkout-panel h3{font-size:22px;letter-spacing:-.4px;margin:0 0 16px;line-height:1.4}.checkout-panel>.muted,.payment-state p{font-size:14px;line-height:1.8}.checkout-panel .choice{font-size:14px;line-height:1.7;margin:24px 0}.checkout-panel .secondary{margin-top:16px;justify-content:center}.payment-state{padding:20px;border-radius:8px;background:var(--soft)}.payment-state h3{font-size:18px}.payment-state p{margin-bottom:0}.checkout-panel .text-button{margin-top:16px}
 
 .offer-heading .roster-list{display:block}
+
+.booking-changes{border-top:1px solid var(--line);margin-top:32px;padding-top:24px}.booking-changes h3{font-size:18px;line-height:1.5;margin:0 0 12px}.booking-changes details+details{margin-top:24px}.booking-changes summary{cursor:pointer;font-size:14px;font-weight:600;min-height:44px;display:flex;align-items:center}.booking-changes .choice{font-size:14px;line-height:1.7;margin-bottom:16px}
+
+.studio-bookings{margin-top:40px;padding-top:32px;border-top:1px solid var(--line)}.studio-bookings .card-top{gap:24px;align-items:flex-start}.studio-bookings .card-top .text-button{white-space:nowrap}

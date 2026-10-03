@@ -1,0 +1,37 @@
+{
+  "scope": "Isolated source copies, real disposable PostgreSQL schemas, controlled simulated provider; original running application unchanged. Tests must reject canceled payments without recovery, unowned requests, premature reopening and history-erasing rollback.",
+  "mutations": [
+    {
+      "mutation": "canceled_without_recovery",
+      "caught": true,
+      "expectedTest": "studio cancellation releases"
+    },
+    {
+      "mutation": "late_capture_without_refund",
+      "caught": true,
+      "expectedTest": "a capture already in flight"
+    },
+    {
+      "mutation": "request_without_membership",
+      "caught": true,
+      "expectedTest": "participant cancellation requests"
+    },
+    {
+      "mutation": "reopen_without_recovery_guard",
+      "caught": true,
+      "expectedTest": "withdrawn offer can reopen"
+    },
+    {
+      "mutation": "rollback_erases_history",
+      "caught": true,
+      "expectedTest": "cancellation migration reverses"
+    },
+    {
+      "mutation": "unbounded_studio_history",
+      "caught": true,
+      "expectedTest": "studio booking history is bounded"
+    }
+  ],
+  "caught": 6,
+  "total": 6
+}

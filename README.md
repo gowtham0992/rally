@@ -111,8 +111,9 @@ consent. The deterministic planner consumes these persisted consent records.
 Consent changes invalidate cached candidates and retain append-only events.
 
 Issued offers currently return `COLLECTION_REVIEW_REQUIRED` for consent changes.
-The cancellation/financial cleanup workflow must be connected before this path
-can be exposed as a working product. No issued offer is silently revised.
+An OPEN participant can withdraw the offer; after recovery, the organizer can
+reopen planning so requirements and arrangements can be revised. Settling or
+confirmed bookings require studio cancellation review. No issued offer is silently revised.
 
 ### Merchant approval and frozen offers (service layer)
 
@@ -138,10 +139,10 @@ optional text can be cleared by a retention job. State/payment fields remain
 mutable for settlement and recovery. Browser access remains disabled by RLS.
 Studio ownership, PayPal merchant identity and published catalog provisioning
 are trusted server configuration; no browser can grant itself merchant access.
-Managed identity binding, merchant setup UI, cancellation flows and participant
-web checkout are still required before these services constitute a product.
+Managed identity, studio approval and participant checkout screens are integrated.
+Independent managed-account and complete PayPal browser verification remain required.
 
-Nine merchant-loop tests use real PostgreSQL and a **simulated payment provider**.
+Sixteen merchant-loop tests use real PostgreSQL and a **simulated payment provider**.
 They cover six-person successful settlement, partial-payment compensation,
 overlapping reservations, immutable snapshots, unauthorized access, required
 merchant attestation, unsupported catalogs, session lead time and invalidated
@@ -252,7 +253,7 @@ immediately after deployment; do not enable checkout while these are unresolved.
 ### Hosted database and collection UI
 
 The existing Rally Supabase project has a private application schema and a
-restricted server login. All seven migrations are installed. The connection
+restricted server login. All eight migrations are installed. The connection
 verifies the provider certificate and hostname using the bundled public root.
 Browser roles cannot access this schema. See [hosted database setup](docs/hosted-database.md)
 and the scoped [hosted audit](evidence/hosted-database.json). The local app still
@@ -281,8 +282,8 @@ idempotent; it never assigns the first signed-in user automatically.
 The scoped [studio browser record](evidence/web/studio-flow.json) uses one managed
 account as organizer and local test operator, with seeded synthetic peers. It
 proves request, stale rejection, approval and one hold; it created zero payment
-operations. Individual checkout, merchant cancellation, independent-account
-browser verification and deployment remain open.
+operations. Separate checkout and cancellation records below extend this evidence;
+complete PayPal recovery, independent-account browser verification and deployment remain open.
 
 ### Participant checkout
 
@@ -303,3 +304,35 @@ owner acceptance, one real sandbox order and an early approval rejection with
 zero authorizations/captures. Other group members and studio approval were seeded
 synthetic fixtures. Buyer approval/return, distinct managed participant sessions,
 and browser recovery are still required; this is not full checkout proof.
+
+### Cancellation and another planning round
+
+Participants can withdraw an OPEN offer with explicit acknowledgment that the
+whole group offer closes. During settlement or after confirmation, they can
+request studio cancellation; the request alone changes no payment or booking.
+The studio can cancel an OPEN, SETTLING or CONFIRMED booking with explicit
+agreement to full refunds. Cancellation immediately releases inventory and
+queues the existing recovery worker. A capture or authorization already in
+flight is retained, reconciled and refunded or voided; cancellation never
+claims that recovery is already complete.
+
+Only the organizer can reopen the latest closed offer after every prior attempt
+is terminal with complete recovery and no unresolved financial operation.
+Saved private details and the fixed roster remain available for review. A new
+studio approval creates a separate immutable offer and needs fresh individual
+acceptance. The old offer and its payment history stay unchanged. Studio booking
+history is owner-scoped, paginated and exposes cancellation/reconciliation needs.
+
+[Browser evidence](evidence/web/cancellation-flow.json) proves a synthetic offer
+was canceled and reopened through the authenticated UI with zero payment
+operations. PostgreSQL tests separately prove full refunds, duplicate protection,
+private cancellation requests, pending-refund gating and late capture recovery
+using a simulated provider. [Six isolated mutations](evidence/local-cancellation-mutations.json)
+prove the new tests detect disabled recovery, unowned requests, premature
+reopening, erased cancellation history and unbounded studio history. This does
+not replace actual PayPal cancellation/refund browser proof.
+
+Migration 008 adds the CANCELED terminal state and one private cancellation
+request per participant. Its down migration refuses populated cancellation
+history; use forward fixes after real use. The hosted private schema now has
+eight migrations and retains the audited restricted runtime/browsers boundary.

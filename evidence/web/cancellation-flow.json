@@ -1,0 +1,33 @@
+{
+  "observedAt": "2026-10-03T02:03:17.214Z",
+  "scope": "Actual local managed-auth owner/operator browser, trusted synthetic Friday three-person group and studio approval. No payment operations occurred in this browser fixture; full refunds and late captures tested separately with a simulated provider, not PayPal browser evidence.",
+  "observed": [
+    "Studio cancellation checkbox initially unchecked and cancel button disabled",
+    "Explicit studio cancellation closed offer and released held inventory",
+    "Worker completed recovery with zero payment operations",
+    "Organizer new-round checkbox initially unchecked and reopen disabled",
+    "Explicit reopening returned same three people and saved requirements to planning",
+    "Studio history listed canceled, active and expired offers"
+  ],
+  "booking": "CANCELED",
+  "cleanup": "COMPLETE",
+  "reservation": "RELEASED",
+  "planning": "CLOSED",
+  "cancellationEvents": 1,
+  "reopeningEvents": 1,
+  "paymentOperations": 0,
+  "reviewWidthsCss": [
+    374,
+    768,
+    1280
+  ],
+  "horizontalOverflow": false,
+  "unauthenticatedMutationHttp": 401,
+  "foreignOriginMutationHttp": 403,
+  "remaining": [
+    "Separate managed participant/operator sessions",
+    "Actual PayPal cancellation/refund browser journey",
+    "Cancellation request UX with independently authenticated participant",
+    "Hosted judge isolation and deployment"
+  ]
+}
