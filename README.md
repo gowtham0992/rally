@@ -195,7 +195,8 @@ public YouTube video are not finished. Source uses the [MIT license](LICENSE);
 [gowtham0992/rally](https://github.com/gowtham0992/rally) is the sole working
 repository, containing the application, assets, license, setup instructions and
 development history. It stays private until the owner is ready to submit.
-The duplicate snapshot repository is private and awaiting approved removal.
+The duplicate snapshot repository and its local checkout were removed with
+the owner's approval; its Git history remains in an ignored private backup.
 See [repository policy and release history](docs/public-source.md) and
 [clean setup verification](evidence/clean-source-setup.json).
 The [working submission copy](devpost-submission.md) covers the current official

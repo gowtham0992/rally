@@ -11,8 +11,10 @@ On October 3, both GitHub repositories were verified private. The duplicate
 `5b9e383`, with source tree `614ddc7290143c04246df7cde19513fb96be94b8`.
 It has no additional branches, tags, issues, pull requests, releases, webhooks
 or workflow runs. Its complete Git history is saved in an ignored private
-bundle inside this repository; GitHub deletion and local checkout removal
-await explicit approval. Render remains connected to `rally`.
+bundle inside this repository. With the owner's explicit approval, the duplicate
+GitHub repository and local checkout were deleted. GitHub displayed its deletion
+success message and the retained `rally` repository as private. Render remains
+connected to `rally`.
 
 ## Earlier publication
 

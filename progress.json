@@ -39,7 +39,8 @@
     "Verified clean tracked source at 6136e2c without private env files: npm ci, eleven migrations on a fresh disposable PostgreSQL container, TypeScript, all 123 tests, 22/22 caught mutations and production build passed on Node 25.6.0. Disposable container removed; existing databases untouched. Gitleaks 8.30.1 found zero findings in 33 reachable commits and the source directory. Exact audit of 482 reachable blobs found no current private credential matches, excluding only the documented local development URL. Git author metadata contains a personal email; public release will use a fresh snapshot with GitHub no-reply identity while development history stays private.",
     "Published audited source snapshot to https://github.com/gowtham0992/rally-hackathon with a GitHub no-reply author. Initial public commit e989b63 has identical tracked-source tree to private source e0c6e7e; development history and personal author email are excluded. Anonymous GitHub API/raw requests verified public visibility, MIT license, exact commit/tree, README and LICENSE (all 200). Original private repository and Render deployment unchanged. No additional model call, buyer account, judge lease or payment operation.",
     "Added the verified public GitHub and hosted demo links to the existing Devpost project using conditional version 5 (saved as version 6). Browser verifies both links, Incomplete submission and hidden portfolio status; connector confirms submitted_at remains null and video absent. No form attestations, description change or final entry submission.",
-    "Verified both Rally repositories are private at the owner's request. Remote main and tracked source trees match; duplicate has no unique branch/tag, issue/PR, release, webhook or workflow run. Backed up its complete Git history in an ignored private bundle. Rally is the sole working repository; duplicate removal awaits explicit deletion approval. Publication is deferred until the owner is ready to submit, and all Devpost actions belong to the owner. No app, deployment, payment or Devpost changes."
+    "Verified both Rally repositories are private at the owner's request. Remote main and tracked source trees match; duplicate has no unique branch/tag, issue/PR, release, webhook or workflow run. Backed up its complete Git history in an ignored private bundle. Rally is the sole working repository; duplicate removal awaits explicit deletion approval. Publication is deferred until the owner is ready to submit, and all Devpost actions belong to the owner. No app, deployment, payment or Devpost changes.",
+    "With explicit owner approval, deleted the duplicate rally-hackathon repository through the signed-in GitHub browser after the CLI reported missing delete_repo permission. GitHub confirmed deletion and retained rally as private. Removed only the clean duplicate local checkout after rechecking its complete Git bundle; ignored private backup preserved. No Devpost, runtime, deployment, payment or credential changes."
   ],
   "evidence": {
     "scope": "Local service tests use real PostgreSQL and a simulated provider; separate reviewed records prove three actual PayPal sandbox scenarios.",
@@ -402,8 +403,10 @@
     "second_release_repository_allowed": false,
     "devpost_managed_by_owner": true,
     "duplicate_url": "https://github.com/gowtham0992/rally-hackathon",
-    "duplicate_visibility": "private",
-    "duplicate_removal_status": "verified_identical_backed_up_awaiting_explicit_deletion_approval",
-    "verified_at": "2026-10-03T16:11:12.189550+00:00"
+    "duplicate_visibility": "deleted",
+    "duplicate_removal_status": "github_repository_and_local_checkout_deleted_with_owner_approval",
+    "verified_at": "2026-10-03T16:11:12.189550+00:00",
+    "duplicate_removed_at": "2026-10-03T16:20:24.885175+00:00",
+    "backup_preserved": true
   }
 }
