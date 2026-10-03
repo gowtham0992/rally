@@ -117,7 +117,7 @@ Sources: [Render Free](https://render.com/docs/free),
 
 Current preview: [Rally](https://rally.gowthamsarveswaran.com). Render assigned
 `rally-mx1y.onrender.com`; Cloudflare has one additional DNS-only CNAME for
-`rally`, with the eight previous records preserved. Build `533bc2b` is live.
+`rally`, with the eight previous records preserved. Build `4ea6c9f` is live.
 Judge access is gated by the private code in ignored `.env.demo`; one browser
 verification workspace is leased and four hosted workspaces remain available.
 This preview does not establish a completed six-buyer payment journey.

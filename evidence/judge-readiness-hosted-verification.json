@@ -1,0 +1,21 @@
+{
+  "checkedAt": "2026-10-03T07:00:28.949Z",
+  "scope": "Actual Render Free deployment and restricted Supabase read-only audit. No new judge lease, model call, account or provider operation created.",
+  "deployedCommit": "4ea6c9f110b9e91bbc67c028c2e4f2483194ff44",
+  "deploymentId": "dep-db0aerhsrm7s73eotgl0",
+  "renderPlan": "Free",
+  "healthStatus": 200,
+  "ready": true,
+  "unsignedWebhookStatus": 403,
+  "unsignedWebhookError": "INVALID_WEBHOOK_SIGNATURE",
+  "identities": 35,
+  "available": 4,
+  "leased": 1,
+  "webhook_receipts": 0,
+  "payment_operations": 0,
+  "offers": 0,
+  "january_workspaces": 4,
+  "fixedJudgeWindowActivated": false,
+  "genuineSignedWebhookVerified": false,
+  "sixBuyerBrowserBookingVerified": false
+}
