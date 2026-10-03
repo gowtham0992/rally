@@ -193,7 +193,10 @@ The [155-second recording plan](docs/demo-plan.md) follows one six-friend bookin
 and identifies the separate three-buyer recovery proof. The actual recording and
 public YouTube video are not finished. Source uses the [MIT license](LICENSE);
 the existing GitHub repository is still private pending the release audit.
-An existing [Devpost draft](https://devpost.com/software/rally-m2lakh) has a
-name and tagline; its write-up and video are still empty. The official project
-state is `submission_draft`, with no submitted-at timestamp. This release did
-not send or update the entry.
+The [working submission copy](devpost-submission.md) covers the current official
+form, scoped evidence and remaining release gates. Its description and tool list
+were saved to the existing [Devpost project](https://devpost.com/software/rally-m2lakh).
+Saving unexpectedly published the project page; it is hidden from the owner's
+portfolio, but its direct URL remains accessible. The hackathon entry remains
+incomplete and unsubmitted, and the video is missing. See
+[the verified save record](evidence/devpost-project-save.json).

@@ -1,0 +1,195 @@
+{
+  "checkedAt": "2026-10-03T07:13:32Z",
+  "source": "https://paypalaihackathon.devpost.com/",
+  "scope": "Official submission fields and deliverables read through Devpost connector. Read-only; no form changed or entry sent.",
+  "hackathon": {
+    "id": 31302,
+    "slug": "paypalaihackathon",
+    "title": "PayPal AI Hackathon"
+  },
+  "fields": [
+    {
+      "id": 28778,
+      "label": "Submitter Type",
+      "type": "dropdown",
+      "required": true,
+      "description": "",
+      "options": [
+        "Individual",
+        "Team",
+        "Organization"
+      ],
+      "multiple": false
+    },
+    {
+      "id": 28779,
+      "label": "Submitter Country of Residence",
+      "type": "dropdown",
+      "required": true,
+      "description": "",
+      "multiple": false
+    },
+    {
+      "id": 28780,
+      "label": "If you or any team members reside in Canada, please indicate the province below.",
+      "type": "text",
+      "required": true,
+      "description": "\"N/A\" if you don't reside in Canada."
+    },
+    {
+      "id": 28781,
+      "label": "Organization Name (if applicable)",
+      "type": "text",
+      "required": true,
+      "description": "\"N/A\" if you're not representing an organization"
+    },
+    {
+      "id": 28782,
+      "label": "Is your project new, or did it exist before Oct 1, 2026?",
+      "type": "dropdown",
+      "required": true,
+      "description": "",
+      "options": [
+        "New",
+        "Existing"
+      ],
+      "multiple": false
+    },
+    {
+      "id": 28783,
+      "label": "If it existed before, explain what already existed and what you built or changed during the submission period.",
+      "type": "textarea",
+      "required": true,
+      "description": "\"N/A\" if new project. We recommend explaining this in your text description too!"
+    },
+    {
+      "id": 28784,
+      "label": "Explain how your project meets the main technology requirement.",
+      "type": "textarea",
+      "required": true,
+      "description": "Please name each PayPal tool and AI tool you used and what it does in your project. Requirement: Your project must integrate the PayPal developer platform (using the free sandbox environment) along with an AI tool, model, or platform of your choice."
+    },
+    {
+      "id": 28786,
+      "label": "Which additional sponsor tool(s) did you use for this project?",
+      "type": "dropdown",
+      "required": true,
+      "description": "Reminder: Usage of a Paypal tool and an AI tool is required for all projects. Using the listed sponsors are optional.",
+      "options": [
+        "AG Grid",
+        "APIMatic",
+        "Astropods",
+        "Bryntum",
+        "Channel3",
+        "Elastic",
+        "KERNEL",
+        "Postman",
+        "Render",
+        "Zapier",
+        "None, used other AI tools."
+      ],
+      "multiple": true
+    },
+    {
+      "id": 28788,
+      "label": "Provide a URL to your public code repository for judging and testing on GitHub.",
+      "type": "text",
+      "required": true,
+      "description": "The code repository must be publicly available. Must include: approved OSI license, README with setup instructions, clear explanation of how you used PayPal and AI in your project, along with any other tools or technologies used, including sponsor integrations (e.g., APIMatic, Postman/Astro, Render)."
+    },
+    {
+      "id": 28787,
+      "label": "Provide a URL to a working demo, hosted application, or test build of your Project.",
+      "type": "text",
+      "required": false,
+      "description": ""
+    },
+    {
+      "id": 28798,
+      "label": "Testing instructions or credentials the judges need to test your project, if any.",
+      "type": "textarea",
+      "required": false,
+      "description": ""
+    },
+    {
+      "id": 28790,
+      "label": "How would you rate your overall experience integrating PayPal?",
+      "type": "dropdown",
+      "required": true,
+      "description": "(1=poor, 10=excellent)",
+      "options": [
+        "1 - poor",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        "10 - excellent"
+      ],
+      "multiple": false
+    },
+    {
+      "id": 28791,
+      "label": "Overall experience rating: Please share why or provide additional feedback.",
+      "type": "textarea",
+      "required": true,
+      "description": ""
+    },
+    {
+      "id": 28792,
+      "label": "Are you open to us contacting you for additional feedback regarding your experience with integrating PayPal?",
+      "type": "dropdown",
+      "required": true,
+      "description": "",
+      "options": [
+        "Yes",
+        "No"
+      ],
+      "multiple": false
+    },
+    {
+      "id": 28793,
+      "label": "If you used the APIMatic Context Plugin during your integration, briefly share your experience — what worked well, any issues you encountered, and how it compared to building without it.",
+      "type": "textarea",
+      "required": false,
+      "description": ""
+    },
+    {
+      "id": 28799,
+      "label": "If you used AG Grid, what was your experience building with AG Grid/AG Charts/AG Studio?",
+      "type": "textarea",
+      "required": false,
+      "description": ""
+    },
+    {
+      "id": 28794,
+      "label": "Age",
+      "type": "checkbox",
+      "required": true,
+      "description": "I, and, if applicable, all of my teammates, are at least the age of majority where I reside (e.g. 18 in the US)."
+    },
+    {
+      "id": 28795,
+      "label": "Eligible Jurisdiction",
+      "type": "checkbox",
+      "required": true,
+      "description": "I, and, if applicable, all of my teammates, are from an eligible jurisdiction to compete."
+    },
+    {
+      "id": 28796,
+      "label": "Employee",
+      "type": "checkbox",
+      "required": true,
+      "description": "I, and, if applicable, all of my teammates, are not employees, representatives nor agents of the Promotion Entities of this hackathon (sponsor, administrator. or any affiliates)."
+    }
+  ],
+  "deliverables": {
+    "submission_object": "submission",
+    "video_required": true,
+    "website_required": false,
+    "zip_file_required": false
+  }
+}

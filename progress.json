@@ -33,7 +33,9 @@
     "Actual free-preview webhook release: build 533bc2b live, exact PayPal sandbox subscription audited for eight Payments v2 events, trusted ID saved privately in Render with an environment-only deployment. Config-disabled receiver returned 503, configured forged RSA signature returned 403 using a documented real PayPal public certificate; hosted notification/payment records stayed at zero. Genuine signed delivery awaits a fresh sandbox event. Hosted Alex/Sam requirements saved, while transmission of the fictional Sam note to Astropods is awaiting explicit approval after browser auto-review rejection.",
     "Judging readiness: official December 1\u201315 testing window exposed November fixture expiry. Four untouched hosted workspaces now have January 14/15 immutable catalog versions and new fictional planning groups; prior catalogs/groups/preferences and the one leased workspace are preserved. No new Auth accounts, consent, payments or emails. New fixed-end judge lease policy is implemented and tested, but activation through December 16 00:00 UTC awaits action-time approval; existing leases are never renewed. All 123 tests, 22 deliberate mutations, TypeScript and production build passed.",
     "Released judge-readiness code as 4ea6c9f on the existing Render Free service (dep-db0aerhsrm7s73eotgl0). Post-deploy HTTPS health returned 200 ready, unsigned webhook returned 403, and read-only hosted counts verified 35 unchanged identities, four available January workspaces, one preserved lease, zero offers/payment operations/webhook receipts. Existing Sam browser intake remained six-of-six ready with no inference or consent fabricated. The proposed fixed judge-access end is unsaved pending approval.",
-    "Approved hosted judge-access window activated: RALLY_DEMO_ACCESS_END=2026-12-16T00:00:00Z saved in Render; environment-only deployment dep-db0ahregekts738s1idg live on Free using 4ea6c9f. Public HTTPS health 200/ready. Restricted read-only audit confirms 35 identities, four available workspaces, one existing 24-hour lease and zero offers/payment operations/webhook receipts. No fresh lease, account, AI call or payment created; fresh hosted fixed-end lease observation remains pending."
+    "Approved hosted judge-access window activated: RALLY_DEMO_ACCESS_END=2026-12-16T00:00:00Z saved in Render; environment-only deployment dep-db0ahregekts738s1idg live on Free using 4ea6c9f. Public HTTPS health 200/ready. Restricted read-only audit confirms 35 identities, four available workspaces, one existing 24-hour lease and zero offers/payment operations/webhook receipts. No fresh lease, account, AI call or payment created; fresh hosted fixed-end lease observation remains pending.",
+    "Created local Devpost working copy with project story, scoped financial/AI evidence, exact coverage of all 19 current official fields, sponsor/tool roles, draft judge instructions, gallery/video plan and release gates. Current official form, dates and criteria re-read through the connector; existing remote Rally description remains empty and video missing. All referenced local artifacts exist. Personal answers/attestations deliberately remain user-owned; no Devpost write or publication.",
+    "Saved reviewed project description, tagline and actual tool list to existing Devpost project. Connector update unexpectedly published the project page (version 5); no entry submission occurred. Browser confirms Incomplete submission. Hidden from owner portfolio as reversible mitigation; direct URL remains accessible and no private-draft restoration control was found. Saved description plaintext matches local copy; no credentials, legal attestations, payment approvals or external contacts added."
   ],
   "evidence": {
     "scope": "Local service tests use real PostgreSQL and a simulated provider; separate reviewed records prove three actual PayPal sandbox scenarios.",
@@ -285,13 +287,29 @@
       "fresh_hosted_fixed_end_lease_verified": false
     },
     "existing_devpost_draft": {
-      "checkedAt": "2026-10-03T06:55:48.306716Z",
+      "checkedAt": "2026-10-03T07:21:14Z",
       "slug": "rally-m2lakh",
-      "state": "submission_draft",
-      "writeup_empty": true,
+      "state": "published",
+      "writeup_empty": false,
       "video_missing": true,
       "submitted_at": null,
-      "changed_this_turn": false
+      "changed_this_turn": true,
+      "portfolio_hidden": true,
+      "direct_project_url_private": false
+    },
+    "submission_draft": {
+      "file": "devpost-submission.md",
+      "review": "evidence/submission-draft-review.json",
+      "requirements": "evidence/submission-requirements-2026-10-03.json",
+      "official_fields_covered": 19,
+      "local_copy_created": true,
+      "remote_description_updated": true,
+      "ready_for_final_approval": false,
+      "browser_guide_rehearsed": false,
+      "remote_project_page_published": true,
+      "remote_hackathon_entry_submitted": false,
+      "portfolio_hidden": true,
+      "save_evidence": "evidence/devpost-project-save.json"
     }
   },
   "external_dependencies": [

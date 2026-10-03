@@ -1,0 +1,18 @@
+{
+  "checkedAt": "2026-10-03T07:24:25.684Z",
+  "scope": "Project description, tagline and tool list saved to the existing Devpost project. Saving unexpectedly changed the project from submission_draft to published. The hackathon entry remains incomplete and unsubmitted. Project was hidden from the owner's portfolio as mitigation; this does not make the direct project URL private.",
+  "projectId": 1457973,
+  "slug": "rally-m2lakh",
+  "url": "https://devpost.com/software/rally-m2lakh",
+  "state": "published",
+  "publishedAt": "2026-10-03T03:21:14.148-04:00",
+  "submittedAt": null,
+  "descriptionPlainTextMatches": true,
+  "descriptionCharacters": 5719,
+  "versionSaved": 5,
+  "videoMissing": true,
+  "portfolioHiddenVerifiedInBrowser": true,
+  "restoredPrivateDraft": false,
+  "finalApprovalReady": false,
+  "helpReference": "https://help.devpost.com/article/117-can-i-delete-or-hide-a-project-in-my-portfolio"
+}
