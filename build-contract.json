@@ -66,5 +66,30 @@
       "Show the shared group plan and the individual’s private details together.",
       "No decorative dashboards, generic AI feature grids, gradients, or AI marketing copy."
     ]
+  },
+  "execution_focus": {
+    "local_date": "2026-10-02",
+    "source": "Participant-provided hackathon advice; applied as strategic guidance, not verified winning statistics or official scoring weights.",
+    "core_story": "Six friends, one booking, nobody fronts the whole bill.",
+    "scope": "Complete the existing pottery booking loop; preserve all privacy, explicit consent and payment/recovery requirements.",
+    "priorities": [
+      "Make the useful clarification and private-budget fit immediately understandable.",
+      "Finish one complete browser journey before adding activity categories or infrastructure.",
+      "Polish the decision, consent, checkout and recovery screens that carry the story.",
+      "Show only actual functionality; distinguish prepared fictional groups and sandbox proof from human validation.",
+      "Draft packaging now and record a rough video as soon as the complete journey works.",
+      "Keep narration, video, written claims and judge access aligned to the same verified build."
+    ],
+    "deferred": [
+      "AWS migration",
+      "Additional activity categories",
+      "General travel planning",
+      "Automatic group-chat ingestion",
+      "Unnecessary sponsor integrations",
+      "Social feeds and analytics dashboards"
+    ],
+    "demo_plan": "docs/demo-plan.md",
+    "official_packaging_preflight": "evidence/hackathon-packaging-preflight.json",
+    "status": "Demo plan drafted; complete managed browser recording, final video and submission packet pending."
   }
 }
