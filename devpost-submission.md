@@ -139,7 +139,7 @@ No entry below authorizes accepting terms or sending the final submission.
 | 28783 — Earlier work and event-period changes | **Finish after 28782.** If new, N/A. If existing, disclose actual prior work and distinguish work built after the event opened. Do not infer the answer from Git alone. |
 | 28784 — Main technology requirement | Use the technology answer below after confirming it matches the release shown in the video. |
 | 28786 — Additional sponsors | **Astropods; Render.** No other sponsor integration is claimed. |
-| 28788 — Public GitHub repository | `https://github.com/gowtham0992/rally` — **currently private; publish and verify before using as a public judging link.** Root MIT license and setup instructions exist. |
+| 28788 — Public GitHub repository | `https://github.com/gowtham0992/rally-hackathon` — **public access and MIT license verified without authentication.** Source, assets and setup instructions are included; private development history was replaced by a fresh snapshot with a GitHub no-reply author. |
 | 28787 — Working demo | `https://rally.gowthamsarveswaran.com` — deployed sandbox preview; full journey verification still pending. |
 | 28798 — Testing instructions or credentials | Use the judge instructions below after a fresh browser rehearsal. Add the judge code only to the intended private submission field, never this repository. |
 | 28790 — PayPal integration rating | **User answer required:** choose your own 1–10 rating. |
@@ -251,8 +251,10 @@ presenting them as the complete finished journey.
 - [ ] Verify active hosted processing after cold wake and uncertain responses.
 - [ ] Observe a freshly claimed hosted judge session's fixed expiry and rehearse
       the testing instructions without leaking credentials or consuming all groups.
-- [ ] Audit the full source/history and publish the repository with its MIT
-      license and reproducible setup; verify access while signed out.
+- [x] Audit the source and history, publish a snapshot with a GitHub no-reply
+      author and MIT license, and verify anonymous access. Clean tracked-source
+      setup passed installation, fresh database migration, all 123 tests, all
+      22 mutation checks, TypeScript and production build on Node 25.6.0.
 - [ ] Record, edit and publish the actual demo to YouTube; verify duration below
       180 seconds and public playback while signed out.
 - [ ] Obtain user answers for personal fields and the required attestations.

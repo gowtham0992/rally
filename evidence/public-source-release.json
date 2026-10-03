@@ -1,0 +1,22 @@
+{
+  "checkedAt": "2026-10-03T07:44:28.567565+00:00",
+  "scope": "Unauthenticated HTTPS requests to GitHub API and raw source endpoints. Verified public repository, MIT license, initial snapshot commit/tree, README and LICENSE. No Authorization header or GitHub credential used for these checks.",
+  "url": "https://github.com/gowtham0992/rally-hackathon",
+  "visibility": "public",
+  "license": "mit",
+  "repositoryHttp": 200,
+  "licenseApiHttp": 200,
+  "mainBranchHttp": 200,
+  "readmeHttp": 200,
+  "licenseRawHttp": 200,
+  "privateSourceCommit": "e0c6e7ec0713e7b83ac1be3bfe1abce70ca71ad2",
+  "publicSnapshotCommit": "e989b6320123f6db838783526182b7d65b840749",
+  "sourceTree": "1b4bdbf958fcbe06a37919a11df139a8982f7268",
+  "identicalTrackedSource": true,
+  "personalDevelopmentHistoryIncluded": false,
+  "authorUsesGithubNoreply": true,
+  "runtimeCodeChanged": false,
+  "renderDeploymentChanged": false,
+  "sixBuyerJourneyVerified": false,
+  "videoPublished": false
+}

@@ -29,8 +29,8 @@ schemas and controlled provider/Auth/model fixtures. Twenty-two deliberate mutat
 were caught. TypeScript and the production build pass.
 
 The complete six-buyer hosted browser booking, genuine signed webhook delivery,
-active hosted recovery, real user/merchant feedback, public source release and
-finished demo video remain open gates. Prepared friends and studio facts are
+active hosted recovery, real user/merchant feedback and the finished demo video
+remain open gates. Prepared friends and studio facts are
 fictional demo data. Engineering evidence is not a customer success rate.
 
 ## Run locally
@@ -192,7 +192,11 @@ wake drills remain pending.
 The [155-second recording plan](docs/demo-plan.md) follows one six-friend booking
 and identifies the separate three-buyer recovery proof. The actual recording and
 public YouTube video are not finished. Source uses the [MIT license](LICENSE);
-the existing GitHub repository is still private pending the release audit.
+the [public source repository](https://github.com/gowtham0992/rally-hackathon)
+contains the audited release snapshot, license and setup instructions. The
+original development repository and personal commit metadata remain private.
+See [release provenance](docs/public-source.md) and
+[clean setup verification](evidence/clean-source-setup.json).
 The [working submission copy](devpost-submission.md) covers the current official
 form, scoped evidence and remaining release gates. Its description and tool list
 were saved to the existing [Devpost project](https://devpost.com/software/rally-m2lakh).
