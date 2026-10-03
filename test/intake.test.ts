@@ -141,6 +141,39 @@ test('browser participant context combines consistent revision with only caller 
  await assert.rejects(service.participantContext(actor(),x.g.groupId),/NOT_FOUND/);
  await assert.rejects(service.participantContext({...x.a,emailVerified:false},x.g.groupId),/VERIFIED_IDENTITY_REQUIRED/);
 });
+test('your plans lists only current membership and never includes private requirements or invites',async()=>{
+ const x=await ready(),other=await ready(),index=await service.plans(x.b);
+ assert.deepEqual(index.plans.map(p=>p.groupId),[x.g.groupId]);assert.equal(index.nextCursor,null);
+ assert.equal(index.plans[0].isOrganizer,false);assert.equal(index.plans[0].readyCount,2);
+ assert.deepEqual(index.plans[0].members.map(m=>m.displayName).sort(),['Organizer','Participant']);
+ const serialized=JSON.stringify(index);for(const secret of ['budgetMinor','latestFinishAt','Private sentence','confirmed',x.g.invite,other.g.groupId])assert.ok(!serialized.includes(secret));
+ assert.deepEqual((await service.plans(actor())).plans,[]);
+ await assert.rejects(service.plans({...x.b,emailVerified:false}),/VERIFIED_IDENTITY_REQUIRED/);
+ await assert.rejects(service.plans(x.b,other.g.groupId),/NOT_FOUND/);
+ await assert.rejects(service.plans(x.b,'invented'));
+});
+test('your plans hides a joiner once the organizer excludes them from the closed roster',async()=>{
+ const x=await setup(),excluded=actor();await service.join(excluded,{commandId:randomUUID(),invite:x.g.invite,displayName:'Excluded'});
+ assert.equal((await service.plans(excluded)).plans.length,1);
+ const context=await service.participantContext(x.a,x.g.groupId),a=await service.save(x.a,{commandId:randomUUID(),groupId:x.g.groupId,expectedRevision:context.revision,expectedPreferenceId:null,preference:pref,optionalText:null});
+ const b=await service.save(x.b,{commandId:randomUUID(),groupId:x.g.groupId,expectedRevision:a.revision,expectedPreferenceId:null,preference:pref,optionalText:null});
+ await service.closeRoster(x.a,{commandId:randomUUID(),groupId:x.g.groupId,expectedRevision:b.revision,memberIds:[x.g.memberId,x.joined.memberId]});
+ assert.deepEqual((await service.plans(excluded)).plans,[]);
+ await assert.rejects(service.plans(excluded,x.g.groupId),/NOT_FOUND/);
+ assert.ok(!(await service.plans(x.b)).plans[0].members.some(m=>m.displayName==='Excluded'));
+});
+test('your plans pages twenty records with exact timestamp ordering, equal-time ties and an owned cursor',async()=>{
+ const a=actor(),groups=[];
+ for(let i=0;i<25;i++)groups.push(await service.create(a,{commandId:randomUUID(),targetSize:2,displayName:'Me',catalog}));
+ for(let i=0;i<groups.length;i++)await pool.query("UPDATE planning_groups SET created_at=$2::timestamptz WHERE id=$1",[groups[i].groupId,i<5?'2026-10-01T00:00:00.123456Z':`2026-10-01T00:00:00.${String(123500+i).padStart(6,'0')}Z`]);
+ const expected=(await pool.query('SELECT id FROM planning_groups WHERE organizer_id=$1 ORDER BY created_at DESC,id DESC',[a.userId])).rows.map(r=>r.id);
+ const first=await service.plans(a);assert.equal(first.plans.length,20);assert.equal(first.nextCursor,first.plans.at(-1)?.groupId);
+ const second=await new IntakeService(pool).plans(a,first.nextCursor);assert.equal(second.plans.length,5);assert.equal(second.nextCursor,null);
+ assert.deepEqual([...first.plans,...second.plans].map(p=>p.groupId),expected);
+ // A cursor that no longer belongs to visible membership must fail closed.
+ await pool.query("UPDATE planning_groups SET state='ABANDONED' WHERE id=$1",[first.nextCursor]);
+ await assert.rejects(service.plans(a,first.nextCursor),/NOT_FOUND/);
+});
 test('closed browser context shows only the admitted roster and rejects an excluded joiner',async()=>{
  const x=await setup(),excluded=actor();const joined=await service.join(excluded,{commandId:randomUUID(),invite:x.g.invite,displayName:'Excluded joiner'});
  const a=await service.save(x.a,{commandId:randomUUID(),groupId:x.g.groupId,expectedRevision:joined.revision,expectedPreferenceId:null,preference:pref,optionalText:null});

@@ -1,0 +1,47 @@
+{
+  "observed_at": "2026-10-03T23:51:58.946417+00:00",
+  "scope": "Existing narrow sandbox product; owner requested product only.",
+  "tests_passed": 164,
+  "production_build_and_typecheck": "passed",
+  "mutation_checks": {
+    "caught": 47,
+    "scope": "Before the UI status correction; two additional group-status regressions passed."
+  },
+  "implemented_product_coverage": {
+    "participant": "Verified sign-in, private versioned requirements, exact budget, studio dates/timezone leave-by, structured or approved grounded clarification, collection consent, returning plans and sign-out.",
+    "organizer": "Invite, fixed roster, deterministic candidate, studio request and recovery-gated new round.",
+    "studio": "Owned queue, manual inventory approval, immutable offer, history, cancellation and payment reconciliation reports.",
+    "payments": "Owned sandbox approvals, durable sequential capture, verified confirmation, refund/void recovery and unresolved-operation records.",
+    "privacy": "Owned projections, workspace isolation, stale-document identity, request bounds and raw-note retention.",
+    "ui": "Consumer layout, mobile navigation, actual membership/readiness, loading/error/empty/retry states and truthful terminal group labels."
+  },
+  "browser_checks": [
+    "12 original owned plans and group reopening",
+    "normal login defaults to plans; explicit group next preserved",
+    "empty state in disposable local schema",
+    "20 then 5 records; second page survives reload",
+    "inaccessible cursor rejects; newest link recovers",
+    "interrupted sign-out retains list and allows retry",
+    "successful normal sign-out returns home; plans redirects to login?next=/plans",
+    "320 CSS pixel navigation without overflow"
+  ],
+  "new_external_actions": {
+    "paypal_calls": 0,
+    "model_calls": 0,
+    "emails": 0,
+    "demo_runs": 0,
+    "auth_accounts": 0,
+    "devpost_writes": 0,
+    "repository_publication": 0
+  },
+  "limits": [
+    "Local simulated-provider tests are distinct from historical actual sandbox evidence; no new hosted failure-recovery run.",
+    "Demo studio/catalog and PayPal sandbox remain; live commerce is outside this scope."
+  ],
+  "deploy": {
+    "status": "pending",
+    "plan": "existing Render Free",
+    "schema_changes": 0
+  },
+  "private_ui_screenshot": "evidence/private/product-plans-mobile.png"
+}

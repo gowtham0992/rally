@@ -2,6 +2,30 @@
   "mode": "local_database_and_simulated_provider",
   "results": [
     {
+      "mutation": "plan list exposes other memberships",
+      "baselinePassed": true,
+      "caught": true,
+      "exitCode": 1
+    },
+    {
+      "mutation": "plan list includes excluded joiner",
+      "baselinePassed": true,
+      "caught": true,
+      "exitCode": 1
+    },
+    {
+      "mutation": "plan list crosses workspace namespace",
+      "baselinePassed": true,
+      "caught": true,
+      "exitCode": 1
+    },
+    {
+      "mutation": "plan cursor loses database timestamp precision",
+      "baselinePassed": true,
+      "caught": true,
+      "exitCode": 1
+    },
+    {
       "mutation": "leave-by accepts unpublished date",
       "baselinePassed": true,
       "caught": true,

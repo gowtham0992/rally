@@ -13,6 +13,7 @@ import {localFields} from '../planning/local-time.ts';
 // Only server-authenticated identity may construct this input. Request bodies must
 // never supply actorId/verified. Managed Auth route binding remains a separate gate.
 export interface IntakeActor {userId:string;emailVerified:boolean;demoWorkspaceId?:string}
+export interface PlanSummary {groupId:string;studioName:string;state:string;isOrganizer:boolean;targetSize:number;readyCount:number;members:{displayName:string;isYou:boolean}[]}
 export class IntakeError extends Error {constructor(public code:string){super(code);}}
 const uuid=z.uuid(),name=z.string().trim().min(1).max(60);
 const createSchema=z.strictObject({commandId:uuid,targetSize:z.number().int().min(1).max(8),displayName:name,catalog:catalogSchema});
@@ -113,6 +114,32 @@ export class IntakeService {
   // This is the ONLY organizer intake projection; budgets and text never enter it.
   const members=(await this.pool.query('SELECT id,display_name AS "displayName",admitted,current_preference_id IS NOT NULL AS ready FROM planning_members WHERE group_id=$1 ORDER BY id',[groupId])).rows;
   return {revision:g.revision,state:g.state,targetSize:g.target_size,members};
+ }
+ async plans(actor:IntakeActor,cursor:string|null=null):Promise<{plans:PlanSummary[];nextCursor:string|null}>{
+  this.actor(actor);if(cursor)uuid.parse(cursor);
+  return transaction(this.pool,async c=>{
+   let before:{createdAt:string;id:string}|undefined;
+   if(cursor){
+    before=(await c.query(`SELECT g.created_at::text AS "createdAt",g.id FROM planning_groups g
+     JOIN planning_members own ON own.group_id=g.id
+     WHERE g.id=$3 AND own.user_id=$1 AND (g.state='COLLECTING' OR own.admitted)
+     AND (to_jsonb(g)->>'demo_workspace_id') IS NOT DISTINCT FROM $2::text`,[actor.userId,actor.demoWorkspaceId??null,cursor])).rows[0];
+    if(!before)throw new IntakeError('NOT_FOUND');
+   }
+   // Only membership/readiness and public studio facts. Never select a preference,
+   // invite, candidate or private note. Preserve PostgreSQL timestamp precision.
+   const rows=(await c.query(`SELECT g.id AS "groupId",g.catalog->>'studioName' AS "studioName",g.state,
+    g.organizer_id=$1 AS "isOrganizer",g.target_size AS "targetSize",roster."readyCount",roster.members
+    FROM planning_groups g JOIN planning_members own ON own.group_id=g.id
+    CROSS JOIN LATERAL (SELECT count(*) FILTER(WHERE m.current_preference_id IS NOT NULL)::int AS "readyCount",
+     jsonb_agg(jsonb_build_object('displayName',m.display_name,'isYou',m.user_id=$1) ORDER BY m.id) AS members
+     FROM planning_members m WHERE m.group_id=g.id AND (g.state='COLLECTING' OR m.admitted)) roster
+    WHERE own.user_id=$1 AND (g.state='COLLECTING' OR own.admitted)
+    AND (to_jsonb(g)->>'demo_workspace_id') IS NOT DISTINCT FROM $2::text
+    AND ($3::timestamptz IS NULL OR (g.created_at,g.id)<($3::timestamptz,$4::uuid))
+    ORDER BY g.created_at DESC,g.id DESC LIMIT 21`,[actor.userId,actor.demoWorkspaceId??null,before?.createdAt??null,before?.id??null])).rows as PlanSummary[];
+   const plans=rows.slice(0,20);return {plans,nextCursor:rows.length>20?plans.at(-1)!.groupId:null};
+  });
  }
  async closeRoster(actor:IntakeActor,value:unknown){const p=closeSchema.parse(value);return this.recordCommand(actor,p.commandId,{kind:'CLOSE',...p},async c=>{
   const g=await this.group(c,p.groupId,actor);if(g.organizer_id!==actor.userId)throw new IntakeError('NOT_FOUND');

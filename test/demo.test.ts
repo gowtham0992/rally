@@ -195,3 +195,15 @@ test('demo namespace detection fails closed and exit clears only its own lease a
  assert.ok(!cookies.some(c=>c.startsWith(personal+'=')||c.startsWith('rally-auth-next=')));
  assert.equal(response.headers.get('Cache-Control'),'private, no-store');
 });
+
+test('your plans cannot cross the normal or another workspace namespace even with an owned cursor',async()=>{
+ const w=await workspace(),a=w.actors.ORGANIZER,normal={userId:a.userId,emailVerified:true};
+ assert.deepEqual((await intake.plans(a)).plans.map(p=>p.groupId),[w.group.groupId]);
+ assert.deepEqual((await intake.plans(normal)).plans,[]);
+ const ordinary=await intake.create(normal,{commandId:randomUUID(),targetSize:6,displayName:'Me',catalog:baseCatalog});
+ assert.deepEqual((await intake.plans(normal)).plans.map(p=>p.groupId),[ordinary.groupId]);
+ assert.deepEqual((await intake.plans(a)).plans.map(p=>p.groupId),[w.group.groupId]);
+ assert.deepEqual((await intake.plans({...a,demoWorkspaceId:randomUUID()})).plans,[]);
+ await assert.rejects(intake.plans(a,ordinary.groupId),/NOT_FOUND/);
+ await assert.rejects(intake.plans(normal,w.group.groupId),/NOT_FOUND/);
+});
