@@ -1,9 +1,9 @@
 {
-  "observedAt": "2026-10-03T01:59:13.111Z",
+  "observedAt": "2026-10-03T03:27:17.848Z",
   "scope": "Actual existing Rally Supabase Postgres; restricted server role over certificate-verified TLS using session pooler. Synthetic write rolled back; no production customer or payment data moved.",
   "serverRole": "rally_app",
   "schema": "rally_private",
-  "migrations": 8,
+  "migrations": 9,
   "clientToPoolerTls": true,
   "providerPoolerToDatabaseTls": false,
   "certificateVerification": "sslmode=verify-full",

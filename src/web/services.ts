@@ -4,6 +4,7 @@ import {PaymentEngine} from '../payments/engine.ts';
 import {sandboxProvider} from '../payments/config.ts';
 import {BookingService} from '../bookings/service.ts';
 import {ClarificationService} from '../intake/clarifications.ts';
+import {budgetedClarifier} from '../ai/request-budget.ts';
 import {IntakeService} from '../intake/service.ts';
 import {catalogSchema} from '../planning/domain.ts';
 import fixture from '../../fixtures/studio.json';
@@ -14,7 +15,10 @@ const globalDb=globalThis as typeof globalThis&{rallyPool?:ReturnType<typeof dat
 export function applicationDatabase(){return globalDb.rallyPool??=database();}
 export function intake(){return new IntakeService(applicationDatabase());}
 
-export function clarifications(){return new ClarificationService(applicationDatabase());}
+export function clarifications(){
+ const pool=applicationDatabase();
+ return new ClarificationService(pool,budgetedClarifier(pool));
+}
 
 export function bookings(){return new BookingService(applicationDatabase());}
 

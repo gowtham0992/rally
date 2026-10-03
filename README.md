@@ -208,7 +208,7 @@ controls capture every essential requirement. A caller cannot clear review by
 sending a “no extra requirement” flag. The UI labels the demo studio and PayPal
 sandbox, and keeps offer and payment states truthful. This is a running implementation slice, not a deployed or
 submission-ready product. Public deployment also requires durable application
-rate limits and isolated judge access.
+isolated judge access; shared request quotas are implemented below.
 
 ### Credited AI and hosting
 
@@ -252,7 +252,7 @@ immediately after deployment; do not enable checkout while these are unresolved.
 ### Hosted database and collection UI
 
 The existing Rally Supabase project has a private application schema and a
-restricted server login. All eight migrations are installed. The connection
+restricted server login. All nine migrations are installed. The connection
 verifies the provider certificate and hostname using the bundled public root.
 Browser roles cannot access this schema. See [hosted database setup](docs/hosted-database.md)
 and the scoped [hosted audit](evidence/hosted-database.json). The local app still
@@ -334,7 +334,7 @@ not replace actual PayPal cancellation/refund browser proof.
 Migration 008 adds the CANCELED terminal state and one private cancellation
 request per participant. Its down migration refuses populated cancellation
 history; use forward fixes after real use. The hosted private schema now has
-eight migrations and retains the audited restricted runtime/browsers boundary.
+nine migrations and retains the audited restricted runtime/browsers boundary.
 
 ### Consumer UI redesign
 
@@ -345,3 +345,21 @@ The user requested a Robinhood-inspired app. Rally now uses white surfaces, blac
 The latest actual model run passed all 24 authored cases three times: 72/72 quality checks, zero safety failures, and useful clarification in all four ambiguity cases across every repeat. The independently authored structured baseline and per-candidate oracle check confirmed requirements and published facts. This is synthetic engineering evidence, not observed usability or an AI conversion claim. The original prompt failure and one timeout in the corrected prompt's first run remain in the report history.
 
 Read `docs/ai-evaluation.md` for the protocol and `evidence/ai/evaluation-index.json` for every run. With the local app running, open `/evidence/ai/index.html` for the readable report. `npm run ai:evaluate` validates fixture baselines without model calls. Live runs require sufficient existing free credit or explicit spending authorization; there are no automatic model retries.
+
+
+Shared public request quotas are stored in PostgreSQL and survive web-instance
+restarts. Configure a stable private `RALLY_RATE_LIMIT_KEY` (32 random bytes in
+hex) on every web instance, and apply migration `009_request_limits` before the
+updated app. Health readiness checks both configuration and migration. Login
+email, actor reads/writes, group creation and actual model dispatch have finite
+quotas; raw emails and forwarded-IP headers never become quota identifiers.
+The worker clears expired counters in bounded batches. See
+[request quota policy and verification](docs/request-limits.md).
+
+All 88 local tests pass, including independent connection concurrency and the
+production model-budget wrapper with persistent owner checks. Twelve actual
+local HTTP paths rejected exhausted capacity with `429` and `Retry-After`;
+quota restoration preserved the existing signed-in experience. These controls
+do not prove deployed traffic protection or isolated judge access, which remain
+release gates. The ninth additive migration and restricted hosted-role/TLS audit
+passed; Render remains undeployed.

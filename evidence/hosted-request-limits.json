@@ -1,0 +1,11 @@
+{
+  "observedAt": "2026-10-03T03:38:47.347Z",
+  "scope": "Actual existing free Rally Supabase Postgres under restricted runtime role. Synthetic quota subject only; no email/model/provider call. Temporary probe row removed in finally.",
+  "role": "rally_app",
+  "schema": "rally_private",
+  "admitted": 3,
+  "fourthAttemptDenied": true,
+  "denialDidNotIncrement": true,
+  "tlsMode": "verify-full",
+  "applicationDeployed": false
+}

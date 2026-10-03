@@ -24,7 +24,11 @@ export async function body(request:Request){
  try{return JSON.parse(Buffer.concat(chunks).toString('utf8'));}catch{throw new WebError('INVALID_REQUEST');}
 }
 export function errorResponse(error:unknown){
- if(error instanceof WebError)return Response.json({error:error.code},{status:error.status,headers:{'Cache-Control':'no-store'}});
+ if(error instanceof WebError){
+  const headers:Record<string,string>={'Cache-Control':'no-store'};
+  if(error.status===429&&'retryAfter' in error&&Number.isSafeInteger(error.retryAfter)&&Number(error.retryAfter)>0)headers['Retry-After']=String(error.retryAfter);
+  return Response.json({error:error.code},{status:error.status,headers});
+ }
  if(error instanceof z.ZodError)return Response.json({error:'INVALID_REQUEST'},{status:400,headers:{'Cache-Control':'no-store'}});
  const code=error instanceof Error&&'code' in error?String(error.code):'';
  const allowed=['NOT_FOUND','STALE_REVISION','COMMAND_CONFLICT','PLANNING_LOCKED','ROSTER_CLOSED','INVALID_ROSTER','GROUP_FULL','UNKNOWN_SLOT','INVALID_NOMINEE','VERIFIED_IDENTITY_REQUIRED','COLLECTION_REVIEW_REQUIRED','OWNER_CONSENT_REQUIRED','DISCLOSURE_REQUIRED','CONSENT_REVOKED','STALE_PREFERENCE','NO_COLLECTION_ARRANGEMENT','NO_NOTE','NOTE_TOO_LONG','NOTE_ALREADY_REVIEWED','CLARIFICATION_LIMIT','STALE_CLARIFICATION','INVALID_ANSWER','STALE_PLANNING','NO_VALID_CANDIDATE','UNVERIFIED_CATALOG','SESSION_TOO_SOON','RESERVATION_CONFLICT','OFFER_CLOSED','STALE_OFFER','STALE_ACCEPTANCE','ORDER_NOT_READY','CANCELLATION_REVIEW_REQUIRED','NOT_A_MEMBER','OFFER_NOT_FOUND'];

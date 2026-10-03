@@ -1,0 +1,91 @@
+{
+  "observedAt": "2026-10-03T03:34:14.227Z",
+  "scope": "Actual local Next.js HTTP and PostgreSQL. Temporarily seeded global quota exhausted, then original quota restored. No provider email or model dispatch; no managed participant or deployed rate-limit proof.",
+  "observations": [
+    {
+      "path": "/api/auth/session",
+      "status": 429,
+      "retryAfterPresent": true,
+      "forwardedHeaderDidNotBypass": true
+    },
+    {
+      "path": "/api/groups/00000000-0000-4000-8000-000000000001",
+      "status": 429,
+      "retryAfterPresent": true,
+      "forwardedHeaderDidNotBypass": true
+    },
+    {
+      "path": "/api/groups/00000000-0000-4000-8000-000000000001/clarification",
+      "status": 429,
+      "retryAfterPresent": true,
+      "forwardedHeaderDidNotBypass": true
+    },
+    {
+      "path": "/api/offers/00000000-0000-4000-8000-000000000001",
+      "status": 429,
+      "retryAfterPresent": true,
+      "forwardedHeaderDidNotBypass": true
+    },
+    {
+      "path": "/api/studio/bookings",
+      "status": 429,
+      "retryAfterPresent": true,
+      "forwardedHeaderDidNotBypass": true
+    },
+    {
+      "path": "/api/studio/requests",
+      "status": 429,
+      "retryAfterPresent": true,
+      "forwardedHeaderDidNotBypass": true
+    },
+    {
+      "path": "/api/studio/requests/00000000-0000-4000-8000-000000000001",
+      "status": 429,
+      "retryAfterPresent": true,
+      "forwardedHeaderDidNotBypass": true
+    },
+    {
+      "path": "/auth/callback",
+      "status": 429,
+      "retryAfterPresent": true,
+      "forwardedHeaderDidNotBypass": true
+    },
+    {
+      "path": "/api/auth/start",
+      "method": "POST",
+      "status": 429
+    },
+    {
+      "path": "/api/auth/signout",
+      "method": "POST",
+      "status": 429
+    },
+    {
+      "path": "/api/groups",
+      "method": "POST",
+      "status": 429
+    },
+    {
+      "path": "/api/groups/join",
+      "method": "POST",
+      "status": 429
+    }
+  ],
+  "foreignOriginRejected": true,
+  "healthExempt": true,
+  "postRestoreAnonymousSession200": true,
+  "browser": {
+    "scope": "Local synthetic quota exhaustion, original rows preserved and restored. No email delivered.",
+    "widthCssPx": 374,
+    "documentWidthCssPx": 374,
+    "inputRetention": "Visually confirmed in screenshot; browser tooling redacts input values in DOM evaluation.",
+    "screenshot": "evidence/web/request-limit-mobile.jpg",
+    "signedInFormAccessibleAfterRestoration": true,
+    "bothTemporaryQuotasRestored": true
+  },
+  "mutation": {
+    "weakening": "Allowed 100 additional counter admissions",
+    "caughtBy": "shared quotas admit exactly the available slots under independent concurrent connections",
+    "result": "Expected 60; weakened source admitted 80. Source restored; 13 focused tests passed."
+  }
+}

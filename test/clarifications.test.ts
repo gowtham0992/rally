@@ -6,11 +6,13 @@ import {database,localDatabaseUrl} from '../src/db.ts';
 import {IntakeService,type IntakeActor} from '../src/intake/service.ts';
 import {ClarificationService} from '../src/intake/clarifications.ts';
 import type {Clarification} from '../src/ai/clarifier.ts';
+import {budgetedClarifier} from '../src/ai/request-budget.ts';
+import {subjectDigest} from '../src/web/rate-limits.ts';
 const schema=`clarification_test_${randomUUID().replaceAll('-','')}`,admin=database(process.env.TEST_DATABASE_URL??localDatabaseUrl);
 const url=new URL(process.env.TEST_DATABASE_URL??localDatabaseUrl);url.searchParams.set('options',`-c search_path=${schema},public`);
 const pool=database(url.toString()),intake=new IntakeService(pool);
 const catalog=JSON.parse(await readFile(new URL('../fixtures/studio.json',import.meta.url),'utf8'));for(const o of catalog.offerings)o.minPeople=2;
-before(async()=>{await admin.query(`CREATE SCHEMA ${schema}`);for(const version of ['004_private_intake','005_collection_consent','007_clarifications'])await pool.query(await readFile(new URL('../db/'+version+'.sql',import.meta.url),'utf8'));});
+before(async()=>{await admin.query(`CREATE SCHEMA ${schema}`);for(const version of ['004_private_intake','005_collection_consent','007_clarifications','009_request_limits'])await pool.query(await readFile(new URL('../db/'+version+'.sql',import.meta.url),'utf8'));});
 after(async()=>{await pool.end();await admin.query(`DROP SCHEMA ${schema} CASCADE`);await admin.end();});
 const actor=():IntakeActor=>({userId:randomUUID(),emailVerified:true});
 const pref={budgetMinor:5000,availableSlotIds:['thu-evening'],latestFinishAt:null,technique:'ANY',outcome:'FORM_OWN_CUP',collection:'SELF_LATER',nomineeMemberId:null,extraRequirement:'NONE',unresolvedKeys:[]};
@@ -81,4 +83,19 @@ test('interrupted reservations and dispatches expire to review without another m
   assert.equal((await service.view(x.a,x.g.groupId))?.status,'REVIEW');assert.equal((await service.start(x.a,x.start))?.status,'REVIEW');assert.equal(calls,0);
   assert.equal((await intake.ownPreferences(x.a,x.g.groupId)).preference.extraRequirement,'MERCHANT_REVIEW_REQUIRED');
  }
+});
+
+test('global model budget is reserved after ownership and once per dispatch; exhaustion leaves saved choices unchanged',async()=>{
+ const x=await setup(),key='c'.repeat(64),digest=subjectDigest(key,'MODEL_GLOBAL','application');let calls=0;
+ const service=new ClarificationService(pool,budgetedClarifier(pool,async input=>{calls++;return proposal(input);},()=>key));
+ await assert.rejects(service.start(actor(),x.start),/NOT_FOUND/);
+ assert.equal((await pool.query('SELECT count(*) FROM request_limits WHERE scope=$1',['MODEL_GLOBAL'])).rows[0].count,'0');
+ await Promise.all([service.start(x.a,x.start),service.start(x.a,x.start)]);assert.equal(calls,1);
+ assert.equal((await pool.query('SELECT hits FROM request_limits WHERE scope=$1 AND subject_digest=$2',['MODEL_GLOBAL',digest])).rows[0].hits,1);
+ await pool.query('UPDATE request_limits SET hits=72 WHERE scope=$1 AND subject_digest=$2',['MODEL_GLOBAL',digest]);
+ const y=await setup(),before=await intake.ownPreferences(y.a,y.g.groupId);
+ assert.equal((await service.start(y.a,y.start))?.status,'REVIEW');assert.equal(calls,1);
+ assert.deepEqual(await intake.ownPreferences(y.a,y.g.groupId),before);
+ assert.equal((await service.start(y.a,y.start))?.status,'REVIEW');assert.equal(calls,1);
+ assert.equal((await pool.query('SELECT hits FROM request_limits WHERE scope=$1 AND subject_digest=$2',['MODEL_GLOBAL',digest])).rows[0].hits,72);
 });

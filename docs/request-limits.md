@@ -1,0 +1,27 @@
+Rally reserves shared request quotas in PostgreSQL before external calls or participant commands. The attacker controls HTTP headers and input, and may hold a verified account; the prize is exhausting email/model credits or repeatedly mutating group state. These quotas bound that work across processes and restarts. They do not replace identity, source consent, object authorization, immutable command records or payment idempotency.
+
+| Scope | Quota | Window |
+|---|---:|---:|
+| All auth-backed public API requests and auth callback | 6,000 | 1 hour |
+| Login email attempts across the application | 30 | 1 hour |
+| Login email attempts for one normalized address | 3 | 15 minutes |
+| Verified actor reads | 240 | 1 minute |
+| Verified actor writes | 60 | 1 minute |
+| Group creation attempts by one actor | 10 | 24 hours |
+| Actual model dispatch reservations across the application | 72 | 24 hours |
+
+Windows begin with the first admitted request. Admission uses one atomic `INSERT … ON CONFLICT` and database statement time, so distinct instances cannot spend the last slot independently. Denied attempts do not increase the counter or move its expiry. These are conservative request budgets: a rejected domain command or repeated HTTP command can consume request capacity even when it has no domain effect. The model budget differs: ownership, consent, source currency, actor allowance and persistent dispatch ownership pass first. A repeated clarification command does not reserve another model slot. A model quota or database failure leads to participant review, without changing confirmed choices or invoking the provider.
+
+`RALLY_RATE_LIMIT_KEY` is a stable private random 32-byte hex key. Generate it once with `openssl rand -hex 32`, keep it in the private environment, and use the same value on every web instance. HMAC identifiers include the policy scope; the quota table contains no raw email, IP address, session token, participant wording or preference. Do not rotate this key as a way to reset quotas. Missing or malformed configuration fails closed, and the health endpoint requires this key and the latest migration. The ninth migration adds only a new private table. Old code can continue running after expansion; rollback to old code would remove enforcement and is unsuitable for public access.
+
+No client-IP header is trusted. Render's consulted documentation did not establish an override that would make a client-supplied forwarded header safe. Aggregate budgets provide a cost brake and are deliberately shared: one abusive caller could exhaust them for everyone. Isolated judge/demo access and edge traffic protection remain release work; this change does not claim denial-of-service resistance. Static pages and readiness checks are exempt. Normal polling stays below the actor read quota.
+
+HTTP denials return `429`, a numeric `Retry-After` and `Cache-Control: no-store`. Database errors return a generic `503`. Login preserves the entered email and offers a wait message. The worker deletes at most 1,000 expired quota rows once per minute, using row locks with `SKIP LOCKED`. Quota rows are temporary operational data; this cleanup is separate from the required private participant-text retention policy.
+
+Verification uses real local PostgreSQL with two independent pools: 80 concurrent requests admit exactly 60, a new pool retains exhaustion, denied requests retain the original expiry, expiry resets to one, scopes and actors stay independent, and bounded cleanup retains active rows. The concurrency test failed against a deliberately weakened limit condition, then passed after source restoration. A persistent clarification test uses the production budget wrapper with a synthetic model: unauthorized actors reserve nothing, duplicate commands dispatch once, and exhaustion produces review with identical saved preferences. No model API call is made by these tests.
+
+For the local HTTP proof, run the dev server with migrated database and private environment, then `node --env-file=.env.local --import tsx scripts/verify-request-limits.ts`. This script refuses non-local databases or a different app origin, temporarily exhausts the public quota and restores its original row in `finally`. Twelve actual endpoints return `429`, changed forwarding headers cannot bypass, a foreign mutation origin still returns `403`, health stays ready, and an anonymous session works after restoration. The browser proof temporarily exhausted local quotas, entered only `synthetic-account@example.invalid`, and observed the wait message with the input retained at 374 CSS pixels without horizontal overflow. Original quotas were restored; the existing managed session still works. Evidence: `evidence/web/request-limits.json` and `evidence/web/request-limit-mobile.jpg`. This is local proof, not deployed multi-account proof.
+
+The same additive migration is applied to the existing free Rally Supabase project. Its runtime role retains certificate-verified TLS, no schema-creation privilege, no access to Auth users, and no browser-role access to the private schema. Hosted connection and rollback evidence is in `evidence/hosted-database.json`; the application remains undeployed.
+
+A separate actual hosted quota probe (`scripts/verify-hosted-limits.ts`) admitted three reservations and rejected the fourth under `rally_app`, without incrementing on denial. It removed its disposable synthetic subject afterward and made no email/model requests. Evidence: `evidence/hosted-request-limits.json`.

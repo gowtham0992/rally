@@ -15,14 +15,15 @@
     "Friend-oriented product UI: actual people/readiness, private details, natural copy and restrained demo label. Mobile/tablet/desktop reviewed; stale-save draft retention observed through two browser views.",
     "Astropods authenticated, $10 period spend limit saved, server-side bounded model adapter and actual validated synthetic clarification call; Render Blueprint and shallow database readiness route prepared. Hosting remains undeployed.",
     "Persistent owner-scoped grounded AI clarification with explicit processing and meaning confirmation, revision invalidation, duplicate protection, bounded questions/calls, interrupted-request recovery and an equal structured-only path. Actual synthetic authenticated AI and baseline flow observed; collection volunteer/consent never invented.",
-    "Private hosted Supabase application schema, restricted runtime login, eight migrations and actual certificate-verified connection audit; local development remains on local PostgreSQL and Render is undeployed.",
+    "Private hosted Supabase application schema, restricted runtime login, nine migrations and actual certificate-verified connection audit; local development remains on local PostgreSQL and Render is undeployed.",
     "Owner-first collection consent UI, compact private saved summary and bounded live refresh paused during editing; excluded nominees rejected for closed rosters.",
     "Managed-auth organizer request, owner-scoped paginated studio queue and explicit four-attestation approval UI; exact buffered calendar interval, stale-plan rejection, immutable issued-offer view and authoritative group booking status. Local synthetic owner/operator browser fixture created exactly one held offer and zero payment operations.",
     "Managed-auth individual checkout with explicit frozen-offer acceptance, owned sandbox redirect and worker authorization; coherent private payment status snapshot. Actual browser created one sandbox order and rejected approval before PayPal sign-in with zero authorizations/captures. Phone/tablet/desktop reviewed; complete multi-buyer browser lifecycle remains required.",
     "Studio-owned cancellation, private participant cancellation requests, worker compensation for late captures and organizer reopening gated on complete recovery; bounded studio booking history. Actual single-account synthetic cancellation/reopening observed with zero payments; six new PostgreSQL tests and six isolated mutations cover financial/ownership boundaries. Hosted migration 008 and restricted-runtime audit passed.",
     "User-requested Robinhood-inspired UI redesign across catalog, private intake, frozen offer and studio: white/black sans-serif, large prices/readiness, lime actions, compact rows and native roster disclosure. Reviewed at 374/768/1280 CSS pixels; keyboard focus, required validation, invalid budget draft retention and explicit discard observed. TypeScript and production build passed.",
     "Created original Rally convergence logo with the built-in image generator; transparent symbol/wordmark and white-background export saved in public/brand. Header and browser icon integrated, rendered at 374/768/1280 CSS pixels without overflow; TypeScript and production build passed.",
-    "Actual 24-case AI evaluation repeated three times passed with 72/72 quality, zero safety failures and useful clarification in all four ambiguity cases across every repeat. Independent authored structured baseline and per-candidate hard-constraint oracle; original prompt failure and corrected-prompt timeout retained in full history. Corrected prompt and shared production review path verified by 81 local tests, TypeScript and build. Free Astropods credit only, no payment method or paid charge."
+    "Actual 24-case AI evaluation repeated three times passed with 72/72 quality, zero safety failures and useful clarification in all four ambiguity cases across every repeat. Independent authored structured baseline and per-candidate hard-constraint oracle; original prompt failure and corrected-prompt timeout retained in full history. Corrected prompt and shared production review path verified by 81 local tests, TypeScript and build. Free Astropods credit only, no payment method or paid charge.",
+    "Durable shared PostgreSQL request quotas for login, verified reads/writes, group creation and actual model dispatch; private HMAC subjects, no forwarded-IP trust, bounded expired-row cleanup and readiness config/migration checks. Actual local 12-route HTTP proof, mobile denial/input retention, seven new tests and one caught quota mutation; hosted migration 009 and restricted-role TLS audit passed. Judge isolation and deployment remain unfinished."
   ],
   "evidence": {
     "scope": "Local service tests use real PostgreSQL and a simulated provider; separate reviewed records prove three actual PayPal sandbox scenarios.",
@@ -49,20 +50,21 @@
     },
     "credentials_doctor": "All sandbox app, merchant and three distinct personal buyer identifiers configured privately; no credentials committed.",
     "tests": {
-      "passed": 81,
+      "passed": 88,
       "payment_and_adapter": 26,
       "planning_and_model_boundary": 9,
       "persistent_intake": 13,
       "merchant_booking_loop": 16,
       "web_request_boundaries": 3,
       "bounded_ai_gateway": 3,
-      "persistent_clarification": 6,
-      "evaluation_oracles": 5
+      "persistent_clarification": 7,
+      "evaluation_oracles": 5,
+      "shared_request_limits": 6
     },
     "model_api_calls": 221,
     "ai_quality_and_24_case_evaluation": "passed_actual_72_run_final_prompt",
     "intake_scope": "Real PostgreSQL service tests with trusted test actors; not managed email-auth or browser end-to-end proof.",
-    "latest_full_test_run": "81 tests passed, including 5 evaluation-oracle tests. TypeScript and production build passed; actual synthetic model evaluation passed 72/72. Multi-account PayPal browser recovery, deployment, usability and submission gates remain incomplete.",
+    "latest_full_test_run": "88 full tests passed; 13 targeted clarification/quota tests passed after source restoration and final wrapper type fix. TypeScript and production build passed. Actual synthetic AI evaluation remains 72/72; multi-account browser checkout/recovery, judge isolation, deployment, usability and submission gates remain incomplete.",
     "sandbox_oauth": "Sandbox HTTP 200 access token; supplied Client ID matched Rally app on the selected Business seller.",
     "managed_auth_browser": {
       "scope": "Existing healthy Rally Supabase Auth project; local Next.js app and local PostgreSQL; synthetic studio/name/preferences. User completed email login, agent used resulting verified session.",
@@ -98,7 +100,7 @@
       "model": "claude-sonnet-4-6",
       "file": "evidence/ai/connection.json",
       "validated_proposal": true,
-      "quality_evaluation": "Passed 24 cases × 3 actual runs; all earlier failed runs preserved.",
+      "quality_evaluation": "Passed 24 cases \u00d7 3 actual runs; all earlier failed runs preserved.",
       "participant_ui": "Integrated and actual synthetic owner-confirmed travel clarification observed; structured-only confirmation issued no additional model call",
       "remaining_credit_usd_at_connection_check": 9.98
     },
@@ -174,6 +176,17 @@
           "sourceHash": "08ca7df62b6705cb80fab64197dfbe81afd06cb0c1a6fc8d28a71e072dba1566"
         }
       ]
+    },
+    "request_limits": {
+      "http": "evidence/web/request-limits.json",
+      "documentation": "docs/request-limits.md",
+      "local_database_concurrency": "80 concurrent requests across two independent pools admitted exactly 60; exhaustion survives new pool; expiry, cleanup, privacy and failed-store boundaries verified",
+      "mutation": "Concurrent regression caught deliberately weakened quota condition; source restored and targeted tests passed",
+      "model_budget": "Persistent ownership and consent precede global reservation; duplicate clarification dispatches reserve once; budget exhaustion preserves confirmed choices and returns review; simulated model only",
+      "hosted": "Ninth additive migration applied; restricted-role and certificate-verified TLS audit passed",
+      "browser": "Synthetic limit message/input retention observed at 374 CSS pixels without overflow; local quotas restored",
+      "deployed": false,
+      "hosted_quota_probe": "evidence/hosted-request-limits.json"
     }
   },
   "external_dependencies": [
@@ -210,7 +223,7 @@
     "Polished public demo video under three minutes",
     "Complete Devpost draft materials; human approval before entry submission"
   ],
-  "next_independent_slice": "Implement durable public rate limits and isolated judge access; complete pending sandbox buyer approval and distinct managed browser sessions, then deploy sandbox services with authorization for any charges.",
+  "next_independent_slice": "Implement isolated judge/demo access and complete distinct managed participant browser sessions plus full sandbox checkout/recovery; verify Render credit coverage and deploy sandbox services without paid charges unless authorized.",
   "release_restrictions": [
     "Core PayPal sandbox scenarios verified; full authenticated application and remaining provider recovery gates are incomplete",
     "No live customer payments",
