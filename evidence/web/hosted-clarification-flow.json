@@ -1,0 +1,53 @@
+{
+  "observedAt": "2026-10-03T17:53:52.931Z",
+  "groupId": "c6740e0d-0c8d-46f8-883b-b2284c2dcca2",
+  "scope": "Actual hosted fictional participant UI and one approved Astropods clarification. Fictional answer and nomination recorded; not human feedback or a completed booking.",
+  "noteTransmissionSpecificallyApproved": true,
+  "actualQuestion": "What needs to happen with your piece after the session?",
+  "actualOptions": [
+    "I must take it home that day",
+    "I can collect later",
+    "I need someone in the group to collect"
+  ],
+  "clarification": [
+    {
+      "status": "ANSWERED",
+      "question_asked": true,
+      "question_template": "COLLECTION_INTENT",
+      "ai_calls": 1,
+      "ai_questions": 1,
+      "current_wording_bound": true,
+      "approved_note_unchanged": true,
+      "budget_unchanged": true,
+      "confirmed_collection": "NOMINEE_LATER",
+      "explicitly_nominated_jordan": true
+    }
+  ],
+  "boundary": {
+    "admitted_members": 6,
+    "consent_events": 0,
+    "studio_requests": 0,
+    "issued_offers": 0,
+    "payment_operations": 0,
+    "all_reserved_invalid_identities": true
+  },
+  "ownerDisclosureHiddenFromNomineeBeforeAgreement": true,
+  "correctedRoleChecks": {
+    "roles": [
+      "Jordan",
+      "Riley",
+      "Casey",
+      "Taylor"
+    ],
+    "selectedIdentityAndPrivateSummaryVerified": true,
+    "earlierSnapshotsCapturedPreviousRole": true
+  },
+  "collectionDisclosureApprovalRequired": true,
+  "automaticApprovalReview": {
+    "blockedAction": "Sam sharing the nominated collection arrangement with Jordan and Willow Studio",
+    "attempts": 2,
+    "fictionalIdentityAuditCompleted": true,
+    "disclosurePersisted": false
+  },
+  "sixBuyerCheckoutVerified": false
+}
