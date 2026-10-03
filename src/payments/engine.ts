@@ -3,7 +3,7 @@ import type pg from 'pg';
 import type { PoolClient } from 'pg';
 import { z } from 'zod';
 import { transaction } from '../db.ts';
-import { DomainError, ProviderError, fingerprint, type Kind, type Member, type Offer, type Operation, type Observation, type PaymentProvider } from './types.ts';
+import { DomainError, ProviderError, fingerprint, type Kind, type Member, type Offer, type Operation, type Observation, type PaymentProvider, type ParticipantPayment } from './types.ts';
 
 const commandSchema = z.strictObject({ commandId: z.uuid(), offerId: z.uuid(), actorId: z.uuid(), offerHash: z.string().length(64) });
 type Command = z.infer<typeof commandSchema>;
@@ -244,20 +244,29 @@ export class PaymentEngine {
 
   async participantStatus(offerId: string, actorId: string) {
     z.uuid().parse(offerId); z.uuid().parse(actorId);
-    const member = (await this.pool.query<Member>('SELECT * FROM offer_members WHERE offer_id=$1 AND user_id=$2',[offerId,actorId])).rows[0];
-    if (!member) throw new DomainError('NOT_A_MEMBER',403);
-    const offer = (await this.pool.query<Offer>('SELECT * FROM offers WHERE id=$1',[offerId])).rows[0];
-    const ops = (await this.pool.query<Operation>('SELECT * FROM payment_operations WHERE member_id=$1',[member.id])).rows;
-    const capture = at(ops,'CAPTURE'), refund = at(ops,'REFUND'), voidOp = at(ops,'VOID'), auth = at(ops,'AUTHORIZE');
-    const needsAction = ops.some(o => o.state === 'ACTION_REQUIRED' || (['VOID','REFUND'].includes(o.kind) && o.state === 'FAILED'));
-    const payment = needsAction ? 'STUDIO_ACTION_NEEDED'
-      : refund?.state === 'SUCCEEDED' ? 'REFUND_COMPLETED' : refund ? 'REFUND_IN_PROGRESS'
-      : capture?.state === 'SUCCEEDED' ? 'PAYMENT_COMPLETED'
-      : ops.some(o => uncertain.has(o.state)) ? 'CHECKING_PAYMENT'
-      : voidOp?.state === 'SUCCEEDED' ? 'AUTHORIZATION_CANCELED'
-      : auth?.state === 'SUCCEEDED' ? 'AUTHORIZED_NOT_CONFIRMED' : 'APPROVAL_NEEDED';
-    return { booking:offer.state,payment,amountMinor:offer.amount_minor,currency:offer.currency,
-      cleanup:offer.cleanup,approvalUrl:at(ops,'CREATE_ORDER')?.approval_url ?? null };
+    // One database snapshot binds booking, owned member and operation states.
+    const row=(await this.pool.query<Offer&{accepted_hash:string|null;order_id:string|null;time:Date;ops:(Pick<Operation,'kind'|'state'|'approval_url'>&{safe_code:string|null})[]}>(`SELECT o.*,m.accepted_hash,m.order_id,clock_timestamp() AS time,
+      (SELECT COALESCE(jsonb_agg(jsonb_build_object('kind',p.kind,'state',p.state,'approval_url',p.approval_url,'safe_code',p.safe_code)),'[]'::jsonb) FROM payment_operations p WHERE p.member_id=m.id) AS ops
+      FROM offer_members m JOIN offers o ON o.id=m.offer_id WHERE m.offer_id=$1 AND m.user_id=$2`,[offerId,actorId])).rows[0];
+    if(!row)throw new DomainError('NOT_A_MEMBER',403);
+    const ops=row.ops,capture=at(ops,'CAPTURE'),refund=at(ops,'REFUND'),voidOp=at(ops,'VOID'),auth=at(ops,'AUTHORIZE'),create=at(ops,'CREATE_ORDER');
+    const needsAction=ops.some(o=>o.state==='ACTION_REQUIRED'||(['VOID','REFUND'].includes(o.kind)&&o.state==='FAILED'))
+      ||(row.state==='OPEN'&&ops.some(o=>['CREATE_ORDER','AUTHORIZE'].includes(o.kind)&&o.state==='FAILED'&&!['PAYER_APPROVAL_REQUIRED','CANCELED_BEFORE_DISPATCH'].includes(o.safe_code??'')));
+    const payment:ParticipantPayment=needsAction?'STUDIO_ACTION_NEEDED'
+      :refund?.state==='SUCCEEDED'?'REFUND_COMPLETED':refund?'REFUND_IN_PROGRESS'
+      :capture?.state==='SUCCEEDED'?'PAYMENT_COMPLETED'
+      :ops.some(o=>uncertain.has(o.state))?'CHECKING_PAYMENT'
+      :voidOp?.state==='SUCCEEDED'?'AUTHORIZATION_CANCELED'
+      :auth?.state==='SUCCEEDED'?'AUTHORIZED_NOT_CONFIRMED':'APPROVAL_NEEDED';
+    const active=row.state==='OPEN'&&row.time<row.deadline,accepted=row.accepted_hash===row.offer_hash;
+    const canAuthorize=Boolean(active&&accepted&&row.order_id&&(!auth||(auth.state==='FAILED'&&auth.safe_code==='PAYER_APPROVAL_REQUIRED')));
+    let approvalUrl:string|null=null;
+    if(canAuthorize&&create?.state==='SUCCEEDED'&&create.approval_url){
+      try{const url=new URL(create.approval_url);if(url.origin==='https://www.sandbox.paypal.com'&&!url.username&&!url.password&&url.searchParams.get('token')===row.order_id)approvalUrl=url.toString();}catch{/* Invalid persisted links are never browser destinations. */}
+    }
+    return {booking:row.state,payment,amountMinor:row.amount_minor,currency:row.currency,cleanup:row.cleanup,approvalUrl,
+      accepted,canAccept:active&&!accepted,canAuthorize,preparingOrder:active&&accepted&&!row.order_id&&!needsAction,
+      payerApprovalRequired:auth?.state==='FAILED'&&auth.safe_code==='PAYER_APPROVAL_REQUIRED'};
   }
 
   async webhook(headers:Record<string,string>,value:unknown) {

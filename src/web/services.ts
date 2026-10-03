@@ -1,5 +1,7 @@
 import 'server-only';
 import {database} from '../db.ts';
+import {PaymentEngine} from '../payments/engine.ts';
+import {sandboxProvider} from '../payments/config.ts';
 import {BookingService} from '../bookings/service.ts';
 import {ClarificationService} from '../intake/clarifications.ts';
 import {IntakeService} from '../intake/service.ts';
@@ -15,3 +17,5 @@ export function intake(){return new IntakeService(applicationDatabase());}
 export function clarifications(){return new ClarificationService(applicationDatabase());}
 
 export function bookings(){return new BookingService(applicationDatabase());}
+
+export function payments(){return new PaymentEngine(applicationDatabase(),sandboxProvider());}

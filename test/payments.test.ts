@@ -192,3 +192,15 @@ test('migration down and up succeeds in an isolated empty schema',async () => {
     assert.equal((await client.query("SELECT count(*)::int AS count FROM offers")).rows[0].count,0);
   } finally { await client.query('SET search_path TO public');await client.query(`DROP SCHEMA IF EXISTS ${name} CASCADE`);client.release(); }
 });
+
+test('checkout status separates acceptance, order preparation, approval and closed windows',async()=>{
+ const x=await setup(),a=x.offer.members[0].userId;
+ let view=await x.engine.participantStatus(x.offer.id,a);assert.equal(view.canAccept,true);assert.equal(view.accepted,false);assert.equal(view.approvalUrl,null);
+ await x.engine.accept(x.command(0));view=await x.engine.participantStatus(x.offer.id,a);assert.equal(view.canAccept,false);assert.equal(view.preparingOrder,true);
+ await x.engine.step(x.offer.id);const stored=(await pool.query('SELECT id,order_id FROM offer_members WHERE offer_id=$1 AND user_id=$2',[x.offer.id,a])).rows[0];
+ await pool.query("UPDATE payment_operations SET approval_url=$2 WHERE member_id=$1 AND kind='CREATE_ORDER'",[stored.id,`https://www.sandbox.paypal.com/checkoutnow?token=${stored.order_id}`]);
+ view=await x.engine.participantStatus(x.offer.id,a);assert.equal(view.canAuthorize,true);assert.ok(view.approvalUrl);
+ for(const approvalUrl of ['https://outside.example/checkoutnow?token='+stored.order_id,'https://www.sandbox.paypal.com/checkoutnow?token=FOREIGN_ORDER']){await pool.query("UPDATE payment_operations SET approval_url=$2 WHERE member_id=$1 AND kind='CREATE_ORDER'",[stored.id,approvalUrl]);assert.equal((await x.engine.participantStatus(x.offer.id,a)).approvalUrl,null);}
+ await x.engine.authorize(x.command(0));await x.engine.step(x.offer.id);view=await x.engine.participantStatus(x.offer.id,a);assert.equal(view.payment,'AUTHORIZED_NOT_CONFIRMED');assert.equal(view.canAuthorize,false);assert.equal(view.approvalUrl,null);
+ await x.engine.withdraw(x.command(1));view=await x.engine.participantStatus(x.offer.id,x.offer.members[1].userId);assert.equal(view.canAccept,false);assert.equal(view.canAuthorize,false);
+});

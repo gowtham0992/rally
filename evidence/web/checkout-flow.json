@@ -1,0 +1,39 @@
+{
+  "observedAt": "2026-10-03T01:43:06.739Z",
+  "scope": "Actual managed-auth owner browser acceptance and sandbox worker order creation/early approval check. Synthetic group and studio approval seeded through trusted services; no independent multi-account or completed checkout proof.",
+  "observed": [
+    "Expired prior fixture showed booking closed and no completed payment",
+    "Payment agreement initially unchecked and Continue disabled",
+    "Explicit browser agreement queued one owned sandbox order",
+    "Early Check my PayPal approval required actual PayPal approval",
+    "PayPal sandbox login opened for human buyer sign-in"
+  ],
+  "operations": [
+    {
+      "kind": "CREATE_ORDER",
+      "state": "SUCCEEDED",
+      "safe_code": "OUTCOME_UNKNOWN"
+    },
+    {
+      "kind": "AUTHORIZE",
+      "state": "FAILED",
+      "safe_code": "PAYER_APPROVAL_REQUIRED"
+    }
+  ],
+  "booking": "OPEN",
+  "paypalOrderCount": 1,
+  "authorizationCount": 0,
+  "captureCount": 0,
+  "reviewWidthsCss": [
+    374,
+    768,
+    1280
+  ],
+  "horizontalOverflow": false,
+  "remaining": [
+    "Buyer login and approval return",
+    "Three distinct managed participant browser sessions",
+    "Browser refund and uncertain-payment lifecycle",
+    "Merchant cancellation/reopening and hosted judge access"
+  ]
+}

@@ -17,13 +17,14 @@
     "Persistent owner-scoped grounded AI clarification with explicit processing and meaning confirmation, revision invalidation, duplicate protection, bounded questions/calls, interrupted-request recovery and an equal structured-only path. Actual synthetic authenticated AI and baseline flow observed; collection volunteer/consent never invented.",
     "Private hosted Supabase application schema, restricted runtime login, seven migrations and actual certificate-verified connection audit; local development remains on local PostgreSQL and Render is undeployed.",
     "Owner-first collection consent UI, compact private saved summary and bounded live refresh paused during editing; excluded nominees rejected for closed rosters.",
-    "Managed-auth organizer request, owner-scoped paginated studio queue and explicit four-attestation approval UI; exact buffered calendar interval, stale-plan rejection, immutable issued-offer view and authoritative group booking status. Local synthetic owner/operator browser fixture created exactly one held offer and zero payment operations."
+    "Managed-auth organizer request, owner-scoped paginated studio queue and explicit four-attestation approval UI; exact buffered calendar interval, stale-plan rejection, immutable issued-offer view and authoritative group booking status. Local synthetic owner/operator browser fixture created exactly one held offer and zero payment operations.",
+    "Managed-auth individual checkout with explicit frozen-offer acceptance, owned sandbox redirect and worker authorization; coherent private payment status snapshot. Actual browser created one sandbox order and rejected approval before PayPal sign-in with zero authorizations/captures. Phone/tablet/desktop reviewed; complete multi-buyer browser lifecycle remains required."
   ],
   "evidence": {
     "scope": "Local service tests use real PostgreSQL and a simulated provider; separate reviewed records prove three actual PayPal sandbox scenarios.",
     "payment_tests": {
-      "passed": 24,
-      "consecutive_green_runs": 2
+      "passed": 26,
+      "consecutive_green_runs": 1
     },
     "mutation_checks": {
       "caught": 18,
@@ -100,7 +101,12 @@
     "hosted_database_report": "evidence/hosted-database.json",
     "collection_browser_report": "evidence/web/collection-flow.json",
     "studio_browser_report": "evidence/web/studio-flow.json",
-    "studio_access_negative_control": "evidence/local-studio-denial-mutation.json"
+    "studio_access_negative_control": "evidence/local-studio-denial-mutation.json",
+    "checkout_ui": {
+      "file": "evidence/web/checkout-flow.json",
+      "scope": "Managed-auth owner; synthetic group/studio approval; actual PayPal order creation and early-check rejection only",
+      "full_browser_checkout": "Pending human sandbox buyer approval and distinct managed participants"
+    }
   },
   "external_dependencies": [
     {
@@ -137,7 +143,7 @@
     "Polished public demo video under three minutes",
     "Complete Devpost draft materials; human approval before entry submission"
   ],
-  "next_independent_slice": "Connect individual PayPal checkout and truthful financial status to the issued offer; implement cancellation and planning-round reopening; then isolated judge access, AI evaluation and deployment.",
+  "next_independent_slice": "Complete buyer approval return and multi-participant checkout proof; implement merchant cancellation and planning-round reopening; then isolated judge access, AI evaluation and deployment.",
   "release_restrictions": [
     "Core PayPal sandbox scenarios verified; full authenticated application and remaining provider recovery gates are incomplete",
     "No live customer payments",

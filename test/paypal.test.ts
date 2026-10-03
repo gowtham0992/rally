@@ -62,3 +62,12 @@ test('same-amount refund from a different capture cannot satisfy cleanup',async 
   const x=adapter(()=>({id:'REFUND',status:'COMPLETED',amount:{value:'48.00',currency_code:'USD'},links:[{rel:'up',href:'https://api-m.sandbox.paypal.com/v2/payments/captures/DIFFERENT'}]}));
   await assert.rejects(x.provider.observe(op),{code:'PROVIDER_PARENT_MISMATCH'});
 });
+
+test('checkout redirects use the configured origin and immutable offer identity',async()=>{
+ const op=operation('CREATE_ORDER');let sent:unknown;
+ const transport=(async(input:RequestInfo|URL,init?:RequestInit)=>{if(String(input).endsWith('/oauth2/token'))return Response.json({access_token:'FIXTURE',expires_in:3600});sent=JSON.parse(init!.body as string);return Response.json(orderResponse(op));}) as typeof fetch;
+ await new PayPalSandbox({clientId:'fixture',clientSecret:'fixture',merchantId:'MERCHANT',returnOrigin:'http://localhost:3000'},transport).execute(op);
+ const context=(sent as {payment_source:{paypal:{experience_context:{return_url:string;cancel_url:string}}}}).payment_source.paypal.experience_context;
+ assert.equal(context.return_url,`http://localhost:3000/offers/${op.payload.offerId}?paypal=returned`);assert.equal(context.cancel_url,`http://localhost:3000/offers/${op.payload.offerId}?paypal=canceled`);
+ for(const returnOrigin of ['https://rally.example/path','https://user:pass@rally.example','http://remote.example'])assert.throws(()=>new PayPalSandbox({clientId:'fixture',clientSecret:'fixture',merchantId:'MERCHANT',returnOrigin}));
+});

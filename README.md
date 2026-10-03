@@ -283,3 +283,23 @@ account as organizer and local test operator, with seeded synthetic peers. It
 proves request, stale rejection, approval and one hold; it created zero payment
 operations. Individual checkout, merchant cancellation, independent-account
 browser verification and deployment remain open.
+
+### Participant checkout
+
+`/offers/:id` now presents explicit agreement to the frozen session and automatic
+settlement terms, then queues one participant-owned PayPal sandbox order. Return
+and cancel URLs use the configured application origin. Returning from PayPal
+never qualifies a buyer by itself: an explicit check queues server verification
+of the stored order before authorization. The HTTP request cannot choose another
+actor, order, buyer or amount. The worker retains payment execution and recovery.
+
+The private payment view reads booking and participant operations in one database
+snapshot, distinguishes authorization from collection, and reports unresolved,
+refund and canceled states. Status refresh preserves the visible offer and pauses
+checkout controls during explicit refresh. The roster remains visible on phones.
+
+[Checkout evidence](evidence/web/checkout-flow.json) records actual managed-auth
+owner acceptance, one real sandbox order and an early approval rejection with
+zero authorizations/captures. Other group members and studio approval were seeded
+synthetic fixtures. Buyer approval/return, distinct managed participant sessions,
+and browser recovery are still required; this is not full checkout proof.

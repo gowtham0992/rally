@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import {appOrigin} from '../web/security.ts';
 import { ProviderError, decimal, parseMinor, type Kind, type Observation, type Operation, type PaymentProvider } from './types.ts';
 
 const id = z.string().regex(/^[A-Za-z0-9_-]{1,127}$/);
@@ -17,7 +18,8 @@ const base = 'https://api-m.sandbox.paypal.com';
 export class PayPalSandbox implements PaymentProvider {
   readonly mode = 'sandbox' as const;
   private token?: { value:string; expires:number };
-  constructor(private config:{ clientId:string; clientSecret:string; merchantId:string; webhookId?:string },private transport:typeof fetch = fetch) {
+  constructor(private config:{ clientId:string; clientSecret:string; merchantId:string; webhookId?:string; returnOrigin?:string },private transport:typeof fetch = fetch) {
+    if(config.returnOrigin)appOrigin(config.returnOrigin);
     if (!config.clientId || !config.clientSecret || !config.merchantId) throw new Error('PayPal sandbox app credentials and merchant ID are required');
   }
   // Current endpoint docs confirm request-ID support but omit retention duration.
@@ -102,7 +104,7 @@ export class PayPalSandbox implements PaymentProvider {
     if (op.kind === 'CREATE_ORDER') {
       const result = this.checkOrder(await this.request('/v2/checkout/orders',{
         intent:'AUTHORIZE',purchase_units:[{ reference_id:op.payload.referenceId,custom_id:op.payload.offerId,amount:expected,payee:{merchant_id:this.config.merchantId} }],
-        payment_source:{paypal:{experience_context:{shipping_preference:'NO_SHIPPING',user_action:'CONTINUE'}}}
+        payment_source:{paypal:{experience_context:{shipping_preference:'NO_SHIPPING',user_action:'CONTINUE',...(this.config.returnOrigin?{return_url:`${this.config.returnOrigin}/offers/${z.uuid().parse(op.payload.offerId)}?paypal=returned`,cancel_url:`${this.config.returnOrigin}/offers/${op.payload.offerId}?paypal=canceled`}:{})}}}
       },op.request_id),op);
       return {outcome:'success',id:result.id,status:result.status,approvalUrl:this.approval(result)};
     }
