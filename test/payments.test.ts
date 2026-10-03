@@ -192,8 +192,8 @@ test('verified refund notifications locate lost refund responses without trustin
  assert.ok(op);assert.equal(op.state,'UNKNOWN');assert.equal(op.provider_id,null);x.provider.verifyWebhook=async()=>true;
  for(const eventType of ['PAYMENT.REFUND.PENDING','PAYMENT.REFUND.FAILED','PAYMENT.CAPTURE.REFUNDED']){
   await x.engine.webhook({},{id:randomUUID(),event_type:eventType,resource:{id:'REFUND_'+op.id,invoice_id:op.id,status:'COMPLETED'}});
-  const stored=(await pool.query('SELECT state,provider_id FROM payment_operations WHERE id=$1',[op.id])).rows[0];
-  assert.equal(stored.state,'UNKNOWN');assert.equal(stored.provider_id,'REFUND_'+op.id);
+  const observedRefund:{state:string;provider_id:string|null}=(await pool.query('SELECT state,provider_id FROM payment_operations WHERE id=$1',[op.id])).rows[0];
+  assert.equal(observedRefund.state,'UNKNOWN');assert.equal(observedRefund.provider_id,'REFUND_'+op.id);
  }
  await x.settle();assert.deepEqual(await x.state(),{state:'ABORTED',cleanup:'COMPLETE'});
  assert.equal(x.provider.financialEffects.refunds,1);
