@@ -56,7 +56,7 @@ request; payment state changes happen in the separate bounded web runner. Do not
   the provider. Those setup/diagnostic transactions rolled back; no queue
   extension or secret was left by the failed attempts.
 
-Local proof: 123 tests passed, including seven scheduled-processing tests
+Local proof: 124 tests passed, including seven scheduled-processing tests
 and seven offline judge-preparation tests with simulated provider/Auth accounts.
 Actual production-build HTTP checks rejected anonymous, wrong-key, query-key
 and wrong-method requests; the valid request returned IDLE with zero operations.
@@ -91,7 +91,7 @@ Cold wake and active provider recovery remain unverified on the hosted runner.
    requires explicit enablement and verified HTTPS readiness, and sends no email.
    Sandbox webhook registration is complete and its actual trusted ID is stored
    in Render privately. Forged-signature denial has been verified on hosting;
-   genuine signed delivery remains pending. See [webhook setup](paypal-webhooks.md).
+   twelve genuine signed authorization/capture notifications were received and processed in the hosted six-friend journey. See [webhook setup](paypal-webhooks.md).
    Verify PayPal return/cancel URLs.
 8. Prove actual Cron invocation, cold wake, overlapping/restarted processing,
    sandbox capture/refund recovery, and monitoring of unresolved results. Run
@@ -103,8 +103,7 @@ Stop new checkout before web rollback. Keep scheduled processing or an alternate
 worker running until all outstanding provider operations are reconciled. Preserve
 all payment history and additive schema; never use a populated down migration
 as rollback. A DNS change does not compensate a payment. Keep the private trigger
-key stable during rollback to a compatible build. These hosted drills remain
-pending. Review free-tier usage during releases; do not add a card or upgrade.
+key stable during rollback to a compatible build. A compatible cached-artifact rollback and restoration passed on October 3; in-flight recovery and cold-wake drills remain pending. Review free-tier usage during releases; do not add a card or upgrade.
 
 Render warns that future Blueprint file changes sync automatically and may
 change costs. `autoDeployTrigger: off` controls code deploys, not configuration
@@ -117,10 +116,10 @@ Sources: [Render Free](https://render.com/docs/free),
 
 Current preview: [Rally](https://rally.gowthamsarveswaran.com). Render assigned
 `rally-mx1y.onrender.com`; Cloudflare has one additional DNS-only CNAME for
-`rally`, with the eight previous records preserved. Build `4ea6c9f` is live.
+`rally`, with the eight previous records preserved. Build `e21cd60` is live after the rollback drill.
 Judge access is gated by the private code in ignored `.env.demo`; one browser
 verification workspace is leased and four hosted workspaces remain available.
-This preview does not establish a completed six-buyer payment journey.
+The actual six-buyer journey is confirmed: $288 gross, six distinct buyers, one capture per order and all twelve genuine notifications processed. This is fictional PayPal sandbox evidence; actual customer feedback remains unverified. See [settlement evidence](../evidence/web/hosted-six-friend-settlement.json) and [rollout/rollback evidence](../evidence/web/hosted-rollout-rollback.json).
 
 The official judging period runs December 1–15. Four untouched, unclaimed
 workspaces now have January 14/15 studio dates via appended catalog versions and

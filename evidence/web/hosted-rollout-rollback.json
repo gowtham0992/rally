@@ -1,0 +1,85 @@
+{
+  "observedAt": "2026-10-03T19:24:01.100Z",
+  "scope": "Actual existing Render Free deployment, rollback to the previous compatible cached artifact, and restoration of the tested artifact. Existing fictional sandbox booking only; no new provider operation, schema, environment, DNS or account change.",
+  "commit": "e21cd6018b5751c6c28b07a959cd5fdfbeabc096",
+  "previousCommit": "4ea6c9f110b9e91bbc67c028c2e4f2483194ff44",
+  "runtimeDiff": "One participant-status projection line; no dispatch or recovery semantics changed.",
+  "forward": {
+    "deploy": "dep-db0l64dg1s2s73eimru0",
+    "trigger": "Manual",
+    "renderDurationSeconds": 97,
+    "liveAt": "2026-10-03T19:11:47Z",
+    "browserBookingConfirmed": true
+  },
+  "rollback": {
+    "deploy": "dep-db0lams9v7es73bunrb0",
+    "target": "dep-db0ahregekts738s1idg",
+    "renderDurationSeconds": 31.3,
+    "dashboardLiveVerified": true,
+    "configurationChanges": false,
+    "browserBookingConfirmed": true
+  },
+  "restoration": {
+    "deploy": "dep-db0lbtad0e5s73c4vn3g",
+    "target": "dep-db0l64dg1s2s73eimru0",
+    "renderDurationSeconds": 30.9,
+    "liveAt": "2026-10-03T19:23:49Z",
+    "dashboardLiveVerified": true,
+    "configurationChanges": false,
+    "browserBookingConfirmed": true
+  },
+  "checks": {
+    "forward": {
+      "stage": "forward",
+      "observedAt": "2026-10-03T19:20:28.053Z",
+      "healthReady": true,
+      "state": {
+        "state": "CONFIRMED",
+        "cleanup": "NOT_REQUIRED",
+        "reservation_state": "BOOKED",
+        "qualified": 6,
+        "successful_captures": 6,
+        "operations": 18,
+        "unresolved_operations": 0,
+        "processed_webhooks": 12
+      }
+    },
+    "rollback": {
+      "stage": "rollback",
+      "observedAt": "2026-10-03T19:22:03.326Z",
+      "healthReady": true,
+      "state": {
+        "state": "CONFIRMED",
+        "cleanup": "NOT_REQUIRED",
+        "reservation_state": "BOOKED",
+        "qualified": 6,
+        "successful_captures": 6,
+        "operations": 18,
+        "unresolved_operations": 0,
+        "processed_webhooks": 12
+      }
+    },
+    "restored": {
+      "stage": "restored",
+      "observedAt": "2026-10-03T19:24:01.100Z",
+      "healthReady": true,
+      "state": {
+        "state": "CONFIRMED",
+        "cleanup": "NOT_REQUIRED",
+        "reservation_state": "BOOKED",
+        "qualified": 6,
+        "successful_captures": 6,
+        "operations": 18,
+        "unresolved_operations": 0,
+        "processed_webhooks": 12
+      }
+    }
+  },
+  "limitations": [
+    "Render displayed deployment durations are not total time from button press: rollback and restoration also included queue time.",
+    "Forward database check ran during rollback startup before the previous artifact became live; new-build health and participant booking were independently checked before rollback was requested.",
+    "This proves compatible artifact rollback with a settled booking. It does not prove recovery of an in-flight uncertain payment or cold-start processing."
+  ],
+  "autoDeployOffVerified": true,
+  "freeInstanceVerified": true
+}

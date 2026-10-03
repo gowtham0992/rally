@@ -80,12 +80,13 @@ priority over displaying a wall of test counts in the video.
 
 ## Recording and release gates
 
-- [ ] Finish managed judge account provisioning, separate cookies, clear role identity and stale-tab protection.
-- [ ] Prove six distinct managed participants and an independent studio operator through the actual browser journey.
-- [x] Observe six distinct Personal sandbox accounts for the unchanged six-person offer. The three CLI buyer IDs stay separate; actual independent checkout approval remains pending.
+- [x] Managed judge identities, role switching and stale-tab protections implemented and tested; hosted independent role views observed. Fresh fixed-end lease observation remains pending.
+- [x] Prove six distinct managed participants and a separately selected fictional studio operator through the actual hosted browser journey.
+- [x] Observe six distinct Personal sandbox accounts for the unchanged six-person offer. The three CLI buyer IDs stay separate; all six independent approvals, authorizations and captures are verified.
 - [ ] Record actual clarification and both collection agreements without exposing peer budgets or private credentials.
-- [ ] Prove all six captures and confirmation for the same fresh offer; prove browser recovery separately and retain the existing sandbox evidence.
-- [ ] Deploy within verified credit coverage and verify the custom domain, HTTPS, login and checkout returns.
+- [x] Prove all six captures and confirmation for the same offer. Evidence: `evidence/web/hosted-six-friend-settlement.json`.
+- [ ] Prove hosted failure recovery separately while retaining the confirmed happy-path booking.
+- [x] Existing Render Free deployment, custom domain, HTTPS, authentication and checkout returns verified; compatible rollback and restoration exercised.
 - [ ] Produce a first rough recording as soon as that journey works, then refine pace, legibility, audio and the opening. Keep packaging active throughout the remaining build.
 - [ ] Audit the final recording and written claims against their exact evidence. Preserve unresolved outcomes and distinguish synthetic/sandbox evidence from observed human feedback.
 

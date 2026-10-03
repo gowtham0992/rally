@@ -44,7 +44,8 @@
     "Observed six distinct Personal sandbox logins in the actual PayPal Developer dashboard; no passwords read or accounts created. In the existing hosted fictional demo, Alex closed the six-person roster through Rally. Jordan, Riley, Casey and Taylor each showed their own saved requirements through managed role switches; Sam retained the exact fictional note I leave Friday. Read-only hosted observation confirms CLOSED revision 12, six admitted members and six saved preferences, MERCHANT_REVIEW_REQUIRED, zero model runs, agreed collection arrangements, studio requests, offers or payment operations. Specific Astropods note approval remains pending; no payment or consent outcome fabricated.",
     "With the owner's specific note/destination approval, the actual hosted Astropods clarification asked What needs to happen with your piece after the session? One call and one question are recorded; fictional Sam confirmed NOMINEE_LATER and then explicitly chose Jordan through the intake UI. Budget and raw note stayed unchanged; reviewed meaning survived nomination. Jordan's actual managed session showed no collection request before owner disclosure. Browser role-check snapshots initially raced navigation; corrected checks verify the selected identity and own summary for all four other friends. Automatic review blocked owner disclosure to Jordan/Willow Studio twice, including after a read-only .invalid identity audit; no consent event, studio request, offer or payment operation was created. Specific remaining fictional-step approval is pending; no workaround used.",
     "After explicit approval of the remaining fictional steps, actual hosted UI recorded Sam's owner disclosure and Jordan's separate nominee agreement. The planner produced the published $48 hand-building session; Alex requested it and the independently selected fictional studio reviewed all six members, the collection arrangement, buffered time and terms, then reserved/opened a two-hour window. Read-only database verification records exactly OWNER_AGREE/NOMINEE_AGREE, one OPEN/HELD six-person $48 USD offer and no qualified payers or captures. One participant acceptance/order is now observed. Independent PayPal sandbox GET confirms Alex's actual order intent AUTHORIZE, $48 USD, configured seller and PAYER_ACTION_REQUIRED with no recorded payer, authorization or capture. Human PayPal approval handoff is open; no complete booking or real merchant availability claim.",
-    "Actual hosted six-friend journey completed: one live AI clarification, explicit Sam/Jordan collection agreements, studio-approved $48 offer, six independently verified PayPal sandbox buyers, exactly one capture per order, $288 gross and $274.98 seller receivables. All six participant views confirm paid booking and all twelve genuine authorization/capture webhooks were received and processed. No live funds or real-world feedback claimed."
+    "Actual hosted six-friend journey completed: one live AI clarification, explicit Sam/Jordan collection agreements, studio-approved $48 offer, six independently verified PayPal sandbox buyers, exactly one capture per order, $288 gross and $274.98 seller receivables. All six participant views confirm paid booking and all twelve genuine authorization/capture webhooks were received and processed. No live funds or real-world feedback claimed.",
+    "Released tested queued-authorization status fix as e21cd60 on Render Free. Exercised cached-artifact rollback to 4ea6c9f and restoration to e21cd60 with no configuration/schema changes. HTTPS readiness and confirmed participant booking passed in each phase; six captures, eighteen operations and twelve processed webhook records preserved. Free instance and auto-deploy Off verified. In-flight recovery and cold wake remain separate gates."
   ],
   "evidence": {
     "scope": "Local service tests use real PostgreSQL and a simulated provider; separate reviewed records prove three actual PayPal sandbox scenarios.",
@@ -89,7 +90,7 @@
     "model_api_calls": 221,
     "ai_quality_and_24_case_evaluation": "passed_actual_72_run_final_prompt",
     "intake_scope": "Real PostgreSQL service tests with trusted test actors; not managed email-auth or browser end-to-end proof.",
-    "latest_full_test_run": "124 local tests passed; queued-authorization regression observed failing before the minimal fix and passing afterward. All 22 weakened safeguards caught; TypeScript and production build passed. Six genuine authorization and six capture webhooks received and processed in the hosted six-buyer journey. The queued-status patch is saved locally and has not been deployed.",
+    "latest_full_test_run": "124 local tests passed; queued-authorization regression observed failing before the minimal fix and passing afterward. All 22 weakened safeguards caught; TypeScript and production build passed. Six genuine authorization and six capture webhooks received and processed in the hosted six-buyer journey. The queued-status patch is deployed; compatible hosted rollback and restoration passed with the completed booking preserved.",
     "sandbox_oauth": "Sandbox HTTP 200 access token; supplied Client ID matched Rally app on the selected Business seller.",
     "managed_auth_browser": {
       "scope": "Existing healthy Rally Supabase Auth project; local Next.js app and local PostgreSQL; synthetic studio/name/preferences. User completed email login, agent used resulting verified session.",
@@ -463,13 +464,35 @@
       "mutations_caught": 22,
       "typecheck_passed": true,
       "production_build_passed": true,
-      "deployed": false
+      "deployed": true
+    },
+    "hosted_rollout_rollback": {
+      "file": "evidence/web/hosted-rollout-rollback.json",
+      "compatible_rollback_exercised": true,
+      "tested_artifact_restored": true,
+      "booking_and_payment_records_preserved": true,
+      "in_flight_recovery_verified": false
+    },
+    "hosted_webhook_retransmission": {
+      "file": "evidence/web/hosted-webhook-retransmission.json",
+      "genuine_existing_event_bound_to_capture": true,
+      "paypal_resend_accepted_202": true,
+      "provider_delivery_verified": false,
+      "hosted_duplicate_response_verified": false,
+      "payment_records_unchanged_after_request": true
+    },
+    "contract_gap_audit": {
+      "observedAt": "2026-10-03T19:30:00Z",
+      "merchant_exception_view_implemented": false,
+      "raw_private_text_retention_implemented": false,
+      "next_slice_plan": "docs/payment-exceptions-plan.md",
+      "scope": "Source-backed implementation gaps; no existing historical evidence or successful booking changed."
     }
   },
   "external_dependencies": [
     {
       "name": "PayPal sandbox Business seller and six Personal buyer accounts",
-      "state": "Six distinct Personal test-account logins observed in PayPal Developer. Three-buyer CLI scenarios were previously verified; six-person product payment approval and payer-ID verification remain pending.",
+      "state": "Six distinct sandbox buyers independently matched through actual order GETs. All six authorizations and captures completed in the hosted product journey; no live funds.",
       "setup": "README.md",
       "template": ".env.example"
     },
@@ -500,7 +523,7 @@
     "Polished public demo video under three minutes",
     "Complete Devpost draft materials; human approval before entry submission"
   ],
-  "next_independent_slice": "Deploy the tested queued-authorization status projection fix in the next runtime rollout, then verify hosted failure recovery, real provider webhook retransmission/deduplication, deadline/withdrawal races and seller balance delta in separate approved sandbox scenarios. Current six-friend happy path is independently verified and confirmed; preserve its booking/evidence. Keep the only Rally repository private; all Devpost actions are owner-managed.",
+  "next_independent_slice": "Verify real provider webhook retransmission/deduplication, then hosted failure recovery, deadline/withdrawal races, seller balance delta and cold wake in separate sandbox scenarios. Implement raw-text retention and merchant-owned unresolved-payment resolution required by the contract. Preserve the confirmed six-friend booking/evidence. Keep the sole repository private and all Devpost actions owner-managed.",
   "release_restrictions": [
     "Core PayPal sandbox scenarios verified; full authenticated application and remaining provider recovery gates are incomplete",
     "No live customer payments",
