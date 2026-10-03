@@ -12,6 +12,7 @@ const requestSchema=z.strictObject({commandId:uuid,groupId:uuid,expectedRevision
 const approveSchema=z.strictObject({commandId:uuid,requestId:uuid,expectedRevision:z.number().int().nonnegative(),
  factsConfirmed:z.literal(true),externalCalendarBlocked:z.literal(true),automaticSettlementAgreed:z.literal(true),collectionArrangementsAgreed:z.literal(true)});
 const reopenSchema=z.strictObject({commandId:uuid,groupId:uuid,offerId:uuid,expectedRevision:z.number().int().nonnegative(),offerHash:z.string().length(64),acknowledgesNewApprovals:z.literal(true)});
+const checkPaymentSchema=z.strictObject({commandId:uuid,offerId:uuid,operationId:uuid});
 const closedBookings=new Set(['EXPIRED','WITHDRAWN','SUPERSEDED','ABORTED','CANCELED']);
 const candidateSchema=z.strictObject({catalogVersionId:key,studioId:key,studioName:z.string().min(1).max(100),offeringId:key,activity:z.string().min(1).max(100),slotId:key,
  startAt:z.iso.datetime(),endAt:z.iso.datetime(),timezone:key,amountMinor:z.number().int().min(1).max(1000000),currency:z.literal('USD'),groupSize:z.number().int().min(1).max(8),
@@ -141,6 +142,64 @@ export class BookingService {
     ORDER BY o.opened_at DESC,o.id DESC LIMIT 21`,[actor.userId,before?.opened_at??null,before?.id??null,actor.demoWorkspaceId??null])).rows;
    const bookings=rows.slice(0,20).map(r=>{const snapshot=snapshotSchema.parse(r.snapshot);return {offerId:r.id as string,booking:r.state as string,cleanup:r.cleanup as string,cancellationRequests:r.requests as number,activity:snapshot.candidate.activity,startAt:snapshot.candidate.startAt,timezone:snapshot.candidate.timezone,groupSize:snapshot.roster.length};});
    return {bookings,nextCursor:rows.length>20?bookings.at(-1)!.offerId:null};
+  });
+ }
+ async merchantExceptions(actor:IntakeActor,cursor:string|null=null){this.actor(actor);if(cursor)uuid.parse(cursor);
+  return transaction(this.pool,async c=>{
+   if(!(await c.query('SELECT 1 FROM merchant_studios WHERE owner_user_id=$1 LIMIT 1',[actor.userId])).rowCount)throw new DomainError('NOT_FOUND',404);
+   let before:{opened_at:Date;id:string}|undefined;
+   if(cursor){before=(await c.query(`SELECT o.opened_at,o.id FROM offers o JOIN offer_snapshots os ON os.offer_id=o.id
+    JOIN merchant_studios s ON s.studio_id=os.snapshot->'candidate'->>'studioId' JOIN planning_groups g ON g.id=os.group_id
+    WHERE o.id=$1 AND s.owner_user_id=$2 AND (to_jsonb(g)->>'demo_workspace_id') IS NOT DISTINCT FROM $3::text`,[cursor,actor.userId,actor.demoWorkspaceId??null])).rows[0];if(!before)throw new DomainError('NOT_FOUND',404);}
+   const rows=(await c.query(`SELECT o.id,o.state,o.cleanup,o.amount_minor,os.snapshot,
+    (SELECT coalesce(jsonb_agg(jsonb_build_object('id',p.id,'ordinal',m.ordinal,'kind',p.kind,'state',p.state,'providerReference',p.provider_id,
+     'canCheck',p.state IN ('UNKNOWN','PENDING','ACTION_REQUIRED') AND p.dispatched_at IS NOT NULL
+      AND (p.state='PENDING' OR p.retry_until IS NULL OR p.retry_until<=clock_timestamp())
+      AND (p.lease_until IS NULL OR p.lease_until<clock_timestamp())) ORDER BY m.ordinal,p.created_at,p.id),'[]'::jsonb)
+     FROM payment_operations p JOIN offer_members m ON m.id=p.member_id WHERE p.offer_id=o.id) AS operations
+    FROM offers o JOIN offer_snapshots os ON os.offer_id=o.id
+    JOIN merchant_studios s ON s.studio_id=os.snapshot->'candidate'->>'studioId' JOIN planning_groups g ON g.id=os.group_id
+    WHERE s.owner_user_id=$1 AND (to_jsonb(g)->>'demo_workspace_id') IS NOT DISTINCT FROM $4::text
+     AND EXISTS(SELECT 1 FROM payment_operations p WHERE p.offer_id=o.id AND
+      (p.state IN ('UNKNOWN','PENDING','ACTION_REQUIRED') OR (p.kind IN ('VOID','REFUND') AND p.state='FAILED')))
+     AND ($2::timestamptz IS NULL OR (o.opened_at,o.id)<($2::timestamptz,$3::uuid))
+    ORDER BY o.opened_at DESC,o.id DESC LIMIT 21`,[actor.userId,before?.opened_at??null,before?.id??null,actor.demoWorkspaceId??null])).rows;
+   const exceptions=rows.slice(0,20).map(r=>{
+    const snapshot=snapshotSchema.parse(r.snapshot),ops=r.operations as {id:string;ordinal:number;kind:string;state:string;providerReference:string|null;canCheck:boolean}[];
+    let awaitingVerifiedRefundMinor=0,uncertainCaptureMinor=0,authorizationAwaitingReleaseMinor=0;
+    for(let ordinal=0;ordinal<snapshot.roster.length;ordinal++){
+     const member=ops.filter(o=>o.ordinal===ordinal),capture=member.find(o=>o.kind==='CAPTURE'),refund=member.find(o=>o.kind==='REFUND'),authorization=member.find(o=>o.kind==='AUTHORIZE'),voidOp=member.find(o=>o.kind==='VOID');
+     if(capture&&['DISPATCHED','UNKNOWN','PENDING','ACTION_REQUIRED'].includes(capture.state))uncertainCaptureMinor+=r.amount_minor;
+     if(closedBookings.has(r.state)){
+      if(capture?.state==='SUCCEEDED'&&refund?.state!=='SUCCEEDED')awaitingVerifiedRefundMinor+=r.amount_minor;
+      if(authorization?.state==='SUCCEEDED'&&(!capture||capture.state==='FAILED')&&voidOp?.state!=='SUCCEEDED')authorizationAwaitingReleaseMinor+=r.amount_minor;
+     }
+    }
+    return {offerId:r.id as string,booking:r.state as string,cleanup:r.cleanup as string,activity:snapshot.candidate.activity,studioName:snapshot.candidate.studioName,groupSize:snapshot.roster.length,startAt:snapshot.candidate.startAt,timezone:snapshot.candidate.timezone,
+     awaitingVerifiedRefundMinor,uncertainCaptureMinor,authorizationAwaitingReleaseMinor,
+     operations:ops.filter(o=>['UNKNOWN','PENDING','ACTION_REQUIRED'].includes(o.state)||(['VOID','REFUND'].includes(o.kind)&&o.state==='FAILED')).map(o=>({operationId:o.id,memberName:snapshot.roster[o.ordinal].displayName,kind:o.kind,state:o.state,providerReference:o.providerReference,
+      originalProviderReference:ops.find(parent=>parent.ordinal===o.ordinal&&parent.kind===(o.kind==='REFUND'?'CAPTURE':o.kind==='VOID'?'AUTHORIZE':''))?.providerReference??null,canCheck:o.canCheck}))};
+   });
+   return {exceptions,nextCursor:rows.length>20?exceptions.at(-1)!.offerId:null};
+  });
+ }
+ async checkMerchantPayment(actor:IntakeActor,value:unknown){const p=checkPaymentSchema.parse(value);
+  return this.command(actor,p.commandId,{kind:'CHECK_MERCHANT_PAYMENT',...p},async c=>{
+   const offer=(await c.query(`SELECT o.id,o.state FROM offers o JOIN offer_snapshots os ON os.offer_id=o.id
+    JOIN merchant_studios s ON s.studio_id=os.snapshot->'candidate'->>'studioId' JOIN planning_groups g ON g.id=os.group_id
+    WHERE o.id=$1 AND s.owner_user_id=$2 AND (to_jsonb(g)->>'demo_workspace_id') IS NOT DISTINCT FROM $3::text FOR UPDATE OF o`,[p.offerId,actor.userId,actor.demoWorkspaceId??null])).rows[0];
+   if(!offer)throw new DomainError('NOT_FOUND',404);
+   const op=(await c.query('SELECT id FROM payment_operations WHERE id=$1 AND offer_id=$2 FOR UPDATE',[p.operationId,p.offerId])).rows[0];
+   if(!op)throw new DomainError('NOT_FOUND',404);
+   // Only move the check time. Never reset an outcome, request ID, dispatch time,
+   // payload, retry deadline or active lease. These states force worker GET-only.
+   const due=await c.query(`UPDATE payment_operations SET next_check_at=least(next_check_at,clock_timestamp())
+    WHERE id=$1 AND state IN ('UNKNOWN','PENDING','ACTION_REQUIRED') AND dispatched_at IS NOT NULL
+     AND (state='PENDING' OR retry_until IS NULL OR retry_until<=clock_timestamp())
+     AND (lease_until IS NULL OR lease_until<clock_timestamp()) RETURNING id`,[p.operationId]);
+   if(!due.rowCount)throw new DomainError('PAYMENT_CHECK_UNAVAILABLE');
+   await c.query("INSERT INTO payment_events(offer_id,event_type,operation_id,state) VALUES($1,'MERCHANT_CHECK_REQUESTED',$2,$3)",[p.offerId,p.operationId,offer.state]);
+   return {checkRequested:true,operationId:p.operationId};
   });
  }
  async merchantRequest(actor:IntakeActor,requestId:string){this.actor(actor);uuid.parse(requestId);

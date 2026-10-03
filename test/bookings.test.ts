@@ -237,3 +237,84 @@ test('studio booking history is bounded and exposes actionable states without pr
  if(page.nextCursor){const next=await bookings.merchantBookings(merchant,page.nextCursor);assert.ok(next.bookings.every(b=>!page.bookings.some(a=>a.offerId===b.offerId)));}
  await release(issued.offerId);
 });
+
+async function pendingRefunds(){
+ const f=await funded();await settle(f.engine,f.issued.offerId);f.provider.pendingKinds.add('REFUND');
+ await f.engine.cancelByMerchant({...f.command(merchant),agreesToFullRefund:true});
+ // Defer each observed pending refund so every member reaches the same controlled
+ // simulation state; this is not PayPal or hosted failure evidence.
+ for(let i=0;i<6;i++){await f.engine.step(f.issued.offerId);await pool.query("UPDATE payment_operations SET next_check_at=clock_timestamp()+interval '10 minutes' WHERE offer_id=$1 AND kind='REFUND' AND state='PENDING'",[f.issued.offerId]);}
+ const ops=(await pool.query("SELECT * FROM payment_operations WHERE offer_id=$1 AND kind='REFUND' ORDER BY created_at,id",[f.issued.offerId])).rows;
+ assert.equal(ops.length,6);assert.ok(ops.every(o=>o.state==='PENDING'));return {...f,ops};
+}
+test('studio exceptions separate refund verification from uncertain charges without leaking private data',async()=>{
+ const f=await pendingRefunds(),page=await bookings.merchantExceptions(merchant),item=page.exceptions.find(e=>e.offerId===f.issued.offerId)!;
+ assert.equal(item.booking,'CANCELED');assert.equal(item.awaitingVerifiedRefundMinor,28800);assert.equal(item.uncertainCaptureMinor,0);assert.equal(item.authorizationAwaitingReleaseMinor,0);
+ assert.equal(item.operations.length,6);assert.ok(item.operations.every(o=>o.kind==='REFUND'&&o.canCheck));
+ assert.equal(item.operations.find(o=>o.operationId===f.ops[0].id)!.providerReference,f.ops[0].provider_id);
+ const original=(await pool.query("SELECT provider_id FROM payment_operations WHERE member_id=$1 AND kind='CAPTURE'",[f.ops[0].member_id])).rows[0];
+ assert.equal(item.operations.find(o=>o.operationId===f.ops[0].id)!.originalProviderReference,original.provider_id);
+ const text=JSON.stringify(page);for(const secret of ['budgetMinor','Private words',f.ops[0].request_id,f.x.actors[0].userId,'payload','approval_url','payer_id'])assert.ok(!text.includes(secret));
+ const providerCalls=f.provider.calls.length,op=f.ops[0],command={commandId:randomUUID(),offerId:f.issued.offerId,operationId:op.id};
+ const results=await Promise.all([bookings.checkMerchantPayment(merchant,command),bookings.checkMerchantPayment(merchant,command)]);assert.deepEqual(results[0],results[1]);
+ assert.equal((await pool.query("SELECT count(*) FROM payment_events WHERE offer_id=$1 AND event_type='MERCHANT_CHECK_REQUESTED'",[f.issued.offerId])).rows[0].count,'1');
+ const after=(await pool.query('SELECT * FROM payment_operations WHERE id=$1',[op.id])).rows[0];
+ for(const field of ['id','request_id','payload_hash','state','provider_id','retry_until','dispatched_at','lease_token','lease_until','attempts'])assert.deepEqual(after[field],op[field]);
+ assert.deepEqual(after.payload,op.payload);assert.ok(after.next_check_at<op.next_check_at);assert.equal(f.provider.calls.length,providerCalls);
+ f.provider.results.set(op.request_id,{...f.provider.results.get(op.request_id)!,outcome:'success',status:'COMPLETED'});
+ await f.engine.step(f.issued.offerId);assert.equal(f.provider.calls.length,providerCalls);
+ const remaining=(await bookings.merchantExceptions(merchant)).exceptions.find(e=>e.offerId===f.issued.offerId)!;assert.equal(remaining.awaitingVerifiedRefundMinor,24000);assert.equal(remaining.operations.length,5);
+ await assert.rejects(bookings.checkMerchantPayment(merchant,{...command,commandId:randomUUID()}),/PAYMENT_CHECK_UNAVAILABLE/);
+});
+test('exception reads and check commands reject participants, foreign workspaces and fabricated fields',async()=>{
+ const f=await pendingRefunds(),command={commandId:randomUUID(),offerId:f.issued.offerId,operationId:f.ops[0].id};
+ await assert.rejects(bookings.merchantExceptions(f.x.actors[0]),/NOT_FOUND/);
+ await assert.rejects(bookings.checkMerchantPayment(f.x.actors[0],command),/NOT_FOUND/);
+ await assert.rejects(bookings.checkMerchantPayment({...merchant,emailVerified:false},command),/VERIFIED_IDENTITY_REQUIRED/);
+ const wrongWorkspace={...merchant,demoWorkspaceId:randomUUID()};assert.equal((await bookings.merchantExceptions(wrongWorkspace)).exceptions.length,0);
+ await assert.rejects(bookings.merchantExceptions(wrongWorkspace,f.issued.offerId),/NOT_FOUND/);
+ await assert.rejects(bookings.checkMerchantPayment(wrongWorkspace,command),/NOT_FOUND/);
+ await assert.rejects(bookings.checkMerchantPayment(merchant,{...command,operationId:randomUUID()}),/NOT_FOUND/);
+ await assert.rejects(bookings.checkMerchantPayment(merchant,{...command,state:'SUCCEEDED'}));
+ await assert.rejects(bookings.merchantExceptions(merchant,'invented'));
+});
+test('studio checks respect active leases and never reopen an operation inside a replay window',async()=>{
+ const f=await pendingRefunds(),op=f.ops[0],command=()=>({commandId:randomUUID(),offerId:f.issued.offerId,operationId:op.id});
+ await pool.query("UPDATE payment_operations SET lease_token=$2,lease_until=clock_timestamp()+interval '45 seconds' WHERE id=$1",[op.id,randomUUID()]);
+ await assert.rejects(bookings.checkMerchantPayment(merchant,command()),/PAYMENT_CHECK_UNAVAILABLE/);
+ assert.equal((await bookings.merchantExceptions(merchant)).exceptions.find(e=>e.offerId===f.issued.offerId)!.operations.find(o=>o.operationId===op.id)!.canCheck,false);
+ await pool.query("UPDATE payment_operations SET lease_until=NULL,lease_token=NULL,state='UNKNOWN',retry_until=clock_timestamp()+interval '10 minutes' WHERE id=$1",[op.id]);
+ await assert.rejects(bookings.checkMerchantPayment(merchant,command()),/PAYMENT_CHECK_UNAVAILABLE/);
+ await pool.query("UPDATE payment_operations SET retry_until=clock_timestamp()-interval '1 second' WHERE id=$1",[op.id]);
+ const before=(await pool.query('SELECT * FROM payment_operations WHERE id=$1',[op.id])).rows[0],calls=f.provider.calls.length;
+ await bookings.checkMerchantPayment(merchant,command());f.provider.results.delete(op.request_id);await f.engine.step(f.issued.offerId);
+ assert.equal(f.provider.calls.length,calls);const after=(await pool.query('SELECT * FROM payment_operations WHERE id=$1',[op.id])).rows[0];assert.equal(after.state,'ACTION_REQUIRED');assert.equal(after.request_id,before.request_id);assert.deepEqual(after.retry_until,before.retry_until);assert.deepEqual(after.payload,before.payload);
+});
+test('definitive refund rejection remains a studio exception with its amount and no replay button',async()=>{
+ const f=await pendingRefunds(),op=f.ops[0];await pool.query("UPDATE payment_operations SET state='FAILED',provider_status='FAILED' WHERE id=$1",[op.id]);
+ const item=(await bookings.merchantExceptions(merchant)).exceptions.find(e=>e.offerId===f.issued.offerId)!,rejected=item.operations.find(o=>o.operationId===op.id)!;
+ assert.equal(item.awaitingVerifiedRefundMinor,28800);assert.equal(rejected.state,'FAILED');assert.equal(rejected.canCheck,false);
+ await assert.rejects(bookings.checkMerchantPayment(merchant,{commandId:randomUUID(),offerId:f.issued.offerId,operationId:op.id}),/PAYMENT_CHECK_UNAVAILABLE/);
+ assert.equal((await pool.query('SELECT state FROM payment_operations WHERE id=$1',[op.id])).rows[0].state,'FAILED');
+});
+test('uncertain capture amounts never imply a completed charge or duplicate an authorization total',async()=>{
+ const f=await funded();await f.engine.step(f.issued.offerId);
+ const captured=(await pool.query("SELECT * FROM payment_operations WHERE offer_id=$1 AND kind='CAPTURE'",[f.issued.offerId])).rows[0];
+ await pool.query("UPDATE payment_operations SET state='ACTION_REQUIRED' WHERE id=$1",[captured.id]);
+ const item=(await bookings.merchantExceptions(merchant)).exceptions.find(e=>e.offerId===f.issued.offerId)!;assert.equal(item.uncertainCaptureMinor,4800);assert.equal(item.awaitingVerifiedRefundMinor,0);assert.equal(item.authorizationAwaitingReleaseMinor,0);assert.equal(item.booking,'SETTLING');
+ await f.engine.cancelByMerchant({...f.command(merchant),agreesToFullRefund:true});await pool.query("UPDATE payment_operations SET state='SUCCEEDED' WHERE id=$1",[captured.id]);await settle(f.engine,f.issued.offerId);
+});
+test('exception pagination stays bounded and a resolved cursor still locates older work',async()=>{
+ const owner=actor(),cat={...catalog,studioId:'exceptions-studio',versionId:'exceptions-v1',studioName:'Exceptions studio'};
+ await pool.query('INSERT INTO merchant_studios VALUES($1,$2,$3,$4,$5,$6)',[cat.studioId,owner.userId,'exceptions_merchant','exceptions-exclusive',15,20]);
+ await pool.query('INSERT INTO merchant_catalog_versions(studio_id,version_id,catalog) VALUES($1,$2,$3)',[cat.studioId,cat.versionId,JSON.stringify(cat)]);
+ const ids:string[]=[];
+ for(let i=0;i<21;i++){const x=await setup(cat),r=await request(x),issued=await bookings.approve(owner,approval(r)),engine=new PaymentEngine(pool,new SimulatedProvider());
+  const accepted=await engine.accept({commandId:randomUUID(),actorId:x.actors[0].userId,offerId:issued.offerId,offerHash:issued.offerHash});
+  await pool.query("UPDATE payment_operations SET state='ACTION_REQUIRED',dispatched_at=clock_timestamp() WHERE id=$1",[accepted.operationId]);ids.push(issued.offerId);await release(issued.offerId);
+ }
+ const page=await bookings.merchantExceptions(owner);assert.equal(page.exceptions.length,20);assert.equal(page.exceptions[0].offerId,ids.at(-1));assert.ok(page.nextCursor);
+ await assert.rejects(bookings.merchantExceptions(merchant,page.nextCursor),/NOT_FOUND/);
+ await pool.query("UPDATE payment_operations SET state='FAILED' WHERE offer_id=$1",[page.nextCursor]);
+ const next=await bookings.merchantExceptions(owner,page.nextCursor);assert.equal(next.exceptions.length,1);assert.equal(next.exceptions[0].offerId,ids[0]);assert.equal(next.nextCursor,null);
+});

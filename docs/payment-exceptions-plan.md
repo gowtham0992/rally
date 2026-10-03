@@ -1,6 +1,6 @@
 # Studio payment resolution
 
-A studio must be able to find unresolved payment work, see the amount whose outcome still needs verification, and request a check of the existing provider operation. The current booking list only flags `ACTION_REQUIRED`; it does not provide the required resolution view.
+A studio must be able to find unresolved payment work, see the amount whose outcome still needs verification, and request a check of the existing provider operation. The implemented `/m/exceptions` page and `/api/studio/exceptions` API provide this view; the booking list links cases needing studio attention. Local production-build verification is recorded in `evidence/web/payment-resolution.json`. Hosted deployment and manual evidence capture remain separate gates.
 
 ## Boundaries
 
@@ -24,3 +24,11 @@ Use isolated local PostgreSQL fixtures and the simulated provider for ownership,
 Exercise actual UI loading, empty, failed fetch/retry, expired identity, repeated clicks and a case resolved in another tab. Keep the successful hosted six-friend booking untouched; hosted failure proof belongs to a separate explicitly labeled sandbox scenario.
 
 Raw-text retention is a separate contract gap: redact all private text copies thirty days after planning closes while preserving confirmed structured facts and payment audit history. Implementation must inspect clarification source spans and persisted command results as well as `preference_revisions.optional_text`.
+
+## Implemented behavior
+
+The list is bounded to twenty studio-owned cases, ordered by opened time and offer ID. An owned cursor remains valid after its case resolves. A check command locks the owned offer and existing operation, rejects an active worker lease or remaining replay window, and only advances `next_check_at`. Its command ID provides one audit event for duplicate submissions. Scheduled processing remains authoritative.
+
+Studios can expand payment references to inspect the current operation and its original capture or authorization from the same member. These references aid investigation; they do not declare a verified financial outcome. Rejected refunds retain their status and have no replay action. Private notes, budgets, emails, payer IDs, request IDs and provider payloads are excluded.
+
+All 130 local tests pass, including six new payment-resolution cases; all 25 deliberate guard mutations were caught. Actual local production UI showed empty, loading, populated, requested-check, failure and recovered states, keyboard refresh, narrow layouts and an uncertain case removed after simulated provider GET verification with zero provider POSTs. These fixtures are explicitly labeled local payment simulation. A manual evidence workflow, actual expired-session navigation on this new page and hosted recovery proof remain unfinished.

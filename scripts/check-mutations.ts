@@ -1,6 +1,9 @@
 import { readFile,writeFile,mkdir } from 'node:fs/promises';
 import { spawnSync } from 'node:child_process';
 const mutations:{name:string;file:string;from:string;to:string;pattern:string;testFile?:string}[] = [
+  {name:'studio exception ownership removed',file:'src/bookings/service.ts',from:"WHERE o.id=$1 AND s.owner_user_id=$2 AND (to_jsonb(g)->>'demo_workspace_id') IS NOT DISTINCT FROM $3::text FOR UPDATE OF o",to:"WHERE o.id=$1 AND $2::uuid IS NOT NULL AND (to_jsonb(g)->>'demo_workspace_id') IS NOT DISTINCT FROM $3::text FOR UPDATE OF o",pattern:'exception reads and check commands reject',testFile:'test/bookings.test.ts'},
+  {name:'studio check active lease bypassed',file:'src/bookings/service.ts',from:"AND (lease_until IS NULL OR lease_until<clock_timestamp()) RETURNING id",to:"AND true RETURNING id",pattern:'studio checks respect active leases',testFile:'test/bookings.test.ts'},
+  {name:'studio check resets uncertain payment to fresh dispatch',file:'src/bookings/service.ts',from:"UPDATE payment_operations SET next_check_at=least(next_check_at,clock_timestamp())",to:"UPDATE payment_operations SET state='PLANNED',next_check_at=least(next_check_at,clock_timestamp())",pattern:'studio exceptions separate refund verification',testFile:'test/bookings.test.ts'},
   {name:'judge access window bound removed',file:'src/demo/access.ts',from:"if(!window.valid)throw new WebError('DEMO_UNAVAILABLE',503);",to:"if(false)throw new WebError('DEMO_UNAVAILABLE',503);",pattern:'fixed judging window applies',testFile:'test/demo.test.ts'},
   {name:'judge session calendar lead time removed',file:'src/demo/judging.ts',from:'Date.parse(s.startAt)<=Date.parse(judgingAccessEnd)+26.5*3600000',to:'false',pattern:'judging preparation rejects a past date',testFile:'test/demo-provision.test.ts'},
   {name:'noncanonical payload hash',file:'src/payments/types.ts',from:'JSON.stringify(canonical(value))',to:'JSON.stringify(value)',pattern:'three verified authorizations'},

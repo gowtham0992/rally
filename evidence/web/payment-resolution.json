@@ -1,0 +1,62 @@
+{
+  "scope": "Actual authenticated local production-build UI using fictional PostgreSQL fixtures and SimulatedProvider. No PayPal dispatch, hosted fixture changes or real-world feedback from this slice.",
+  "observedAt": "2026-10-03T20:04:00.772690Z",
+  "routes": {
+    "page": "/m/exceptions",
+    "api": "/api/studio/exceptions"
+  },
+  "implemented": true,
+  "hosted": {
+    "deployed": false
+  },
+  "verification": {
+    "fullLocalTestsPassed": 130,
+    "bookingTestsPassed": 22,
+    "mutationChecksCaught": 25,
+    "mutationChecksTotal": 25,
+    "typecheck": "passed",
+    "productionBuild": "passed",
+    "anonymousApi": "401 SIGN_IN_REQUIRED",
+    "foreignOriginCommand": "403 REQUEST_NOT_ALLOWED",
+    "studioOwnershipAndWorkspaceIsolation": "passed",
+    "boundedCursorPagination": "20 records; resolved owned cursor remains usable",
+    "duplicateCommandAuditEvents": 1,
+    "actualUiDoubleClickAuditEvents": 1,
+    "operationIdentityAndOutcomePreservedAfterUiRequest": true,
+    "providerPostsForUncertainCheck": 0,
+    "resolvedUncertainCaptureRemovedFromList": true,
+    "failedRefundRemainsVisibleWithoutReplay": true,
+    "privateBudgetsNotesEmailsPayerIdsRequestIdsAndPayloadsExcluded": true,
+    "parentPaymentReferenceBoundToSameMember": true
+  },
+  "browser": {
+    "loading": "observed",
+    "empty": "observed before local fixture creation",
+    "populated": "observed",
+    "refreshKeyboardAndVisibleFocus": "observed",
+    "connectionError": "Connection interrupted. Try again. observed after stopping local server",
+    "connectionRecovery": "10-second polling recovered after restart; successful Try again click not observed",
+    "safeCheckRequest": "actual click/double click observed before worker resolved local uncertain case",
+    "widthsCssPixelsWithoutOverflow": [
+      374,
+      375,
+      768,
+      1280
+    ],
+    "finalProductionReferencesWidthsCssPixels": [
+      374,
+      1280
+    ],
+    "screenshotsPrivate": [
+      "evidence/private/payment-resolution-production-desktop.png",
+      "evidence/private/payment-resolution-production-mobile.png",
+      "evidence/private/payment-resolution-connection-error.png"
+    ]
+  },
+  "remaining": [
+    "Hosted failure scenario and recovery verification",
+    "Manual evidence attachment workflow; payment references are visible, no override exists",
+    "Actual expired-identity navigation on this new screen; shared session boundary is covered separately",
+    "Real provider retransmission delivery proof remains pending PayPal developer login"
+  ]
+}
