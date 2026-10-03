@@ -116,7 +116,7 @@ Sources: [Render Free](https://render.com/docs/free),
 
 Current preview: [Rally](https://rally.gowthamsarveswaran.com). Render assigned
 `rally-mx1y.onrender.com`; Cloudflare has one additional DNS-only CNAME for
-`rally`, with the eight previous records preserved. Build `6696eef` is live with the studio payment-resolution page after its compatible rollback and restoration drill.
+`rally`, with the eight previous records preserved. Build `43215f7` is live with studio payment resolution and private-note expiry. Its rollback to `6696eef` and restoration preserved the twelve-migration schema, native cleanup and existing financial/consent history.
 Judge access is gated by the private code in ignored `.env.demo`; one browser
 verification workspace is leased and four hosted workspaces remain available.
 The actual six-buyer journey is confirmed: $288 gross, six distinct buyers, one capture per order and all twelve genuine notifications processed. This is fictional PayPal sandbox evidence; actual customer feedback remains unverified. See [settlement evidence](../evidence/web/hosted-six-friend-settlement.json) and [initial rollout/rollback evidence](../evidence/web/hosted-rollout-rollback.json). The subsequent [payment-resolution release](../evidence/web/payment-resolution-release.json) verified studio ownership and participant denial and preserved the booking through rollback/restoration. PayPal Developer confirms [genuine resend delivery and duplicate handling](../evidence/web/hosted-webhook-retransmission.json); no JSON duplicate-response body was captured.
@@ -136,3 +136,12 @@ lease has not yet been observed. See [activation evidence](../evidence/judge-acc
 and [judge preparation](judge-provisioning.md).
 
 Synchronous transport reference: [pgsql-http](https://github.com/pramsey/pgsql-http).
+
+Private note maintenance now also runs as a second native SQL Cron job. It
+makes no HTTP requests and does not keep Render awake. An isolated fictional
+hosted test note and quotation were removed; the original six-friend booking,
+all six captures, confirmed choices and unexpired notes stayed unchanged across
+forward deployment, rollback and restoration. See
+[retention release evidence](../evidence/web/private-text-retention.json) and
+[policy/setup](private-text-retention.md). The runtime can assign deadlines but
+cannot change policy; a fictional closure probe was fully rolled back.

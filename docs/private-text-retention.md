@@ -82,3 +82,12 @@ concurrent cleanup, immutable deadlines, owner reads, model races, meaning
 preservation, temporary-table isolation and empty up/down/up.
 
 Native SQL scheduling follows the [Supabase Cron documentation](https://supabase.com/docs/guides/cron/quickstart).
+
+The October 3 hosted sandbox verification observed one native cleanup job remove
+a deliberately aged fictional note and quotation, with no app cleanup call.
+Existing financial, consent and command digests stayed unchanged. Runtime
+`43215f7` passed forward deployment, rollback to `6696eef` and restoration while
+retaining the privacy schema/job. A separate restricted-role closure probe
+assigned the thirty-day deadline and rolled back every test row. The expired
+owner screen and subsequent budget edit were observed on the local production
+build at 374 CSS pixels with no horizontal overflow.

@@ -48,7 +48,7 @@
     "Released tested queued-authorization status fix as e21cd60 on Render Free. Exercised cached-artifact rollback to 4ea6c9f and restoration to e21cd60 with no configuration/schema changes. HTTPS readiness and confirmed participant booking passed in each phase; six captures, eighteen operations and twelve processed webhook records preserved. Free instance and auto-deploy Off verified. In-flight recovery and cold wake remain separate gates.",
     "Implemented studio-owned Payments to check page/API with safe read-only reconciliation requests and payment references. Production-build mobile/desktop UI, duplicate clicks, connection recovery and local simulated resolution verified; 130 tests and 25 guard mutations passed. Hosted deployment and manual evidence remain separate gates.",
     "Deployed payment-resolution runtime 6696eef on existing Render Free service; actual studio page and participant denial passed. Cached rollback to e21cd60 and restoration preserved confirmed $288 booking, six captures, eighteen operations and twelve webhooks. PayPal Developer independently confirms genuine capture event resend DELIVERED with HTTP 200; same event stored once with original receipt/processing timestamps unchanged. No new financial operations or judge leases.",
-    "Implemented configurable 30-day raw note/AI quotation expiry after issued or abandoned planning; immutable deadlines, expiry-safe owner reads and AI retries, bounded group-first cleanup and native SQL Cron. Twelve local retention tests and six targeted mutations passed. Hosted isolated fictional note/quotation removed with existing financial history preserved; runtime rollout is next."
+    "Implemented configurable 30-day raw note/AI quotation expiry after issued or abandoned planning; immutable deadlines, expiry-safe owner reads and AI retries, bounded group-first cleanup and native SQL Cron. Twelve local retention tests and six targeted mutations passed. Hosted isolated fictional note/quotation removed with existing financial history preserved; runtime 43215f7 deployed on Render Free, compatible rollback/restoration and restricted-role closure probe verified."
   ],
   "evidence": {
     "scope": "Local service tests use real PostgreSQL and a simulated provider; separate reviewed records prove three actual PayPal sandbox scenarios.",
@@ -509,9 +509,13 @@
       "hosted_schema_migrations": 12,
       "native_cleanup_verified": true,
       "physical_hosted_removal_verified": true,
-      "runtime_ui_deployment_pending": true,
+      "runtime_ui_deployment_pending": false,
       "raw_text_retention_days": 30,
-      "preserved_confirmed_choices_and_payment_history": true
+      "preserved_confirmed_choices_and_payment_history": true,
+      "runtime_deployed": true,
+      "runtime_commit": "43215f77fd54e1edd3746ea11256c67a58b61f02",
+      "rollback_and_restoration_verified": true,
+      "restricted_runtime_closure_probe_passed": true
     }
   },
   "external_dependencies": [
@@ -548,7 +552,7 @@
     "Polished public demo video under three minutes",
     "Complete Devpost draft materials; human approval before entry submission"
   ],
-  "next_independent_slice": "Deploy and verify private-note expiry UI with compatible runtime rollback; then merchant reconciliation evidence and hosted failure/deadline/restart/cold-wake proof. Preserve the six-friend confirmed booking and judge lease; keep the sole repository private and Devpost owner-managed.",
+  "next_independent_slice": "Implement merchant reconciliation evidence without financial overrides; verify isolated hosted failure recovery, deadline/withdrawal races, active worker restart, cold wake and seller balance delta. Preserve the confirmed six-friend booking and judge lease; keep the sole repository private and Devpost owner-managed.",
   "release_restrictions": [
     "Core PayPal sandbox scenarios verified; full authenticated application and remaining provider recovery gates are incomplete",
     "No live customer payments",

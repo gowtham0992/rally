@@ -55,3 +55,10 @@ Sources: [custom roles](https://supabase.com/blog/postgres-roles-and-privileges)
 [pooler and verified TLS](https://supabase.com/docs/guides/database/psql),
 [public root certificate](https://supabase-downloads.s3-ap-southeast-1.amazonaws.com/prod/ssl/prod-ca-2021.crt),
 [node-postgres SSL](https://node-postgres.com/features/ssl).
+
+Migration 012 adds [private-note expiry](private-text-retention.md). The latest
+retention audit verified all twelve migrations, certificate-verified restricted
+access, denied browser execution and denied runtime policy changes. Native SQL
+Cron removed an isolated fictional test note and quotation while preserving
+existing payment, consent and confirmed-choice digests. See
+[retention evidence](../evidence/web/private-text-retention.json).

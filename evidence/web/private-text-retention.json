@@ -1,5 +1,5 @@
 {
-  "observedAt": "2026-10-03T21:00:00Z",
+  "observedAt": "2026-10-03T21:12:03.975747+00:00",
   "scope": "Local isolated PostgreSQL tests and production UI; separately verified existing hosted sandbox schema/native SQL Cron with aged fictional retention-only fixture. No external model call, Auth profile, email or payment created for this check.",
   "retentionDays": 30,
   "endsAt": [
@@ -46,12 +46,102 @@
     },
     "originalConfirmedBookingPreserved": true,
     "existingPaymentConsentAndCommandDigestsPreserved": true,
-    "runtimeUiDeploymentPending": true
+    "runtimeUiDeploymentPending": false,
+    "forwardDeploymentId": "dep-db0mrdk9v7es73c4sms0",
+    "sourceSecretAuditFindings": 0,
+    "releasePhases": [
+      {
+        "phase": "before",
+        "observedAt": "2026-10-03T20:52:13.838Z",
+        "healthReady": true,
+        "migrations": 11,
+        "confirmedBooking": {
+          "state": "CONFIRMED",
+          "cleanup": "NOT_REQUIRED",
+          "reservation_state": "BOOKED",
+          "captures": 6
+        },
+        "existingFinancialConsentCommandAndChoiceDigestsUnchanged": true
+      },
+      {
+        "phase": "schema",
+        "observedAt": "2026-10-03T21:00:36.395Z",
+        "healthReady": true,
+        "migrations": 12,
+        "confirmedBooking": {
+          "state": "CONFIRMED",
+          "cleanup": "NOT_REQUIRED",
+          "reservation_state": "BOOKED",
+          "captures": 6
+        },
+        "existingFinancialConsentCommandAndChoiceDigestsUnchanged": true
+      },
+      {
+        "phase": "forward",
+        "observedAt": "2026-10-03T21:05:34.955Z",
+        "healthReady": true,
+        "migrations": 12,
+        "confirmedBooking": {
+          "state": "CONFIRMED",
+          "cleanup": "NOT_REQUIRED",
+          "reservation_state": "BOOKED",
+          "captures": 6
+        },
+        "existingFinancialConsentCommandAndChoiceDigestsUnchanged": true
+      },
+      {
+        "phase": "rollback",
+        "observedAt": "2026-10-03T21:07:25.623Z",
+        "healthReady": true,
+        "migrations": 12,
+        "confirmedBooking": {
+          "state": "CONFIRMED",
+          "cleanup": "NOT_REQUIRED",
+          "reservation_state": "BOOKED",
+          "captures": 6
+        },
+        "existingFinancialConsentCommandAndChoiceDigestsUnchanged": true
+      },
+      {
+        "phase": "restored",
+        "observedAt": "2026-10-03T21:09:32.842Z",
+        "healthReady": true,
+        "migrations": 12,
+        "confirmedBooking": {
+          "state": "CONFIRMED",
+          "cleanup": "NOT_REQUIRED",
+          "reservation_state": "BOOKED",
+          "captures": 6
+        },
+        "existingFinancialConsentCommandAndChoiceDigestsUnchanged": true
+      }
+    ],
+    "runtimeRollbackVerified": true,
+    "rollbackDeploymentId": "dep-db0mspm0tbcc738i0np0",
+    "rollbackSourceCommit": "6696eeff43aca9b1de2788625c3b3798584bdf82",
+    "rollbackKeptSchemaAndCleanup": true,
+    "configurationChanged": false,
+    "forwardRenderDurationSeconds": 78,
+    "rollbackRenderDurationSeconds": 22,
+    "runtimeDeployed": true,
+    "restorationVerified": true,
+    "restoredDeploymentId": "dep-db0mtke0tbcc738i5850",
+    "restoredRenderDurationSeconds": 32,
+    "normalHostedBookingUiObserved": true,
+    "expiredNoteUiScope": "Actual local production build with aged fictional owner fixture; the hosted aged database-only fixture has no Auth login.",
+    "restrictedRuntimeClosureProbe": {
+      "observedAt": "2026-10-03T21:11:01.654Z",
+      "scope": "Existing hosted restricted runtime over verified TLS; entirely rolled-back fictional closure probe. No Auth, email, model, PayPal or booking calls.",
+      "restrictedRuntimeClosureTriggerPassed": true,
+      "defaultThirtyDayDatabaseDeadlineObserved": true,
+      "allProbeWritesRolledBack": true
+    }
   },
   "limitations": [
     "Fixture elapsed time is simulated; no claim of a 30-day longitudinal observation.",
     "Database cleanup does not prove deletion by external model providers or provider-managed backups.",
     "Busy groups and a large backlog can require additional bounded ticks.",
-    "Runtime rollout/rollback verification remains pending at this snapshot."
-  ]
+    "Render durations are provider-reported deploy durations, not total elapsed time including queueing."
+  ],
+  "runtimeCandidateCommit": "43215f77fd54e1edd3746ea11256c67a58b61f02"
 }
