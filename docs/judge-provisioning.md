@@ -45,9 +45,12 @@ feedback, email delivery or independent PayPal buyer approval.
 Judge sessions use a separate HttpOnly Auth namespace and a private lease.
 The default lease lasts 24 hours. An optional operator setting,
 `RALLY_DEMO_ACCESS_END`, sets a fixed UTC end for newly claimed workspaces only;
-it must be in the future and within 90 days. The release policy proposed for
+it must be in the future and within 90 days. The approved hosted release policy for
 judging ends December 16, 2026 at 00:00 UTC, after the official December 15
-08:00 Pacific judging deadline. Its hosted activation is pending approval.
+08:00 Pacific judging deadline. The setting is saved and the environment-only
+Render Free deployment is live. [Activation evidence](../evidence/judge-access-window-activation.json)
+records healthy HTTPS, unchanged identity/workspace counts and the existing
+24-hour lease duration. A fresh hosted fixed-end lease has not yet been claimed.
 Existing leases retain their original expiry, even if configuration changes.
 Expired leases are never renewed or reassigned. The lease cookie lasts until
 that fixed end, capped at 90 days. The managed Auth cookie remains short-lived;
@@ -68,7 +71,7 @@ narrow-screen toolbar. These are synthetic test users, not usability research.
 The complete six-person planning, consent and independent PayPal buyer journey
 still needs browser verification before submission instructions are final.
 
-Four PostgreSQL preparation tests and eleven workspace/session tests cover
+Seven PostgreSQL preparation tests and thirteen workspace/session tests cover
 resumption, isolation and trusted metadata. Weakened metadata and active-identity
 guards were caught. The full local suite passes 123 tests. The offline HTTP
 verification command consumes one available local workspace and does not reset

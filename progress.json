@@ -31,8 +31,9 @@
     "Approved free sandbox preview deployed as a78783f on one Render Free Node service at rally.gowthamsarveswaran.com; exact DNS-only CNAME, valid HTTPS, managed browser switching for all seven fictional roles, local/Auth redirects preserved. Private synchronous Supabase Cron/Vault installed after queue-based setup failed closed; actual idle database HTTPS request returned 200, Cron receipts succeeded, zero payment operations. Full browser payments and hosted cold-wake/recovery gates remain open.",
     "PayPal HTTPS webhook route implemented with raw-byte RSA-SHA256 verification, strict PayPal certificate URL allowlist, bounded downloads/cache/body, durable quota and safe error responses. Seven new local cryptographic/HTTP tests and a lost-refund notification recovery regression, all 118 tests, 20 caught mutations, TypeScript and production build passed. Local certificates are disposable test fixtures; deployed subscription and genuine signed Sandbox delivery remain pending.",
     "Actual free-preview webhook release: build 533bc2b live, exact PayPal sandbox subscription audited for eight Payments v2 events, trusted ID saved privately in Render with an environment-only deployment. Config-disabled receiver returned 503, configured forged RSA signature returned 403 using a documented real PayPal public certificate; hosted notification/payment records stayed at zero. Genuine signed delivery awaits a fresh sandbox event. Hosted Alex/Sam requirements saved, while transmission of the fictional Sam note to Astropods is awaiting explicit approval after browser auto-review rejection.",
-    "Judging readiness: official December 1–15 testing window exposed November fixture expiry. Four untouched hosted workspaces now have January 14/15 immutable catalog versions and new fictional planning groups; prior catalogs/groups/preferences and the one leased workspace are preserved. No new Auth accounts, consent, payments or emails. New fixed-end judge lease policy is implemented and tested, but activation through December 16 00:00 UTC awaits action-time approval; existing leases are never renewed. All 123 tests, 22 deliberate mutations, TypeScript and production build passed.",
-    "Released judge-readiness code as 4ea6c9f on the existing Render Free service (dep-db0aerhsrm7s73eotgl0). Post-deploy HTTPS health returned 200 ready, unsigned webhook returned 403, and read-only hosted counts verified 35 unchanged identities, four available January workspaces, one preserved lease, zero offers/payment operations/webhook receipts. Existing Sam browser intake remained six-of-six ready with no inference or consent fabricated. The proposed fixed judge-access end is unsaved pending approval."
+    "Judging readiness: official December 1\u201315 testing window exposed November fixture expiry. Four untouched hosted workspaces now have January 14/15 immutable catalog versions and new fictional planning groups; prior catalogs/groups/preferences and the one leased workspace are preserved. No new Auth accounts, consent, payments or emails. New fixed-end judge lease policy is implemented and tested, but activation through December 16 00:00 UTC awaits action-time approval; existing leases are never renewed. All 123 tests, 22 deliberate mutations, TypeScript and production build passed.",
+    "Released judge-readiness code as 4ea6c9f on the existing Render Free service (dep-db0aerhsrm7s73eotgl0). Post-deploy HTTPS health returned 200 ready, unsigned webhook returned 403, and read-only hosted counts verified 35 unchanged identities, four available January workspaces, one preserved lease, zero offers/payment operations/webhook receipts. Existing Sam browser intake remained six-of-six ready with no inference or consent fabricated. The proposed fixed judge-access end is unsaved pending approval.",
+    "Approved hosted judge-access window activated: RALLY_DEMO_ACCESS_END=2026-12-16T00:00:00Z saved in Render; environment-only deployment dep-db0ahregekts738s1idg live on Free using 4ea6c9f. Public HTTPS health 200/ready. Restricted read-only audit confirms 35 identities, four available workspaces, one existing 24-hour lease and zero offers/payment operations/webhook receipts. No fresh lease, account, AI call or payment created; fresh hosted fixed-end lease observation remains pending."
   ],
   "evidence": {
     "scope": "Local service tests use real PostgreSQL and a simulated provider; separate reviewed records prove three actual PayPal sandbox scenarios.",
@@ -113,7 +114,7 @@
       "model": "claude-sonnet-4-6",
       "file": "evidence/ai/connection.json",
       "validated_proposal": true,
-      "quality_evaluation": "Passed 24 cases × 3 actual runs; all earlier failed runs preserved.",
+      "quality_evaluation": "Passed 24 cases \u00d7 3 actual runs; all earlier failed runs preserved.",
       "participant_ui": "Integrated and actual synthetic owner-confirmed travel clarification observed; structured-only confirmation issued no additional model call",
       "remaining_credit_usd_at_connection_check": 9.98
     },
@@ -271,14 +272,17 @@
       "new_payments": 0,
       "new_emails": 0,
       "new_lease_policy_implemented": true,
-      "hosted_new_lease_policy_activated": false,
+      "hosted_new_lease_policy_activated": true,
       "activation_requires_action_time_approval": true,
       "required_access_end": "2026-12-16T00:00:00Z",
       "source_secret_audit": "evidence/source-secret-audit.json",
       "hosted_verification": "evidence/judge-readiness-hosted-verification.json",
       "deployed_commit": "4ea6c9f",
-      "deployment_id": "dep-db0aerhsrm7s73eotgl0",
-      "existing_sam_browser_preserved": true
+      "deployment_id": "dep-db0ahregekts738s1idg",
+      "existing_sam_browser_preserved": true,
+      "activation_approved": true,
+      "activation_evidence": "evidence/judge-access-window-activation.json",
+      "fresh_hosted_fixed_end_lease_verified": false
     },
     "existing_devpost_draft": {
       "checkedAt": "2026-10-03T06:55:48.306716Z",
@@ -303,7 +307,7 @@
     },
     {
       "name": "No-charge model endpoint or approved credits",
-      "state": "Astropods free credit connected; actual 24 cases × 3 quality evaluation passed 72/72 with zero safety failures. Earlier failed runs retained. No paid charge; model dispatch capped."
+      "state": "Astropods free credit connected; actual 24 cases \u00d7 3 quality evaluation passed 72/72 with zero safety failures. Earlier failed runs retained. No paid charge; model dispatch capped."
     },
     {
       "name": "Deployment and public repository account access",
@@ -324,7 +328,7 @@
     "Polished public demo video under three minutes",
     "Complete Devpost draft materials; human approval before entry submission"
   ],
-  "next_independent_slice": "Activate the reviewed judge-access window after approval, then prove full six-friend planning/consent, six distinct sandbox buyer approvals, genuine signed webhook delivery and hosted cold-wake/recovery. Recording and submission package remain required; no Devpost submission is authorized.",
+  "next_independent_slice": "Prove full six-friend planning/consent, six distinct sandbox buyer approvals, genuine signed webhook delivery and hosted cold-wake/recovery. Fictional-note Astropods transmission awaits specific approval; recording and submission package remain required. No final Devpost submission is authorized.",
   "release_restrictions": [
     "Core PayPal sandbox scenarios verified; full authenticated application and remaining provider recovery gates are incomplete",
     "No live customer payments",

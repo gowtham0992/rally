@@ -57,7 +57,7 @@ request; payment state changes happen in the separate bounded web runner. Do not
   extension or secret was left by the failed attempts.
 
 Local proof: 123 tests passed, including seven scheduled-processing tests
-and four offline judge-preparation tests with simulated provider/Auth accounts.
+and seven offline judge-preparation tests with simulated provider/Auth accounts.
 Actual production-build HTTP checks rejected anonymous, wrong-key, query-key
 and wrong-method requests; the valid request returned IDLE with zero operations.
 Actual hosted proof now includes seven managed judge browser roles, both HTTPS
@@ -127,9 +127,13 @@ workspaces now have January 14/15 studio dates via appended catalog versions and
 fresh fixture groups. Their old groups, preferences and catalogs are retained;
 the leased browser-verification workspace is unchanged. See
 [preparation evidence](../evidence/judging-workspace-preparation.json).
-The reviewed `RALLY_DEMO_ACCESS_END=2026-12-16T00:00:00Z` policy is ready for
-new leases. Saving that setting is pending approval because it extends the
-duration of managed demo access. Default leases remain 24 hours; no existing
-lease is automatically extended or recycled. See [judge preparation](judge-provisioning.md).
+The approved `RALLY_DEMO_ACCESS_END=2026-12-16T00:00:00Z` policy is saved in
+Render and its environment-only deployment is live on Free. New judge leases
+use this fixed end. The existing leased workspace retains its 24-hour duration;
+no lease is automatically extended or recycled. Hosted health returned 200 with
+`ready: true`; all 35 identities and four available workspaces remain. No new
+lease was consumed to verify this configuration, so a fresh hosted fixed-end
+lease has not yet been observed. See [activation evidence](../evidence/judge-access-window-activation.json)
+and [judge preparation](judge-provisioning.md).
 
 Synchronous transport reference: [pgsql-http](https://github.com/pramsey/pgsql-http).
