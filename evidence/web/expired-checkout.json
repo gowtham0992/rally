@@ -1,0 +1,20 @@
+{
+  "observedAt": "2026-10-03T03:40:00Z",
+  "scope": "Managed-auth organizer, synthetic three-member studio fixture, one previously created actual PayPal sandbox order. No buyer approval, authorization or capture was completed in this browser test. Local worker expired the offer at its real two-hour deadline. This is incomplete-window product evidence, not full provider expiry-race or three-buyer browser recovery proof.",
+  "offerId": "2de267b2-e16a-4406-bc26-c982d4c6ccd1",
+  "database": {
+    "state": "EXPIRED",
+    "cleanup": "COMPLETE",
+    "deadlinePassed": true
+  },
+  "browserObserved": [
+    "Booking did not confirm",
+    "This booking is closed",
+    "No completed payment is recorded",
+    "Payment recovery is complete",
+    "New planning round requires fresh approval"
+  ],
+  "expiredPayPalTabClosed": true,
+  "screenshot": "evidence/web/expired-checkout.jpg",
+  "next": "Reopen planning only after completed cleanup, issue a fresh merchant-approved offer and obtain distinct buyer approvals."
+}

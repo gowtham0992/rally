@@ -112,7 +112,8 @@
     "checkout_ui": {
       "file": "evidence/web/checkout-flow.json",
       "scope": "Managed-auth owner; synthetic group/studio approval; actual PayPal order creation and early-check rejection only",
-      "full_browser_checkout": "Pending human sandbox buyer approval and distinct managed participants"
+      "full_browser_checkout": "Prior order approval window expired; EXPIRED/cleanup COMPLETE and truthful no-payment browser state observed. A fresh approved offer and distinct managed participant/buyer actions remain needed.",
+      "expired_window_report": "evidence/web/expired-checkout.json"
     },
     "cancellation": {
       "browser": "evidence/web/cancellation-flow.json",
