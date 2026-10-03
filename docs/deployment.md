@@ -27,14 +27,24 @@ Read-only checks on October 2, 2026 found:
 - The workspace includes two custom domains and is using none. This
   subdomain fits the included allocation. Render supplies HTTPS certificates.
 
-This is a preflight, not a deployed-site claim. Confirm the final creation UI
-accepts the credits without requiring a payment method, paid charge or new
-agreement before provisioning. Do not add a card, upgrade the workspace,
+The Blueprint creation UI was subsequently checked. It blocks these services
+with **Payment Information Required**, even with the $50 credit. It asks for
+a card and says it will perform a temporary $1 authorization. No payment
+information was entered, no service created and no DNS record changed. The
+existing GitHub integration already exposes only the Rally repository.
+
+This is a preflight, not a deployed-site claim. A participant must complete
+any card step themselves and explicitly authorize the resulting billing
+arrangement before provisioning. Do not add a card, upgrade the workspace,
 enable autoscaling or accept extra costs under the current authorization.
 Provider behavior after credit exhaustion for paid services has not been
 verified. Review remaining credit before every deployment and suspend the
 demo before it can consume the authorized balance; never promise an automatic
 hard spending cap based only on the absence of a card.
+
+Render also warns that future Blueprint-file changes sync automatically and
+may change costs. `autoDeployTrigger: off` controls code deployment, not that
+configuration sync. Review every subsequent `render.yaml` change accordingly.
 
 ## Release order
 

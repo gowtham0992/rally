@@ -28,7 +28,19 @@
   },
   "dnsChangePending": true,
   "appDeployed": false,
-  "creationAcceptsCreditWithoutCard": "not yet verified",
+  "creationAcceptsCreditWithoutCard": false,
   "paidServiceCreditExhaustionBehavior": "not yet verified",
-  "plan": "docs/deployment.md"
+  "plan": "docs/deployment.md",
+  "creationBlocker": {
+    "provider": "Render",
+    "screen": "Blueprint creation for gowtham0992/rally",
+    "message": "Payment Information Required",
+    "requiresPaymentMethod": true,
+    "temporaryAuthorizationUsd": 1,
+    "paymentDetailsEntered": false,
+    "serviceCreated": false,
+    "repositoryAlreadyConnected": true,
+    "domainBlueprintConfigured": true,
+    "dnsChanged": false
+  }
 }

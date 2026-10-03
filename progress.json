@@ -211,7 +211,8 @@
       "blueprintConfigured": true,
       "dnsConnected": false,
       "httpsVerified": false,
-      "localOriginUnchanged": true
+      "localOriginUnchanged": true,
+      "hostingBlocker": "Render Blueprint requires a payment method and temporary $1 authorization despite $50 credit; user financial handoff required."
     }
   },
   "external_dependencies": [
@@ -231,7 +232,7 @@
     },
     {
       "name": "Deployment and public repository account access",
-      "state": "Private gowtham0992/rally repository pushed; Render logged-in credit balance $50, no card/pending charges, zero services. Cloudflare domain verified with no rally record. Intended origin rally.gowthamsarveswaran.com; no hosting or DNS mutation yet."
+      "state": "Private repository pushed; authorized Rally custom hostname and APP_ORIGIN configured. Existing Render GitHub connection verified. Blueprint creation blocked on payment method despite $50 credit; no card entered, services created or DNS changed."
     }
   ],
   "remaining_requirements": [
