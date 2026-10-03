@@ -20,5 +20,15 @@
   ],
   "scheduleInstalled": false,
   "paymentMethodAdded": false,
-  "appDeployed": false
+  "appDeployed": false,
+  "renderFreeBlueprint": {
+    "repository": "gowtham0992/rally",
+    "name": "rally-sandbox",
+    "webServices": 1,
+    "plan": "free",
+    "customDomain": "rally.gowthamsarveswaran.com",
+    "creationFormReachedWithoutCard": true,
+    "runtimeCredentialValuesEntered": false,
+    "deployButtonPressed": false
+  }
 }

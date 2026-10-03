@@ -215,7 +215,7 @@
       "dnsConnected": false,
       "httpsVerified": false,
       "localOriginUnchanged": true,
-      "hostingBlocker": "Paid/card plan superseded by one Render Free web service and scheduled processing; free creation UI and hosted scheduler verification pending."
+      "hostingBlocker": "Render Free creation form verified without card; runtime-secret transmission/public sandbox preview approval pending, then hosted scheduler and DNS verification."
     },
     "scheduled_processing": {
       "tests": "test/scheduled.test.ts",
@@ -242,7 +242,7 @@
     },
     {
       "name": "Deployment and public repository account access",
-      "state": "Authorized custom domain configured; participant declined payment/card. Blueprint now one Render Free web service, with existing Supabase Cron planned for durable settlement. No payment method, service, schedule or DNS record created."
+      "state": "Render Free Blueprint accepted and creation form ready without card. No runtime secrets entered, service created, schedule installed or DNS changed; approval needed for runtime-secret transmission and public sandbox preview."
     }
   ],
   "remaining_requirements": [
