@@ -1,0 +1,16 @@
+{
+  "observedAt": "2026-10-03T18:52:22.736652+00:00",
+  "scope": "Minimal participant-status projection fix for the actual hosted observation that a queued authorization briefly asked for approval again. No payment dispatch, settlement, compensation or provider behavior changed. Hosted runtime is unchanged this turn.",
+  "cause": "The owned status projection omitted PLANNED AUTHORIZE operations from CHECKING_PAYMENT, while canAuthorize already correctly blocked a second request.",
+  "source": "src/payments/engine.ts",
+  "regression": "queued authorization checks payment without requesting another buyer approval",
+  "before": "APPROVAL_NEEDED",
+  "after": "CHECKING_PAYMENT",
+  "regressionObservedFailingBeforeFix": true,
+  "regressionPassedAfterFix": true,
+  "fullLocalTestsPassed": 124,
+  "mutationsCaught": 22,
+  "typecheckPassed": true,
+  "productionBuildPassed": true,
+  "deployed": false
+}

@@ -288,7 +288,7 @@ export class PaymentEngine {
     const payment:ParticipantPayment=needsAction?'STUDIO_ACTION_NEEDED'
       :refund?.state==='SUCCEEDED'?'REFUND_COMPLETED':refund?'REFUND_IN_PROGRESS'
       :capture?.state==='SUCCEEDED'?'PAYMENT_COMPLETED'
-      :ops.some(o=>uncertain.has(o.state))?'CHECKING_PAYMENT'
+      :ops.some(o=>uncertain.has(o.state)||(o.kind==='AUTHORIZE'&&o.state==='PLANNED'))?'CHECKING_PAYMENT'
       :voidOp?.state==='SUCCEEDED'?'AUTHORIZATION_CANCELED'
       :auth?.state==='SUCCEEDED'?'AUTHORIZED_NOT_CONFIRMED':'APPROVAL_NEEDED';
     const active=row.state==='OPEN'&&row.time<row.deadline,accepted=row.accepted_hash===row.offer_hash;

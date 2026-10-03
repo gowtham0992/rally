@@ -221,3 +221,16 @@ test('checkout status separates acceptance, order preparation, approval and clos
  await x.engine.authorize(x.command(0));await x.engine.step(x.offer.id);view=await x.engine.participantStatus(x.offer.id,a);assert.equal(view.payment,'AUTHORIZED_NOT_CONFIRMED');assert.equal(view.canAuthorize,false);assert.equal(view.approvalUrl,null);
  await x.engine.withdraw(x.command(1));view=await x.engine.participantStatus(x.offer.id,x.offer.members[1].userId);assert.equal(view.canAccept,false);assert.equal(view.canAuthorize,false);
 });
+
+test('queued authorization checks payment without requesting another buyer approval',async()=>{
+ const x=await setup(),actor=x.offer.members[0].userId;
+ await x.engine.accept(x.command(0));await x.engine.step(x.offer.id);
+ await x.engine.authorize(x.command(0));
+ const queued=await x.engine.participantStatus(x.offer.id,actor);
+ assert.equal(queued.payment,'CHECKING_PAYMENT');
+ assert.equal(queued.canAuthorize,false);assert.equal(queued.approvalUrl,null);
+ assert.deepEqual(x.provider.financialEffects,{captures:0,refunds:0,voids:0});
+ await x.engine.step(x.offer.id);
+ assert.equal((await x.engine.participantStatus(x.offer.id,actor)).payment,'AUTHORIZED_NOT_CONFIRMED');
+ assert.equal(x.provider.financialEffects.captures,0);
+});
