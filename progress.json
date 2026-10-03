@@ -35,7 +35,8 @@
     "Released judge-readiness code as 4ea6c9f on the existing Render Free service (dep-db0aerhsrm7s73eotgl0). Post-deploy HTTPS health returned 200 ready, unsigned webhook returned 403, and read-only hosted counts verified 35 unchanged identities, four available January workspaces, one preserved lease, zero offers/payment operations/webhook receipts. Existing Sam browser intake remained six-of-six ready with no inference or consent fabricated. The proposed fixed judge-access end is unsaved pending approval.",
     "Approved hosted judge-access window activated: RALLY_DEMO_ACCESS_END=2026-12-16T00:00:00Z saved in Render; environment-only deployment dep-db0ahregekts738s1idg live on Free using 4ea6c9f. Public HTTPS health 200/ready. Restricted read-only audit confirms 35 identities, four available workspaces, one existing 24-hour lease and zero offers/payment operations/webhook receipts. No fresh lease, account, AI call or payment created; fresh hosted fixed-end lease observation remains pending.",
     "Created local Devpost working copy with project story, scoped financial/AI evidence, exact coverage of all 19 current official fields, sponsor/tool roles, draft judge instructions, gallery/video plan and release gates. Current official form, dates and criteria re-read through the connector; existing remote Rally description remains empty and video missing. All referenced local artifacts exist. Personal answers/attestations deliberately remain user-owned; no Devpost write or publication.",
-    "Saved reviewed project description, tagline and actual tool list to existing Devpost project. Connector update unexpectedly published the project page (version 5); no entry submission occurred. Browser confirms Incomplete submission. Hidden from owner portfolio as reversible mitigation; direct URL remains accessible and no private-draft restoration control was found. Saved description plaintext matches local copy; no credentials, legal attestations, payment approvals or external contacts added."
+    "Saved reviewed project description, tagline and actual tool list to existing Devpost project. Connector update unexpectedly published the project page (version 5); no entry submission occurred. Browser confirms Incomplete submission. Hidden from owner portfolio as reversible mitigation; direct URL remains accessible and no private-draft restoration control was found. Saved description plaintext matches local copy; no credentials, legal attestations, payment approvals or external contacts added.",
+    "Verified clean tracked source at 6136e2c without private env files: npm ci, eleven migrations on a fresh disposable PostgreSQL container, TypeScript, all 123 tests, 22/22 caught mutations and production build passed on Node 25.6.0. Disposable container removed; existing databases untouched. Gitleaks 8.30.1 found zero findings in 33 reachable commits and the source directory. Exact audit of 482 reachable blobs found no current private credential matches, excluding only the documented local development URL. Git author metadata contains a personal email; public release will use a fresh snapshot with GitHub no-reply identity while development history stays private."
   ],
   "evidence": {
     "scope": "Local service tests use real PostgreSQL and a simulated provider; separate reviewed records prove three actual PayPal sandbox scenarios.",
@@ -310,6 +311,27 @@
       "remote_hackathon_entry_submitted": false,
       "portfolio_hidden": true,
       "save_evidence": "evidence/devpost-project-save.json"
+    },
+    "clean_source_setup": {
+      "file": "evidence/clean-source-setup.json",
+      "source_commit": "6136e2c",
+      "npm_ci_passed": true,
+      "fresh_database_migrations_passed": true,
+      "tests_passed": 123,
+      "mutations_caught": 22,
+      "typecheck_passed": true,
+      "production_build_passed": true,
+      "private_environment_files_present": false,
+      "temporary_database_removed": true
+    },
+    "public_source_audit": {
+      "file": "evidence/public-source-release-audit.json",
+      "history_scanner_findings": 0,
+      "source_scanner_findings": 0,
+      "exact_credential_matches": 0,
+      "personal_git_author_email_present": true,
+      "publication_strategy": "Fresh tracked-source snapshot with GitHub no-reply author; original development history remains private.",
+      "public_repository_verified": false
     }
   },
   "external_dependencies": [

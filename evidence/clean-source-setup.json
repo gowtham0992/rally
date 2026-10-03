@@ -1,0 +1,20 @@
+{
+  "checkedAt": "2026-10-03T07:36:16.031459+00:00",
+  "scope": "Actual clean git archive of tracked source at 6136e2c; npm ci, all eleven migrations on a fresh disposable local PostgreSQL container, TypeScript, entire local test suite, mutation checks and production build. No private env files, hosted database, model call, PayPal operation or new judge lease.",
+  "sourceCommit": "6136e2c",
+  "nodeVersion": "25.6.0",
+  "npmVersion": "11.8.0",
+  "postgresImage": "postgres:17-alpine",
+  "databaseIsolation": "Separate disposable container, loopback port 55582; original local/hosted databases untouched.",
+  "dependencyInstallPassed": true,
+  "migrationPassed": true,
+  "typecheckPassed": true,
+  "testsPassed": 123,
+  "mutationsCaught": 22,
+  "mutationsTotal": 22,
+  "productionBuildPassed": true,
+  "privateEnvironmentFilesPresent": false,
+  "externalIdentityCheckoutVerified": false,
+  "runtimeMinimumVersionTested": false,
+  "temporaryDatabaseRemoved": true
+}

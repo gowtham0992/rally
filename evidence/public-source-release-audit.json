@@ -1,0 +1,16 @@
+{
+  "checkedAt": "2026-10-03T07:37:34.055148+00:00",
+  "scope": "Default Gitleaks rules on all reachable Git history and a clean tracked-source directory, plus exact matching of current private credential values against every reachable Git blob. No scanner can establish absence of every unknown or rotated credential.",
+  "sourceCommit": "6136e2c68132f0b657f754ea8a28ead374e3df23",
+  "gitleaksVersion": "8.30.1",
+  "gitleaksAllReachableHistoryFindings": 0,
+  "gitleaksCurrentTrackedSourceFindings": 0,
+  "reachableBlobsScanned": 482,
+  "trackedFiles": 261,
+  "currentPrivateCredentialValuesChecked": 10,
+  "exactCredentialMatches": 0,
+  "excludedDocumentedLocalDatabaseConfigurations": 1,
+  "trackedPrivateEnvironmentOrCheckpointFiles": 0,
+  "inlineGitleaksAllowCommentsIgnored": true,
+  "repositoryPublicationPerformed": false
+}
