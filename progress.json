@@ -27,7 +27,8 @@
     "Judge-workspace foundation: finite non-recycled 24-hour leases and seven synthetic role registrations, scoped group/catalog/intake/clarification/studio boundaries, command and invite isolation. Eight new PostgreSQL tests and caught scope mutation; 96 full tests, TypeScript and build passed. Hosted additive migration 010 and restricted-role/TLS audit passed. Managed Auth provisioning, separate cookies, role-switch/stale-tab UI and actual judge/browser journey remain unfinished; no public endpoint enabled.",
     "Applied participant-provided hackathon advice to an explicit narrow execution focus and eight-scene 155-second demo plan. Current official judging criteria, dates and packaging requirements checked via Devpost connector; factual metadata recorded. Main six-person browser recording, public video, full rules/eligibility audit and final submission packet remain unfinished; no customer/consent/payment outcome fabricated.",
     "Free-hosting adaptation after participant declined card/payment: one Render Free web Blueprint, private bounded scheduled payment runner, offline Supabase Cron/Vault setup command; seven new scheduler and four resumable judge-preparation tests. Actual idle production HTTP boundary verified; 107 full tests, typecheck and production build passed. Hosted scheduler and managed judge identities are not created yet.",
-    "Managed judge entry and role switching: 35 approved fictional Supabase Auth accounts on verified Free plan, five hosted isolated workspaces, migration 011 active-identity fence, separate HttpOnly cookies and immutable document viewer. Actual seven-role HTTP proof and browser stale-save draft retention passed; 110 full tests and mutation guard passed. No emails, AI calls or payments from this slice."
+    "Managed judge entry and role switching: 35 approved fictional Supabase Auth accounts on verified Free plan, five hosted isolated workspaces, migration 011 active-identity fence, separate HttpOnly cookies and immutable document viewer. Actual seven-role HTTP proof and browser stale-save draft retention passed; 110 full tests and mutation guard passed. No emails, AI calls or payments from this slice.",
+    "Approved free sandbox preview deployed as a78783f on one Render Free Node service at rally.gowthamsarveswaran.com; exact DNS-only CNAME, valid HTTPS, managed browser switching for all seven fictional roles, local/Auth redirects preserved. Private synchronous Supabase Cron/Vault installed after queue-based setup failed closed; actual idle database HTTPS request returned 200, Cron receipts succeeded, zero payment operations. Full browser payments and hosted cold-wake/recovery gates remain open."
   ],
   "evidence": {
     "scope": "Local service tests use real PostgreSQL and a simulated provider; separate reviewed records prove three actual PayPal sandbox scenarios.",
@@ -107,7 +108,7 @@
       "model": "claude-sonnet-4-6",
       "file": "evidence/ai/connection.json",
       "validated_proposal": true,
-      "quality_evaluation": "Passed 24 cases \u00d7 3 actual runs; all earlier failed runs preserved.",
+      "quality_evaluation": "Passed 24 cases × 3 actual runs; all earlier failed runs preserved.",
       "participant_ui": "Integrated and actual synthetic owner-confirmed travel clarification observed; structured-only confirmation issued no additional model call",
       "remaining_credit_usd_at_connection_check": 9.98
     },
@@ -213,27 +214,31 @@
       "origin": "https://rally.gowthamsarveswaran.com",
       "participantAuthorized": true,
       "blueprintConfigured": true,
-      "dnsConnected": false,
-      "httpsVerified": false,
+      "dnsConnected": true,
+      "httpsVerified": true,
       "localOriginUnchanged": true,
-      "hostingBlocker": "Participant approved runtime-secret transmission to Render private settings and the Free sandbox preview. Deployment and DNS underway."
+      "hostingBlocker": null
     },
     "scheduled_processing": {
       "tests": "test/scheduled.test.ts",
       "http": "evidence/web/scheduled-processing.json",
       "hosted_preflight": "evidence/free-hosting-preflight.json",
-      "hostedScheduleVerified": false,
-      "provider": "simulated in scheduler regression tests; no new actual PayPal operations"
+      "hostedScheduleVerified": true,
+      "provider": "simulated in scheduler regression tests; no new actual PayPal operations",
+      "scope": "Installed and audited; successful idle Cron and database HTTPS transport. Active provider processing and cold wake are still unverified.",
+      "hosted_report": "evidence/hosted-settlement-schedule.json"
     },
     "judge_managed_sessions": {
       "http": "evidence/web/judge-managed-sessions.json",
       "browser": "evidence/web/judge-session-browser.json",
       "accounts": 35,
-      "hostedWorkspacesReady": 5,
+      "hostedWorkspacesReady": 4,
       "outboundEmailCalls": 0,
       "supabasePlan": "Free",
-      "participantApproved": true
-    }
+      "participantApproved": true,
+      "hostedWorkspaceLeasedForBrowserProof": 1
+    },
+    "hosted_preview": "evidence/hosted-preview.json"
   },
   "external_dependencies": [
     {
@@ -244,15 +249,15 @@
     },
     {
       "name": "Managed authentication/PostgreSQL hosting configuration",
-      "state": "Supabase Auth connected; private hosted application database provisioned and audited with verified client TLS. Local app uses local PostgreSQL; Render remains undeployed."
+      "state": "Supabase Free Auth, private hosted schema and restricted TLS runtime connected to actual Render Free preview. Existing local/Auth redirects preserved."
     },
     {
       "name": "No-charge model endpoint or approved credits",
-      "state": "Astropods free credit connected; actual 24 cases \u00d7 3 quality evaluation passed 72/72 with zero safety failures. Earlier failed runs retained. No paid charge; model dispatch capped."
+      "state": "Astropods free credit connected; actual 24 cases × 3 quality evaluation passed 72/72 with zero safety failures. Earlier failed runs retained. No paid charge; model dispatch capped."
     },
     {
       "name": "Deployment and public repository account access",
-      "state": "Render Free Blueprint accepted and creation form ready without card. No runtime secrets entered, service created, schedule installed or DNS changed; approval needed for runtime-secret transmission and public sandbox preview."
+      "state": "Approved Free Render preview deployed; exact Cloudflare subdomain/HTTPS and private Cron verified for idle transport. Repository remains private; public publication audit is pending."
     }
   ],
   "remaining_requirements": [
@@ -269,7 +274,7 @@
     "Polished public demo video under three minutes",
     "Complete Devpost draft materials; human approval before entry submission"
   ],
-  "next_independent_slice": "Deploy approved Render Free preview and verify the exact custom domain. Install and prove private scheduled processing. Complete six-participant planning/consent and independent sandbox buyer browser journey, then record the rough demo and finish submission packaging.",
+  "next_independent_slice": "Register and verify the actual PayPal sandbox webhook, prove the full six-friend planning/consent and independent sandbox buyer browser journey, and hosted cold-wake/recovery. Record rough demo immediately afterward, then finish public source and submission package.",
   "release_restrictions": [
     "Core PayPal sandbox scenarios verified; full authenticated application and remaining provider recovery gates are incomplete",
     "No live customer payments",

@@ -1,0 +1,62 @@
+{
+  "recordedAt": "2026-10-03T05:44:20.410Z",
+  "scope": "Actual approved public sandbox preview on one Render Free Node service, existing Supabase Free project and exact user-authorized Cloudflare subdomain. Prepared fictional users; no human consent or merchant feedback claimed.",
+  "origin": "https://rally.gowthamsarveswaran.com",
+  "renderHostname": "rally-mx1y.onrender.com",
+  "deployedCommit": "a78783f",
+  "renderPlan": "Free",
+  "paidServicesCreated": 0,
+  "paymentMethodAdded": false,
+  "supabasePlan": "Free",
+  "syntheticIdentities": 35,
+  "workspaces": [
+    {
+      "state": "AVAILABLE",
+      "count": 4
+    },
+    {
+      "state": "LEASED",
+      "count": 1
+    }
+  ],
+  "dns": {
+    "name": "rally",
+    "type": "CNAME",
+    "target": "rally-mx1y.onrender.com",
+    "proxied": false,
+    "ttl": "Auto",
+    "existingRecordsPreserved": 8
+  },
+  "https": {
+    "certificateValidated": true,
+    "healthHttp": 200,
+    "ready": true
+  },
+  "hostedBrowserRoles": [
+    "ORGANIZER",
+    "TRAVELER",
+    "COLLECTOR",
+    "FRIEND_ONE",
+    "FRIEND_TWO",
+    "FRIEND_THREE",
+    "STUDIO"
+  ],
+  "privateFriendProjectionsVerified": true,
+  "studioEmptyQueueVerified": true,
+  "hostedPhoneCssWidth": 374,
+  "hostedPhoneScrollWidth": 374,
+  "screenshot": "evidence/private/rally-preview-live.png",
+  "authRedirects": {
+    "siteUrl": "https://rally.gowthamsarveswaran.com",
+    "hostedCallback": true,
+    "existingAndLocalRedirectsPreserved": true,
+    "emailsSent": 0
+  },
+  "schedule": "evidence/hosted-settlement-schedule.json",
+  "remaining": [
+    "PayPal webhook registration and signed delivery",
+    "Complete six-person consent and independent sandbox buyer browser journey",
+    "Hosted cold wake and active payment recovery"
+  ],
+  "allPaymentJourneysVerified": false
+}

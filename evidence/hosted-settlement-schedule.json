@@ -1,0 +1,32 @@
+{
+  "recordedAt": "2026-10-03T05:39:08.571Z",
+  "scope": "Actual free Supabase Cron, private Vault secret and synchronous certificate-verified database HTTPS request to deployed Render preview. Idle transport proof only; no offers or payments.",
+  "transport": [
+    {
+      "status": 200,
+      "state": "IDLE"
+    }
+  ],
+  "permissions": {
+    "active_jobs": 1,
+    "successful_runs": 2,
+    "failed_runs": 0,
+    "runtime_can_invoke": false,
+    "anonymous_can_invoke": false,
+    "signed_in_can_invoke": false,
+    "anonymous_vault_read": false,
+    "signed_in_vault_read": false,
+    "no_shared_request_queue": true,
+    "payment_operations": 0
+  },
+  "queueSetupRegression": {
+    "oldSetup": "Rejected before secret storage due to PUBLIC queue grants; failed transactions rolled back",
+    "newSetup": "Synchronous http extension; no shared request queue"
+  },
+  "coldWakeAndActiveProviderRecoveryVerified": false,
+  "browserTransportSchemaProbe": {
+    "http": 406,
+    "code": "PGRST106",
+    "scope": "Actual anonymous browser API denies the extensions schema"
+  }
+}

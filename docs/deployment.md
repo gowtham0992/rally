@@ -31,16 +31,18 @@ all verified captures before the existing reservation deadline.
 The offline `scripts/configure-settlement-schedule.ts` command first verifies
 the live authenticated endpoint, then installs `deploy/settlement-schedule.sql`.
 It uses the existing private provisioning token. The trigger key is stored in
-Supabase Vault, outside the runtime role's privileges. The SQL refuses browser
-or runtime access to decrypted secrets or the HTTP request queue. Cron runs the
-fixed function as its owner; clients cannot choose an offer, price, payer or
-HTTP destination. Do not activate it before verifying the deployed endpoint.
+Supabase Vault, outside the runtime role's privileges. The SQL refuses browser or runtime access to decrypted secrets. The private
+Cron function uses the synchronous `http` extension with strict TLS and a
+120-second timeout, keeping authorization headers out of a shared request
+queue. Cron runs the fixed function as its owner; clients cannot choose an
+offer, price, payer or HTTP destination. One Cron connection waits during the
+request; payment state changes happen in the separate bounded web runner. Do not activate it before verifying the deployed endpoint.
 
 ## Verified account and limits
 
 - Cloudflare Free manages the domain. The observed eight records include the
   portfolio, Kin and email; there is no `rally` or wildcard record.
-- Render Hobby has no card and zero services. Its $50 hackathon credit expires
+- Render Hobby has no card and one verified Free web service. Its $50 hackathon credit expires
   September 30, 2027. The earlier two-$7-service Blueprint was blocked by a
   card requirement and temporary $1 authorization. That plan is superseded.
 - Render Free supports custom domains and managed TLS. Idle services sleep
@@ -48,14 +50,22 @@ HTTP destination. Do not activate it before verifying the deployed endpoint.
   One service fits the 750 included monthly instance hours. Included build and
   bandwidth allowances still apply; with no payment method, exceeding them
   suspends services or builds instead of charging a card.
-- A read-only Rally Supabase inspection found Vault installed, and `pg_cron`
-  and `pg_net` available but not yet installed. No schedule is active.
+- Rally Supabase is on Free. Vault, `pg_cron` and the synchronous `http`
+  extension are installed; one private every-minute Cron job is active.
+  `pg_net` setup failed closed because its queue had PUBLIC grants owned by
+  the provider. Those setup/diagnostic transactions rolled back; no queue
+  extension or secret was left by the failed attempts.
 
-Local proof: 107 tests passed, including seven new scheduled-processing tests
+Local proof: 110 tests passed, including seven new scheduled-processing tests
 and four offline judge-preparation tests with simulated provider/Auth accounts.
 Actual production-build HTTP checks rejected anonymous, wrong-key, query-key
 and wrong-method requests; the valid request returned IDLE with zero operations.
-This is not proof of a hosted schedule, real judge login or deployed recovery.
+Actual hosted proof now includes seven managed judge browser roles, both HTTPS
+health endpoints, preserved local/Auth redirects, successful idle Cron receipts
+and one database-to-preview authenticated HTTPS request returning IDLE.
+`evidence/hosted-settlement-schedule.json` records zero payment operations and
+no browser/runtime ability to invoke the private function or read Vault.
+Cold wake and active provider recovery remain unverified on the hosted runner.
 
 ## Release order
 
@@ -76,8 +86,11 @@ This is not proof of a hosted schedule, real judge login or deployed recovery.
    exact HTTPS APP_ORIGIN and `ENABLE_HOSTED_SETTLEMENT_SCHEDULE=true`, to run
    `node --import tsx scripts/configure-settlement-schedule.ts`. Never commit
    substituted SQL or supply the provisioning token to Render.
-7. Register the matching Supabase callback/site URL and sandbox webhook.
-   Preserve local Auth redirects. Verify generated PayPal return/cancel URLs.
+7. The matching Supabase callback/site URL is configured, with existing and
+   localhost redirects preserved. The offline `configure-hosted-auth.ts` command
+   requires explicit enablement and verified HTTPS readiness, and sends no email.
+   Sandbox webhook registration/delivery is still pending; add its actual ID to
+   Render privately after registration. Verify PayPal return/cancel URLs.
 8. Prove actual Cron invocation, cold wake, overlapping/restarted processing,
    sandbox capture/refund recovery, and monitoring of unresolved results. Run
    the complete custom-domain judge journey before using it in instructions.
@@ -99,3 +112,12 @@ Sources: [Render Free](https://render.com/docs/free),
 [Cloudflare DNS setup](https://render.com/docs/configure-cloudflare-dns),
 [Supabase Cron](https://supabase.com/docs/guides/cron),
 [GitHub Pages](https://docs.github.com/en/pages/getting-started-with-github-pages/what-is-github-pages).
+
+Current preview: [Rally](https://rally.gowthamsarveswaran.com). Render assigned
+`rally-mx1y.onrender.com`; Cloudflare has one additional DNS-only CNAME for
+`rally`, with the eight previous records preserved. Build `a78783f` is live.
+Judge access is gated by the private code in ignored `.env.demo`; one browser
+verification workspace is leased and four hosted workspaces remain available.
+This preview does not establish a completed six-buyer payment journey.
+
+Synchronous transport reference: [pgsql-http](https://github.com/pramsey/pgsql-http).
