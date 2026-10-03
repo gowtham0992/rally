@@ -37,7 +37,8 @@
     "Created local Devpost working copy with project story, scoped financial/AI evidence, exact coverage of all 19 current official fields, sponsor/tool roles, draft judge instructions, gallery/video plan and release gates. Current official form, dates and criteria re-read through the connector; existing remote Rally description remains empty and video missing. All referenced local artifacts exist. Personal answers/attestations deliberately remain user-owned; no Devpost write or publication.",
     "Saved reviewed project description, tagline and actual tool list to existing Devpost project. Connector update unexpectedly published the project page (version 5); no entry submission occurred. Browser confirms Incomplete submission. Hidden from owner portfolio as reversible mitigation; direct URL remains accessible and no private-draft restoration control was found. Saved description plaintext matches local copy; no credentials, legal attestations, payment approvals or external contacts added.",
     "Verified clean tracked source at 6136e2c without private env files: npm ci, eleven migrations on a fresh disposable PostgreSQL container, TypeScript, all 123 tests, 22/22 caught mutations and production build passed on Node 25.6.0. Disposable container removed; existing databases untouched. Gitleaks 8.30.1 found zero findings in 33 reachable commits and the source directory. Exact audit of 482 reachable blobs found no current private credential matches, excluding only the documented local development URL. Git author metadata contains a personal email; public release will use a fresh snapshot with GitHub no-reply identity while development history stays private.",
-    "Published audited source snapshot to https://github.com/gowtham0992/rally-hackathon with a GitHub no-reply author. Initial public commit e989b63 has identical tracked-source tree to private source e0c6e7e; development history and personal author email are excluded. Anonymous GitHub API/raw requests verified public visibility, MIT license, exact commit/tree, README and LICENSE (all 200). Original private repository and Render deployment unchanged. No additional model call, buyer account, judge lease or payment operation."
+    "Published audited source snapshot to https://github.com/gowtham0992/rally-hackathon with a GitHub no-reply author. Initial public commit e989b63 has identical tracked-source tree to private source e0c6e7e; development history and personal author email are excluded. Anonymous GitHub API/raw requests verified public visibility, MIT license, exact commit/tree, README and LICENSE (all 200). Original private repository and Render deployment unchanged. No additional model call, buyer account, judge lease or payment operation.",
+    "Added the verified public GitHub and hosted demo links to the existing Devpost project using conditional version 5 (saved as version 6). Browser verifies both links, Incomplete submission and hidden portfolio status; connector confirms submitted_at remains null and video absent. No form attestations, description change or final entry submission."
   ],
   "evidence": {
     "scope": "Local service tests use real PostgreSQL and a simulated provider; separate reviewed records prove three actual PayPal sandbox scenarios.",
@@ -312,7 +313,10 @@
       "remote_hackathon_entry_submitted": false,
       "portfolio_hidden": true,
       "save_evidence": "evidence/devpost-project-save.json",
-      "public_repository_verified": true
+      "public_repository_verified": true,
+      "public_source_url": "https://github.com/gowtham0992/rally-hackathon",
+      "remote_source_and_demo_links_saved": true,
+      "links_evidence": "evidence/devpost-project-links.json"
     },
     "clean_source_setup": {
       "file": "evidence/clean-source-setup.json",
@@ -336,9 +340,9 @@
       "public_repository_verified": true,
       "release_evidence": "evidence/public-source-release.json",
       "url": "https://github.com/gowtham0992/rally-hackathon",
-      "public_snapshot_commit": "e989b63",
-      "private_source_commit": "e0c6e7e",
-      "identical_tracked_source": true
+      "identical_tracked_source": true,
+      "initial_public_snapshot_commit": "e989b63",
+      "initial_private_source_commit": "e0c6e7e"
     }
   },
   "external_dependencies": [
