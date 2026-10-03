@@ -42,8 +42,19 @@ demo settings; it fails closed when disabled or incompletely configured.
 The resulting preparation must not be described as real human consent, merchant
 feedback, email delivery or independent PayPal buyer approval.
 
-Judge sessions use a separate HttpOnly Auth namespace and a 24-hour private
-lease. Selecting a friend verifies their actual managed login, atomically
+Judge sessions use a separate HttpOnly Auth namespace and a private lease.
+The default lease lasts 24 hours. An optional operator setting,
+`RALLY_DEMO_ACCESS_END`, sets a fixed UTC end for newly claimed workspaces only;
+it must be in the future and within 90 days. The release policy proposed for
+judging ends December 16, 2026 at 00:00 UTC, after the official December 15
+08:00 Pacific judging deadline. Its hosted activation is pending approval.
+Existing leases retain their original expiry, even if configuration changes.
+Expired leases are never renewed or reassigned. The lease cookie lasts until
+that fixed end, capped at 90 days. The managed Auth cookie remains short-lived;
+the existing restore action verifies a fresh managed login for the same active
+identity only while its database lease remains valid.
+
+Selecting a friend verifies their actual managed login, atomically
 changes the lease's active identity and navigates to a new document. Older
 documents retain their original viewer ID; cookie refresh cannot restore the
 former identity. Missing/mismatched viewer headers and normal-cookie namespace
@@ -59,9 +70,37 @@ still needs browser verification before submission instructions are final.
 
 Four PostgreSQL preparation tests and eleven workspace/session tests cover
 resumption, isolation and trusted metadata. Weakened metadata and active-identity
-guards were caught. The full local suite passes 110 tests. The offline HTTP
+guards were caught. The full local suite passes 123 tests. The offline HTTP
 verification command consumes one available local workspace and does not reset
 or recycle it; run deliberately, not as a repeated smoke check.
+
+## Keep the fixture bookable during judging
+
+The original November 19/20 slots precede the official December judging period.
+The offline `scripts/prepare-judging-workspaces.ts` command appends a January
+14/15 catalog for each untouched, unclaimed workspace. It archives its original
+planning group and creates a fresh fictional group with the same seven managed
+identities and four explicitly prepared preference records. It does not carry
+human availability or consent into the new dates. All original catalog,
+preference and command records remain intact. No Auth account, payment,
+reservation, acceptance or consent is created.
+
+The command reads the existing mode-0600 provisioning checkpoint, requires
+`ENABLE_JUDGING_PREPARATION=true`, strict hosted database TLS and the restricted
+runtime role, and defaults to a read-only dry run. Add `--apply` for its fixed
+five-workspace transaction. A leased workspace is preserved; any other workspace
+with changed intake, model work, consent or a merchant request rejects and rolls
+back the entire refresh. Concurrent/repeated execution cannot duplicate released
+groups or catalogs. There is no public refresh route and no automatic recycling.
+
+The hosted refresh replaced four untouched fixture groups and preserved the
+one leased browser workspace. All 35 Auth identities are unchanged. Re-running
+the original provisioning command against released catalogs intentionally
+fails its original catalog checkpoint; use the release-aware preparation tool
+to verify the refresh rather than overriding that protection.
+The five-workspace limit still applies. Judge instructions must explain how to
+resume a claimed group and must not promise unlimited fresh booking attempts.
+Catalog readiness does not establish a completed payment or judge usability test.
 
 Source: [Supabase pricing](https://supabase.com/pricing), verified October 2,
 2026, and Rally's dashboard showing its Free organization plan.

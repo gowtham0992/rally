@@ -1,0 +1,14 @@
+{
+  "checkedAt": "2026-10-03T06:17:13.496Z",
+  "scope": "actual_hosted_webhook_config_disabled_gate",
+  "deployedCommit": "533bc2b",
+  "renderPlan": "Free",
+  "trustedWebhookIdNotConfigured": true,
+  "status": 503,
+  "error": "TEMPORARILY_UNAVAILABLE",
+  "receiptsBefore": 0,
+  "receiptsAfter": 0,
+  "paymentOperationsBefore": 0,
+  "paymentOperationsAfter": 0,
+  "receiverFailClosedVerified": true
+}

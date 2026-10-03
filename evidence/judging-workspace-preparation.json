@@ -1,0 +1,24 @@
+{
+  "observedAt": "2026-10-03T06:49:47.125Z",
+  "applied": true,
+  "scope": "Existing five synthetic workspaces only. Unclaimed pristine groups receive a new catalog and planning group; prior catalogs, groups and preference history are retained. Leased workspaces are preserved.",
+  "workspaces": 5,
+  "refreshed": 4,
+  "alreadyReleased": 0,
+  "leasedPreserved": 1,
+  "slots": [
+    {
+      "id": "thu-evening",
+      "startAt": "2027-01-15T01:15:00Z"
+    },
+    {
+      "id": "fri-evening",
+      "startAt": "2027-01-16T01:00:00Z"
+    }
+  ],
+  "requiredNewLeaseEnd": "2026-12-16T00:00:00Z",
+  "authAccountsCreated": 0,
+  "emailsSent": 0,
+  "paymentsInitiated": 0,
+  "consentsRecorded": 0
+}

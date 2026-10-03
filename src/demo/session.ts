@@ -1,14 +1,16 @@
 import {parseCookieHeader,serializeCookieHeader} from '@supabase/ssr';
 import type {IntakeActor} from '../intake/service.ts';
 import {WebError} from '../web/security.ts';
-import type {DemoAccess} from './access.ts';
+import {maxDemoLeaseSeconds,type DemoAccess} from './access.ts';
 export const demoCookieName='rally-demo-auth',demoLeaseCookie='rally-demo-lease';
 export const isDemoCookie=(name:string)=>name===demoCookieName||name.startsWith(demoCookieName+'.')||name.startsWith(demoCookieName+'-');
 export function sessionCookies(request:Request){return parseCookieHeader(request.headers.get('cookie')??'').filter((c):c is {name:string;value:string}=>typeof c.value==='string');}
 export function hasDemoSession(request:Request){return sessionCookies(request).some(c=>c.name===demoLeaseCookie||isDemoCookie(c.name));}
 export function demoLease(request:Request){return sessionCookies(request).find(c=>c.name===demoLeaseCookie)?.value;}
 export function setDemoLease(response:Response,token:string,expiresAt:string){
- const maxAge=Math.max(0,Math.min(86400,Math.floor((Date.parse(expiresAt)-Date.now())/1000)));
+ const parsed=Date.parse(expiresAt);
+ if(!Number.isFinite(parsed))throw new WebError('DEMO_SESSION_EXPIRED',401);
+ const maxAge=Math.max(0,Math.min(maxDemoLeaseSeconds,Math.floor((parsed-Date.now())/1000)));
  response.headers.append('Set-Cookie',serializeCookieHeader(demoLeaseCookie,token,{path:'/',httpOnly:true,sameSite:'lax',secure:process.env.NODE_ENV==='production',maxAge}));return response;
 }
 export function clearDemoSession(request:Request,response:Response){

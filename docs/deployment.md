@@ -56,7 +56,7 @@ request; payment state changes happen in the separate bounded web runner. Do not
   the provider. Those setup/diagnostic transactions rolled back; no queue
   extension or secret was left by the failed attempts.
 
-Local proof: 110 tests passed, including seven new scheduled-processing tests
+Local proof: 123 tests passed, including seven scheduled-processing tests
 and four offline judge-preparation tests with simulated provider/Auth accounts.
 Actual production-build HTTP checks rejected anonymous, wrong-key, query-key
 and wrong-method requests; the valid request returned IDLE with zero operations.
@@ -89,8 +89,10 @@ Cold wake and active provider recovery remain unverified on the hosted runner.
 7. The matching Supabase callback/site URL is configured, with existing and
    localhost redirects preserved. The offline `configure-hosted-auth.ts` command
    requires explicit enablement and verified HTTPS readiness, and sends no email.
-   Sandbox webhook registration/delivery is still pending; add its actual ID to
-   Render privately after registration. Verify PayPal return/cancel URLs.
+   Sandbox webhook registration is complete and its actual trusted ID is stored
+   in Render privately. Forged-signature denial has been verified on hosting;
+   genuine signed delivery remains pending. See [webhook setup](paypal-webhooks.md).
+   Verify PayPal return/cancel URLs.
 8. Prove actual Cron invocation, cold wake, overlapping/restarted processing,
    sandbox capture/refund recovery, and monitoring of unresolved results. Run
    the complete custom-domain judge journey before using it in instructions.
@@ -115,9 +117,19 @@ Sources: [Render Free](https://render.com/docs/free),
 
 Current preview: [Rally](https://rally.gowthamsarveswaran.com). Render assigned
 `rally-mx1y.onrender.com`; Cloudflare has one additional DNS-only CNAME for
-`rally`, with the eight previous records preserved. Build `a78783f` is live.
+`rally`, with the eight previous records preserved. Build `533bc2b` is live.
 Judge access is gated by the private code in ignored `.env.demo`; one browser
 verification workspace is leased and four hosted workspaces remain available.
 This preview does not establish a completed six-buyer payment journey.
+
+The official judging period runs December 1–15. Four untouched, unclaimed
+workspaces now have January 14/15 studio dates via appended catalog versions and
+fresh fixture groups. Their old groups, preferences and catalogs are retained;
+the leased browser-verification workspace is unchanged. See
+[preparation evidence](../evidence/judging-workspace-preparation.json).
+The reviewed `RALLY_DEMO_ACCESS_END=2026-12-16T00:00:00Z` policy is ready for
+new leases. Saving that setting is pending approval because it extends the
+duration of managed demo access. Default leases remain 24 hours; no existing
+lease is automatically extended or recycled. See [judge preparation](judge-provisioning.md).
 
 Synchronous transport reference: [pgsql-http](https://github.com/pramsey/pgsql-http).

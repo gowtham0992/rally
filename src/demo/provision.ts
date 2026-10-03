@@ -24,7 +24,8 @@ export function assertDemoAccount(user:DemoAccount,input:{workspaceId:string;rol
   user.app_metadata.rally_demo!==true||user.app_metadata.rally_workspace!==input.workspaceId||user.app_metadata.rally_role!==input.role)
   throw new Error('DEMO_ACCOUNT_SCOPE_MISMATCH');
 }
-const preparedRoles:DemoRole[]=['COLLECTOR','FRIEND_ONE','FRIEND_TWO','FRIEND_THREE'];
+export const preparedRoles:DemoRole[]=['COLLECTOR','FRIEND_ONE','FRIEND_TWO','FRIEND_THREE'];
+export function preparedDemoPreference(index:number){return {budgetMinor:6000+index*500,availableSlotIds:['thu-evening'],latestFinishAt:null,technique:'ANY' as const,outcome:'FORM_OWN_CUP' as const,collection:'SELF_LATER' as const,nomineeMemberId:null,extraRequirement:'NONE' as const,unresolvedKeys:[]};}
 export class DemoProvisioner {
  constructor(private pool:pg.Pool,private accounts:DemoAccounts,private key:string,private merchantId:string,private fixture:Catalog){
   if(!/^[a-f0-9]{64}$/.test(key)||!merchantId)throw new Error('DEMO_PROVISION_CONFIG_REQUIRED');
@@ -63,7 +64,7 @@ export class DemoProvisioner {
    for(const [index,role] of preparedRoles.entries()){
     const context=await intake.participantContext(actors[role],group.groupId);
     if(!context.preference)await intake.save(actors[role],{commandId:randomUUID(),groupId:group.groupId,expectedRevision:context.revision,expectedPreferenceId:null,
-     preference:{budgetMinor:6000+index*500,availableSlotIds:['thu-evening'],latestFinishAt:null,technique:'ANY',outcome:'FORM_OWN_CUP',collection:'SELF_LATER',nomineeMemberId:null,extraRequirement:'NONE',unresolvedKeys:[]},optionalText:null});
+     preference:preparedDemoPreference(index),optionalText:null});
    }
    await transaction(this.pool,async c=>{
     const resource=`demo-resource-${workspaceId}`;

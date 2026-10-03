@@ -1,0 +1,23 @@
+{
+  "scope": "actual_paypal_sandbox_subscription_configuration",
+  "checkedAt": "2026-10-03T06:16:07.657Z",
+  "receiver": "https://rally.gowthamsarveswaran.com/api/paypal/webhook",
+  "created": true,
+  "subscriptionVerified": true,
+  "subscribedEvents": [
+    "PAYMENT.AUTHORIZATION.CREATED",
+    "PAYMENT.AUTHORIZATION.VOIDED",
+    "PAYMENT.CAPTURE.COMPLETED",
+    "PAYMENT.CAPTURE.PENDING",
+    "PAYMENT.CAPTURE.DECLINED",
+    "PAYMENT.CAPTURE.REFUNDED",
+    "PAYMENT.REFUND.PENDING",
+    "PAYMENT.REFUND.FAILED"
+  ],
+  "unrelatedSubscriptionsPreserved": 0,
+  "privateConfigurationFile": ".env.webhook",
+  "signedSandboxDeliveryVerified": false,
+  "simulatorUsed": false,
+  "paymentsCreated": 0,
+  "livePaymentEndpointsUsed": 0
+}

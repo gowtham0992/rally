@@ -29,7 +29,9 @@
     "Free-hosting adaptation after participant declined card/payment: one Render Free web Blueprint, private bounded scheduled payment runner, offline Supabase Cron/Vault setup command; seven new scheduler and four resumable judge-preparation tests. Actual idle production HTTP boundary verified; 107 full tests, typecheck and production build passed. Hosted scheduler and managed judge identities are not created yet.",
     "Managed judge entry and role switching: 35 approved fictional Supabase Auth accounts on verified Free plan, five hosted isolated workspaces, migration 011 active-identity fence, separate HttpOnly cookies and immutable document viewer. Actual seven-role HTTP proof and browser stale-save draft retention passed; 110 full tests and mutation guard passed. No emails, AI calls or payments from this slice.",
     "Approved free sandbox preview deployed as a78783f on one Render Free Node service at rally.gowthamsarveswaran.com; exact DNS-only CNAME, valid HTTPS, managed browser switching for all seven fictional roles, local/Auth redirects preserved. Private synchronous Supabase Cron/Vault installed after queue-based setup failed closed; actual idle database HTTPS request returned 200, Cron receipts succeeded, zero payment operations. Full browser payments and hosted cold-wake/recovery gates remain open.",
-    "PayPal HTTPS webhook route implemented with raw-byte RSA-SHA256 verification, strict PayPal certificate URL allowlist, bounded downloads/cache/body, durable quota and safe error responses. Seven new local cryptographic/HTTP tests and a lost-refund notification recovery regression, all 118 tests, 20 caught mutations, TypeScript and production build passed. Local certificates are disposable test fixtures; deployed subscription and genuine signed Sandbox delivery remain pending."
+    "PayPal HTTPS webhook route implemented with raw-byte RSA-SHA256 verification, strict PayPal certificate URL allowlist, bounded downloads/cache/body, durable quota and safe error responses. Seven new local cryptographic/HTTP tests and a lost-refund notification recovery regression, all 118 tests, 20 caught mutations, TypeScript and production build passed. Local certificates are disposable test fixtures; deployed subscription and genuine signed Sandbox delivery remain pending.",
+    "Actual free-preview webhook release: build 533bc2b live, exact PayPal sandbox subscription audited for eight Payments v2 events, trusted ID saved privately in Render with an environment-only deployment. Config-disabled receiver returned 503, configured forged RSA signature returned 403 using a documented real PayPal public certificate; hosted notification/payment records stayed at zero. Genuine signed delivery awaits a fresh sandbox event. Hosted Alex/Sam requirements saved, while transmission of the fictional Sam note to Astropods is awaiting explicit approval after browser auto-review rejection.",
+    "Judging readiness: official December 1–15 testing window exposed November fixture expiry. Four untouched hosted workspaces now have January 14/15 immutable catalog versions and new fictional planning groups; prior catalogs/groups/preferences and the one leased workspace are preserved. No new Auth accounts, consent, payments or emails. New fixed-end judge lease policy is implemented and tested, but activation through December 16 00:00 UTC awaits action-time approval; existing leases are never renewed. All 123 tests, 22 deliberate mutations, TypeScript and production build passed."
   ],
   "evidence": {
     "scope": "Local service tests use real PostgreSQL and a simulated provider; separate reviewed records prove three actual PayPal sandbox scenarios.",
@@ -38,8 +40,8 @@
       "consecutive_green_runs": 1
     },
     "mutation_checks": {
-      "caught": 20,
-      "total": 20,
+      "caught": 22,
+      "total": 22,
       "targeted_unmodified_baselines_passed": true,
       "file": "evidence/local-mutation-results.json"
     },
@@ -56,7 +58,7 @@
     },
     "credentials_doctor": "All sandbox app, merchant and three distinct personal buyer identifiers configured privately; no credentials committed.",
     "tests": {
-      "passed": 118,
+      "passed": 123,
       "payment_and_adapter": 27,
       "planning_and_model_boundary": 9,
       "persistent_intake": 13,
@@ -66,15 +68,15 @@
       "persistent_clarification": 7,
       "evaluation_oracles": 5,
       "shared_request_limits": 6,
-      "judge_workspace_foundation": 11,
+      "judge_workspace_foundation": 13,
       "scheduled_payment_processing": 7,
-      "offline_judge_preparation": 4,
+      "offline_judge_preparation": 7,
       "webhook_crypto_and_http": 7
     },
     "model_api_calls": 221,
     "ai_quality_and_24_case_evaluation": "passed_actual_72_run_final_prompt",
     "intake_scope": "Real PostgreSQL service tests with trusted test actors; not managed email-auth or browser end-to-end proof.",
-    "latest_full_test_run": "118 local tests passed; 20 weakened safeguards caught including RSA verification and raw-body integrity. TypeScript and production build passed. Actual webhook subscription and signed Sandbox delivery remain pending.",
+    "latest_full_test_run": "123 local tests passed; 22 weakened safeguards caught, including judge-window/calendar bounds, RSA verification and raw-body integrity. TypeScript and production build passed. Actual webhook subscription is configured; genuine signed Sandbox delivery remains pending.",
     "sandbox_oauth": "Sandbox HTTP 200 access token; supplied Client ID matched Rally app on the selected Business seller.",
     "managed_auth_browser": {
       "scope": "Existing healthy Rally Supabase Auth project; local Next.js app and local PostgreSQL; synthetic studio/name/preferences. User completed email login, agent used resulting verified session.",
@@ -240,7 +242,48 @@
       "participantApproved": true,
       "hostedWorkspaceLeasedForBrowserProof": 1
     },
-    "hosted_preview": "evidence/hosted-preview.json"
+    "hosted_preview": "evidence/hosted-preview.json",
+    "hosted_webhooks": {
+      "scope": "actual_deployed_configuration_and_signature_denial_only",
+      "deployedCommit": "533bc2b",
+      "subscriptionVerified": true,
+      "privateRuntimeSettingSaved": true,
+      "renderPlan": "Free",
+      "configuration": "evidence/paypal-webhook-configuration.json",
+      "configDisabledGate": "evidence/hosted-webhook-disabled-gate.json",
+      "forgedSignatureDenial": "evidence/hosted-webhook-signature-denial.json",
+      "signedSandboxDeliveryVerified": false,
+      "recentAppEventListing": {
+        "status": 200,
+        "eventsReturned": 0,
+        "format": "whole-second RFC3339, page size 10"
+      },
+      "paymentMutations": 0
+    },
+    "judging_preparation": {
+      "file": "evidence/judging-workspace-preparation.json",
+      "actual_hosted_refresh": true,
+      "unclaimed_workspaces_refreshed": 4,
+      "leased_workspaces_preserved": 1,
+      "new_auth_accounts": 0,
+      "new_consents": 0,
+      "new_payments": 0,
+      "new_emails": 0,
+      "new_lease_policy_implemented": true,
+      "hosted_new_lease_policy_activated": false,
+      "activation_requires_action_time_approval": true,
+      "required_access_end": "2026-12-16T00:00:00Z",
+      "source_secret_audit": "evidence/source-secret-audit.json"
+    },
+    "existing_devpost_draft": {
+      "checkedAt": "2026-10-03T06:55:48.306716Z",
+      "slug": "rally-m2lakh",
+      "state": "submission_draft",
+      "writeup_empty": true,
+      "video_missing": true,
+      "submitted_at": null,
+      "changed_this_turn": false
+    }
   },
   "external_dependencies": [
     {
@@ -276,7 +319,7 @@
     "Polished public demo video under three minutes",
     "Complete Devpost draft materials; human approval before entry submission"
   ],
-  "next_independent_slice": "Register and verify the actual PayPal sandbox webhook, prove the full six-friend planning/consent and independent sandbox buyer browser journey, and hosted cold-wake/recovery. Record rough demo immediately afterward, then finish public source and submission package.",
+  "next_independent_slice": "Activate the reviewed judge-access window after approval, then prove full six-friend planning/consent, six distinct sandbox buyer approvals, genuine signed webhook delivery and hosted cold-wake/recovery. Recording and submission package remain required; no Devpost submission is authorized.",
   "release_restrictions": [
     "Core PayPal sandbox scenarios verified; full authenticated application and remaining provider recovery gates are incomplete",
     "No live customer payments",

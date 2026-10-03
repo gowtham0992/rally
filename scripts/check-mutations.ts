@@ -1,6 +1,8 @@
 import { readFile,writeFile,mkdir } from 'node:fs/promises';
 import { spawnSync } from 'node:child_process';
 const mutations:{name:string;file:string;from:string;to:string;pattern:string;testFile?:string}[] = [
+  {name:'judge access window bound removed',file:'src/demo/access.ts',from:"if(!window.valid)throw new WebError('DEMO_UNAVAILABLE',503);",to:"if(false)throw new WebError('DEMO_UNAVAILABLE',503);",pattern:'fixed judging window applies',testFile:'test/demo.test.ts'},
+  {name:'judge session calendar lead time removed',file:'src/demo/judging.ts',from:'Date.parse(s.startAt)<=Date.parse(judgingAccessEnd)+26.5*3600000',to:'false',pattern:'judging preparation rejects a past date',testFile:'test/demo-provision.test.ts'},
   {name:'noncanonical payload hash',file:'src/payments/types.ts',from:'JSON.stringify(canonical(value))',to:'JSON.stringify(value)',pattern:'three verified authorizations'},
   {name:'ownership guard removed',file:'src/payments/engine.ts',from:"if (!member) throw new DomainError('NOT_A_MEMBER',403);",to:"if (!member) throw new DomainError('WRONG_SECURITY_RESPONSE',403);",pattern:'object-level ownership'},
   {name:'expired offer accepted',file:'src/payments/engine.ts',from:"offer.state === 'OPEN' && now >= offer.deadline",to:"offer.state === 'OPEN' && false",pattern:'missing authorization at deadline'},

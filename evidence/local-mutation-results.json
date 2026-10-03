@@ -2,6 +2,18 @@
   "mode": "local_database_and_simulated_provider",
   "results": [
     {
+      "mutation": "judge access window bound removed",
+      "baselinePassed": true,
+      "caught": true,
+      "exitCode": 1
+    },
+    {
+      "mutation": "judge session calendar lead time removed",
+      "baselinePassed": true,
+      "caught": true,
+      "exitCode": 1
+    },
+    {
       "mutation": "noncanonical payload hash",
       "baselinePassed": true,
       "caught": true,

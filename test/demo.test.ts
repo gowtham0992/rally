@@ -9,7 +9,7 @@ import {demoRoles,type DemoRole} from '../src/demo/roles.ts';
 import {IntakeService,type IntakeActor} from '../src/intake/service.ts';
 import {ClarificationService} from '../src/intake/clarifications.ts';
 import {BookingService} from '../src/bookings/service.ts';
-import {bindVerifiedSession,clearDemoSession,hasDemoSession,demoLease} from '../src/demo/session.ts';
+import {bindVerifiedSession,clearDemoSession,hasDemoSession,demoLease,setDemoLease} from '../src/demo/session.ts';
 
 // Real isolated PostgreSQL; trusted synthetic actors. These tests do not create
 // managed Auth accounts, send emails, call a model, or authorize PayPal payments.
@@ -85,6 +85,27 @@ test('expired judge leases are rejected without recycling a group or extending i
  await assert.rejects(access.claim(w.commandId,config.code),/DEMO_SESSION_EXPIRED/);await assert.rejects(access.bind(w.lease.token,w.actors.ORGANIZER.userId),/DEMO_SESSION_EXPIRED/);
  await assert.rejects(access.claim(randomUUID(),config.code),/DEMO_FULL/);
  assert.deepEqual((await pool.query('SELECT group_id,expires_at,state FROM demo_workspaces WHERE id=$1',[w.id])).rows[0],prior);assert.equal(prior.state,'LEASED');
+});
+test('fixed judging window applies only to new leases and rejects elapsed or excessive windows without renewing a prior session',async()=>{
+ const w=await workspace(),end=new Date(Date.now()+30*86400000).toISOString(),bounded=new DemoAccess(pool,{...config,accessEnd:end}),commandId=randomUUID();
+ const lease=await bounded.claim(commandId,config.code);assert.equal(lease.workspaceId,w.id);assert.equal(lease.expiresAt,end);
+ const changed=new DemoAccess(peer,{...config,accessEnd:new Date(Date.now()+45*86400000).toISOString()});
+ assert.deepEqual(await changed.claim(commandId,config.code),lease);
+ const future=await workspace();
+ for(const accessEnd of [new Date(Date.now()-1000).toISOString(),new Date(Date.now()+91*86400000).toISOString()])await assert.rejects(new DemoAccess(pool,{...config,accessEnd}).claim(randomUUID(),config.code),/DEMO_UNAVAILABLE/);
+ assert.equal((await pool.query('SELECT state FROM demo_workspaces WHERE id=$1',[future.id])).rows[0].state,'AVAILABLE');
+ await pool.query("UPDATE demo_workspaces SET leased_at=clock_timestamp()-interval '2 days',expires_at=clock_timestamp()-interval '1 day' WHERE id=$1",[w.id]);
+ await assert.rejects(changed.claim(commandId,config.code),/DEMO_SESSION_EXPIRED/);await assert.rejects(changed.workspace(lease.token),/DEMO_SESSION_EXPIRED/);
+ // Quarantine the unused group so subsequent tests retain their own capacity.
+ await pool.query("UPDATE demo_workspaces SET state='PROVISIONING' WHERE id=$1",[future.id]);
+ assert.throws(()=>new DemoAccess(pool,{...config,accessEnd:'not-a-date'}),/SETUP_REQUIRED/);
+});
+test('judge lease cookie retains a fixed window with a 90-day bound and never makes an expired lease usable',()=>{
+ const end=new Date(Date.now()+30*86400000).toISOString(),cookie=setDemoLease(Response.json({}), 'a'.repeat(64),end).headers.get('Set-Cookie')!;
+ const age=Number(cookie.match(/Max-Age=(\d+)/)?.[1]);assert.ok(age>29*86400&&age<=30*86400);assert.match(cookie,/HttpOnly/);assert.match(cookie,/SameSite=Lax/);
+ const bounded=setDemoLease(Response.json({}),'a'.repeat(64),new Date(Date.now()+100*86400000).toISOString());assert.match(bounded.headers.get('Set-Cookie')!,/Max-Age=7776000/);
+ const expired=setDemoLease(Response.json({}),'a'.repeat(64),new Date(Date.now()-1000).toISOString());assert.match(expired.headers.get('Set-Cookie')!,/Max-Age=0/);
+ assert.throws(()=>setDemoLease(Response.json({}),'a'.repeat(64),'invalid'),/DEMO_SESSION_EXPIRED/);
 });
 test('a leaked invite and copied actor ID cannot cross normal or other judge workspace scope',async()=>{
  const a=await reserve(),b=await reserve(),plain={userId:randomUUID(),emailVerified:true};

@@ -1,0 +1,12 @@
+{
+  "checkedAt": "2026-10-03T06:55:48.306716Z",
+  "scope": "Actual isolated local PostgreSQL tests with synthetic identities/provider/Auth fixtures; no external account creation, model inference or payments. Hosted release evidence is separate.",
+  "testsPassed": 123,
+  "judgePreparationTestsPassed": 7,
+  "judgeLeaseSessionTestsPassed": 13,
+  "mutationsCaught": 22,
+  "typecheckPassed": true,
+  "productionBuildPassed": true,
+  "hostedFixedWindowActivated": false,
+  "fixedWindowActivationPendingApproval": true
+}

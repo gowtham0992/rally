@@ -1,0 +1,20 @@
+{
+  "checkedAt": "2026-10-03T06:25:24.553Z",
+  "scope": "actual_hosted_forged_signature_denial_using_documented_paypal_public_certificate",
+  "deployedCommit": "533bc2b",
+  "configuredDeploymentId": "dep-db09s9favr4c73eosbig",
+  "renderPlan": "Free",
+  "certificateSource": "https://developer.paypal.com/api/rest/webhooks/rest/",
+  "certificateFetchStatus": 200,
+  "certificateKeyType": "rsa",
+  "transmissionTimestampWithinCertificateValidity": true,
+  "forgedSignatureStatus": 403,
+  "error": "INVALID_WEBHOOK_SIGNATURE",
+  "receiptsBefore": 0,
+  "receiptsAfter": 0,
+  "paymentOperationsBefore": 0,
+  "paymentOperationsAfter": 0,
+  "signedSandboxDeliveryVerified": false,
+  "simulatorUsed": false,
+  "actualPaymentMutations": 0
+}
