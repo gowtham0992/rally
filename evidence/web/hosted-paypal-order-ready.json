@@ -1,0 +1,13 @@
+{
+  "observedAt": "2026-10-03T18:04:03.401Z",
+  "scope": "Independent PayPal sandbox GET of the actual hosted Alex checkout order. No buyer approval, authorization or capture performed by this script.",
+  "orderId": "8GV45820MC513402N",
+  "intent": "AUTHORIZE",
+  "status": "PAYER_ACTION_REQUIRED",
+  "amount": "48.00",
+  "currency": "USD",
+  "configuredSellerMatched": true,
+  "payerRecorded": false,
+  "authorizationRecorded": false,
+  "captureRecorded": false
+}

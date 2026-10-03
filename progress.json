@@ -42,7 +42,8 @@
     "Verified both Rally repositories are private at the owner's request. Remote main and tracked source trees match; duplicate has no unique branch/tag, issue/PR, release, webhook or workflow run. Backed up its complete Git history in an ignored private bundle. Rally is the sole working repository; duplicate removal awaits explicit deletion approval. Publication is deferred until the owner is ready to submit, and all Devpost actions belong to the owner. No app, deployment, payment or Devpost changes.",
     "With explicit owner approval, deleted the duplicate rally-hackathon repository through the signed-in GitHub browser after the CLI reported missing delete_repo permission. GitHub confirmed deletion and retained rally as private. Removed only the clean duplicate local checkout after rechecking its complete Git bundle; ignored private backup preserved. No Devpost, runtime, deployment, payment or credential changes.",
     "Observed six distinct Personal sandbox logins in the actual PayPal Developer dashboard; no passwords read or accounts created. In the existing hosted fictional demo, Alex closed the six-person roster through Rally. Jordan, Riley, Casey and Taylor each showed their own saved requirements through managed role switches; Sam retained the exact fictional note I leave Friday. Read-only hosted observation confirms CLOSED revision 12, six admitted members and six saved preferences, MERCHANT_REVIEW_REQUIRED, zero model runs, agreed collection arrangements, studio requests, offers or payment operations. Specific Astropods note approval remains pending; no payment or consent outcome fabricated.",
-    "With the owner's specific note/destination approval, the actual hosted Astropods clarification asked What needs to happen with your piece after the session? One call and one question are recorded; fictional Sam confirmed NOMINEE_LATER and then explicitly chose Jordan through the intake UI. Budget and raw note stayed unchanged; reviewed meaning survived nomination. Jordan's actual managed session showed no collection request before owner disclosure. Browser role-check snapshots initially raced navigation; corrected checks verify the selected identity and own summary for all four other friends. Automatic review blocked owner disclosure to Jordan/Willow Studio twice, including after a read-only .invalid identity audit; no consent event, studio request, offer or payment operation was created. Specific remaining fictional-step approval is pending; no workaround used."
+    "With the owner's specific note/destination approval, the actual hosted Astropods clarification asked What needs to happen with your piece after the session? One call and one question are recorded; fictional Sam confirmed NOMINEE_LATER and then explicitly chose Jordan through the intake UI. Budget and raw note stayed unchanged; reviewed meaning survived nomination. Jordan's actual managed session showed no collection request before owner disclosure. Browser role-check snapshots initially raced navigation; corrected checks verify the selected identity and own summary for all four other friends. Automatic review blocked owner disclosure to Jordan/Willow Studio twice, including after a read-only .invalid identity audit; no consent event, studio request, offer or payment operation was created. Specific remaining fictional-step approval is pending; no workaround used.",
+    "After explicit approval of the remaining fictional steps, actual hosted UI recorded Sam's owner disclosure and Jordan's separate nominee agreement. The planner produced the published $48 hand-building session; Alex requested it and the independently selected fictional studio reviewed all six members, the collection arrangement, buffered time and terms, then reserved/opened a two-hour window. Read-only database verification records exactly OWNER_AGREE/NOMINEE_AGREE, one OPEN/HELD six-person $48 USD offer and no qualified payers or captures. One participant acceptance/order is now observed. Independent PayPal sandbox GET confirms Alex's actual order intent AUTHORIZE, $48 USD, configured seller and PAYER_ACTION_REQUIRED with no recorded payer, authorization or capture. Human PayPal approval handoff is open; no complete booking or real merchant availability claim."
   ],
   "evidence": {
     "scope": "Local service tests use real PostgreSQL and a simulated provider; separate reviewed records prove three actual PayPal sandbox scenarios.",
@@ -375,12 +376,43 @@
       "current_note_meaning_preserved_after_nomination": true,
       "explicit_nominee": "Jordan",
       "nominee_could_not_see_arrangement_before_owner_disclosure": true,
-      "collection_disclosure_approval_pending": true,
+      "collection_disclosure_approval_pending": false,
       "consent_events": 0,
       "studio_requests": 0,
       "issued_offers": 0,
       "payment_operations": 0,
-      "role_observation_timing_corrected": true
+      "role_observation_timing_corrected": true,
+      "current_stage_evidence": "evidence/web/hosted-offer-ready.json"
+    },
+    "hosted_offer_ready": {
+      "file": "evidence/web/hosted-offer-ready.json",
+      "approved_fictional_collection_and_studio_steps": true,
+      "owner_and_nominee_events": [
+        "OWNER_AGREE",
+        "NOMINEE_AGREE"
+      ],
+      "candidate": "Hand-build a cup",
+      "amount_minor": 4800,
+      "currency": "USD",
+      "offer_members": 6,
+      "offer_state": "OPEN",
+      "reservation_state": "HELD",
+      "deadline": "2026-10-03T19:58:11.782Z",
+      "observed_accepted_members": 1,
+      "observed_payment_operations": 1,
+      "distinct_qualified_payers": 0,
+      "successful_captures": 0,
+      "full_booking_verified": false
+    },
+    "hosted_paypal_order_ready": {
+      "file": "evidence/web/hosted-paypal-order-ready.json",
+      "sandbox_api_order_verified": true,
+      "intent": "AUTHORIZE",
+      "status": "PAYER_ACTION_REQUIRED",
+      "amount": "48.00",
+      "currency": "USD",
+      "configured_seller_matched": true,
+      "buyer_approval_pending": true
     }
   },
   "external_dependencies": [
@@ -417,7 +449,7 @@
     "Polished public demo video under three minutes",
     "Complete Devpost draft materials; human approval before entry submission"
   ],
-  "next_independent_slice": "With explicit approval for sharing the fictional Sam/Jordan arrangement and the fictional studio review/reservation, complete two-party collection consent, candidate planning and studio offer. Then perform separate sandbox buyer approvals and provider reconciliation for six distinct payer identities, webhook delivery and active hosted recovery. Sole Rally repo stays private until owner is ready; all Devpost actions remain owner-managed.",
+  "next_independent_slice": "User completes Alex's $48 PayPal sandbox approval and checks it in Rally; verify the actual payer/authorization before proceeding through five other distinct Personal buyers. Then prove six captures, genuine signed webhook delivery and hosted recovery. Keep the only Rally repository private until the owner is ready to submit; all Devpost actions are owner-managed.",
   "release_restrictions": [
     "Core PayPal sandbox scenarios verified; full authenticated application and remaining provider recovery gates are incomplete",
     "No live customer payments",

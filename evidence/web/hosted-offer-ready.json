@@ -1,0 +1,41 @@
+{
+  "observedAt": "2026-10-03T18:00:38.764Z",
+  "scope": "Actual hosted fictional six-friend UI through one approved live AI call, explicit owner and nominee collection agreements, organizer request and independent fictional studio reservation. Human sandbox buyer approvals and financial outcome remain pending.",
+  "groupId": "c6740e0d-0c8d-46f8-883b-b2284c2dcca2",
+  "offerId": "eba555ac-5c14-4544-a8dd-0f4d0376d9b7",
+  "offer": {
+    "state": "OPEN",
+    "cleanup": "NOT_REQUIRED",
+    "amount_minor": 4800,
+    "currency": "USD",
+    "opened_at": "2026-10-03T17:58:11.782Z",
+    "deadline": "2026-10-03T19:58:11.782Z",
+    "reservation_end": "2026-10-03T20:28:11.782Z",
+    "reservation_state": "HELD",
+    "blocked_start": "2026-11-20T01:00:00.000Z",
+    "blocked_end": "2026-11-20T03:05:00.000Z",
+    "offer_members": 6,
+    "accepted_members": 1,
+    "distinct_qualified_payers": 0,
+    "payment_operations": 1,
+    "successful_captures": 0
+  },
+  "collectionConsents": [
+    {
+      "owner": "Sam",
+      "nominee": "Jordan",
+      "owner_agreed": true,
+      "nominee_agreed": true,
+      "disclosure_agreed": true,
+      "revoked": false,
+      "actual_events": [
+        "OWNER_AGREE",
+        "NOMINEE_AGREE"
+      ]
+    }
+  ],
+  "remainingFictionalStepsSpecificallyApproved": true,
+  "fullBookingVerified": false,
+  "genuineWebhookDeliveryVerified": false,
+  "realUserOrMerchantFeedback": false
+}
