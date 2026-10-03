@@ -1,0 +1,19 @@
+{
+  "observed_at": "2026-10-03T02:47:56.396975+00:00",
+  "source": "Existing logged-in Astropods Rally account Billing screen, read through browser UI",
+  "freeCreditTotalUsd": 10,
+  "periodUsageUsd": 0.03,
+  "youPayUsd": 0,
+  "paymentMethodOnFile": false,
+  "spendLimitUsd": 10,
+  "runCreditCeilingUsd": 3,
+  "scope": "Synthetic model evaluations use existing free signup credit; no payment method added or paid billing enabled.",
+  "post_run_billing_observation": {
+    "observed_at": "2026-10-03T03:13:17.429697+00:00",
+    "periodUsageUsd": 1.4,
+    "freeCreditAppliedUsd": 1.4,
+    "youPayUsd": 0,
+    "paymentMethodOnFile": false,
+    "scope": "Displayed account totals after all three evaluation runs; rounded billing observation, not a per-run invoice."
+  }
+}

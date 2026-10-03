@@ -72,7 +72,7 @@ The shared planner enforces confirmed budgets, availability, technique, outcome,
 
 The model boundary accepts only finite interpretations with matching source text and revisions. It cannot accept payment actions or invented offering identities. Managed Supabase authentication and bounded Astropods clarification are integrated. The owner explicitly confirms any interpreted requirement; a structured-only path is also available. Private intake, collection consent and merchant approval are implemented at the PostgreSQL service layer. The local planning checks are not the required 24-case model evaluation and establish no AI superiority.
 
-The [build contract](build-contract.json) retains the full product scope. Remaining gates include webhook delivery/signature testing against PayPal, multi-account managed-auth verification, model evaluation, the merchant and mobile participant experience, deployment, observed usability and merchant validation, and submission materials. None is implied complete by green local payment tests.
+The [build contract](build-contract.json) retains the full product scope. Remaining gates include webhook delivery/signature testing against PayPal, multi-account managed-auth verification, full browser payment recovery, observed usability, deployment, observed usability and merchant validation, and submission materials. None is implied complete by green local payment tests.
 
 Code is licensed under MIT. Dependencies retain their respective licenses.
 
@@ -169,7 +169,8 @@ evidence remains under ignored `evidence/private/` until reviewed for sharing.
 
 Actual sandbox results do not establish managed-auth correctness, real merchant
 availability, mobile usability, model quality, incoming webhook verification or
-conversion lift. Those gates remain open.
+conversion lift. The separate synthetic AI evaluation is described below; other
+release gates remain open.
 
 Reviewed actual sandbox records and their execution/verification source metadata
 are in [the evidence report](evidence/paypal-sandbox/index.html). Private app
@@ -181,9 +182,7 @@ The Next.js app now includes email magic-link login, group creation/joining,
 private confirmed requirements, one organizer roster review, and shared
 structured candidate checks. It uses Supabase **Auth** with server-validated
 `getUser()` identity and an HTTP-only cookie session; the current application
-**database remains the isolated local PostgreSQL instance**. Hosted database
-migration, merchant/checkout browser screens, AI quality evaluation and deployment
-remain separate unfinished gates.
+**database remains the isolated local PostgreSQL instance**. The private hosted database is migrated, and merchant/checkout browser screens are implemented. Full multi-account browser recovery and deployment remain unfinished gates.
 
 In `.env.local`, set `SUPABASE_URL`, `SUPABASE_PUBLISHABLE_KEY` (a modern
 publishable key or legacy anon key), `APP_ORIGIN=http://localhost:3000` and
@@ -220,7 +219,7 @@ schema. Exact quotations are grounded in the supplied text; missing or ambiguous
 quotation locations fail closed. The model cannot update confirmed requirements,
 book a session, call tools, or authorize payment. Model failure returns review.
 The actual connection check is recorded in `evidence/ai/connection.json`; the
-72-run quality evaluation remains unfinished. The private participant UI now
+72-run synthetic quality evaluation passed after prompt refinement; both earlier failed runs are retained in `evidence/ai/evaluation-index.json`. The private participant UI now
 requires model-processing consent, shows a finite grounded proposal, and saves
 changes only after owner confirmation. One actual synthetic travel clarification
 and the structured-only alternative were observed in the authenticated browser;
@@ -340,3 +339,9 @@ eight migrations and retains the audited restricted runtime/browsers boundary.
 ### Consumer UI redesign
 
 The user requested a Robinhood-inspired app. Rally now uses white surfaces, black sans-serif type, large prices and readiness values, lime primary actions, compact lists and thin dividers across the home, private intake, offer and studio screens. Prices and people come from the catalog or stored group data. Native disclosure controls keep rosters accessible without pushing mobile forms down the page. The local checks and screenshots are recorded in `evidence/web/redesign.json`; they establish visual and interaction verification, not complete payment or usability proof.
+
+### Actual AI quality evaluation
+
+The latest actual model run passed all 24 authored cases three times: 72/72 quality checks, zero safety failures, and useful clarification in all four ambiguity cases across every repeat. The independently authored structured baseline and per-candidate oracle check confirmed requirements and published facts. This is synthetic engineering evidence, not observed usability or an AI conversion claim. The original prompt failure and one timeout in the corrected prompt's first run remain in the report history.
+
+Read `docs/ai-evaluation.md` for the protocol and `evidence/ai/evaluation-index.json` for every run. With the local app running, open `/evidence/ai/index.html` for the readable report. `npm run ai:evaluate` validates fixture baselines without model calls. Live runs require sufficient existing free credit or explicit spending authorization; there are no automatic model retries.

@@ -5,7 +5,7 @@ import {transaction} from '../db.ts';
 import {clarify,type Clarification} from '../ai/clarifier.ts';
 import {validateInterpretation} from '../planning/interpretation.ts';
 import {preferenceSchema} from '../planning/domain.ts';
-import {confirmedMeaning,consequentialQuestion,type Proposal,type MeaningBound} from '../planning/meaning.ts';
+import {confirmedMeaning,reviewProposal,type Proposal,type MeaningBound} from '../planning/meaning.ts';
 import {IntakeService,IntakeError,type IntakeActor} from './service.ts';
 const base={commandId:z.uuid(),groupId:z.uuid(),expectedRevision:z.number().int().nonnegative(),preferenceId:z.uuid()};
 const startSchema=z.strictObject({...base,modelProcessingAgreed:z.literal(true)});
@@ -73,11 +73,7 @@ export class ClarificationService {
     }
     let proposal:Proposal|null=null;
     if(result.status==='PROPOSAL')try{
-     proposal=validateInterpretation(result.proposal,input);
-     const question=proposal.question;
-     if(question)proposal.question=consequentialQuestion(proposal,preferenceSchema.parse(member.confirmed),group.catalog,group.target_size);
-     const contradictory=proposal.interpretations.some(i=>i.certainty==='explicit'&&i.requirementKey!==proposal?.question?.requirementKey&&proposal?.interpretations.some(j=>j.certainty==='explicit'&&j.requirementKey===i.requirementKey&&j.proposedValue!==i.proposedValue));
-     if(contradictory||proposal.interpretations.length===0||proposal.interpretations.some(i=>i.requirementKey==='EXTRA'||(i.certainty==='ambiguous'&&i.requirementKey!==proposal?.question?.requirementKey)))proposal=null;
+     proposal=reviewProposal(validateInterpretation(result.proposal,input),preferenceSchema.parse(member.confirmed),group.catalog,group.target_size);
      if(proposal?.question){
       const allowed=(await c.query('UPDATE planning_members SET ai_questions=ai_questions+1 WHERE id=$1 AND ai_questions<2 RETURNING id',[member.id])).rowCount;
       if(!allowed)proposal=null;

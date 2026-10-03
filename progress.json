@@ -21,7 +21,8 @@
     "Managed-auth individual checkout with explicit frozen-offer acceptance, owned sandbox redirect and worker authorization; coherent private payment status snapshot. Actual browser created one sandbox order and rejected approval before PayPal sign-in with zero authorizations/captures. Phone/tablet/desktop reviewed; complete multi-buyer browser lifecycle remains required.",
     "Studio-owned cancellation, private participant cancellation requests, worker compensation for late captures and organizer reopening gated on complete recovery; bounded studio booking history. Actual single-account synthetic cancellation/reopening observed with zero payments; six new PostgreSQL tests and six isolated mutations cover financial/ownership boundaries. Hosted migration 008 and restricted-runtime audit passed.",
     "User-requested Robinhood-inspired UI redesign across catalog, private intake, frozen offer and studio: white/black sans-serif, large prices/readiness, lime actions, compact rows and native roster disclosure. Reviewed at 374/768/1280 CSS pixels; keyboard focus, required validation, invalid budget draft retention and explicit discard observed. TypeScript and production build passed.",
-    "Created original Rally convergence logo with the built-in image generator; transparent symbol/wordmark and white-background export saved in public/brand. Header and browser icon integrated, rendered at 374/768/1280 CSS pixels without overflow; TypeScript and production build passed."
+    "Created original Rally convergence logo with the built-in image generator; transparent symbol/wordmark and white-background export saved in public/brand. Header and browser icon integrated, rendered at 374/768/1280 CSS pixels without overflow; TypeScript and production build passed.",
+    "Actual 24-case AI evaluation repeated three times passed with 72/72 quality, zero safety failures and useful clarification in all four ambiguity cases across every repeat. Independent authored structured baseline and per-candidate hard-constraint oracle; original prompt failure and corrected-prompt timeout retained in full history. Corrected prompt and shared production review path verified by 81 local tests, TypeScript and build. Free Astropods credit only, no payment method or paid charge."
   ],
   "evidence": {
     "scope": "Local service tests use real PostgreSQL and a simulated provider; separate reviewed records prove three actual PayPal sandbox scenarios.",
@@ -48,19 +49,20 @@
     },
     "credentials_doctor": "All sandbox app, merchant and three distinct personal buyer identifiers configured privately; no credentials committed.",
     "tests": {
-      "passed": 76,
+      "passed": 81,
       "payment_and_adapter": 26,
       "planning_and_model_boundary": 9,
       "persistent_intake": 13,
       "merchant_booking_loop": 16,
       "web_request_boundaries": 3,
       "bounded_ai_gateway": 3,
-      "persistent_clarification": 6
+      "persistent_clarification": 6,
+      "evaluation_oracles": 5
     },
-    "model_api_calls": 5,
-    "ai_quality_and_24_case_evaluation": "not_executed",
+    "model_api_calls": 221,
+    "ai_quality_and_24_case_evaluation": "passed_actual_72_run_final_prompt",
     "intake_scope": "Real PostgreSQL service tests with trusted test actors; not managed email-auth or browser end-to-end proof.",
-    "latest_full_test_run": "76 tests passed; TypeScript and production build passed for cancellation/reopening. Full PayPal browser recovery, independent managed accounts, AI evaluation, hosted application and submission requirements remain incomplete.",
+    "latest_full_test_run": "81 tests passed, including 5 evaluation-oracle tests. TypeScript and production build passed; actual synthetic model evaluation passed 72/72. Multi-account PayPal browser recovery, deployment, usability and submission gates remain incomplete.",
     "sandbox_oauth": "Sandbox HTTP 200 access token; supplied Client ID matched Rally app on the selected Business seller.",
     "managed_auth_browser": {
       "scope": "Existing healthy Rally Supabase Auth project; local Next.js app and local PostgreSQL; synthetic studio/name/preferences. User completed email login, agent used resulting verified session.",
@@ -96,7 +98,7 @@
       "model": "claude-sonnet-4-6",
       "file": "evidence/ai/connection.json",
       "validated_proposal": true,
-      "quality_evaluation": "not_executed",
+      "quality_evaluation": "Passed 24 cases × 3 actual runs; all earlier failed runs preserved.",
       "participant_ui": "Integrated and actual synthetic owner-confirmed travel clarification observed; structured-only confirmation issued no additional model call",
       "remaining_credit_usd_at_connection_check": 9.98
     },
@@ -117,7 +119,62 @@
       "actual_paypal_cancellation_browser": "Not verified"
     },
     "ui_redesign": "evidence/web/redesign.json",
-    "rally_brand": "public/brand/brand-spec.json"
+    "rally_brand": "public/brand/brand-spec.json",
+    "ai_evaluation": {
+      "scope": "Synthetic actual-model/planning evaluation. Earlier failures retained. Not browser identity, usability, real availability or payment proof.",
+      "status": "PASSED",
+      "latest_report": "evidence/ai/evaluation-94927ecf-c9eb-4af5-806a-389488c07eb6/report.json",
+      "readable_report": "public/evidence/ai/index.html",
+      "model": "claude-sonnet-4-6",
+      "summary": {
+        "completed": 72,
+        "safetyFailures": 0,
+        "qualityPassed": 72,
+        "usefulAmbiguityFixturesAcrossAllRepeats": 4,
+        "clearCasesAllCorrect": true
+      },
+      "all_runs": [
+        {
+          "id": "2fa887ba-b282-4078-ac68-b5c063887ee1",
+          "status": "FAILED",
+          "summary": {
+            "completed": 72,
+            "safetyFailures": 0,
+            "qualityPassed": 61,
+            "usefulAmbiguityFixturesAcrossAllRepeats": 1,
+            "clearCasesAllCorrect": true
+          },
+          "report": "evidence/ai/evaluation-2fa887ba-b282-4078-ac68-b5c063887ee1/report.json",
+          "sourceHash": "54725dab0c4f1637c9241de2841fa59d491c841799247b93d848cab3924df2ea"
+        },
+        {
+          "id": "e0358fd2-8176-41c0-a7c2-c32a7b6a2ffb",
+          "status": "FAILED",
+          "summary": {
+            "completed": 72,
+            "safetyFailures": 0,
+            "qualityPassed": 71,
+            "usefulAmbiguityFixturesAcrossAllRepeats": 4,
+            "clearCasesAllCorrect": false
+          },
+          "report": "evidence/ai/evaluation-e0358fd2-8176-41c0-a7c2-c32a7b6a2ffb/report.json",
+          "sourceHash": "08ca7df62b6705cb80fab64197dfbe81afd06cb0c1a6fc8d28a71e072dba1566"
+        },
+        {
+          "id": "94927ecf-c9eb-4af5-806a-389488c07eb6",
+          "status": "PASSED",
+          "summary": {
+            "completed": 72,
+            "safetyFailures": 0,
+            "qualityPassed": 72,
+            "usefulAmbiguityFixturesAcrossAllRepeats": 4,
+            "clearCasesAllCorrect": true
+          },
+          "report": "evidence/ai/evaluation-94927ecf-c9eb-4af5-806a-389488c07eb6/report.json",
+          "sourceHash": "08ca7df62b6705cb80fab64197dfbe81afd06cb0c1a6fc8d28a71e072dba1566"
+        }
+      ]
+    }
   },
   "external_dependencies": [
     {
@@ -143,7 +200,6 @@
     "Verify incoming PayPal webhook signature/deduplication, actual deadline/withdrawal races and seller balance reconciliation; core three-buyer scenarios passed",
     "Managed participant identity and browser integration of private intake and consent",
     "Deterministic grounded candidate validation and equal structured baseline",
-    "Bounded AI clarification plus 24-case evaluation repeated three times",
     "Merchant catalog, frozen offer approval, reservation and financial exception experience",
     "Merchant cancellation, participant withdrawal/revision and truthful financial exception handling integrated end to end",
     "Complete polished mobile participant journey and meaningful end-to-end verification",
@@ -154,7 +210,7 @@
     "Polished public demo video under three minutes",
     "Complete Devpost draft materials; human approval before entry submission"
   ],
-  "next_independent_slice": "Complete pending PayPal buyer approval/return and distinct managed sessions; implement isolated rate-limited judge access, run AI evaluation and deploy approved sandbox services.",
+  "next_independent_slice": "Implement durable public rate limits and isolated judge access; complete pending sandbox buyer approval and distinct managed browser sessions, then deploy sandbox services with authorization for any charges.",
   "release_restrictions": [
     "Core PayPal sandbox scenarios verified; full authenticated application and remaining provider recovery gates are incomplete",
     "No live customer payments",

@@ -16,7 +16,8 @@
     "sandbox:verify": "node --env-file-if-exists=.env.local --import tsx scripts/verify-sandbox.ts",
     "dev": "next dev --hostname 127.0.0.1",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "ai:evaluate": "node --env-file-if-exists=.env.local --import tsx scripts/evaluate-ai.ts"
   },
   "dependencies": {
     "@supabase/ssr": "0.12.7",

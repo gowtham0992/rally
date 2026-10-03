@@ -1,0 +1,55 @@
+{
+  "scope": "Synthetic actual-model/planning evaluation. Earlier failures retained. Not browser identity, usability, real availability or payment proof.",
+  "status": "PASSED",
+  "latest_report": "evidence/ai/evaluation-94927ecf-c9eb-4af5-806a-389488c07eb6/report.json",
+  "readable_report": "public/evidence/ai/index.html",
+  "model": "claude-sonnet-4-6",
+  "summary": {
+    "completed": 72,
+    "safetyFailures": 0,
+    "qualityPassed": 72,
+    "usefulAmbiguityFixturesAcrossAllRepeats": 4,
+    "clearCasesAllCorrect": true
+  },
+  "all_runs": [
+    {
+      "id": "2fa887ba-b282-4078-ac68-b5c063887ee1",
+      "status": "FAILED",
+      "summary": {
+        "completed": 72,
+        "safetyFailures": 0,
+        "qualityPassed": 61,
+        "usefulAmbiguityFixturesAcrossAllRepeats": 1,
+        "clearCasesAllCorrect": true
+      },
+      "report": "evidence/ai/evaluation-2fa887ba-b282-4078-ac68-b5c063887ee1/report.json",
+      "sourceHash": "54725dab0c4f1637c9241de2841fa59d491c841799247b93d848cab3924df2ea"
+    },
+    {
+      "id": "e0358fd2-8176-41c0-a7c2-c32a7b6a2ffb",
+      "status": "FAILED",
+      "summary": {
+        "completed": 72,
+        "safetyFailures": 0,
+        "qualityPassed": 71,
+        "usefulAmbiguityFixturesAcrossAllRepeats": 4,
+        "clearCasesAllCorrect": false
+      },
+      "report": "evidence/ai/evaluation-e0358fd2-8176-41c0-a7c2-c32a7b6a2ffb/report.json",
+      "sourceHash": "08ca7df62b6705cb80fab64197dfbe81afd06cb0c1a6fc8d28a71e072dba1566"
+    },
+    {
+      "id": "94927ecf-c9eb-4af5-806a-389488c07eb6",
+      "status": "PASSED",
+      "summary": {
+        "completed": 72,
+        "safetyFailures": 0,
+        "qualityPassed": 72,
+        "usefulAmbiguityFixturesAcrossAllRepeats": 4,
+        "clearCasesAllCorrect": true
+      },
+      "report": "evidence/ai/evaluation-94927ecf-c9eb-4af5-806a-389488c07eb6/report.json",
+      "sourceHash": "08ca7df62b6705cb80fab64197dfbe81afd06cb0c1a6fc8d28a71e072dba1566"
+    }
+  ]
+}

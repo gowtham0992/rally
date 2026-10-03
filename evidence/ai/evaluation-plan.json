@@ -1,0 +1,11 @@
+{
+  "mode": "OFFLINE_FIXTURE_CHECK",
+  "fixtures": 24,
+  "categories": 6,
+  "runsPlanned": 72,
+  "baselineOracles": "passed",
+  "modelCalls": 0,
+  "qualityEvaluation": "not_executed",
+  "maxInputBytes": 4599,
+  "conservativeAllowanceUsd": 2.597
+}

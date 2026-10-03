@@ -51,3 +51,15 @@ export function consequentialQuestion(proposal:Proposal,preference:Preference,ca
  const relevantOfferingIds=q.relevantOfferingIds.filter(id=>relevant.has(id));
  return relevantOfferingIds.length?{...q,relevantOfferingIds}:null;
 }
+
+// Shared by persistent intake and evaluation: a schema-valid model response is
+// not necessarily suitable for participant confirmation.
+export function reviewProposal(value:Proposal,preference:Preference,catalog:unknown,size:number):Proposal|null{
+ const proposal=structuredClone(value);
+ if(proposal.question)proposal.question=consequentialQuestion(proposal,preference,catalog,size);
+ const contradictory=proposal.interpretations.some(i=>i.certainty==='explicit'&&i.requirementKey!==proposal.question?.requirementKey
+  &&proposal.interpretations.some(j=>j.certainty==='explicit'&&j.requirementKey===i.requirementKey&&j.proposedValue!==i.proposedValue));
+ if(contradictory||proposal.interpretations.length===0||proposal.interpretations.some(i=>i.requirementKey==='EXTRA'
+  ||(i.certainty==='ambiguous'&&i.requirementKey!==proposal.question?.requirementKey)))return null;
+ return proposal;
+}
