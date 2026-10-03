@@ -2,6 +2,24 @@
   "mode": "local_database_and_simulated_provider",
   "results": [
     {
+      "mutation": "leave-by accepts unpublished date",
+      "baselinePassed": true,
+      "caught": true,
+      "exitCode": 1
+    },
+    {
+      "mutation": "leave-by chooses repeated time",
+      "baselinePassed": true,
+      "caught": true,
+      "exitCode": 1
+    },
+    {
+      "mutation": "leave-by normalizes skipped time",
+      "baselinePassed": true,
+      "caught": true,
+      "exitCode": 1
+    },
+    {
       "mutation": "studio report changes financial cleanup",
       "baselinePassed": true,
       "caught": true,

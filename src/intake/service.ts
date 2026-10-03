@@ -8,6 +8,7 @@ import {respectsMeaning,type MeaningBound} from '../planning/meaning.ts';
 import { confirmedPlan } from '../planning/persisted.ts';
 import type {CollectionRequest} from './projections.ts';
 import {assertWorkspaceScope} from '../demo/scope.ts';
+import {localFields} from '../planning/local-time.ts';
 
 // Only server-authenticated identity may construct this input. Request bodies must
 // never supply actorId/verified. Managed Auth route binding remains a separate gate.
@@ -71,6 +72,10 @@ export class IntakeService {
   if(g.revision!==p.expectedRevision||m.current_preference_id!==p.expectedPreferenceId)throw new IntakeError('STALE_REVISION');
   const catalog=catalogSchema.parse(g.catalog);
   if(p.preference.availableSlotIds.some(id=>!catalog.slots.some(s=>s.id===id)))throw new IntakeError('UNKNOWN_SLOT');
+  if(p.preference.latestFinishAt){
+   const finishDate=localFields(p.preference.latestFinishAt,catalog.timezone).date;
+   if(!catalog.slots.some(s=>localFields(s.startAt,catalog.timezone).date===finishDate))throw new IntakeError('UNKNOWN_FINISH_DATE');
+  }
   if(p.preference.nomineeMemberId){const nominee=(await c.query('SELECT id,admitted FROM planning_members WHERE group_id=$1 AND id=$2',[g.id,p.preference.nomineeMemberId])).rows[0];if(!nominee||nominee.id===m.id||(g.state!=='COLLECTING'&&!nominee.admitted))throw new IntakeError('INVALID_NOMINEE');}
   const preferenceId=randomUUID(),confirmed={...p.preference,memberId:m.id,revisionId:preferenceId};
   const wordingBound=p.optionalText===m.optional_text&&m.wording_bound&&respectsMeaning(confirmed,m.wording_bound as MeaningBound)?m.wording_bound:null;

@@ -23,3 +23,8 @@ test('booking HTTP errors expose only finite actionable codes',async()=>{
  for(const [code,status] of [['STALE_PLANNING',409],['RESERVATION_CONFLICT',409],['NO_VALID_CANDIDATE',422],['UNVERIFIED_CATALOG',422],['SESSION_TOO_SOON',422]] as const){const response=errorResponse(new DomainError(code));assert.equal(response.status,status);assert.deepEqual(await response.json(),{error:code});}
  assert.deepEqual(await errorResponse(new DomainError('private merchant secret')).json(),{error:'TEMPORARILY_UNAVAILABLE'});
 });
+test('leave-by validation returns an actionable private-safe HTTP error',async()=>{
+ const error=Object.assign(new Error('private participant detail'),{code:'UNKNOWN_FINISH_DATE'}),response=errorResponse(error);
+ assert.equal(response.status,409);assert.equal(response.headers.get('Cache-Control'),'no-store');
+ assert.deepEqual(await response.json(),{error:'UNKNOWN_FINISH_DATE'});
+});

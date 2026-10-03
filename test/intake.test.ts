@@ -63,6 +63,27 @@ test('unknown catalog slots fail and empty confirmed availability produces truth
  await assert.rejects(service.save(x.a,p),/UNKNOWN_SLOT/);await service.save(x.a,{...p,preference:{...pref,availableSlotIds:[]}});
  assert.equal((await service.plan(x.a,x.g.groupId)).result.state,'INFEASIBLE');
 });
+test('leave-by accepts only published local dates and rejects without changing saved history',async()=>{
+ const x=await ready(),value={commandId:randomUUID(),groupId:x.g.groupId,expectedRevision:x.closed.revision,expectedPreferenceId:x.first.preferenceId,preference:{...pref,latestFinishAt:'2026-11-22T02:00:00.000Z'},optionalText:null};
+ await assert.rejects(service.save(x.a,value),/UNKNOWN_FINISH_DATE/);
+ const unchanged=await service.participantContext(x.a,x.g.groupId);
+ assert.equal(unchanged.revision,x.closed.revision);assert.equal(unchanged.preference?.revisionId,x.first.preferenceId);assert.equal(unchanged.preference?.latestFinishAt,null);
+ assert.equal(Number((await pool.query('SELECT count(*) FROM preference_revisions WHERE member_id=$1',[x.g.memberId])).rows[0].count),2);
+ // A global cutoff on Friday is valid even when only Thursday is selected.
+ await service.save(x.a,{...value,preference:{...pref,latestFinishAt:'2026-11-21T02:00:00.000Z'}});
+ assert.equal((await service.plan(x.a,x.g.groupId)).result.state,'CANDIDATE_READY');
+});
+test('private leave-by survives retries and limits planning until the participant removes it',async()=>{
+ const x=await ready(),deadline='2026-11-20T02:00:30.123Z',value={commandId:randomUUID(),groupId:x.g.groupId,expectedRevision:x.closed.revision,expectedPreferenceId:x.first.preferenceId,preference:{...pref,latestFinishAt:deadline},optionalText:null};
+ const saved=await service.save(x.a,value);assert.deepEqual(await new IntakeService(pool).save(x.a,value),saved);
+ assert.equal((await service.participantContext(x.a,x.g.groupId)).preference?.latestFinishAt,deadline);
+ assert.ok(!JSON.stringify(await service.participantContext(x.b,x.g.groupId)).includes(deadline));
+ assert.ok(!JSON.stringify(await service.roster(x.a,x.g.groupId)).includes('latestFinishAt'));
+ assert.equal((await service.plan(x.a,x.g.groupId)).result.state,'INFEASIBLE');
+ assert.equal(Number((await pool.query('SELECT count(*) FROM preference_revisions WHERE member_id=$1',[x.g.memberId])).rows[0].count),3);
+ await service.save(x.a,{...value,commandId:randomUUID(),expectedRevision:saved.revision,expectedPreferenceId:saved.preferenceId,preference:pref});
+ assert.equal((await service.plan(x.a,x.g.groupId)).result.state,'CANDIDATE_READY');
+});
 test('private intake schema can migrate down and back up in an isolated empty schema',async()=>{
  const temporary=`intake_migration_${randomUUID().replaceAll('-','')}`;
  await admin.query(`CREATE SCHEMA ${temporary}`);
