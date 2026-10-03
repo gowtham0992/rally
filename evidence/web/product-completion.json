@@ -39,9 +39,25 @@
     "Demo studio/catalog and PayPal sandbox remain; live commerce is outside this scope."
   ],
   "deploy": {
-    "status": "pending",
+    "status": "Live",
+    "source_commit": "7d7d0a5fdef4f95fca5ded06a529dd2596fa1b88",
+    "deploy_id": "dep-db0pasgu01pc73bco1p0",
+    "duration_seconds": 81,
     "plan": "existing Render Free",
-    "schema_changes": 0
+    "schema_changes": 0,
+    "https_readiness": {
+      "observed_at": "2026-10-03T23:55:16.902Z",
+      "status": 200,
+      "ready": true,
+      "cache_control": "no-store"
+    },
+    "unauthenticated_plans_api": {
+      "status": 401,
+      "error": "SIGN_IN_REQUIRED",
+      "cache_control": "no-store"
+    },
+    "private_screenshot": "evidence/private/product-deploy-7d7d0a5.png"
   },
-  "private_ui_screenshot": "evidence/private/product-plans-mobile.png"
+  "private_ui_screenshot": "evidence/private/product-plans-mobile.png",
+  "status": "sandbox_product_complete"
 }

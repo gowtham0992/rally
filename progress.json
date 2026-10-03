@@ -1,5 +1,5 @@
 {
-  "status": "in_progress",
+  "status": "sandbox_product_complete",
   "scope": "Product only. The owner explicitly stopped demo and submission work on 2026-10-03; complete Rally functionality, correctness and UI polish.",
   "completed_local_work": [
     "Isolated Git repository, MIT license, pinned Node/TypeScript dependencies and reproducible payment setup guide",
@@ -543,7 +543,7 @@
     },
     "hosted_partial_failure_preparation": {
       "observedAt": "2026-10-03T22:13:05.756Z",
-      "state": "WAITING_FOR_PAYPAL_DEVELOPER_SIGN_IN",
+      "state": "STOPPED_BY_OWNER_PRODUCT_ONLY_INSTRUCTION",
       "scope": "Separate fictional Friday six-person offer. Existing approved identities; structured preferences prepared offline. Merchant reservation verified in hosted UI. One sandbox order created; zero authorizations, captures, or refunds.",
       "groupId": "e1ff15e6-ba8e-44b7-a9a8-aab7a00c000e",
       "offerId": "2954d9f6-21cd-4abb-9dee-7d2bbf4fc284",
@@ -553,7 +553,7 @@
       "privateCheckpoint": "evidence/private/hosted-recovery-session.json",
       "privateHarness": "evidence/private/hosted-recovery.ts",
       "temporarySchedulerBarrierHeld": false,
-      "remaining": "Sign into the existing Developer account to retrieve sandbox buyer passwords, then complete six actual buyer approvals and deployed recovery.",
+      "remaining": "No further demo execution requested; prior preparation is retained as historical evidence, not a product task.",
       "lastReadOnlyCheck": {
         "observedAt": "2026-10-03T22:42:17.696344+00:00",
         "state": "OPEN",
@@ -640,8 +640,23 @@
       "paypal_calls": 0,
       "emails_sent": 0,
       "hosting_plan": "existing Render Free",
-      "hosted_feature_deployed": false,
-      "schema_migrations_added": 0
+      "hosted_feature_deployed": true,
+      "schema_migrations_added": 0,
+      "runtime_commit": "7d7d0a5fdef4f95fca5ded06a529dd2596fa1b88",
+      "deploy_id": "dep-db0pasgu01pc73bco1p0",
+      "deploy_status": "Live",
+      "deploy_duration_seconds": 81,
+      "https_readiness": {
+        "observed_at": "2026-10-03T23:55:16.902Z",
+        "status": 200,
+        "ready": true,
+        "cache_control": "no-store"
+      },
+      "unauthenticated_plans_api": {
+        "status": 401,
+        "error": "SIGN_IN_REQUIRED",
+        "cache_control": "no-store"
+      }
     }
   },
   "external_dependencies": [
@@ -664,15 +679,12 @@
       "state": "Approved Free Render preview deployed; exact Cloudflare subdomain/HTTPS and private Cron verified for idle transport. Repository remains private; public publication audit is pending."
     }
   ],
-  "remaining_requirements": [
-    "Deploy the verified product update on existing approved Render Free and verify HTTPS readiness and private-route protection."
-  ],
-  "next_independent_slice": "Product only: deploy Your plans/sign-out and truthful group states; verify exact source, HTTPS readiness and authentication boundary. No demo, video, submission, outreach or repository publication.",
+  "remaining_requirements": [],
+  "next_independent_slice": null,
   "release_restrictions": [
-    "Core PayPal sandbox scenarios verified; full authenticated application and remaining provider recovery gates are incomplete",
-    "No live customer payments",
-    "No paid-service charges without authorization",
-    "No external contact or entry submission without authorization"
+    "Product is scoped to the demonstration studio and PayPal sandbox. Live merchant operations and live money remain outside authorization.",
+    "No paid-service charges without authorization.",
+    "No demo runs, submission work, external contact or repository publication under the owner product-only instruction."
   ],
   "completed_sandbox_work": [
     "Three independently authorized buyers successfully captured sequentially before booking confirmation",
@@ -702,6 +714,7 @@
     "outreach": false,
     "repository_publication": false,
     "retain_private_repository": true,
-    "product_testing": "Local automated tests and browser verification remain part of finishing the product."
+    "product_testing": "Local automated tests and browser verification remain part of finishing the product.",
+    "completion": "Existing narrow sandbox product implementation completed and deployed, with local automated recovery tests and browser product checks. Demo/video/Devpost/publication work is excluded by the owner."
   }
 }
