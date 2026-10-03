@@ -337,16 +337,20 @@
       "current_visibility": "private"
     },
     "clean_source_setup": {
-      "file": "evidence/clean-source-setup.json",
-      "source_commit": "6136e2c",
+      "file": "evidence/clean-source-setup-current.json",
+      "source_commit": "4b3d712c575054f2e2acf6087b5b854a925e2e17",
       "npm_ci_passed": true,
+      "offline_cached_install": true,
       "fresh_database_migrations_passed": true,
-      "tests_passed": 123,
-      "mutations_caught": 22,
+      "migrations_applied": 13,
+      "tests_passed": 151,
+      "mutations_caught": 40,
       "typecheck_passed": true,
       "production_build_passed": true,
       "private_environment_files_present": false,
-      "temporary_database_removed": true
+      "temporary_database_removed": true,
+      "temporary_source_removed": true,
+      "runtime_minimum_version_tested": false
     },
     "public_source_audit": {
       "file": "evidence/public-source-release-audit.json",

@@ -1,0 +1,87 @@
+{
+  "sourceCommit": "4b3d712c575054f2e2acf6087b5b854a925e2e17",
+  "sourceTree": "f5a75e98202aa363159d2d42131e9cee09047085",
+  "nodeVersion": "v25.6.0",
+  "npmVersion": "11.8.0",
+  "scope": "Clean tracked-source archive, offline locked dependency install, fresh disposable loopback PostgreSQL container, all migrations, TypeScript, full local tests, mutation checks and production build. No private environment files or provider credentials supplied; model and PayPal tests use simulated transports.",
+  "privateEnvironmentFilesPresent": false,
+  "externalIdentityCheckoutVerified": false,
+  "runtimeMinimumVersionTested": false,
+  "stages": [
+    {
+      "stage": "dependencies",
+      "command": [
+        "npm",
+        "ci",
+        "--offline",
+        "--no-audit",
+        "--no-fund"
+      ],
+      "passed": true,
+      "seconds": 2.52
+    },
+    {
+      "stage": "migrations",
+      "command": [
+        "npm",
+        "run",
+        "db:migrate"
+      ],
+      "passed": true,
+      "seconds": 0.82
+    },
+    {
+      "stage": "typecheck",
+      "command": [
+        "npm",
+        "run",
+        "typecheck"
+      ],
+      "passed": true,
+      "seconds": 2.42
+    },
+    {
+      "stage": "tests",
+      "command": [
+        "npm",
+        "test"
+      ],
+      "passed": true,
+      "seconds": 18.25
+    },
+    {
+      "stage": "mutations",
+      "command": [
+        "npm",
+        "run",
+        "test:mutations"
+      ],
+      "passed": true,
+      "seconds": 29.57
+    },
+    {
+      "stage": "build",
+      "command": [
+        "npm",
+        "run",
+        "build"
+      ],
+      "passed": true,
+      "seconds": 3.31
+    }
+  ],
+  "databaseIsolation": "Separate disposable local container; original application and hosted databases not configured or used.",
+  "postgresImageId": "sha256:b0f9560a2de083e2cc7382e75f808c7381a32852a7ec49117deedb300e552b24",
+  "migrationsApplied": 13,
+  "testsPassed": 151,
+  "mutationsCaught": 40,
+  "mutationsTotal": 40,
+  "trackedApplicationSourceUnchanged": true,
+  "temporaryDatabaseRemoved": true,
+  "checkedAt": "2026-10-03T22:48:48.424728+00:00",
+  "dependencyInstallPassed": true,
+  "migrationPassed": true,
+  "typecheckPassed": true,
+  "productionBuildPassed": true,
+  "temporarySourceRemoved": true
+}

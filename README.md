@@ -41,7 +41,11 @@ fictional demo data. Engineering evidence is not a customer success rate.
 ## Run locally
 
 Use Node.js 22 or newer, npm, Docker and OpenSSL. OpenSSL creates disposable
-certificates for the signature tests; no test key is committed. Start a local
+certificates for the signature tests; no test key is committed. The current
+[clean-source setup](evidence/clean-source-setup-current.json) passed on Node
+25.6.0 and npm 11.8.0 with thirteen migrations, all 151 tests, all 40 mutation
+checks and a production build. The minimum Node version was not tested.
+Start a local
 PostgreSQL database with credentials used only for this development container:
 
 ```sh

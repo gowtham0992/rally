@@ -275,10 +275,13 @@ presenting them as the complete finished journey.
       and sign-in restoration through a separate HTTPS client.
 - [ ] Rehearse the browser testing instructions without leaking credentials
       or consuming all remaining groups.
+- [x] Verify a clean tracked-source archive at `4b3d712`: offline locked install,
+      thirteen fresh migrations, TypeScript, all 151 tests, all 40 mutation checks
+      and production build on Node 25.6.0, without private environment files.
 - [ ] With owner approval, publish the sole MIT-licensed repository, audit its
       final source/history and verify anonymous access and reproducible setup.
-      Earlier clean-source setup proof and the current 151-test/40-mutation
-      suite are engineering evidence; they do not prove final public access.
+      The [current clean setup proof](evidence/clean-source-setup-current.json)
+      is engineering evidence; it does not prove final public access.
 - [ ] Record, edit and publish the actual demo to YouTube; verify duration below
       180 seconds and public playback while signed out.
 - [ ] Obtain user answers for personal fields and the required attestations.
