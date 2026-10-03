@@ -48,7 +48,8 @@
     "Released tested queued-authorization status fix as e21cd60 on Render Free. Exercised cached-artifact rollback to 4ea6c9f and restoration to e21cd60 with no configuration/schema changes. HTTPS readiness and confirmed participant booking passed in each phase; six captures, eighteen operations and twelve processed webhook records preserved. Free instance and auto-deploy Off verified. In-flight recovery and cold wake remain separate gates.",
     "Implemented studio-owned Payments to check page/API with safe read-only reconciliation requests and payment references. Production-build mobile/desktop UI, duplicate clicks, connection recovery and local simulated resolution verified; 130 tests and 25 guard mutations passed. Hosted deployment and manual evidence remain separate gates.",
     "Deployed payment-resolution runtime 6696eef on existing Render Free service; actual studio page and participant denial passed. Cached rollback to e21cd60 and restoration preserved confirmed $288 booking, six captures, eighteen operations and twelve webhooks. PayPal Developer independently confirms genuine capture event resend DELIVERED with HTTP 200; same event stored once with original receipt/processing timestamps unchanged. No new financial operations or judge leases.",
-    "Implemented configurable 30-day raw note/AI quotation expiry after issued or abandoned planning; immutable deadlines, expiry-safe owner reads and AI retries, bounded group-first cleanup and native SQL Cron. Twelve local retention tests and six targeted mutations passed. Hosted isolated fictional note/quotation removed with existing financial history preserved; runtime 43215f7 deployed on Render Free, compatible rollback/restoration and restricted-role closure probe verified."
+    "Implemented configurable 30-day raw note/AI quotation expiry after issued or abandoned planning; immutable deadlines, expiry-safe owner reads and AI retries, bounded group-first cleanup and native SQL Cron. Twelve local retention tests and six targeted mutations passed. Hosted isolated fictional note/quotation removed with existing financial history preserved; runtime 43215f7 deployed on Render Free, compatible rollback/restoration and restricted-role closure probe verified.",
+    "Implemented append-only studio payment reports with current provider status kept separate from unverified observations, strict references, owned cursor history and stable retry commands. Nine new PostgreSQL tests and nine caught mutations; all 151 tests and forty mutations passed. Authenticated local UI save, stale-state rejection, draft retention and connection recovery observed. Hosted migration 013, restricted append-only permissions and unchanged payment/consent history verified; runtime release pending."
   ],
   "evidence": {
     "scope": "Local service tests use real PostgreSQL and a simulated provider; separate reviewed records prove three actual PayPal sandbox scenarios.",
@@ -57,8 +58,8 @@
       "consecutive_green_runs": 1
     },
     "mutation_checks": {
-      "caught": 31,
-      "total": 31,
+      "caught": 40,
+      "total": 40,
       "targeted_unmodified_baselines_passed": true,
       "file": "evidence/local-mutation-results.json"
     },
@@ -75,11 +76,11 @@
     },
     "credentials_doctor": "All sandbox app, merchant and three distinct personal buyer identifiers configured privately; no credentials committed.",
     "tests": {
-      "passed": 142,
+      "passed": 151,
       "payment_and_adapter": 28,
       "planning_and_model_boundary": 9,
       "persistent_intake": 13,
-      "merchant_booking_loop": 22,
+      "merchant_booking_loop": 31,
       "web_request_boundaries": 3,
       "bounded_ai_gateway": 3,
       "persistent_clarification": 7,
@@ -94,7 +95,7 @@
     "model_api_calls": 221,
     "ai_quality_and_24_case_evaluation": "passed_actual_72_run_final_prompt",
     "intake_scope": "Real PostgreSQL service tests with trusted test actors; not managed email-auth or browser end-to-end proof.",
-    "latest_full_test_run": "124 local tests passed; queued-authorization regression observed failing before the minimal fix and passing afterward. All 22 weakened safeguards caught; TypeScript and production build passed. Six genuine authorization and six capture webhooks received and processed in the hosted six-buyer journey. The queued-status patch is deployed; compatible hosted rollback and restoration passed with the completed booking preserved.",
+    "latest_full_test_run": "151 local tests passed and all forty weakened safeguards caught; TypeScript and production build passed. New studio reports cannot change financial truth and preserve draft/history through stale or failed refreshes. These new report writes were observed on a local simulated refund; hosted failure recovery remains separate.",
     "sandbox_oauth": "Sandbox HTTP 200 access token; supplied Client ID matched Rally app on the selected Business seller.",
     "managed_auth_browser": {
       "scope": "Existing healthy Rally Supabase Auth project; local Next.js app and local PostgreSQL; synthetic studio/name/preferences. User completed email login, agent used resulting verified session.",
@@ -488,19 +489,19 @@
       "hosted_duplicate_response_body_observed": false
     },
     "contract_gap_audit": {
-      "observedAt": "2026-10-03T20:18:14.327273Z",
+      "observedAt": "2026-10-03T21:43:00Z",
       "merchant_exception_view_implemented": true,
       "raw_private_text_retention_implemented": true,
       "next_slice_plan": "docs/payment-exceptions-plan.md",
-      "scope": "Source-backed implementation gaps; raw text expiry and native hosted removal now verified. Merchant manual evidence remains open.",
-      "manual_exception_evidence_implemented": false
+      "scope": "Source-backed raw-text expiry and append-only studio evidence requirements implemented. Native hosted text removal is verified; report save observed through local simulated payment UI. Hosted recovery remains an evidence gate.",
+      "manual_exception_evidence_implemented": true
     },
     "merchant_payment_resolution": {
       "file": "evidence/web/payment-resolution.json",
       "implemented": true,
       "verified_local_production_ui": true,
       "hosted_deployed": true,
-      "manual_evidence_workflow_implemented": false,
+      "manual_evidence_workflow_implemented": true,
       "release_file": "evidence/web/payment-resolution-release.json"
     },
     "private_text_retention": {
@@ -516,6 +517,14 @@
       "runtime_commit": "43215f77fd54e1edd3746ea11256c67a58b61f02",
       "rollback_and_restoration_verified": true,
       "restricted_runtime_closure_probe_passed": true
+    },
+    "merchant_payment_evidence": {
+      "file": "evidence/web/payment-evidence.json",
+      "implemented": true,
+      "verified_local_production_ui": true,
+      "hosted_schema_migrations": 13,
+      "runtime_deployment_pending": true,
+      "hosted_report_write_observed": false
     }
   },
   "external_dependencies": [

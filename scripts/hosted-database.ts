@@ -53,7 +53,12 @@ async function run(){
      END IF;
     END IF;
    ELSE
-    EXECUTE format('GRANT SELECT,INSERT,UPDATE,DELETE ON TABLE rally_private.%I TO rally_app',t.tablename);
+    IF t.tablename='payment_reconciliation_evidence' THEN
+     GRANT SELECT,INSERT ON rally_private.payment_reconciliation_evidence TO rally_app;
+     REVOKE UPDATE,DELETE,TRUNCATE,REFERENCES,TRIGGER ON rally_private.payment_reconciliation_evidence FROM rally_app;
+    ELSE
+     EXECUTE format('GRANT SELECT,INSERT,UPDATE,DELETE ON TABLE rally_private.%I TO rally_app',t.tablename);
+    END IF;
     EXECUTE format('ALTER TABLE rally_private.%I ENABLE ROW LEVEL SECURITY',t.tablename);
     IF NOT EXISTS(SELECT 1 FROM pg_policies WHERE schemaname='rally_private' AND tablename=t.tablename AND policyname='rally_server') THEN EXECUTE format('CREATE POLICY rally_server ON rally_private.%I FOR ALL TO rally_app USING (true) WITH CHECK (true)',t.tablename);END IF;
    END IF;

@@ -1,0 +1,74 @@
+{
+  "scope": "Actual authenticated local production-build UI and real isolated PostgreSQL integration tests; simulated provider and fictional studio report. Not actual PayPal support-case or hosted financial-failure proof.",
+  "observedAt": "2026-10-03T21:43:00Z",
+  "contract": "Final amendments section 5: manual resolution records evidence rather than declaring success.",
+  "implementation": {
+    "page": "/m/payments/[operationId]",
+    "api": "/api/studio/payment-evidence",
+    "sources": [
+      "TRANSACTION",
+      "SUPPORT_CASE"
+    ],
+    "reportedOutcomes": [
+      "COMPLETED",
+      "PENDING",
+      "FAILED",
+      "UNRESOLVED"
+    ],
+    "referenceMaxCharacters": 64,
+    "recordsPerOperation": 50,
+    "historyPageSize": 20,
+    "ownerAndWorkspaceScoped": true,
+    "appendOnly": true,
+    "financialStateOverride": false,
+    "providerCallsFromReportCommand": 0,
+    "rawPrivateNotesAccepted": false
+  },
+  "localVerification": {
+    "fullTestsPassed": 151,
+    "bookingTestsPassed": 31,
+    "newRiskTests": 9,
+    "mutationsCaught": 40,
+    "newTargetedMutationsCaught": 9,
+    "typecheckPassed": true,
+    "productionBuildPassed": true,
+    "actualUiSave": {
+      "newReports": 1,
+      "newMetadataEvents": 1,
+      "reportedOutcome": "COMPLETED",
+      "paymentStateAfter": "PENDING",
+      "unchangedTables": [
+        "payment_operations",
+        "offers",
+        "reservations"
+      ]
+    },
+    "draftPreservedOnRefresh": true,
+    "staleSaveRejectedAndDraftPreserved": true,
+    "changedStatusDisablesSaveUntilReviewed": true,
+    "connectionFailurePreservesDraftAndHistory": true,
+    "retryRecovered": true,
+    "mobileCssWidth": 374,
+    "mobileHorizontalOverflowPixels": 0
+  },
+  "hostedSchema": {
+    "migrations": 13,
+    "restrictedCertificateVerifiedTls": true,
+    "runtimeCanRead": true,
+    "runtimeCanInsert": true,
+    "runtimeCanUpdate": false,
+    "runtimeCanDelete": false,
+    "runtimeCanTruncate": false,
+    "browserSchemaAccess": false,
+    "rlsEnabled": true,
+    "immutableTriggerEnabled": true,
+    "reportRows": 0,
+    "protectedFinancialAndConsentHistoryUnchanged": true
+  },
+  "limitations": [
+    "Saving a report in a hosted unfinished PayPal case has not yet been observed.",
+    "An actual lost-response UI retry and expired-identity navigation were not observed on this new page; idempotent service retries and identity rejection were tested.",
+    "Hosted failure/restart/deadline/cold-wake drills and merchant feedback remain separate gates."
+  ],
+  "runtimeDeploymentPending": true
+}

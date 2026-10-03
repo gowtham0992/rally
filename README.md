@@ -25,8 +25,10 @@ Free may take about a minute to wake after inactivity.
 | [Hosted signature denial](evidence/hosted-webhook-signature-denial.json) | The live receiver rejected a forged signature using a real PayPal public certificate. Payment and notification records remained unchanged. |
 | [Private note expiry](evidence/web/private-text-retention.json) | Actual native hosted cleanup removed an isolated fictional note and AI quotation while preserving existing financial and consent history. [Policy and setup](docs/private-text-retention.md). |
 
-The latest full suite has **142 passing tests** using isolated local PostgreSQL
-schemas and controlled provider/Auth/model fixtures. All 31 deliberate guard mutations
+| [Studio payment reports](evidence/web/payment-evidence.json) | Authenticated local UI saved one unverified fictional report without changing simulated payment, booking or reservation records. Stale-state and connection failures preserve the draft. |
+
+The latest full suite has **151 passing tests** using isolated local PostgreSQL
+schemas and controlled provider/Auth/model fixtures. All 40 deliberate guard mutations
 were caught. TypeScript and the production build pass.
 
 The six-buyer hosted browser booking and genuine signed webhook delivery are

@@ -2,6 +2,60 @@
   "mode": "local_database_and_simulated_provider",
   "results": [
     {
+      "mutation": "studio report changes financial cleanup",
+      "baselinePassed": true,
+      "caught": true,
+      "exitCode": 1
+    },
+    {
+      "mutation": "studio evidence semantic dedupe removed",
+      "baselinePassed": true,
+      "caught": true,
+      "exitCode": 1
+    },
+    {
+      "mutation": "studio evidence owner guard removed",
+      "baselinePassed": true,
+      "caught": true,
+      "exitCode": 1
+    },
+    {
+      "mutation": "studio evidence override fields accepted",
+      "baselinePassed": true,
+      "caught": true,
+      "exitCode": 1
+    },
+    {
+      "mutation": "studio evidence stale-state fence removed",
+      "baselinePassed": true,
+      "caught": true,
+      "exitCode": 1
+    },
+    {
+      "mutation": "undispatched payment accepts studio evidence",
+      "baselinePassed": true,
+      "caught": true,
+      "exitCode": 1
+    },
+    {
+      "mutation": "failed capture accepts a resolution report",
+      "baselinePassed": true,
+      "caught": true,
+      "exitCode": 1
+    },
+    {
+      "mutation": "studio evidence record cap removed",
+      "baselinePassed": true,
+      "caught": true,
+      "exitCode": 1
+    },
+    {
+      "mutation": "studio evidence history can be deleted",
+      "baselinePassed": true,
+      "caught": true,
+      "exitCode": 1
+    },
+    {
       "mutation": "expired AI quotations retained",
       "baselinePassed": true,
       "caught": true,

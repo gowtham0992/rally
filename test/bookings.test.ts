@@ -15,7 +15,7 @@ const actor=():IntakeActor=>({userId:randomUUID(),emailVerified:true});
 const merchant=actor();
 const baseCatalog=JSON.parse(await readFile(new URL('../fixtures/studio.json',import.meta.url),'utf8'));
 const catalog={...baseCatalog,slots:baseCatalog.slots.map((s:{id:string},i:number)=>({...s,startAt:new Date(Date.now()+(3+i)*86400000).toISOString()}))};
-const migrations=['001_payments','004_private_intake','005_collection_consent','006_merchant_offers','007_clarifications','008_cancellations'];
+const migrations=['001_payments','004_private_intake','005_collection_consent','006_merchant_offers','007_clarifications','008_cancellations','013_payment_evidence'];
 before(async()=>{await admin.query(`CREATE SCHEMA ${schema}`);for(const file of migrations)await pool.query(await readFile(new URL('../db/'+file+'.sql',import.meta.url),'utf8'));
  await pool.query('INSERT INTO merchant_studios VALUES($1,$2,$3,$4,$5,$6)',[catalog.studioId,merchant.userId,'synthetic_merchant','studio-exclusive',15,20]);
  await pool.query('INSERT INTO merchant_catalog_versions(studio_id,version_id,catalog) VALUES($1,$2,$3)',[catalog.studioId,catalog.versionId,JSON.stringify(catalog)]);
@@ -109,7 +109,9 @@ test('merchant offer migration reverses and reapplies in an isolated empty schem
  const temporary=`merchant_migration_${randomUUID().replaceAll('-','')}`;await admin.query(`CREATE SCHEMA ${temporary}`);
  const tempUrl=new URL(process.env.TEST_DATABASE_URL??localDatabaseUrl);tempUrl.searchParams.set('options',`-c search_path=${temporary},public`);const temp=database(tempUrl.toString());
  try{for(const file of migrations)await temp.query(await readFile(new URL('../db/'+file+'.sql',import.meta.url),'utf8'));
+ await temp.query(await readFile(new URL('../db/013_payment_evidence.down.sql',import.meta.url),'utf8'));
  await temp.query(await readFile(new URL('../db/006_merchant_offers.down.sql',import.meta.url),'utf8'));await temp.query(await readFile(new URL('../db/006_merchant_offers.sql',import.meta.url),'utf8'));
+ await temp.query(await readFile(new URL('../db/013_payment_evidence.sql',import.meta.url),'utf8'));
  assert.equal((await temp.query('SELECT count(*) FROM offer_snapshots')).rows[0].count,'0');
  }finally{await temp.end();await admin.query(`DROP SCHEMA ${temporary} CASCADE`);}
 });
@@ -317,4 +319,115 @@ test('exception pagination stays bounded and a resolved cursor still locates old
  await assert.rejects(bookings.merchantExceptions(merchant,page.nextCursor),/NOT_FOUND/);
  await pool.query("UPDATE payment_operations SET state='FAILED' WHERE offer_id=$1",[page.nextCursor]);
  const next=await bookings.merchantExceptions(owner,page.nextCursor);assert.equal(next.exceptions.length,1);assert.equal(next.exceptions[0].offerId,ids[0]);assert.equal(next.nextCursor,null);
+});
+
+const evidenceCommand=(operationId:string,overrides:Record<string,unknown>={})=>({commandId:randomUUID(),operationId,expectedOperationState:'PENDING',source:'TRANSACTION',reference:'REPORT-123',reportedOutcome:'COMPLETED',...overrides});
+async function financialState(offerId:string){return {
+ operations:(await pool.query('SELECT * FROM payment_operations WHERE offer_id=$1 ORDER BY id',[offerId])).rows,
+ offer:(await pool.query('SELECT * FROM offers WHERE id=$1',[offerId])).rows,
+ reservation:(await pool.query('SELECT * FROM reservations WHERE offer_id=$1',[offerId])).rows,
+};}
+test('studio completed reports never change payment truth, financial work or an active worker lease',async()=>{
+ const f=await pendingRefunds(),op=f.ops[0];
+ await pool.query("UPDATE payment_operations SET lease_token=$2,lease_until=clock_timestamp()+interval '45 seconds' WHERE id=$1",[op.id,randomUUID()]);
+ const before=await financialState(f.issued.offerId),calls=f.provider.calls.length,effects=structuredClone(f.provider.financialEffects);
+ const result=await bookings.recordMerchantPaymentEvidence(merchant,evidenceCommand(op.id));
+ assert.deepEqual(await financialState(f.issued.offerId),before);assert.equal(f.provider.calls.length,calls);assert.deepEqual(f.provider.financialEffects,effects);
+ const page=await bookings.merchantPaymentRecord(merchant,op.id);assert.equal(page.state,'PENDING');assert.equal(page.booking,'CANCELED');assert.equal(page.records[0].reportedOutcome,'COMPLETED');
+ assert.equal(page.records[0].operationStateAtRecording,'PENDING');assert.equal(page.records[0].id,result.evidenceId);assert.equal(page.providerReference,op.provider_id);
+ const original=(await pool.query("SELECT provider_id FROM payment_operations WHERE member_id=$1 AND kind='CAPTURE'",[op.member_id])).rows[0];assert.equal(page.originalProviderReference,original.provider_id);
+ const events=(await pool.query("SELECT * FROM payment_events WHERE operation_id=$1 AND event_type='STUDIO_EVIDENCE_RECORDED'",[op.id])).rows;
+ assert.equal(events.length,1);assert.equal(events[0].state,'CANCELED');
+ for(const secret of ['recorded_by','budgetMinor','Private words',op.request_id,merchant.userId,f.x.actors[0].userId,'payload','approval_url','payer_id'])assert.ok(!JSON.stringify(page).includes(secret));
+ assert.deepEqual((await pool.query('SELECT result FROM intake_commands WHERE id=$1',[result.evidenceId])).rows[0].result,{evidenceId:result.evidenceId});
+});
+test('studio evidence concurrent retries and canonical references append one report and one audit event',async()=>{
+ const f=await pendingRefunds(),op=f.ops[0],command=evidenceCommand(op.id,{reference:' report-123 '});
+ const results=await Promise.all([bookings.recordMerchantPaymentEvidence(merchant,command),new BookingService(pool).recordMerchantPaymentEvidence(merchant,command)]);
+ assert.deepEqual(results[0],results[1]);
+ assert.deepEqual(await bookings.recordMerchantPaymentEvidence(merchant,{...command,reference:'REPORT-123'}),results[0]);
+ const fresh=await Promise.all([bookings.recordMerchantPaymentEvidence(merchant,{...command,commandId:randomUUID()}),bookings.recordMerchantPaymentEvidence(merchant,{...command,commandId:randomUUID()})]);
+ assert.ok(fresh.every(r=>r.evidenceId===results[0].evidenceId));
+ assert.equal((await bookings.merchantPaymentRecord(merchant,op.id)).records.length,1);
+ assert.equal((await pool.query("SELECT count(*) FROM payment_events WHERE operation_id=$1 AND event_type='STUDIO_EVIDENCE_RECORDED'",[op.id])).rows[0].count,'1');
+ await assert.rejects(bookings.recordMerchantPaymentEvidence(merchant,{...command,reportedOutcome:'FAILED'}),/COMMAND_CONFLICT/);
+ const changed=await bookings.recordMerchantPaymentEvidence(merchant,evidenceCommand(op.id,{reportedOutcome:'FAILED'}));
+ assert.notEqual(changed.evidenceId,results[0].evidenceId);assert.equal((await bookings.merchantPaymentRecord(merchant,op.id)).records.length,2);
+});
+test('studio evidence rejects participants, foreign owners, workspaces, operations and cursors',async()=>{
+ const f=await pendingRefunds(),command=evidenceCommand(f.ops[0].id),saved=await bookings.recordMerchantPaymentEvidence(merchant,command);
+ for(const a of [f.x.actors[0],actor(),{...merchant,demoWorkspaceId:randomUUID()}]){
+  await assert.rejects(bookings.merchantPaymentRecord(a,f.ops[0].id),/NOT_FOUND/);
+  await assert.rejects(bookings.recordMerchantPaymentEvidence(a,{...command,commandId:randomUUID()}),/NOT_FOUND/);
+ }
+ await assert.rejects(bookings.recordMerchantPaymentEvidence({...merchant,emailVerified:false},command),/VERIFIED_IDENTITY_REQUIRED/);
+ await assert.rejects(bookings.merchantPaymentRecord({...merchant,emailVerified:false},f.ops[0].id),/VERIFIED_IDENTITY_REQUIRED/);
+ await assert.rejects(bookings.recordMerchantPaymentEvidence(merchant,evidenceCommand(randomUUID())),/NOT_FOUND/);
+ await assert.rejects(bookings.merchantPaymentRecord(merchant,randomUUID()),/NOT_FOUND/);
+ await assert.rejects(bookings.merchantPaymentRecord(merchant,f.ops[1].id,saved.evidenceId),/NOT_FOUND/);
+ await assert.rejects(bookings.merchantPaymentRecord(merchant,f.ops[0].id,randomUUID()),/NOT_FOUND/);
+ await assert.rejects(bookings.merchantPaymentRecord(merchant,'invented'));
+});
+test('studio evidence accepts only bounded references and explicit report outcomes with no override fields',async()=>{
+ const f=await pendingRefunds(),before=await financialState(f.issued.offerId),command=evidenceCommand(f.ops[0].id);
+ for(const reference of ['', 'AB', 'A'.repeat(65), 'person@example.com', 'https://paypal.com/case', 'CASE\n123','CASE 123'])await assert.rejects(bookings.recordMerchantPaymentEvidence(merchant,{...command,reference}));
+ for(const extra of [{state:'SUCCEEDED'},{recordedBy:merchant.userId},{amountMinor:1},{optionalText:'Private note'},{reportedOutcome:'SUCCEEDED'},{source:'EMAIL'},{expectedOperationState:'SUCCEEDED'}])await assert.rejects(bookings.recordMerchantPaymentEvidence(merchant,{...command,...extra}));
+ assert.equal((await bookings.merchantPaymentRecord(merchant,f.ops[0].id)).records.length,0);assert.deepEqual(await financialState(f.issued.offerId),before);
+});
+test('studio evidence fences changed and resolved operations while preserving earlier records and replay results',async()=>{
+ const f=await pendingRefunds(),op=f.ops[0],command=evidenceCommand(op.id),saved=await bookings.recordMerchantPaymentEvidence(merchant,command);
+ await pool.query("UPDATE payment_operations SET state='ACTION_REQUIRED' WHERE id=$1",[op.id]);
+ await assert.rejects(bookings.recordMerchantPaymentEvidence(merchant,evidenceCommand(op.id,{reference:'NEW-123'})),/PAYMENT_EVIDENCE_STALE/);
+ const before=await financialState(f.issued.offerId);
+ await bookings.recordMerchantPaymentEvidence(merchant,evidenceCommand(op.id,{expectedOperationState:'ACTION_REQUIRED',source:'SUPPORT_CASE',reference:'CASE-456',reportedOutcome:'UNRESOLVED'}));
+ assert.deepEqual(await financialState(f.issued.offerId),before);
+ await pool.query("UPDATE payment_operations SET state='SUCCEEDED',provider_status='COMPLETED' WHERE id=$1",[op.id]);
+ assert.deepEqual(await new BookingService(pool).recordMerchantPaymentEvidence(merchant,command),saved);
+ await assert.rejects(bookings.recordMerchantPaymentEvidence(merchant,evidenceCommand(op.id)),/PAYMENT_EVIDENCE_STALE/);
+ const page=await bookings.merchantPaymentRecord(merchant,op.id);assert.equal(page.canRecord,false);assert.equal(page.state,'SUCCEEDED');assert.equal(page.records.length,2);
+ assert.ok((await bookings.offer(merchant,f.issued.offerId)).paymentRecords.some(r=>r.operationId===op.id));
+ assert.deepEqual((await bookings.offer(f.x.actors[0],f.issued.offerId)).paymentRecords,[]);
+ assert.ok(!(await bookings.merchantExceptions(merchant)).exceptions.find(e=>e.offerId===f.issued.offerId)!.operations.some(o=>o.operationId===op.id));
+});
+test('studio evidence cannot mark an uncertain capture complete or create a charge for an undispatched checkout',async()=>{
+ const f=await funded();await f.engine.step(f.issued.offerId);
+ const op=(await pool.query("SELECT * FROM payment_operations WHERE offer_id=$1 AND kind='CAPTURE'",[f.issued.offerId])).rows[0];
+ await pool.query("UPDATE payment_operations SET state='UNKNOWN' WHERE id=$1",[op.id]);const before=await financialState(f.issued.offerId),effects=structuredClone(f.provider.financialEffects);
+ await bookings.recordMerchantPaymentEvidence(merchant,evidenceCommand(op.id,{expectedOperationState:'UNKNOWN'}));
+ assert.deepEqual(await financialState(f.issued.offerId),before);assert.deepEqual(f.provider.financialEffects,effects);assert.equal((await bookings.offer(merchant,f.issued.offerId)).booking,'SETTLING');
+ // An operation without any dispatch has no provider observation to reconcile.
+ await pool.query("UPDATE payment_operations SET dispatched_at=NULL WHERE id=$1",[op.id]);
+ await assert.rejects(bookings.recordMerchantPaymentEvidence(merchant,evidenceCommand(op.id,{expectedOperationState:'UNKNOWN',reference:'NEW-123'})),/PAYMENT_EVIDENCE_UNAVAILABLE/);
+ await f.engine.cancelByMerchant({...f.command(merchant),agreesToFullRefund:true});await pool.query("UPDATE payment_operations SET state='SUCCEEDED' WHERE id=$1",[op.id]);await settle(f.engine,f.issued.offerId);
+});
+test('studio evidence keeps rejected refunds actionable without changing their failed result',async()=>{
+ const f=await pendingRefunds(),op=f.ops[0];await pool.query("UPDATE payment_operations SET state='FAILED',provider_status='FAILED' WHERE id=$1",[op.id]);
+ const before=await financialState(f.issued.offerId);await bookings.recordMerchantPaymentEvidence(merchant,evidenceCommand(op.id,{expectedOperationState:'FAILED',source:'SUPPORT_CASE'}));
+ assert.deepEqual(await financialState(f.issued.offerId),before);assert.equal((await bookings.merchantPaymentRecord(merchant,op.id)).canRecord,true);
+ const capture=(await pool.query("SELECT * FROM payment_operations WHERE member_id=$1 AND kind='CAPTURE'",[op.member_id])).rows[0];
+ await pool.query("UPDATE payment_operations SET state='FAILED' WHERE id=$1",[capture.id]);
+ await assert.rejects(bookings.recordMerchantPaymentEvidence(merchant,evidenceCommand(capture.id,{expectedOperationState:'FAILED'})),/PAYMENT_EVIDENCE_UNAVAILABLE/);
+});
+test('studio evidence bounds each operation at fifty records and pages through equal timestamps without loss',async()=>{
+ const f=await pendingRefunds(),op=f.ops[0],ids=Array.from({length:50},()=>randomUUID()),time=new Date('2026-01-01T00:00:00Z');
+ // Equal timestamps exercise the UUID tie-breaker. These are isolated fixtures,
+ // with real deferred command linkage and immutable-row constraints.
+ for(const [i,id] of ids.entries()){
+  await pool.query('INSERT INTO intake_commands VALUES($1,$2,$3,$4)',[id,merchant.userId,'fixture',JSON.stringify({evidenceId:id})]);
+  await pool.query("INSERT INTO payment_reconciliation_evidence VALUES($1,$2,$3,'TRANSACTION',$4,'UNRESOLVED','PENDING',$5)",[id,op.id,merchant.userId,`REF-${i}`,time]);
+ }
+ const page=await bookings.merchantPaymentRecord(merchant,op.id);assert.equal(page.records.length,20);assert.equal(page.canRecord,false);assert.equal(page.recordLimitReached,true);assert.ok(page.nextCursor);
+ const second=await bookings.merchantPaymentRecord(merchant,op.id,page.nextCursor),third=await bookings.merchantPaymentRecord(merchant,op.id,second.nextCursor);assert.equal(second.records.length,20);assert.equal(third.records.length,10);assert.equal(third.nextCursor,null);
+ assert.deepEqual([...page.records,...second.records,...third.records].map(r=>r.id),ids.toSorted().reverse());
+ await assert.rejects(bookings.recordMerchantPaymentEvidence(merchant,evidenceCommand(op.id,{reference:'REF-51'})),/PAYMENT_EVIDENCE_LIMIT/);
+ // Semantic retries are allowed at the cap, without creating additional records.
+ const dedupe=await bookings.recordMerchantPaymentEvidence(merchant,evidenceCommand(op.id,{reference:'REF-0',reportedOutcome:'UNRESOLVED'}));assert.equal(dedupe.evidenceId,ids[0]);
+});
+test('studio evidence is immutable, linked to a committed command and cannot be dropped after use',async()=>{
+ const f=await pendingRefunds(),op=f.ops[0],saved=await bookings.recordMerchantPaymentEvidence(merchant,evidenceCommand(op.id));
+ await assert.rejects(pool.query("UPDATE payment_reconciliation_evidence SET reported_outcome='FAILED' WHERE id=$1",[saved.evidenceId]),{code:'23514'});
+ await assert.rejects(pool.query('DELETE FROM payment_reconciliation_evidence WHERE id=$1',[saved.evidenceId]),{code:'23514'});
+ await assert.rejects(pool.query("INSERT INTO payment_reconciliation_evidence(id,operation_id,recorded_by,source,reference,reported_outcome,operation_state_at_recording) VALUES($1,$2,$3,'TRANSACTION','ORPHAN-123','UNRESOLVED','PENDING')",[randomUUID(),op.id,merchant.userId]),{code:'23503'});
+ await assert.rejects(pool.query(await readFile(new URL('../db/013_payment_evidence.down.sql',import.meta.url),'utf8')),{code:'23514'});
+ assert.equal((await bookings.merchantPaymentRecord(merchant,op.id)).records.length,1);
 });

@@ -13,6 +13,12 @@ const approveSchema=z.strictObject({commandId:uuid,requestId:uuid,expectedRevisi
  factsConfirmed:z.literal(true),externalCalendarBlocked:z.literal(true),automaticSettlementAgreed:z.literal(true),collectionArrangementsAgreed:z.literal(true)});
 const reopenSchema=z.strictObject({commandId:uuid,groupId:uuid,offerId:uuid,expectedRevision:z.number().int().nonnegative(),offerHash:z.string().length(64),acknowledgesNewApprovals:z.literal(true)});
 const checkPaymentSchema=z.strictObject({commandId:uuid,offerId:uuid,operationId:uuid});
+const evidenceSchema=z.strictObject({commandId:uuid,operationId:uuid,
+ expectedOperationState:z.enum(['UNKNOWN','PENDING','ACTION_REQUIRED','FAILED']),
+ source:z.enum(['TRANSACTION','SUPPORT_CASE']),reference:z.string().trim().toUpperCase().regex(/^[A-Z0-9][A-Z0-9-]{2,63}$/),
+ reportedOutcome:z.enum(['COMPLETED','PENDING','FAILED','UNRESOLVED'])});
+const canRecordEvidence=(op:{state:string;kind:string;dispatched_at:unknown})=>Boolean(op.dispatched_at)&&
+ (['UNKNOWN','PENDING','ACTION_REQUIRED'].includes(op.state)||op.state==='FAILED'&&['VOID','REFUND'].includes(op.kind));
 const closedBookings=new Set(['EXPIRED','WITHDRAWN','SUPERSEDED','ABORTED','CANCELED']);
 const candidateSchema=z.strictObject({catalogVersionId:key,studioId:key,studioName:z.string().min(1).max(100),offeringId:key,activity:z.string().min(1).max(100),slotId:key,
  startAt:z.iso.datetime(),endAt:z.iso.datetime(),timezone:key,amountMinor:z.number().int().min(1).max(1000000),currency:z.literal('USD'),groupSize:z.number().int().min(1).max(8),
@@ -202,6 +208,49 @@ export class BookingService {
    return {checkRequested:true,operationId:p.operationId};
   });
  }
+ private async ownedPaymentOperation(c:pg.PoolClient,actor:IntakeActor,id:string,lock=false){
+  const scope=`FROM payment_operations p JOIN offers o ON o.id=p.offer_id
+   JOIN offer_snapshots os ON os.offer_id=o.id JOIN merchant_studios s ON s.studio_id=os.snapshot->'candidate'->>'studioId'
+   JOIN planning_groups g ON g.id=os.group_id JOIN offer_members m ON m.id=p.member_id
+   WHERE p.id=$1 AND m.offer_id=o.id AND s.owner_user_id=$2 AND (to_jsonb(g)->>'demo_workspace_id') IS NOT DISTINCT FROM $3::text`;
+  const args=[id,actor.userId,actor.demoWorkspaceId??null];
+  // Match worker lock order: the offer first, then the existing operation.
+  if(lock&&!(await c.query(`SELECT o.id ${scope} FOR UPDATE OF o`,args)).rowCount)throw new DomainError('NOT_FOUND',404);
+  const row=(await c.query(`SELECT p.id,p.offer_id,p.kind,p.state,p.provider_id,p.dispatched_at,o.state AS booking_state,o.cleanup,o.amount_minor,os.snapshot,m.ordinal,
+   (SELECT parent.provider_id FROM payment_operations parent WHERE parent.member_id=p.member_id AND parent.offer_id=p.offer_id
+    AND parent.kind=CASE p.kind WHEN 'AUTHORIZE' THEN 'CREATE_ORDER' WHEN 'CAPTURE' THEN 'AUTHORIZE' WHEN 'VOID' THEN 'AUTHORIZE' WHEN 'REFUND' THEN 'CAPTURE' END) AS original_provider_id
+   ${scope}${lock?' FOR UPDATE OF p':''}`,args)).rows[0];
+  if(!row)throw new DomainError('NOT_FOUND',404);return row;
+ }
+ async merchantPaymentRecord(actor:IntakeActor,operationId:string,cursor:string|null=null){this.actor(actor);uuid.parse(operationId);if(cursor)uuid.parse(cursor);
+  return transaction(this.pool,async c=>{
+   const op=await this.ownedPaymentOperation(c,actor,operationId),snapshot=snapshotSchema.parse(op.snapshot);
+   let before:{created_at:Date;id:string}|undefined;
+   if(cursor){before=(await c.query('SELECT created_at,id FROM payment_reconciliation_evidence WHERE id=$1 AND operation_id=$2',[cursor,operationId])).rows[0];if(!before)throw new DomainError('NOT_FOUND',404);}
+   const records=(await c.query(`SELECT id,source,reference,reported_outcome,operation_state_at_recording,created_at FROM payment_reconciliation_evidence
+    WHERE operation_id=$1 AND ($2::timestamptz IS NULL OR (created_at,id)<($2::timestamptz,$3::uuid)) ORDER BY created_at DESC,id DESC LIMIT 21`,[operationId,before?.created_at??null,before?.id??null])).rows;
+   const count=(await c.query('SELECT count(*)::int AS n FROM payment_reconciliation_evidence WHERE operation_id=$1',[operationId])).rows[0].n;
+   return {operationId,offerId:op.offer_id as string,kind:op.kind as string,state:op.state as string,booking:op.booking_state as string,cleanup:op.cleanup as string,
+    activity:snapshot.candidate.activity,memberName:snapshot.roster[op.ordinal].displayName,amountMinor:op.amount_minor as number,currency:'USD' as const,timezone:snapshot.candidate.timezone,
+    providerReference:op.provider_id as string|null,originalProviderReference:op.original_provider_id as string|null,canRecord:canRecordEvidence(op)&&count<50,recordLimitReached:count>=50,
+    records:records.slice(0,20).map(r=>({id:r.id as string,source:r.source as 'TRANSACTION'|'SUPPORT_CASE',reference:r.reference as string,
+     reportedOutcome:r.reported_outcome as 'COMPLETED'|'PENDING'|'FAILED'|'UNRESOLVED',operationStateAtRecording:r.operation_state_at_recording as string,recordedAt:r.created_at.toISOString() as string})),
+    nextCursor:records.length>20?records[19].id as string:null};
+  });
+ }
+ async recordMerchantPaymentEvidence(actor:IntakeActor,value:unknown){const p=evidenceSchema.parse(value);
+  return this.command(actor,p.commandId,{kind:'RECORD_PAYMENT_EVIDENCE',...p},async c=>{
+   const op=await this.ownedPaymentOperation(c,actor,p.operationId,true);
+   if(op.state!==p.expectedOperationState)throw new DomainError('PAYMENT_EVIDENCE_STALE');
+   if(!canRecordEvidence(op))throw new DomainError('PAYMENT_EVIDENCE_UNAVAILABLE');
+   const existing=(await c.query('SELECT id FROM payment_reconciliation_evidence WHERE operation_id=$1 AND source=$2 AND reference=$3 AND reported_outcome=$4',[p.operationId,p.source,p.reference,p.reportedOutcome])).rows[0];
+   if(existing)return {evidenceId:existing.id as string};
+   if((await c.query('SELECT count(*)::int AS n FROM payment_reconciliation_evidence WHERE operation_id=$1',[p.operationId])).rows[0].n>=50)throw new DomainError('PAYMENT_EVIDENCE_LIMIT');
+   await c.query('INSERT INTO payment_reconciliation_evidence(id,operation_id,recorded_by,source,reference,reported_outcome,operation_state_at_recording) VALUES($1,$2,$3,$4,$5,$6,$7)',[p.commandId,p.operationId,actor.userId,p.source,p.reference,p.reportedOutcome,op.state]);
+   await c.query("INSERT INTO payment_events(offer_id,event_type,operation_id,state) VALUES($1,'STUDIO_EVIDENCE_RECORDED',$2,$3)",[op.offer_id,p.operationId,op.booking_state]);
+   return {evidenceId:p.commandId};
+  });
+ }
  async merchantRequest(actor:IntakeActor,requestId:string){this.actor(actor);uuid.parse(requestId);
   return transaction(this.pool,async c=>{
    const request=(await c.query('SELECT r.*,s.owner_user_id,s.setup_minutes,s.cleanup_minutes FROM merchant_requests r JOIN merchant_studios s ON s.studio_id=r.studio_id WHERE r.id=$1',[requestId])).rows[0];
@@ -230,9 +279,12 @@ export class BookingService {
     OR EXISTS(SELECT 1 FROM merchant_studios s WHERE s.studio_id=os.snapshot->'candidate'->>'studioId' AND s.owner_user_id=$2))`,[offerId,actor.userId])).rows[0];
   if(!row)throw new DomainError('NOT_FOUND',404);assertWorkspaceScope(actor,row);const snapshot=snapshotSchema.parse(row.snapshot);
   if(fingerprint(snapshot)!==row.offer_hash)throw new DomainError('OFFER_INTEGRITY_FAILURE',500);
+  const paymentRecords=row.is_merchant?(await this.pool.query(`SELECT p.id,p.kind,m.ordinal FROM payment_operations p JOIN offer_members m ON m.id=p.member_id
+   WHERE p.offer_id=$1 AND (p.state IN ('UNKNOWN','PENDING','ACTION_REQUIRED') OR p.kind IN ('VOID','REFUND') AND p.state='FAILED'
+    OR EXISTS(SELECT 1 FROM payment_reconciliation_evidence e WHERE e.operation_id=p.id)) ORDER BY m.ordinal,p.created_at,p.id LIMIT 40`,[offerId])).rows.map(p=>({operationId:p.id as string,kind:p.kind as string,memberName:snapshot.roster[p.ordinal].displayName})):[];
   return {offerHash:row.offer_hash,booking:row.state,snapshot,cleanup:row.cleanup as string,planningRevision:row.planning_revision as number,
    isParticipant:row.is_participant as boolean,isMerchant:row.is_merchant as boolean,isOrganizer:row.is_organizer as boolean,
-   cancellationRequested:row.is_participant?row.cancellation_requested as boolean:false,
+   paymentRecords,cancellationRequested:row.is_participant?row.cancellation_requested as boolean:false,
    cancellationRequestCount:row.is_merchant?row.cancellation_request_count as number:null,
    canReopen:Boolean(row.is_organizer&&row.is_latest&&row.planning_state==='OFFER_ISSUED'&&closedBookings.has(row.state)&&row.cleanup==='COMPLETE')};
  }
