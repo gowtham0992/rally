@@ -1,3 +1,4 @@
+import {assertWorkspaceScope} from '../demo/scope.ts';
 import {randomUUID} from 'node:crypto';
 import type pg from 'pg';
 import {z} from 'zod';
@@ -20,7 +21,7 @@ export class ClarificationService {
  private actor(a:IntakeActor){z.uuid().parse(a.userId);if(!a.emailVerified)throw new IntakeError('VERIFIED_IDENTITY_REQUIRED');}
  private async owned(c:pg.PoolClient,a:IntakeActor,id:string){
   this.actor(a);z.uuid().parse(id);
-  const group=(await c.query('SELECT * FROM planning_groups WHERE id=$1 FOR UPDATE',[id])).rows[0];if(!group)throw new IntakeError('NOT_FOUND');
+  const group=(await c.query('SELECT * FROM planning_groups WHERE id=$1 FOR UPDATE',[id])).rows[0];if(!group)throw new IntakeError('NOT_FOUND');assertWorkspaceScope(a,group);
   const member=(await c.query(`SELECT m.*,p.confirmed,p.optional_text,p.wording_bound FROM planning_members m LEFT JOIN preference_revisions p ON p.id=m.current_preference_id WHERE m.group_id=$1 AND m.user_id=$2`,[id,a.userId])).rows[0];
   if(!member||(group.state!=='COLLECTING'&&!member.admitted))throw new IntakeError('NOT_FOUND');
   return {group,member};

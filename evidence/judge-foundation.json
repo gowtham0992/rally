@@ -1,0 +1,46 @@
+{
+  "observedAt": "2026-10-03T04:09:59.876034+00:00",
+  "scope": "Real isolated local PostgreSQL service tests using trusted synthetic actors. No managed Auth accounts provisioned, email sent, model called or PayPal payment authorized.",
+  "stage": "FOUNDATION_ONLY",
+  "judgeAccessEnabled": false,
+  "applicationDeployed": false,
+  "localTests": {
+    "newJudgeTests": 8,
+    "fullSuitePassed": 96,
+    "restoredScopeTestsPassed": 8,
+    "typecheck": "passed",
+    "productionBuild": "passed"
+  },
+  "verified": [
+    "Private access code gates complete workspace claims",
+    "Twelve concurrent claims across two independent pools allocate each of three ready workspaces once",
+    "Twelve concurrent retries of one command claim one workspace; retry survives a new pool",
+    "Lease token stored only as SHA-256 digest; role passwords derived privately",
+    "Expired 24-hour lease is rejected without extending or recycling its group",
+    "Leaked invite cannot join a normal group or another judge workspace",
+    "Private intake, clarification, commands, studio queue and issued offer enforce workspace scope",
+    "Six distinct synthetic friends keep separate private requirements; independent studio approval creates an OPEN offer with zero payment operations",
+    "Empty schema up/down/up works; populated down migration refused"
+  ],
+  "mutation": {
+    "change": "Disabled assertWorkspaceScope comparison in isolation",
+    "expectedResult": "FAIL",
+    "observedFailedTests": 2,
+    "sourceRestored": true,
+    "restoredTestsPassed": 8
+  },
+  "hosted": {
+    "migrations": 10,
+    "audit": "evidence/hosted-database.json",
+    "browserSchemaAccess": false,
+    "runtimeAuthUsersAccess": false
+  },
+  "remaining": [
+    "Offline checkpointed managed Auth account provisioning",
+    "Separate demo cookie namespace and lease-to-verified-user binding",
+    "Role-switch UI and stale-tab viewer protection",
+    "Actual managed session privacy proof",
+    "Sandbox browser checkout and financial recovery",
+    "Render deployment and public custom-domain verification"
+  ]
+}

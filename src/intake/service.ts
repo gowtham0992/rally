@@ -7,10 +7,11 @@ import { catalogSchema,preferenceSchema } from '../planning/domain.ts';
 import {respectsMeaning,type MeaningBound} from '../planning/meaning.ts';
 import { confirmedPlan } from '../planning/persisted.ts';
 import type {CollectionRequest} from './projections.ts';
+import {assertWorkspaceScope} from '../demo/scope.ts';
 
 // Only server-authenticated identity may construct this input. Request bodies must
 // never supply actorId/verified. Managed Auth route binding remains a separate gate.
-export interface IntakeActor {userId:string;emailVerified:boolean}
+export interface IntakeActor {userId:string;emailVerified:boolean;demoWorkspaceId?:string}
 export class IntakeError extends Error {constructor(public code:string){super(code);}}
 const uuid=z.uuid(),name=z.string().trim().min(1).max(60);
 const createSchema=z.strictObject({commandId:uuid,targetSize:z.number().int().min(1).max(8),displayName:name,catalog:catalogSchema});
@@ -22,9 +23,9 @@ const consentCommandSchema=z.strictObject({commandId:uuid,groupId:uuid,expectedR
 const digest=(s:string)=>createHash('sha256').update(s).digest('hex');
 export class IntakeService {
  constructor(private pool:pg.Pool){}
- private actor(a:IntakeActor){uuid.parse(a.userId);if(a.emailVerified!==true)throw new IntakeError('VERIFIED_IDENTITY_REQUIRED');}
+ private actor(a:IntakeActor){uuid.parse(a.userId);if(a.demoWorkspaceId)uuid.parse(a.demoWorkspaceId);if(a.emailVerified!==true)throw new IntakeError('VERIFIED_IDENTITY_REQUIRED');}
  async recordCommand<T>(actor:IntakeActor,id:string,payload:unknown,fn:(c:pg.PoolClient)=>Promise<T>):Promise<T>{
-  this.actor(actor);const hash=fingerprint(payload);
+  this.actor(actor);const hash=fingerprint(actor.demoWorkspaceId?{workspaceId:actor.demoWorkspaceId,payload}:payload);
   return transaction(this.pool,async c=>{
    // Global command lock makes lost-response retries single-effect, including creation.
    await c.query('SELECT pg_advisory_xact_lock(hashtextextended($1,0))',[id]);
@@ -34,7 +35,7 @@ export class IntakeService {
    await c.query('INSERT INTO intake_commands VALUES($1,$2,$3,$4)',[id,actor.userId,hash,JSON.stringify(result)]);return result;
   });
  }
- private async group(c:pg.PoolClient,id:string){const row=(await c.query('SELECT * FROM planning_groups WHERE id=$1 FOR UPDATE',[id])).rows[0];if(!row)throw new IntakeError('NOT_FOUND');return row;}
+ private async group(c:pg.PoolClient,id:string,actor:IntakeActor){const row=(await c.query('SELECT * FROM planning_groups WHERE id=$1 FOR UPDATE',[id])).rows[0];if(!row)throw new IntakeError('NOT_FOUND');assertWorkspaceScope(actor,row);return row;}
  private async changed(c:pg.PoolClient,id:string,kind:string){
   const row=(await c.query("UPDATE planning_groups SET revision=revision+1,candidate=NULL,state=CASE WHEN state='MERCHANT_REVIEW' THEN 'CLOSED' ELSE state END WHERE id=$1 RETURNING revision",[id])).rows[0];
   await c.query('INSERT INTO planning_events(group_id,revision,kind) VALUES($1,$2,$3)',[id,row.revision,kind]);return row.revision as number;
@@ -42,12 +43,17 @@ export class IntakeService {
  async create(actor:IntakeActor,value:unknown){const p=createSchema.parse(value);return this.recordCommand(actor,p.commandId,{kind:'CREATE',...p},async c=>{
   const groupId=randomUUID(),memberId=randomUUID(),invite=randomBytes(32).toString('hex');
   await c.query('INSERT INTO planning_groups(id,organizer_id,invite_digest,target_size,catalog) VALUES($1,$2,$3,$4,$5)',[groupId,actor.userId,digest(invite),p.targetSize,JSON.stringify(p.catalog)]);
+  if(actor.demoWorkspaceId){
+   const workspace=(await c.query('SELECT w.catalog FROM demo_workspaces w JOIN demo_identities d ON d.workspace_id=w.id WHERE w.id=$1 AND d.user_id=$2',[actor.demoWorkspaceId,actor.userId])).rows[0];
+   if(!workspace||fingerprint(workspace.catalog)!==fingerprint(p.catalog))throw new IntakeError('NOT_FOUND');
+   await c.query('UPDATE planning_groups SET demo_workspace_id=$2 WHERE id=$1',[groupId,actor.demoWorkspaceId]);
+  }
   await c.query('INSERT INTO planning_members(id,group_id,user_id,display_name) VALUES($1,$2,$3,$4)',[memberId,groupId,actor.userId,p.displayName]);
   return {groupId,memberId,invite,revision:0};
  });}
  async join(actor:IntakeActor,value:unknown){const p=joinSchema.parse(value);return this.recordCommand(actor,p.commandId,{kind:'JOIN',...p},async c=>{
   const g=(await c.query('SELECT * FROM planning_groups WHERE invite_digest=$1 FOR UPDATE',[digest(p.invite)])).rows[0];
-  if(!g)throw new IntakeError('NOT_FOUND');if(g.state!=='COLLECTING')throw new IntakeError('ROSTER_CLOSED');
+  if(!g)throw new IntakeError('NOT_FOUND');assertWorkspaceScope(actor,g);if(g.state!=='COLLECTING')throw new IntakeError('ROSTER_CLOSED');
   const prior=(await c.query('SELECT id FROM planning_members WHERE group_id=$1 AND user_id=$2',[g.id,actor.userId])).rows[0];
   if(prior)return {groupId:g.id,memberId:prior.id,revision:g.revision};
   if(Number((await c.query('SELECT count(*) FROM planning_members WHERE group_id=$1',[g.id])).rows[0].count)>=8)throw new IntakeError('GROUP_FULL');
@@ -55,7 +61,7 @@ export class IntakeService {
   return {groupId:g.id,memberId,revision:await this.changed(c,g.id,'MEMBER_JOINED')};
  });}
  async save(actor:IntakeActor,value:unknown){const p=saveSchema.parse(value);return this.recordCommand(actor,p.commandId,{kind:'SAVE',...p},async c=>{
-  const g=await this.group(c,p.groupId);
+  const g=await this.group(c,p.groupId,actor);
   const m=(await c.query('SELECT m.id,m.current_preference_id,m.admitted,p.optional_text,p.wording_bound FROM planning_members m LEFT JOIN preference_revisions p ON p.id=m.current_preference_id WHERE m.group_id=$1 AND m.user_id=$2',[p.groupId,actor.userId])).rows[0];
   if(!m)throw new IntakeError('NOT_FOUND');
   if(!['COLLECTING','CLOSED','MERCHANT_REVIEW'].includes(g.state))throw new IntakeError('PLANNING_LOCKED');
@@ -72,11 +78,12 @@ export class IntakeService {
   return {preferenceId,revision:await this.changed(c,g.id,'PREFERENCE_CONFIRMED')};
  });}
  async ownPreferences(actor:IntakeActor,groupId:string){this.actor(actor);uuid.parse(groupId);
+  const group=(await this.pool.query('SELECT * FROM planning_groups WHERE id=$1',[groupId])).rows[0];if(!group)throw new IntakeError('NOT_FOUND');assertWorkspaceScope(actor,group);
   const m=(await this.pool.query('SELECT p.confirmed,p.optional_text,p.wording_bound FROM planning_members m LEFT JOIN preference_revisions p ON p.id=m.current_preference_id WHERE m.group_id=$1 AND m.user_id=$2',[groupId,actor.userId])).rows[0];
   if(!m)throw new IntakeError('NOT_FOUND');return {preference:m.confirmed,optionalText:m.optional_text};
  }
  async participantContext(actor:IntakeActor,groupId:string){this.actor(actor);uuid.parse(groupId);return transaction(this.pool,async c=>{
-  const g=await this.group(c,groupId);
+  const g=await this.group(c,groupId,actor);
   const own=(await c.query('SELECT m.id,m.display_name,m.admitted,p.confirmed,p.optional_text,p.wording_bound FROM planning_members m LEFT JOIN preference_revisions p ON p.id=m.current_preference_id WHERE m.group_id=$1 AND m.user_id=$2',[groupId,actor.userId])).rows[0];
   if(!own||(g.state!=='COLLECTING'&&!own.admitted))throw new IntakeError('NOT_FOUND');
   // Names and readiness are public within the group; only this authenticated
@@ -90,13 +97,13 @@ export class IntakeService {
    organizerInvite:g.organizer_id===actor.userId?(await c.query("SELECT result->>'invite' AS invite FROM intake_commands WHERE actor_id=$1 AND result->>'groupId'=$2 AND result ? 'invite' LIMIT 1",[actor.userId,groupId])).rows[0]?.invite??null:null};
  });}
  async roster(actor:IntakeActor,groupId:string){this.actor(actor);uuid.parse(groupId);
-  const g=(await this.pool.query('SELECT organizer_id,revision,state,target_size FROM planning_groups WHERE id=$1',[groupId])).rows[0];if(!g||g.organizer_id!==actor.userId)throw new IntakeError('NOT_FOUND');
+  const g=(await this.pool.query('SELECT * FROM planning_groups WHERE id=$1',[groupId])).rows[0];if(!g||g.organizer_id!==actor.userId)throw new IntakeError('NOT_FOUND');assertWorkspaceScope(actor,g);
   // This is the ONLY organizer intake projection; budgets and text never enter it.
   const members=(await this.pool.query('SELECT id,display_name AS "displayName",admitted,current_preference_id IS NOT NULL AS ready FROM planning_members WHERE group_id=$1 ORDER BY id',[groupId])).rows;
   return {revision:g.revision,state:g.state,targetSize:g.target_size,members};
  }
  async closeRoster(actor:IntakeActor,value:unknown){const p=closeSchema.parse(value);return this.recordCommand(actor,p.commandId,{kind:'CLOSE',...p},async c=>{
-  const g=await this.group(c,p.groupId);if(g.organizer_id!==actor.userId)throw new IntakeError('NOT_FOUND');
+  const g=await this.group(c,p.groupId,actor);if(g.organizer_id!==actor.userId)throw new IntakeError('NOT_FOUND');
   if(g.state!=='COLLECTING')throw new IntakeError('ROSTER_CLOSED');if(g.revision!==p.expectedRevision)throw new IntakeError('STALE_REVISION');
   const selected=(await c.query('SELECT id,user_id,current_preference_id FROM planning_members WHERE group_id=$1 AND id=ANY($2::uuid[])',[g.id,p.memberIds])).rows;
   if(new Set(p.memberIds).size!==p.memberIds.length||selected.length!==g.target_size||selected.length!==p.memberIds.length||!selected.some(m=>m.user_id===actor.userId)||selected.some(m=>!m.current_preference_id))throw new IntakeError('INVALID_ROSTER');
@@ -104,7 +111,7 @@ export class IntakeService {
   await c.query("UPDATE planning_groups SET state='CLOSED' WHERE id=$1",[g.id]);return {revision:await this.changed(c,g.id,'ROSTER_CLOSED')};
  });}
  async collectionConsent(actor:IntakeActor,value:unknown){const p=consentCommandSchema.parse(value);return this.recordCommand(actor,p.commandId,{kind:'CONSENT',...p},async c=>{
-  const g=await this.group(c,p.groupId);
+  const g=await this.group(c,p.groupId,actor);
   const caller=(await c.query('SELECT id,admitted FROM planning_members WHERE group_id=$1 AND user_id=$2',[g.id,actor.userId])).rows[0];
   if(!caller?.admitted)throw new IntakeError('NOT_FOUND');
   const owner=(await c.query('SELECT m.id,p.confirmed FROM planning_members m JOIN preference_revisions p ON p.id=m.current_preference_id WHERE m.group_id=$1 AND m.admitted AND p.id=$2',[g.id,p.preferenceId])).rows[0];
@@ -134,6 +141,7 @@ export class IntakeService {
   return {revision:await this.changed(c,g.id,'COLLECTION_CONSENT_CHANGED')};
  });}
  async collectionRequests(actor:IntakeActor,groupId:string){this.actor(actor);uuid.parse(groupId);
+  const group=(await this.pool.query('SELECT * FROM planning_groups WHERE id=$1',[groupId])).rows[0];if(!group)throw new IntakeError('NOT_FOUND');assertWorkspaceScope(actor,group);
   return this.collectionProjection(this.pool,actor,groupId);
  }
  private async collectionProjection(c:pg.Pool|pg.PoolClient,actor:IntakeActor,groupId:string):Promise<CollectionRequest[]>{
@@ -150,7 +158,7 @@ export class IntakeService {
   return rows;
  }
  async plan(actor:IntakeActor,groupId:string){this.actor(actor);uuid.parse(groupId);return transaction(this.pool,async c=>{
-  const g=await this.group(c,groupId);const member=(await c.query('SELECT admitted FROM planning_members WHERE group_id=$1 AND user_id=$2',[groupId,actor.userId])).rows[0];
+  const g=await this.group(c,groupId,actor);const member=(await c.query('SELECT admitted FROM planning_members WHERE group_id=$1 AND user_id=$2',[groupId,actor.userId])).rows[0];
   if(!member?.admitted)throw new IntakeError('NOT_FOUND');if(g.state!=='CLOSED')throw new IntakeError('PLANNING_LOCKED');
   const {result}=await confirmedPlan(c,groupId,g.catalog);
   await c.query('UPDATE planning_groups SET candidate=$2 WHERE id=$1',[groupId,JSON.stringify(result)]);

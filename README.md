@@ -242,17 +242,19 @@ migrated with a restricted application role before deployment. Set `APP_ORIGIN`
 to the final HTTPS address and allow exactly its `/auth/callback` in Supabase.
 Do not deploy with the local database URL. No real payments are enabled.
 
-Rollback for this first sandbox deployment: suspend the worker before stopping
-the web service; keep the hosted database and unresolved payment records intact.
-Redeploy the previous compatible commit to resume. This remains a planned
-procedure until exercised against a hosted deployment. Do not discard unknown
-payment results during a redeploy. Observe health failures and worker step failures
-immediately after deployment; do not enable checkout while these are unresolved.
+Rollback for this first sandbox deployment: stop new checkout before rolling
+back the web service; keep the worker running until outstanding payment results
+are reconciled and recovery is complete. Preserve the hosted database and payment
+history, then redeploy the previous compatible commit against the additive
+schema. This remains a planned procedure until exercised against hosting.
+Observe health failures and worker step failures immediately after deployment;
+do not enable checkout while these are unresolved. The intended custom domain,
+verified credit preflight and DNS sequence are in [the deployment plan](docs/deployment.md).
 
 ### Hosted database and collection UI
 
 The existing Rally Supabase project has a private application schema and a
-restricted server login. All nine migrations are installed. The connection
+restricted server login. All ten migrations are installed. The connection
 verifies the provider certificate and hostname using the bundled public root.
 Browser roles cannot access this schema. See [hosted database setup](docs/hosted-database.md)
 and the scoped [hosted audit](evidence/hosted-database.json). The local app still
@@ -334,7 +336,7 @@ not replace actual PayPal cancellation/refund browser proof.
 Migration 008 adds the CANCELED terminal state and one private cancellation
 request per participant. Its down migration refuses populated cancellation
 history; use forward fixes after real use. The hosted private schema now has
-nine migrations and retains the audited restricted runtime/browsers boundary.
+ten migrations and retains the audited restricted runtime/browsers boundary.
 
 ### Consumer UI redesign
 
@@ -356,10 +358,21 @@ quotas; raw emails and forwarded-IP headers never become quota identifiers.
 The worker clears expired counters in bounded batches. See
 [request quota policy and verification](docs/request-limits.md).
 
-All 88 local tests pass, including independent connection concurrency and the
+All 96 local tests pass, including independent connection concurrency and the
 production model-budget wrapper with persistent owner checks. Twelve actual
 local HTTP paths rejected exhausted capacity with `429` and `Retry-After`;
 quota restoration preserved the existing signed-in experience. These controls
 do not prove deployed traffic protection or isolated judge access, which remain
 release gates. The ninth additive migration and restricted hosted-role/TLS audit
 passed; Render remains undeployed.
+
+The judge-workspace foundation adds finite, non-recycled 24-hour leases,
+seven separately registered synthetic role identities per workspace, catalog
+and group scope checks, and cross-workspace invite/command protection.
+Eight PostgreSQL tests cover concurrent claims, expiry, scoped private reads,
+independent studio approval and safe migration rollback. A deliberately disabled
+scope guard failed two tests; the restored guard passed. See
+[the bounded foundation evidence](evidence/judge-foundation.json).
+Managed Auth account provisioning, cookie separation, role-switch UI, stale-tab
+binding and the public judge journey remain unfinished. No judge endpoint is
+enabled and these service tests are not browser or human-feedback proof.

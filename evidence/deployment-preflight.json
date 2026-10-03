@@ -1,0 +1,34 @@
+{
+  "observedAt": "2026-10-03T04:09:59.876034+00:00",
+  "scope": "Read-only logged-in Cloudflare DNS and Render billing observations; no records changed and no hosting provisioned.",
+  "intendedOrigin": "https://rally.gowthamsarveswaran.com",
+  "cloudflare": {
+    "domainObserved": true,
+    "rallyRecordExists": false,
+    "totalExistingRecords": 8,
+    "plan": "Free"
+  },
+  "render": {
+    "workspacePlan": "Hobby",
+    "creditUsd": 50,
+    "creditExpires": "2027-09-30",
+    "paymentMethodOnFile": false,
+    "pendingCharges": false,
+    "customDomainsUsed": 0,
+    "customDomainsIncluded": 2,
+    "services": 0
+  },
+  "plannedCompute": {
+    "webInstances": 1,
+    "workerInstances": 1,
+    "plan": "starter (legacy name for 0.5c-512mb)",
+    "baseMonthlyUsd": 14,
+    "source": "https://render.com/pricing",
+    "scope": "Compute only; additional usage reduces credit runway"
+  },
+  "dnsChangePending": true,
+  "appDeployed": false,
+  "creationAcceptsCreditWithoutCard": "not yet verified",
+  "paidServiceCreditExhaustionBehavior": "not yet verified",
+  "plan": "docs/deployment.md"
+}

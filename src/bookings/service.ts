@@ -1,3 +1,4 @@
+import {assertWorkspaceScope} from '../demo/scope.ts';
 import {randomUUID} from 'node:crypto';
 import type pg from 'pg';
 import {z} from 'zod';
@@ -25,22 +26,22 @@ const snapshotSchema=z.strictObject({schemaVersion:z.literal(1),offerId:uuid,gro
 export type OfferSnapshot=z.infer<typeof snapshotSchema>;
 export class BookingService {
  constructor(private pool:pg.Pool){}
- private actor(a:IntakeActor){uuid.parse(a.userId);if(a.emailVerified!==true)throw new DomainError('VERIFIED_IDENTITY_REQUIRED',401);}
+ private actor(a:IntakeActor){uuid.parse(a.userId);if(a.demoWorkspaceId)uuid.parse(a.demoWorkspaceId);if(a.emailVerified!==true)throw new DomainError('VERIFIED_IDENTITY_REQUIRED',401);}
  private async command<T>(actor:IntakeActor,id:string,payload:unknown,fn:(c:pg.PoolClient)=>Promise<T>):Promise<T>{
   this.actor(actor);return transaction(this.pool,async c=>{
    await c.query('SELECT pg_advisory_xact_lock(hashtextextended($1,0))',[id]);
-   const hash=fingerprint(payload),prior=(await c.query('SELECT actor_id,fingerprint,result FROM intake_commands WHERE id=$1',[id])).rows[0];
+   const hash=fingerprint(actor.demoWorkspaceId?{workspaceId:actor.demoWorkspaceId,payload}:payload),prior=(await c.query('SELECT actor_id,fingerprint,result FROM intake_commands WHERE id=$1',[id])).rows[0];
    if(prior){if(prior.actor_id!==actor.userId||prior.fingerprint!==hash)throw new DomainError('COMMAND_CONFLICT');return prior.result as T;}
    const result=await fn(c);await c.query('INSERT INTO intake_commands VALUES($1,$2,$3,$4)',[id,actor.userId,hash,JSON.stringify(result)]);return result;
   });
  }
- private async group(c:pg.PoolClient,id:string){const g=(await c.query('SELECT * FROM planning_groups WHERE id=$1 FOR UPDATE',[id])).rows[0];if(!g)throw new DomainError('NOT_FOUND',404);return g;}
+ private async group(c:pg.PoolClient,id:string,actor:IntakeActor){const g=(await c.query('SELECT * FROM planning_groups WHERE id=$1 FOR UPDATE',[id])).rows[0];if(!g)throw new DomainError('NOT_FOUND',404);assertWorkspaceScope(actor,g);return g;}
  private selected(plan:Awaited<ReturnType<typeof confirmedPlan>>,offeringId:string,slotId:string):Candidate{
   if(plan.result.state!=='CANDIDATE_READY')throw new DomainError('NO_VALID_CANDIDATE',422);
   const candidate=plan.result.candidates.find(c=>c.offeringId===offeringId&&c.slotId===slotId);if(!candidate)throw new DomainError('NO_VALID_CANDIDATE',422);return candidate;
  }
  async request(actor:IntakeActor,value:unknown){const p=requestSchema.parse(value);return this.command(actor,p.commandId,{kind:'REQUEST_OFFER',...p},async c=>{
-  const g=await this.group(c,p.groupId);if(g.organizer_id!==actor.userId)throw new DomainError('NOT_FOUND',404);
+  const g=await this.group(c,p.groupId,actor);if(g.organizer_id!==actor.userId)throw new DomainError('NOT_FOUND',404);
   if(g.state!=='CLOSED'||g.revision!==p.expectedRevision)throw new DomainError('STALE_PLANNING');
   await this.recovered(c,g.id);
   const plan=await confirmedPlan(c,g.id,g.catalog),candidate=this.selected(plan,p.offeringId,p.slotId);
@@ -62,7 +63,7 @@ export class BookingService {
   if(unresolved.rowCount)throw new DomainError('PAYMENT_RECOVERY_REQUIRED');
  }
  async reopen(actor:IntakeActor,value:unknown){const p=reopenSchema.parse(value);return this.command(actor,p.commandId,{kind:'REOPEN_PLANNING',...p},async c=>{
-  const g=await this.group(c,p.groupId);if(g.organizer_id!==actor.userId)throw new DomainError('NOT_FOUND',404);
+  const g=await this.group(c,p.groupId,actor);if(g.organizer_id!==actor.userId)throw new DomainError('NOT_FOUND',404);
   if(g.state!=='OFFER_ISSUED'||g.revision!==p.expectedRevision)throw new DomainError('STALE_PLANNING');
   const latest=(await c.query(`SELECT o.id,o.offer_hash FROM merchant_requests r JOIN offers o ON o.id=r.approved_offer_id
    WHERE r.group_id=$1 AND r.state='APPROVED' ORDER BY r.planning_revision DESC LIMIT 1`,[g.id])).rows[0];
@@ -76,7 +77,7 @@ export class BookingService {
   try{return await this.command(actor,p.commandId,{kind:'APPROVE_OFFER',...p},async c=>{
    const request=(await c.query('SELECT r.*,s.owner_user_id,s.paypal_merchant_id,s.resource_id,s.setup_minutes,s.cleanup_minutes FROM merchant_requests r JOIN merchant_studios s ON s.studio_id=r.studio_id WHERE r.id=$1',[p.requestId])).rows[0];
    if(!request||request.owner_user_id!==actor.userId)throw new DomainError('NOT_FOUND',404);
-   const g=await this.group(c,request.group_id);
+   const g=await this.group(c,request.group_id,actor);
    if(g.state!=='MERCHANT_REVIEW'||g.revision!==p.expectedRevision||request.planning_revision!==g.revision||request.state!=='PENDING')throw new DomainError('STALE_PLANNING');
    const plan=await confirmedPlan(c,g.id,g.catalog),candidate=this.selected(plan,request.offering_id,request.slot_id);
    if(plan.sourceHash!==request.source_hash||plan.rows.length!==g.target_size)throw new DomainError('STALE_PLANNING');
@@ -113,14 +114,14 @@ export class BookingService {
    const studios=(await c.query('SELECT studio_id FROM merchant_studios WHERE owner_user_id=$1',[actor.userId])).rows;
    if(!studios.length)throw new DomainError('NOT_FOUND',404);
    let before:{created_at:Date;id:string}|undefined;
-   if(cursor){before=(await c.query('SELECT r.created_at,r.id FROM merchant_requests r JOIN merchant_studios s ON s.studio_id=r.studio_id WHERE r.id=$1 AND s.owner_user_id=$2',[cursor,actor.userId])).rows[0];if(!before)throw new DomainError('NOT_FOUND',404);}
+   if(cursor){before=(await c.query(`SELECT r.created_at,r.id FROM merchant_requests r JOIN merchant_studios s ON s.studio_id=r.studio_id JOIN planning_groups g ON g.id=r.group_id WHERE r.id=$1 AND s.owner_user_id=$2 AND (to_jsonb(g)->>'demo_workspace_id') IS NOT DISTINCT FROM $3::text`,[cursor,actor.userId,actor.demoWorkspaceId??null])).rows[0];if(!before)throw new DomainError('NOT_FOUND',404);}
    const rows=(await c.query(`SELECT r.id,r.created_at,r.offering_id,r.slot_id,v.catalog,g.target_size
     FROM merchant_requests r JOIN merchant_studios s ON s.studio_id=r.studio_id
     JOIN merchant_catalog_versions v ON v.studio_id=r.studio_id AND v.version_id=r.catalog_version_id
     JOIN planning_groups g ON g.id=r.group_id
-    WHERE s.owner_user_id=$1 AND r.state='PENDING' AND g.state='MERCHANT_REVIEW' AND g.revision=r.planning_revision
+    WHERE s.owner_user_id=$1 AND (to_jsonb(g)->>'demo_workspace_id') IS NOT DISTINCT FROM $4::text AND r.state='PENDING' AND g.state='MERCHANT_REVIEW' AND g.revision=r.planning_revision
     AND ($2::timestamptz IS NULL OR (r.created_at,r.id)<($2::timestamptz,$3::uuid))
-    ORDER BY r.created_at DESC,r.id DESC LIMIT 21`,[actor.userId,before?.created_at??null,before?.id??null])).rows;
+    ORDER BY r.created_at DESC,r.id DESC LIMIT 21`,[actor.userId,before?.created_at??null,before?.id??null,actor.demoWorkspaceId??null])).rows;
    const requests=rows.slice(0,20).map(r=>{const catalog=catalogSchema.parse(r.catalog),offering=catalog.offerings.find(o=>o.id===r.offering_id),slot=catalog.slots.find(s=>s.id===r.slot_id);
     if(!offering||!slot)throw new DomainError('UNVERIFIED_CATALOG',422);
     return {requestId:r.id as string,studioName:catalog.studioName,activity:offering.name,startAt:slot.startAt,timezone:catalog.timezone,amountMinor:offering.priceMinor,groupSize:r.target_size as number};});
@@ -132,12 +133,12 @@ export class BookingService {
    if(!(await c.query('SELECT 1 FROM merchant_studios WHERE owner_user_id=$1 LIMIT 1',[actor.userId])).rowCount)throw new DomainError('NOT_FOUND',404);
    let before:{opened_at:Date;id:string}|undefined;
    if(cursor){before=(await c.query(`SELECT o.opened_at,o.id FROM offers o JOIN offer_snapshots os ON os.offer_id=o.id
-    JOIN merchant_studios s ON s.studio_id=os.snapshot->'candidate'->>'studioId' WHERE o.id=$1 AND s.owner_user_id=$2`,[cursor,actor.userId])).rows[0];if(!before)throw new DomainError('NOT_FOUND',404);}
+    JOIN merchant_studios s ON s.studio_id=os.snapshot->'candidate'->>'studioId' JOIN planning_groups g ON g.id=os.group_id WHERE o.id=$1 AND s.owner_user_id=$2 AND (to_jsonb(g)->>'demo_workspace_id') IS NOT DISTINCT FROM $3::text`,[cursor,actor.userId,actor.demoWorkspaceId??null])).rows[0];if(!before)throw new DomainError('NOT_FOUND',404);}
    const rows=(await c.query(`SELECT o.id,o.state,o.cleanup,os.snapshot,
     (SELECT count(*)::integer FROM cancellation_requests cr JOIN offer_members m ON m.id=cr.member_id WHERE m.offer_id=o.id) AS requests
-    FROM offers o JOIN offer_snapshots os ON os.offer_id=o.id JOIN merchant_studios s ON s.studio_id=os.snapshot->'candidate'->>'studioId'
-    WHERE s.owner_user_id=$1 AND ($2::timestamptz IS NULL OR (o.opened_at,o.id)<($2::timestamptz,$3::uuid))
-    ORDER BY o.opened_at DESC,o.id DESC LIMIT 21`,[actor.userId,before?.opened_at??null,before?.id??null])).rows;
+    FROM offers o JOIN offer_snapshots os ON os.offer_id=o.id JOIN merchant_studios s ON s.studio_id=os.snapshot->'candidate'->>'studioId' JOIN planning_groups g ON g.id=os.group_id
+    WHERE (to_jsonb(g)->>'demo_workspace_id') IS NOT DISTINCT FROM $4::text AND s.owner_user_id=$1 AND ($2::timestamptz IS NULL OR (o.opened_at,o.id)<($2::timestamptz,$3::uuid))
+    ORDER BY o.opened_at DESC,o.id DESC LIMIT 21`,[actor.userId,before?.opened_at??null,before?.id??null,actor.demoWorkspaceId??null])).rows;
    const bookings=rows.slice(0,20).map(r=>{const snapshot=snapshotSchema.parse(r.snapshot);return {offerId:r.id as string,booking:r.state as string,cleanup:r.cleanup as string,cancellationRequests:r.requests as number,activity:snapshot.candidate.activity,startAt:snapshot.candidate.startAt,timezone:snapshot.candidate.timezone,groupSize:snapshot.roster.length};});
    return {bookings,nextCursor:rows.length>20?bookings.at(-1)!.offerId:null};
   });
@@ -146,7 +147,7 @@ export class BookingService {
   return transaction(this.pool,async c=>{
    const request=(await c.query('SELECT r.*,s.owner_user_id,s.setup_minutes,s.cleanup_minutes FROM merchant_requests r JOIN merchant_studios s ON s.studio_id=r.studio_id WHERE r.id=$1',[requestId])).rows[0];
    if(!request||request.owner_user_id!==actor.userId)throw new DomainError('NOT_FOUND',404);
-   const g=await this.group(c,request.group_id);
+   const g=await this.group(c,request.group_id,actor);
    if(request.state==='APPROVED')return {requestId,state:'APPROVED' as const,offerId:request.approved_offer_id};
    if(g.state!=='MERCHANT_REVIEW'||g.revision!==request.planning_revision)return {requestId,state:'STALE' as const};
    const plan=await confirmedPlan(c,g.id,g.catalog);if(plan.sourceHash!==request.source_hash)return {requestId,state:'STALE' as const};
@@ -158,6 +159,7 @@ export class BookingService {
  }
  async offer(actor:IntakeActor,offerId:string){this.actor(actor);uuid.parse(offerId);
   const row=(await this.pool.query(`SELECT os.snapshot,o.offer_hash,o.state,o.cleanup,g.revision AS planning_revision,g.state AS planning_state,
+    to_jsonb(g)->>'demo_workspace_id' AS demo_workspace_id,
     g.organizer_id=$2 AS is_organizer,
     NOT EXISTS(SELECT 1 FROM merchant_requests r WHERE r.group_id=g.id AND r.state='APPROVED' AND r.planning_revision>(os.snapshot->>'planningRevision')::integer) AS is_latest,
     EXISTS(SELECT 1 FROM cancellation_requests cr JOIN offer_members m ON m.id=cr.member_id WHERE m.offer_id=o.id AND m.user_id=$2) AS cancellation_requested,
@@ -167,7 +169,7 @@ export class BookingService {
     FROM offer_snapshots os JOIN offers o ON o.id=os.offer_id JOIN planning_groups g ON g.id=os.group_id
     WHERE os.offer_id=$1 AND (EXISTS(SELECT 1 FROM offer_members m WHERE m.offer_id=o.id AND m.user_id=$2)
     OR EXISTS(SELECT 1 FROM merchant_studios s WHERE s.studio_id=os.snapshot->'candidate'->>'studioId' AND s.owner_user_id=$2))`,[offerId,actor.userId])).rows[0];
-  if(!row)throw new DomainError('NOT_FOUND',404);const snapshot=snapshotSchema.parse(row.snapshot);
+  if(!row)throw new DomainError('NOT_FOUND',404);assertWorkspaceScope(actor,row);const snapshot=snapshotSchema.parse(row.snapshot);
   if(fingerprint(snapshot)!==row.offer_hash)throw new DomainError('OFFER_INTEGRITY_FAILURE',500);
   return {offerHash:row.offer_hash,booking:row.state,snapshot,cleanup:row.cleanup as string,planningRevision:row.planning_revision as number,
    isParticipant:row.is_participant as boolean,isMerchant:row.is_merchant as boolean,isOrganizer:row.is_organizer as boolean,

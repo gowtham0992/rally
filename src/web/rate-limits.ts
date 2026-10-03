@@ -10,6 +10,8 @@ export const requestPolicies={
  ACTOR_WRITE:{limit:60,seconds:60},
  GROUP_CREATE:{limit:10,seconds:86400},
  MODEL_GLOBAL:{limit:72,seconds:86400},
+ DEMO_ENTRY:{limit:20,seconds:86400},
+ DEMO_SWITCH:{limit:240,seconds:3600},
 } as const;
 export type RequestScope=keyof typeof requestPolicies;
 export class RateLimitError extends WebError {
