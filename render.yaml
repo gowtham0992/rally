@@ -1,10 +1,10 @@
 # Sandbox deployment. Supply secrets in Render, never in this file.
-# One Starter web service and one Starter worker; no autoscaling.
+# Free web service; Supabase Cron triggers bounded durable settlement processing.
 services:
   - type: web
     name: rally
     runtime: node
-    plan: starter
+    plan: free
     region: oregon
     domains:
       - rally.gowthamsarveswaran.com
@@ -17,6 +17,10 @@ services:
         value: 22.22.0
       - key: APP_ORIGIN
         value: https://rally.gowthamsarveswaran.com
+      - key: RALLY_SETTLEMENT_MODE
+        value: scheduled
+      - key: RALLY_SETTLEMENT_TRIGGER_KEY
+        sync: false
       - key: RALLY_RATE_LIMIT_KEY
         sync: false
       - key: DATABASE_URL
@@ -38,25 +42,4 @@ services:
       - key: ASTRO_GATEWAY_API_KEY
         sync: false
       - key: MODEL_DEFAULT
-        sync: false
-  - type: worker
-    name: rally-settlement
-    runtime: node
-    plan: starter
-    region: oregon
-    buildCommand: npm ci
-    startCommand: npm run worker
-    autoDeployTrigger: off
-    envVars:
-      - key: NODE_VERSION
-        value: 22.22.0
-      - key: DATABASE_URL
-        sync: false
-      - key: PAYPAL_CLIENT_ID
-        sync: false
-      - key: PAYPAL_CLIENT_SECRET
-        sync: false
-      - key: PAYPAL_MERCHANT_ID
-        sync: false
-      - key: PAYPAL_WEBHOOK_ID
         sync: false

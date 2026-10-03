@@ -42,5 +42,6 @@
     "repositoryAlreadyConnected": true,
     "domainBlueprintConfigured": true,
     "dnsChanged": false
-  }
+  },
+  "supersededBy": "Participant requires no card/paid charges: one Render Free web service and existing Supabase Cron; see evidence/free-hosting-preflight.json and docs/deployment.md"
 }

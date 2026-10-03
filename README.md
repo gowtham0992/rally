@@ -235,15 +235,17 @@ the AI option while preserving the same private fields and explicit note review.
 Apply migration `007_clarifications` before starting the updated application;
 the database role must be server-only.
 
-`render.yaml` prepares one web service and one settlement worker, with manual
-deploys and secrets supplied in Render. `/api/health` checks the app database
+`render.yaml` prepares one **Free** web service, with manual code deploys and
+secrets supplied in Render. Supabase Cron will invoke a private, bounded payment
+processing endpoint while offers or recovery work exist; no paid worker is
+provisioned. The scheduler and custom domain are not live yet. `/api/health` checks the app database
 without exposing database errors. The hosted database has been provisioned; deployment configuration must be
 migrated with a restricted application role before deployment. Set `APP_ORIGIN`
 to the final HTTPS address and allow exactly its `/auth/callback` in Supabase.
 Do not deploy with the local database URL. No real payments are enabled.
 
 Rollback for this first sandbox deployment: stop new checkout before rolling
-back the web service; keep the worker running until outstanding payment results
+back the web service; keep scheduled processing or the worker running until outstanding payment results
 are reconciled and recovery is complete. Preserve the hosted database and payment
 history, then redeploy the previous compatible commit against the additive
 schema. This remains a planned procedure until exercised against hosting.

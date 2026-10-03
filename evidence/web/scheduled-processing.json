@@ -1,0 +1,43 @@
+{
+  "observedAt": "2026-10-03T04:45:53.289Z",
+  "scope": "Actual local production-build HTTP requests and real PostgreSQL; verified idle database before invoking, zero provider/payment work.",
+  "results": [
+    {
+      "case": "anonymous",
+      "status": 403,
+      "body": {
+        "error": "REQUEST_NOT_ALLOWED"
+      }
+    },
+    {
+      "case": "wrong-key",
+      "status": 403,
+      "body": {
+        "error": "REQUEST_NOT_ALLOWED"
+      }
+    },
+    {
+      "case": "query-key-rejected",
+      "status": 403,
+      "body": {
+        "error": "REQUEST_NOT_ALLOWED"
+      }
+    },
+    {
+      "case": "method-rejected",
+      "status": 405,
+      "body": null
+    },
+    {
+      "case": "authenticated-idle",
+      "status": 200,
+      "body": {
+        "state": "IDLE",
+        "steps": 0,
+        "failures": 0
+      }
+    }
+  ],
+  "paymentOperationsExecuted": 0,
+  "hostedScheduleVerified": false
+}

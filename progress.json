@@ -25,7 +25,8 @@
     "Actual 24-case AI evaluation repeated three times passed with 72/72 quality, zero safety failures and useful clarification in all four ambiguity cases across every repeat. Independent authored structured baseline and per-candidate hard-constraint oracle; original prompt failure and corrected-prompt timeout retained in full history. Corrected prompt and shared production review path verified by 81 local tests, TypeScript and build. Free Astropods credit only, no payment method or paid charge.",
     "Durable shared PostgreSQL request quotas for login, verified reads/writes, group creation and actual model dispatch; private HMAC subjects, no forwarded-IP trust, bounded expired-row cleanup and readiness config/migration checks. Actual local 12-route HTTP proof, mobile denial/input retention, seven new tests and one caught quota mutation; hosted migration 009 and restricted-role TLS audit passed. Judge isolation and deployment remain unfinished.",
     "Judge-workspace foundation: finite non-recycled 24-hour leases and seven synthetic role registrations, scoped group/catalog/intake/clarification/studio boundaries, command and invite isolation. Eight new PostgreSQL tests and caught scope mutation; 96 full tests, TypeScript and build passed. Hosted additive migration 010 and restricted-role/TLS audit passed. Managed Auth provisioning, separate cookies, role-switch/stale-tab UI and actual judge/browser journey remain unfinished; no public endpoint enabled.",
-    "Applied participant-provided hackathon advice to an explicit narrow execution focus and eight-scene 155-second demo plan. Current official judging criteria, dates and packaging requirements checked via Devpost connector; factual metadata recorded. Main six-person browser recording, public video, full rules/eligibility audit and final submission packet remain unfinished; no customer/consent/payment outcome fabricated."
+    "Applied participant-provided hackathon advice to an explicit narrow execution focus and eight-scene 155-second demo plan. Current official judging criteria, dates and packaging requirements checked via Devpost connector; factual metadata recorded. Main six-person browser recording, public video, full rules/eligibility audit and final submission packet remain unfinished; no customer/consent/payment outcome fabricated.",
+    "Free-hosting adaptation after participant declined card/payment: one Render Free web Blueprint, private bounded scheduled payment runner, offline Supabase Cron/Vault setup command; seven new scheduler and four resumable judge-preparation tests. Actual idle production HTTP boundary verified; 107 full tests, typecheck and production build passed. Hosted scheduler and managed judge identities are not created yet."
   ],
   "evidence": {
     "scope": "Local service tests use real PostgreSQL and a simulated provider; separate reviewed records prove three actual PayPal sandbox scenarios.",
@@ -52,7 +53,7 @@
     },
     "credentials_doctor": "All sandbox app, merchant and three distinct personal buyer identifiers configured privately; no credentials committed.",
     "tests": {
-      "passed": 96,
+      "passed": 107,
       "payment_and_adapter": 26,
       "planning_and_model_boundary": 9,
       "persistent_intake": 13,
@@ -62,12 +63,14 @@
       "persistent_clarification": 7,
       "evaluation_oracles": 5,
       "shared_request_limits": 6,
-      "judge_workspace_foundation": 8
+      "judge_workspace_foundation": 8,
+      "scheduled_payment_processing": 7,
+      "offline_judge_preparation": 4
     },
     "model_api_calls": 221,
     "ai_quality_and_24_case_evaluation": "passed_actual_72_run_final_prompt",
     "intake_scope": "Real PostgreSQL service tests with trusted test actors; not managed email-auth or browser end-to-end proof.",
-    "latest_full_test_run": "96 full local tests passed; eight judge tests passed after restoring a deliberately disabled scope guard that failed two regressions. TypeScript and production build passed; hosted migration 010/TLS/private-role audit passed. Managed judge Auth, role switching, browser payment recovery, deployment and submission gates remain open.",
+    "latest_full_test_run": "107 full local tests passed; weakened scheduler authorization and judge metadata guards each caught. TypeScript and production build passed. Actual local authenticated idle HTTP scheduler boundary verified. Hosted schedule, full judge Auth/browser journey and deployment remain unfinished.",
     "sandbox_oauth": "Sandbox HTTP 200 access token; supplied Client ID matched Rally app on the selected Business seller.",
     "managed_auth_browser": {
       "scope": "Existing healthy Rally Supabase Auth project; local Next.js app and local PostgreSQL; synthetic studio/name/preferences. User completed email login, agent used resulting verified session.",
@@ -212,7 +215,14 @@
       "dnsConnected": false,
       "httpsVerified": false,
       "localOriginUnchanged": true,
-      "hostingBlocker": "Render Blueprint requires a payment method and temporary $1 authorization despite $50 credit; user financial handoff required."
+      "hostingBlocker": "Paid/card plan superseded by one Render Free web service and scheduled processing; free creation UI and hosted scheduler verification pending."
+    },
+    "scheduled_processing": {
+      "tests": "test/scheduled.test.ts",
+      "http": "evidence/web/scheduled-processing.json",
+      "hosted_preflight": "evidence/free-hosting-preflight.json",
+      "hostedScheduleVerified": false,
+      "provider": "simulated in scheduler regression tests; no new actual PayPal operations"
     }
   },
   "external_dependencies": [
@@ -232,7 +242,7 @@
     },
     {
       "name": "Deployment and public repository account access",
-      "state": "Private repository pushed; authorized Rally custom hostname and APP_ORIGIN configured. Existing Render GitHub connection verified. Blueprint creation blocked on payment method despite $50 credit; no card entered, services created or DNS changed."
+      "state": "Authorized custom domain configured; participant declined payment/card. Blueprint now one Render Free web service, with existing Supabase Cron planned for durable settlement. No payment method, service, schedule or DNS record created."
     }
   ],
   "remaining_requirements": [

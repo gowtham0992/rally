@@ -1,92 +1,101 @@
 # Rally sandbox hosting
 
-Use `https://rally.gowthamsarveswaran.com` for the sandbox product. Keep the
-existing Supabase Auth/database and Astropods gateway. Deploy the existing
-Render web service and settlement worker from `render.yaml`; AWS adds no
-needed capability to this release.
+Use `https://rally.gowthamsarveswaran.com` with **one Render Free web service**
+and the existing free Supabase project. The participant authorized this domain
+and subsequently declined paying or adding a card. No paid worker, AWS service,
+workspace upgrade, or new payment method is part of this deployment.
 
-The participant authorized this domain on October 2, 2026. The web service's
-Blueprint now declares the exact hostname and fixed HTTPS `APP_ORIGIN`.
-Local development keeps its localhost origin. DNS and live HTTPS still require
-the actual assigned Render hostname; declaring a domain does not make it live.
+GitHub Pages supports the domain but serves static files. Rally's private APIs,
+managed sessions and server-side payment secrets require a server. Moving only
+the interface to Pages would not deploy the working product.
 
-## Verified account preflight
+## Free execution model
 
-Read-only checks on October 2, 2026 found:
+`render.yaml` declares the Free web plan, exact custom domain and HTTPS
+`APP_ORIGIN`. Supabase Cron invokes `/api/internal/settlement` once per minute
+while offers or recovery work exist. No request is sent solely to keep Render
+awake. Supabase retains all durable payment state; the same payment engine
+handles operation identity, dispatch leases, verified outcomes and recovery.
+The normal local `npm run worker` remains available.
 
-- Cloudflare manages `gowthamsarveswaran.com` on its Free plan. Its eight DNS
-  records include the portfolio, Kin and email routing. There is no `rally`
-  record or wildcard record in the observed table.
-- The Render Hobby workspace has zero services, $50.00 remaining hackathon
-  credit, no pending charges and no card on file. The credit expires
-  September 30, 2027. The dashboard says credits apply to the next invoice.
-- Render's current price is $7/month for each 0.5 CPU / 512 MB service
-  (legacy `starter`, still supported in Blueprints). Two instances cost
-  $14/month in base compute. $50 covers about 3.57 months of this compute
-  alone; bandwidth, builds and any other usage reduce that runway.
-- The workspace includes two custom domains and is using none. This
-  subdomain fits the included allocation. Render supplies HTTPS certificates.
+The scheduled endpoint requires `RALLY_SETTLEMENT_MODE=scheduled` and a private
+64-hex `RALLY_SETTLEMENT_TRIGGER_KEY`. It accepts the key only as a Bearer header,
+not a URL parameter. A database advisory lock prevents overlapping scheduled
+runs across processes. Each run checks up to 100 candidate offers, dispatches
+at most 16 operations and stops starting steps after its 20-second budget.
+An in-flight provider call is awaited; 20 seconds is not a hard response-time
+claim. A killed process leaves durable dispatch evidence for reconciliation.
+Separate invocations may add minutes to settlement; confirmation still requires
+all verified captures before the existing reservation deadline.
 
-The Blueprint creation UI was subsequently checked. It blocks these services
-with **Payment Information Required**, even with the $50 credit. It asks for
-a card and says it will perform a temporary $1 authorization. No payment
-information was entered, no service created and no DNS record changed. The
-existing GitHub integration already exposes only the Rally repository.
+The offline `scripts/configure-settlement-schedule.ts` command first verifies
+the live authenticated endpoint, then installs `deploy/settlement-schedule.sql`.
+It uses the existing private provisioning token. The trigger key is stored in
+Supabase Vault, outside the runtime role's privileges. The SQL refuses browser
+or runtime access to decrypted secrets or the HTTP request queue. Cron runs the
+fixed function as its owner; clients cannot choose an offer, price, payer or
+HTTP destination. Do not activate it before verifying the deployed endpoint.
 
-This is a preflight, not a deployed-site claim. A participant must complete
-any card step themselves and explicitly authorize the resulting billing
-arrangement before provisioning. Do not add a card, upgrade the workspace,
-enable autoscaling or accept extra costs under the current authorization.
-Provider behavior after credit exhaustion for paid services has not been
-verified. Review remaining credit before every deployment and suspend the
-demo before it can consume the authorized balance; never promise an automatic
-hard spending cap based only on the absence of a card.
+## Verified account and limits
 
-Render also warns that future Blueprint-file changes sync automatically and
-may change costs. `autoDeployTrigger: off` controls code deployment, not that
-configuration sync. Review every subsequent `render.yaml` change accordingly.
+- Cloudflare Free manages the domain. The observed eight records include the
+  portfolio, Kin and email; there is no `rally` or wildcard record.
+- Render Hobby has no card and zero services. Its $50 hackathon credit expires
+  September 30, 2027. The earlier two-$7-service Blueprint was blocked by a
+  card requirement and temporary $1 authorization. That plan is superseded.
+- Render Free supports custom domains and managed TLS. Idle services sleep
+  after 15 minutes and may take about a minute to wake. Restarts are possible.
+  One service fits the 750 included monthly instance hours. Included build and
+  bandwidth allowances still apply; with no payment method, exceeding them
+  suspends services or builds instead of charging a card.
+- A read-only Rally Supabase inspection found Vault installed, and `pg_cron`
+  and `pg_net` available but not yet installed. No schedule is active.
+
+Local proof: 107 tests passed, including seven new scheduled-processing tests
+and four offline judge-preparation tests with simulated provider/Auth accounts.
+Actual production-build HTTP checks rejected anonymous, wrong-key, query-key
+and wrong-method requests; the valid request returned IDLE with zero operations.
+This is not proof of a hosted schedule, real judge login or deployed recovery.
 
 ## Release order
 
-1. Finish isolated judge access and verify distinct managed sessions, privacy,
-   stale-tab role binding, checkout and recovery. Public opening depends on
-   those gates; synthetic accounts are not observed human consent or feedback.
-2. Apply additive migrations to hosted `rally_private` using the provisioning
-   owner, then run the restricted-role/TLS audit. Runtime never receives the
-   provisioning token or Auth admin secret. See `hosted-database.md`.
-3. Deploy one web process and one worker from the same reviewed commit. Inject
-   hosted secrets through Render; do not deploy local database credentials or
-   private evidence. Keep automatic deployment off during verification.
-4. Verify readiness and recovery with the service's assigned `onrender.com`
-   hostname. Obtain that actual hostname before configuring DNS.
-5. Confirm the Blueprint's exact custom hostname `rally.gowthamsarveswaran.com`
-   appears on the web service. Add one Cloudflare CNAME named `rally`, targeting the actual
-   assigned hostname, with **DNS only** and TTL Auto. Do not use a guessed
-   `rally.onrender.com` target. This single-subdomain release does not require
-   an apex, `www`, wildcard, nameserver or global SSL-mode change.
-6. Verify the domain and valid TLS in Render. Review any conflicting record
-   or CAA restriction for this hostname if verification fails.
-7. Verify the Blueprint's `APP_ORIGIN=https://rally.gowthamsarveswaran.com` on the web service.
-   Register the matching Supabase login callback and site URL; check the
-   application's generated sandbox PayPal return/cancel URLs and register
-   the incoming sandbox webhook endpoint. Preserve useful local Auth
-   redirects for development.
-8. From the custom domain, prove login return, private participant intake,
-   merchant approval, sandbox checkout return and worker recovery. Check
-   browser-visible errors, server readiness and payment exceptions during
-   the initial release. Only then use this URL in judge instructions.
+1. Verify isolated managed judge sessions, privacy and the complete browser
+   journey before opening judge access. Prepared fixture identities are not
+   observed human consent or merchant feedback.
+2. Preserve the hosted additive schema and restricted runtime/TLS audit. The
+   runtime receives the hosted DATABASE_URL, never a provisioning/Admin key.
+3. Deploy the reviewed free Blueprint, with automatic code deploys off. Supply
+   saved sandbox PayPal, restricted database, Astropods and quota/trigger secrets
+   through Render's private environment settings. Keep local origin unchanged.
+4. Obtain Render's actual assigned `onrender.com` hostname. Add one Cloudflare
+   CNAME named `rally`, targeting that hostname, **DNS only**, TTL Auto. Do not
+   guess `rally.onrender.com`, or change apex/www/email/nameservers/global SSL.
+5. Verify Render custom-domain ownership and valid TLS. Check `/api/health`
+   and the authenticated scheduled endpoint at the custom domain.
+6. Load the ignored `.env.schedule` and provisioning configuration, with the
+   exact HTTPS APP_ORIGIN and `ENABLE_HOSTED_SETTLEMENT_SCHEDULE=true`, to run
+   `node --import tsx scripts/configure-settlement-schedule.ts`. Never commit
+   substituted SQL or supply the provisioning token to Render.
+7. Register the matching Supabase callback/site URL and sandbox webhook.
+   Preserve local Auth redirects. Verify generated PayPal return/cancel URLs.
+8. Prove actual Cron invocation, cold wake, overlapping/restarted processing,
+   sandbox capture/refund recovery, and monitoring of unresolved results. Run
+   the complete custom-domain judge journey before using it in instructions.
 
-## Undo
+## Undo and usage
 
-Before release, exercise demo-disable and previous-commit redeployment using
-the expanded schema. Keep additive tables and all payment history. Do not
-run a populated down migration as a deployment rollback. If checkout has
-started, the settlement worker must remain running until outstanding
-authorizations/captures are reconciled and recovery is complete. Suspend
-new checkout before rolling back a web release; no DNS change compensates
-a payment. These hosting undo drills remain pending until deployment.
+Stop new checkout before web rollback. Keep scheduled processing or an alternate
+worker running until all outstanding provider operations are reconciled. Preserve
+all payment history and additive schema; never use a populated down migration
+as rollback. A DNS change does not compensate a payment. Keep the private trigger
+key stable during rollback to a compatible build. These hosted drills remain
+pending. Review free-tier usage during releases; do not add a card or upgrade.
 
-Sources: [Render pricing](https://render.com/pricing),
-[compute-plan compatibility](https://render.com/docs/compute-plans),
-[custom domains and HTTPS](https://render.com/docs/custom-domains),
-[Cloudflare DNS setup](https://render.com/docs/configure-cloudflare-dns).
+Render warns that future Blueprint file changes sync automatically and may
+change costs. `autoDeployTrigger: off` controls code deploys, not configuration
+sync. Review every subsequent `render.yaml` change.
+
+Sources: [Render Free](https://render.com/docs/free),
+[Cloudflare DNS setup](https://render.com/docs/configure-cloudflare-dns),
+[Supabase Cron](https://supabase.com/docs/guides/cron),
+[GitHub Pages](https://docs.github.com/en/pages/getting-started-with-github-pages/what-is-github-pages).

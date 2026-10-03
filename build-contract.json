@@ -67,6 +67,13 @@
       "No decorative dashboards, generic AI feature grids, gradients, or AI marketing copy."
     ]
   },
+  "hosting_amendment": {
+    "source": "Participant declined paid hosting/card after Render credit-only deployment was blocked.",
+    "decision": "One Render Free web service at the authorized custom domain; existing free Supabase Cron invokes bounded durable payment processing.",
+    "invariants": "Preserve private APIs, explicit participant/studio approvals, payment identity and independent recovery; a static-only GitHub Pages build cannot replace the working product.",
+    "verification": "Local scheduler tests and HTTP boundary verified; hosted Cron, cold wake and actual sandbox recovery remain release gates.",
+    "paidServiceChargesAuthorized": false
+  },
   "execution_focus": {
     "local_date": "2026-10-02",
     "source": "Participant-provided hackathon advice; applied as strategic guidance, not verified winning statistics or official scoring weights.",
