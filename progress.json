@@ -301,7 +301,10 @@
       "existing_sam_browser_preserved": true,
       "activation_approved": true,
       "activation_evidence": "evidence/judge-access-window-activation.json",
-      "fresh_hosted_fixed_end_lease_verified": false
+      "fresh_hosted_fixed_end_lease_verified": true,
+      "fresh_lease_evidence": "evidence/web/hosted-judge-window.json",
+      "fresh_lease_scope": "Actual deployed HTTPS client; seven roles, lease-only Auth restoration, stale-viewer and cross-workspace denial. Fresh browser entry was not recorded.",
+      "unused_hosted_workspaces_remaining": 3
     },
     "existing_devpost_draft": {
       "checkedAt": "2026-10-03T07:21:14Z",
@@ -530,6 +533,44 @@
       "hosted_owner_read_verified": true,
       "hosted_participant_denial_verified": true,
       "compatible_rollback_and_restoration_verified": true
+    },
+    "hosted_partial_failure_preparation": {
+      "observedAt": "2026-10-03T22:13:05.756Z",
+      "state": "WAITING_FOR_PAYPAL_DEVELOPER_SIGN_IN",
+      "scope": "Separate fictional Friday six-person offer. Existing approved identities; structured preferences prepared offline. Merchant reservation verified in hosted UI. One sandbox order created; zero authorizations, captures, or refunds.",
+      "groupId": "e1ff15e6-ba8e-44b7-a9a8-aab7a00c000e",
+      "offerId": "2954d9f6-21cd-4abb-9dee-7d2bbf4fc284",
+      "originalBookingUnchanged": true,
+      "faultInjected": false,
+      "recoveryVerified": false,
+      "privateCheckpoint": "evidence/private/hosted-recovery-session.json",
+      "privateHarness": "evidence/private/hosted-recovery.ts",
+      "temporarySchedulerBarrierHeld": false,
+      "remaining": "Sign into the existing Developer account to retrieve sandbox buyer passwords, then complete six actual buyer approvals and deployed recovery.",
+      "lastReadOnlyCheck": {
+        "observedAt": "2026-10-03T22:42:17.696344+00:00",
+        "state": "OPEN",
+        "qualifiedBuyers": 0,
+        "successfulCaptures": 0,
+        "originalBookingUnchanged": true
+      }
+    },
+    "video_review_cut": {
+      "file": "evidence/video/review-cut.json",
+      "artifact": "evidence/private/rally-review-cut/rally-review-cut.mp4",
+      "duration_seconds": 163.021333,
+      "real_ui_stills": true,
+      "actual_interaction_recording": false,
+      "temporary_local_narration": true,
+      "published": false,
+      "final_video_complete": false
+    },
+    "observed_validation": {
+      "protocol": "docs/observed-validation.md",
+      "completed_group_exercises": 0,
+      "completed_studio_interviews": 0,
+      "outreach_sent": false,
+      "contact_authorized": false
     }
   },
   "external_dependencies": [
@@ -566,7 +607,7 @@
     "Polished public demo video under three minutes",
     "Complete Devpost draft materials; human approval before entry submission"
   ],
-  "next_independent_slice": "Implement merchant reconciliation evidence without financial overrides; verify isolated hosted failure recovery, deadline/withdrawal races, active worker restart, cold wake and seller balance delta. Preserve the confirmed six-friend booking and judge lease; keep the sole repository private and Devpost owner-managed.",
+  "next_independent_slice": "Verify isolated hosted failure recovery, deadline/withdrawal races, active worker restart, cold wake and seller balance delta; record actual interactions and finish the reviewed local submission draft. Preserve the confirmed six-friend booking and judge lease; keep the sole repository private and Devpost owner-managed.",
   "release_restrictions": [
     "Core PayPal sandbox scenarios verified; full authenticated application and remaining provider recovery gates are incomplete",
     "No live customer payments",

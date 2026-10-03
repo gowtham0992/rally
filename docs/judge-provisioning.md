@@ -50,7 +50,14 @@ judging ends December 16, 2026 at 00:00 UTC, after the official December 15
 08:00 Pacific judging deadline. The setting is saved and the environment-only
 Render Free deployment is live. [Activation evidence](../evidence/judge-access-window-activation.json)
 records healthy HTTPS, unchanged identity/workspace counts and the existing
-24-hour lease duration. A fresh hosted fixed-end lease has not yet been claimed.
+24-hour lease duration. A fresh hosted lease was verified on October 3 through
+a separate Node HTTPS client. It ends December 16 at 00:00 UTC; retrying its
+entry command did not consume another workspace or extend that expiry. All
+seven roles passed, stale viewers received 409, and another workspace's group
+and offer returned 404. Removing only that test client's Auth cookies produced
+401; the lease-only restore action recovered the same identity and expiry.
+[Fresh-window evidence](../evidence/web/hosted-judge-window.json) records this
+HTTP scope. A fresh browser entry for this new lease was not recorded.
 Existing leases retain their original expiry, even if configuration changes.
 Expired leases are never renewed or reassigned. The lease cookie lasts until
 that fixed end, capped at 90 days. The managed Auth cookie remains short-lived;
@@ -68,8 +75,10 @@ seven roles, own-only preference projections, stale-cookie denial, restoration,
 foreign-workspace denial and exit. Browser checks additionally observed Alex,
 Jordan, Riley and the studio, stale-save rejection with draft retention, and a
 narrow-screen toolbar. These are synthetic test users, not usability research.
-The complete six-person planning, consent and independent PayPal buyer journey
-still needs browser verification before submission instructions are final.
+The complete six-person hosted planning, collection agreements, studio approval,
+six distinct PayPal buyers and confirmed captures were observed separately;
+see [settlement evidence](../evidence/web/hosted-six-friend-settlement.json).
+Hosted partial-failure recovery and the finished recording remain pending.
 
 Seven PostgreSQL preparation tests and thirteen workspace/session tests cover
 resumption, isolation and trusted metadata. Weakened metadata and active-identity
@@ -101,7 +110,9 @@ one leased browser workspace. All 35 Auth identities are unchanged. Re-running
 the original provisioning command against released catalogs intentionally
 fails its original catalog checkpoint; use the release-aware preparation tool
 to verify the refresh rather than overriding that protection.
-The five-workspace limit still applies. Judge instructions must explain how to
+The five-workspace limit still applies. Two hosted workspaces have been used
+for verification and three remain untouched. No workspace was recycled and
+no extra Auth identity was created. Judge instructions must explain how to
 resume a claimed group and must not promise unlimited fresh booking attempts.
 Catalog readiness does not establish a completed payment or judge usability test.
 

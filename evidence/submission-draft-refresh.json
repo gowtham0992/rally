@@ -1,0 +1,28 @@
+{
+  "checkedAt": "2026-10-03T22:42:17.697106+00:00",
+  "scope": "Local draft refresh against current saved product evidence and a fresh read-only GitHub visibility check. No Devpost navigation or write, legal attestation, credential disclosure, repository publication or video upload.",
+  "draft": "devpost-submission.md",
+  "draftSha256": "1ca5766dde59894d2a3b7dbc8a93e8c72dc0edf532e5d2c88a64decd1e9582ad",
+  "canonicalRepository": "https://github.com/gowtham0992/rally",
+  "repositoryPrivateVerified": true,
+  "sources": [
+    "evidence/web/hosted-six-friend-settlement.json",
+    "evidence/web/hosted-webhook-retransmission.json",
+    "evidence/web/hosted-judge-window.json",
+    "evidence/web/payment-evidence.json",
+    "evidence/video/review-cut.json"
+  ],
+  "localLinksChecked": 52,
+  "localLinksMissing": 0,
+  "sixBuyerHostedHappyPathVerified": true,
+  "genuineWebhookDeliveryAndDuplicateHandlingVerified": true,
+  "freshFixedEndJudgeLeaseVerifiedByHttpsClient": true,
+  "freshJudgeBrowserEntryRecorded": false,
+  "hostedRecoveryVerified": false,
+  "observedHumanFeedback": false,
+  "finalPublicVideoVerified": false,
+  "finalPublicRepositoryVerified": false,
+  "newOfficialRequirementsAudit": false,
+  "existingOfficialRequirementSnapshot": "evidence/submission-requirements-2026-10-03.json",
+  "readyForFinalApproval": false
+}

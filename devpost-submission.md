@@ -1,12 +1,12 @@
 # Rally
 
-**Working submission copy — October 3, 2026.** The project description and
-tool list were saved to `rally-m2lakh`. Devpost unexpectedly published the
-project page when it was saved; it is now hidden from the owner’s portfolio,
-but the direct project URL remains accessible. The hackathon entry is still
-incomplete and unsubmitted, with no video. The form answers below remain local.
-This packet is not ready for final approval until the open gates below pass.
-See [the saved-state record](evidence/devpost-project-save.json).
+**Local submission draft — October 3, 2026.** The six-friend hosted booking
+is verified; hosted failure recovery, observed human feedback and the final
+public video remain incomplete. The sole repository is `gowtham0992/rally`
+and stays private until the owner approves publication. The owner manages
+Devpost. This revision has not been sent there and does not attest to its
+current remote state. The earlier save is recorded separately in
+[the historical saved-state record](evidence/devpost-project-save.json).
 
 ## One-line summary
 
@@ -57,9 +57,10 @@ authorizations. An uncertain provider response remains unresolved while Rally
 checks the original operation; it does not become a success message or a fresh
 logical charge.
 
-These are implemented prototype behaviors. The full six-friend hosted browser
-journey is still being verified; the current actual financial proof uses three
-distinct sandbox buyers through the local service and CLI.
+The hosted fictional group completed this journey with six distinct sandbox
+buyers and six verified captures for one booking. Failure compensation and
+dropped-response recovery have separate three-buyer local service evidence;
+the corresponding hosted recovery run remains incomplete.
 
 ### How we built it
 
@@ -93,6 +94,14 @@ actions, and generated demo identities are labeled fictional.
 
 ### What we verified
 
+The deployed six-friend journey completed six independent $48 authorizations
+and captures for the same studio offer, totaling $288 in sandbox payments.
+Independent provider GETs matched every buyer, amount and seller, and found
+exactly one capture per order. All authorizations qualified before capture;
+the booking confirmed after all six captures. Genuine authorization and capture
+webhooks were processed. A retransmitted capture event received HTTP 200 and
+left the single stored event and financial records unchanged.
+
 Three distinct PayPal sandbox buyers completed a $144 booking, with three
 verified $48 captures. In a separate fault run, we deliberately canceled one
 authorization after the first capture: the booking aborted, the $48 capture was
@@ -107,15 +116,20 @@ against an independently authored structured baseline and a separate
 constraint oracle. Earlier failed runs remain available. This is model and
 planning evidence, not measured user benefit.
 
-The latest local suite passed 123 tests and caught 22 deliberate mutations.
-Hosted checks have verified HTTPS, private identity scope, judge-role sessions,
-the scheduler's idle transport and rejection of a forged webhook signature.
-Genuine signed PayPal webhook delivery and the complete hosted six-buyer flow
-are still pending.
+The latest local suite passed 151 tests and caught 40 deliberate mutations.
+Hosted checks verified HTTPS, private identity scope, the scheduler's idle
+transport and rejection of a forged webhook signature. A separate HTTPS test
+client verified a fresh judge lease ending December 16, all seven roles,
+sign-in restoration, stale-viewer rejection and denial of another workspace's
+group and offer. Fresh browser entry is still a recording gate.
+
+These checks establish sandbox and engineering behavior. They do not establish
+seller wallet balance changes, easier real-world group planning or willingness
+of a real studio to reserve capacity.
 
 ### What comes next
 
-Finish the six-friend browser booking and active hosted recovery recording,
+Finish active hosted recovery and the interaction recording,
 then test whether real groups understand the clarification, collection
 agreement and individual payment flow. Seek a studio's feedback on the
 two-hour reservation commitment before making real availability claims. The
@@ -139,8 +153,8 @@ No entry below authorizes accepting terms or sending the final submission.
 | 28783 — Earlier work and event-period changes | **Finish after 28782.** If new, N/A. If existing, disclose actual prior work and distinguish work built after the event opened. Do not infer the answer from Git alone. |
 | 28784 — Main technology requirement | Use the technology answer below after confirming it matches the release shown in the video. |
 | 28786 — Additional sponsors | **Astropods; Render.** No other sponsor integration is claimed. |
-| 28788 — Public GitHub repository | `https://github.com/gowtham0992/rally-hackathon` — **public access and MIT license verified without authentication.** Source, assets and setup instructions are included; private development history was replaced by a fresh snapshot with a GitHub no-reply author. |
-| 28787 — Working demo | `https://rally.gowthamsarveswaran.com` — deployed sandbox preview; full journey verification still pending. |
+| 28788 — Public GitHub repository | `https://github.com/gowtham0992/rally` — **currently private; publication requires owner approval.** MIT-licensed source and setup instructions are present. Recheck anonymous access and reproducible setup against the final published revision. |
+| 28787 — Working demo | `https://rally.gowthamsarveswaran.com` — deployed sandbox preview; six-friend happy path verified, hosted recovery still pending. |
 | 28798 — Testing instructions or credentials | Use the judge instructions below after a fresh browser rehearsal. Add the judge code only to the intended private submission field, never this repository. |
 | 28790 — PayPal integration rating | **User answer required:** choose your own 1–10 rating. |
 | 28791 — Rating explanation | Draft technical feedback appears below; personalize it to your rating and experience. |
@@ -187,10 +201,13 @@ responses would be useful documentation for this use case.
 Open `https://rally.gowthamsarveswaran.com/demo` and enter the judge code supplied
 in the private testing field. Render Free may take about a minute to wake.
 Keep this browser profile: a new profile claims another finite workspace.
-Five separate workspaces exist; four are currently unclaimed. Workspaces are
-not reset or recycled. New sessions are configured to end December 16 at
-00:00 UTC. A freshly claimed hosted session's exact expiry still needs to be
-observed during the release rehearsal.
+Five separate workspaces exist; three were unclaimed at the latest verification.
+Workspaces are not reset or recycled. A fresh hosted lease was verified to end
+December 16 at 00:00 UTC through a separate HTTPS client, including all seven
+roles and sign-in restoration. Rehearse browser entry before release and
+recheck remaining workspace capacity. Session dates are relative to the
+workspace's published catalog; use its displayed dates rather than the dates
+from the earlier recorded booking.
 
 Your group contains six fictional friends and a fictional studio. Four friends
 have prepared details. Use the demo's role switcher to try Alex, Sam, Jordan and
@@ -209,10 +226,10 @@ session does not fit Alex's confirmed limit.
 As the studio, review the exact proposal and the reservation commitments before
 opening the two-hour booking window. As each friend, review the frozen offer
 and approve only that friend's sandbox payment. Use six distinct Personal
-PayPal sandbox buyers. **The six-buyer account assignment and complete browser
-instructions are not ready yet; do not release this paragraph as a verified
-checkout guide.** PayPal passwords must never appear in public source or
-screenshots.
+PayPal sandbox buyers. Six distinct buyers completed the original hosted
+booking. Their account assignments are kept in private evidence; credentials
+and fresh-workspace checkout instructions still need a release rehearsal.
+PayPal passwords must never appear in public source or screenshots.
 
 For reviewed evidence now, use the saved three-buyer
 [PayPal sandbox report](evidence/paypal-sandbox/index.html) and
@@ -223,7 +240,11 @@ validation. Do not use a real PayPal account or payment instrument.
 ## Demo video and gallery
 
 Public YouTube URL: **missing**. The current
-[155-second recording plan](docs/demo-plan.md) is a script, not a recorded video.
+[recording plan](docs/demo-plan.md) now has a 163-second local review cut made
+from actual saved UI stills, temporary local narration and a separately labeled
+three-buyer recovery report. It is not the final interaction recording and has
+not been published. Its scope is recorded in
+[the review-cut evidence](evidence/video/review-cut.json).
 The official form requires a public YouTube video under three minutes showing
 the app functioning. Record the completed journey; retain clear fictional
 studio and PayPal sandbox labels. Prepared earlier actions must be labeled.
@@ -245,16 +266,19 @@ presenting them as the complete finished journey.
 
 ## Release checklist
 
-- [ ] Complete the hosted six-friend planning, consent and studio approval path.
-- [ ] Verify six distinct sandbox buyer approvals and the confirmed booking.
-- [ ] Observe genuine signed PayPal webhook delivery, deduplication and recovery.
+- [x] Complete the hosted six-friend planning, consent and studio approval path.
+- [x] Verify six distinct sandbox buyer approvals and the confirmed booking.
+- [x] Observe genuine signed PayPal webhook delivery and duplicate handling.
+- [ ] Verify hosted partial-payment failure recovery.
 - [ ] Verify active hosted processing after cold wake and uncertain responses.
-- [ ] Observe a freshly claimed hosted judge session's fixed expiry and rehearse
-      the testing instructions without leaking credentials or consuming all groups.
-- [x] Audit the source and history, publish a snapshot with a GitHub no-reply
-      author and MIT license, and verify anonymous access. Clean tracked-source
-      setup passed installation, fresh database migration, all 123 tests, all
-      22 mutation checks, TypeScript and production build on Node 25.6.0.
+- [x] Observe a freshly claimed hosted judge session's fixed expiry, seven roles
+      and sign-in restoration through a separate HTTPS client.
+- [ ] Rehearse the browser testing instructions without leaking credentials
+      or consuming all remaining groups.
+- [ ] With owner approval, publish the sole MIT-licensed repository, audit its
+      final source/history and verify anonymous access and reproducible setup.
+      Earlier clean-source setup proof and the current 151-test/40-mutation
+      suite are engineering evidence; they do not prove final public access.
 - [ ] Record, edit and publish the actual demo to YouTube; verify duration below
       180 seconds and public playback while signed out.
 - [ ] Obtain user answers for personal fields and the required attestations.

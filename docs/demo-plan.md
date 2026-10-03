@@ -18,13 +18,14 @@ The core journey stays: private requirements, a useful clarification when
 needed, explicit collection consent, a fixed offer approved by the studio,
 individual sandbox payments and truthful booking/recovery status. Maintain the
 published six-to-eight-person capacity. Six distinct Personal sandbox accounts
-are now visible in PayPal Developer; their independent checkout approvals and
-payer identities still need verification.
+completed the same hosted booking. Their independent checkout approvals,
+qualified payer identities and captures are verified in the settlement report.
 
 Adopt existing Supabase Auth, PayPal sandbox, Astropods inference and Render
 hosting. Build the coordination, privacy and recovery behavior that makes this
-specific journey useful. Finish isolated judge entry so another person can
-actually try it without sharing another judge's group.
+specific journey useful. Isolated judge entry and the fixed access window now
+pass actual hosted HTTP checks. Three untouched groups remain; the separate
+browser entry recording still needs to be captured.
 
 Defer AWS migration, additional activity categories, general travel planning,
 automatic group-chat ingestion, extra sponsor integrations, social feeds,
@@ -78,16 +79,34 @@ not establish real-world success rates, adoption, conversion or user savings.
 Link the full evidence from the repository; a legible product journey takes
 priority over displaying a wall of test counts in the video.
 
+## The first local review cut is assembled
+
+The private artifact `evidence/private/rally-review-cut/rally-review-cut.mp4`
+is 163 seconds at 1920 × 1080, with temporary narration generated locally and
+an English caption track. It uses actual saved browser stills: Alex's private
+details, Sam's clarification, Jordan's agreement, studio review and reservation,
+PayPal checkout, authorization and the same six-person confirmed booking.
+The recovery scene explicitly shows the separate three-buyer local sandbox run.
+Every scene is labeled as a review cut of fictional-group sandbox evidence.
+
+This cut establishes pace and legibility. It does not record the actual clicks,
+replace the remaining hosted recovery proof or complete the public-video gate.
+The artifact and source hashes, reviewed frames and verification scope are
+recorded in [the sanitized manifest](../evidence/video/review-cut.json).
+Record the key interactions, review final narration and caption timing, then
+audit the full cut before seeking publication approval.
+
 ## Recording and release gates
 
-- [x] Managed judge identities, role switching and stale-tab protections implemented and tested; hosted independent role views observed. Fresh fixed-end lease observation remains pending.
+- [x] Managed judge identities, role switching and stale-tab protections implemented and tested; hosted independent role views observed. Fresh fixed-end lease, lease-only sign-in restoration and all seven roles verified through a separate hosted HTTP client; fresh browser-entry recording remains pending.
 - [x] Prove six distinct managed participants and a separately selected fictional studio operator through the actual hosted browser journey.
 - [x] Observe six distinct Personal sandbox accounts for the unchanged six-person offer. The three CLI buyer IDs stay separate; all six independent approvals, authorizations and captures are verified.
 - [ ] Record actual clarification and both collection agreements without exposing peer budgets or private credentials.
 - [x] Prove all six captures and confirmation for the same offer. Evidence: `evidence/web/hosted-six-friend-settlement.json`.
 - [ ] Prove hosted failure recovery separately while retaining the confirmed happy-path booking.
 - [x] Existing Render Free deployment, custom domain, HTTPS, authentication and checkout returns verified; compatible rollback and restoration exercised.
-- [ ] Produce a first rough recording as soon as that journey works, then refine pace, legibility, audio and the opening. Keep packaging active throughout the remaining build.
+- [x] Assemble and visually review a first local video cut from the actual saved UI captures.
+- [ ] Record the key interactions and refine final pace, narration, captions and opening. Keep packaging active throughout the remaining build.
 - [ ] Audit the final recording and written claims against their exact evidence. Preserve unresolved outcomes and distinguish synthetic/sandbox evidence from observed human feedback.
 
 The recording passes only if a viewer can identify the user, the problem, the
@@ -96,6 +115,9 @@ engineering explanation. As a proposed internal clarity check, ask three
 authorized reviewers to explain those five points after one viewing; aim for
 all three to do so. This is a proposed check, not completed feedback. Obtain
 the user's authorization before contacting anyone.
+The [observed-validation protocol](observed-validation.md) prepares the separate
+eight-group baseline comparison and three studio interviews. No results or
+outreach are claimed.
 
 ## Current event requirements
 

@@ -1,0 +1,127 @@
+{
+  "observedAt": "2026-10-03T22:18:25.167Z",
+  "scope": "Actual HTTPS calls to deployed Rally from a separate legitimate Node HTTP client and certificate-verified restricted database reads. No browser cookie manipulation, browser fresh-entry claim, payment approval, AI call or human usability claim.",
+  "runtimeCommit": "6eccc2958aba68151bf34aee3966d84919a43be2",
+  "freshLease": {
+    "expiresAt": "2026-12-16T00:00:00.000Z",
+    "entryStatus": 200,
+    "retrySameWorkspace": true,
+    "retryDidNotExtendLease": true,
+    "secureHttpOnlySameSiteLaxCookie": true,
+    "maxAgeSecondsObserved": 6313303
+  },
+  "authenticationRecovery": {
+    "authCookiesDeliberatelyRemovedFromTestClient": true,
+    "withoutAuthStatus": 401,
+    "leaseOnlyRestoreStatus": 200,
+    "sameWorkspaceAndExpiry": true
+  },
+  "roles": [
+    {
+      "role": "TRAVELER",
+      "bootstrapStatus": 200,
+      "ownProjectionStatus": 200,
+      "staleViewerStatus": 409,
+      "foreignOfferStatus": 404,
+      "expiresAt": "2026-12-16T00:00:00.000Z"
+    },
+    {
+      "role": "COLLECTOR",
+      "bootstrapStatus": 200,
+      "ownProjectionStatus": 200,
+      "staleViewerStatus": 409,
+      "foreignOfferStatus": 404,
+      "expiresAt": "2026-12-16T00:00:00.000Z"
+    },
+    {
+      "role": "FRIEND_ONE",
+      "bootstrapStatus": 200,
+      "ownProjectionStatus": 200,
+      "staleViewerStatus": 409,
+      "foreignOfferStatus": 404,
+      "expiresAt": "2026-12-16T00:00:00.000Z"
+    },
+    {
+      "role": "FRIEND_TWO",
+      "bootstrapStatus": 200,
+      "ownProjectionStatus": 200,
+      "staleViewerStatus": 409,
+      "foreignOfferStatus": 404,
+      "expiresAt": "2026-12-16T00:00:00.000Z"
+    },
+    {
+      "role": "FRIEND_THREE",
+      "bootstrapStatus": 200,
+      "ownProjectionStatus": 200,
+      "staleViewerStatus": 409,
+      "foreignOfferStatus": 404,
+      "expiresAt": "2026-12-16T00:00:00.000Z"
+    },
+    {
+      "role": "STUDIO",
+      "bootstrapStatus": 200,
+      "ownProjectionStatus": 200,
+      "staleViewerStatus": 409,
+      "foreignOfferStatus": 404,
+      "expiresAt": "2026-12-16T00:00:00.000Z"
+    },
+    {
+      "role": "ORGANIZER",
+      "bootstrapStatus": 200,
+      "ownProjectionStatus": 200,
+      "staleViewerStatus": 409,
+      "foreignOfferStatus": 404,
+      "expiresAt": "2026-12-16T00:00:00.000Z"
+    }
+  ],
+  "isolation": {
+    "foreignGroup": 404,
+    "foreignOffer": 404
+  },
+  "calendar": {
+    "timezone": "America/Denver",
+    "sessionStartTimes": [
+      "2027-01-15T01:15:00Z",
+      "2027-01-16T01:00:00Z"
+    ],
+    "allSessionsAfterJudgeAccessEnds": true
+  },
+  "unchanged": {
+    "existingLeaseAndActiveIdentity": true,
+    "previousFinancialAndIntakeTables": [
+      "offers",
+      "reservations",
+      "offer_members",
+      "payment_operations",
+      "command_results",
+      "payment_events",
+      "offer_snapshots",
+      "planning_groups",
+      "planning_members",
+      "preference_revisions",
+      "planning_clarifications",
+      "collection_consents",
+      "collection_consent_events",
+      "merchant_requests",
+      "intake_commands",
+      "demo_identities",
+      "merchant_studios",
+      "merchant_catalog_versions"
+    ],
+    "managedIdentityCount": 35,
+    "newAuthAccounts": 0,
+    "newPayments": 0,
+    "newModelCalls": 0
+  },
+  "workspaceCapacity": {
+    "beforeAvailable": 4,
+    "afterAvailable": 3,
+    "newVerificationWorkspaceLeased": 1,
+    "recycled": 0
+  },
+  "limitations": [
+    "This verifies actual deployed HTTP entry, restoration and role boundaries; a fresh browser entry for this lease was not observed.",
+    "Three untouched workspaces remain. Existing sessions are never renewed or recycled.",
+    "The separate hosted partial-failure test still awaits PayPal Developer sign-in."
+  ]
+}

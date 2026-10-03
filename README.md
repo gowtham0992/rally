@@ -10,7 +10,8 @@ participant approves their own PayPal sandbox payment.
 
 **Preview:** [rally.gowthamsarveswaran.com](https://rally.gowthamsarveswaran.com).
 The app uses a fictional studio and sandbox money. Judge entry requires a
-private access code and has five isolated, non-recycled workspaces. Render
+private access code and has five isolated, non-recycled workspaces; three remain
+untouched after verification. New sessions end December 16 at 00:00 UTC. Render
 Free may take about a minute to wake after inactivity.
 
 ## What has been verified
@@ -20,12 +21,13 @@ Free may take about a minute to wake after inactivity.
 | [PayPal sandbox report](evidence/paypal-sandbox/index.html) | Three distinct buyers completed a $144 booking. A separate partial failure refunded one $48 capture and voided the other two authorizations. A deliberately dropped capture response recovered after restart without an extra capture. Each result was independently checked through PayPal GETs. |
 | [AI evaluation](evidence/ai/evaluation-index.json) | 24 authored cases, repeated three times: 72/72 final quality assessments passed, zero safety failures. The equal structured baseline and hard-constraint oracle are independent. Earlier failed runs remain in the history. |
 | [Hosted preview](evidence/hosted-preview.json) | Valid custom-domain HTTPS, one Render Free service, seven distinct managed demo roles, private preferences and separate studio scope. |
+| [Fresh judge access](evidence/web/hosted-judge-window.json) | Deployed HTTP entry received the fixed December 16 lease. All seven roles, stale-viewer denial, lease-only sign-in restoration and foreign-group/offer denial passed. Existing financial and intake history stayed unchanged. This was a separate HTTP client, not a fresh browser-entry recording. |
 | [Hosted scheduler](evidence/hosted-settlement-schedule.json) | Private Supabase Cron/Vault transport reached the deployed settlement endpoint and completed idle runs. Cold wake and active payment recovery are still pending. |
 | [Webhook tests](evidence/webhook-local-verification.json) | Original-byte RSA verification, hostile certificate URLs, bounded input, duplicate authentication and safe errors. Disposable test certificates are used locally. |
 | [Hosted signature denial](evidence/hosted-webhook-signature-denial.json) | The live receiver rejected a forged signature using a real PayPal public certificate. Payment and notification records remained unchanged. |
 | [Private note expiry](evidence/web/private-text-retention.json) | Actual native hosted cleanup removed an isolated fictional note and AI quotation while preserving existing financial and consent history. [Policy and setup](docs/private-text-retention.md). |
-
 | [Studio payment reports](evidence/web/payment-evidence.json) | Authenticated local UI saved one unverified fictional report without changing simulated payment, booking or reservation records. Stale-state and connection failures preserve the draft. |
+| [Video review cut](evidence/video/review-cut.json) | A 163-second private draft uses real UI stills, temporary local narration and a separately labeled three-buyer report. It is not the final interaction recording or public video. |
 
 The latest full suite has **151 passing tests** using isolated local PostgreSQL
 schemas and controlled provider/Auth/model fixtures. All 40 deliberate guard mutations
@@ -182,7 +184,10 @@ Read [deployment](docs/deployment.md), [hosted database](docs/hosted-database.md
 [shared request limits](docs/request-limits.md) and
 [PayPal webhook configuration](docs/paypal-webhooks.md) before reproducing hosting.
 The sandbox webhook subscription is registered and its trusted ID is saved in
-Render. Genuine signed event delivery is still awaiting a fresh payment event.
+Render. All twelve genuine notifications for the hosted six-buyer booking were
+processed. PayPal Developer also confirms a delivered duplicate with HTTP 200;
+the original receipt and six captures stayed unchanged. See
+[webhook retransmission evidence](evidence/web/hosted-webhook-retransmission.json).
 
 Before rollback, stop new checkout and preserve compatible recovery processing
 until outstanding financial work is reconciled. Keep payment history and additive

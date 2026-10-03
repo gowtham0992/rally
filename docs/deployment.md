@@ -117,11 +117,12 @@ Sources: [Render Free](https://render.com/docs/free),
 Current preview: [Rally](https://rally.gowthamsarveswaran.com). Render assigned
 `rally-mx1y.onrender.com`; Cloudflare has one additional DNS-only CNAME for
 `rally`, with the eight previous records preserved. Build `6eccc29` is live with studio payment resolution, private-note expiry and append-only studio reports. The earlier retention release was `43215f7`. That retention release’s rollback to `6696eef` and restoration preserved the twelve-migration schema, native cleanup and existing financial/consent history.
-Judge access is gated by the private code in ignored `.env.demo`; one browser
-verification workspace is leased and four hosted workspaces remain available.
+Judge access is gated by the private code in ignored `.env.demo`; the original
+browser workspace and one fresh fixed-end verification workspace are leased.
+Three hosted workspaces remain untouched.
 The actual six-buyer journey is confirmed: $288 gross, six distinct buyers, one capture per order and all twelve genuine notifications processed. This is fictional PayPal sandbox evidence; actual customer feedback remains unverified. See [settlement evidence](../evidence/web/hosted-six-friend-settlement.json) and [initial rollout/rollback evidence](../evidence/web/hosted-rollout-rollback.json). The subsequent [payment-resolution release](../evidence/web/payment-resolution-release.json) verified studio ownership and participant denial and preserved the booking through rollback/restoration. PayPal Developer confirms [genuine resend delivery and duplicate handling](../evidence/web/hosted-webhook-retransmission.json); no JSON duplicate-response body was captured.
 
-The official judging period runs December 1–15. Four untouched, unclaimed
+The official judging period runs December 1–15. At activation, four untouched, unclaimed
 workspaces now have January 14/15 studio dates via appended catalog versions and
 fresh fixture groups. Their old groups, preferences and catalogs are retained;
 the leased browser-verification workspace is unchanged. See
@@ -130,10 +131,16 @@ The approved `RALLY_DEMO_ACCESS_END=2026-12-16T00:00:00Z` policy is saved in
 Render and its environment-only deployment is live on Free. New judge leases
 use this fixed end. The existing leased workspace retains its 24-hour duration;
 no lease is automatically extended or recycled. Hosted health returned 200 with
-`ready: true`; all 35 identities and four available workspaces remain. No new
-lease was consumed to verify this configuration, so a fresh hosted fixed-end
-lease has not yet been observed. See [activation evidence](../evidence/judge-access-window-activation.json)
-and [judge preparation](judge-provisioning.md).
+`ready: true` at activation with all 35 identities and four available workspaces.
+A subsequent separate HTTPS client claimed one fresh lease and verified the
+December 16 expiry, stable entry retry, all seven roles, stale-viewer denial,
+cross-workspace denial and lease-only Auth restoration. All earlier financial
+and intake tables, other workspaces and the original lease stayed unchanged.
+Three unused workspaces remain. This proves deployed HTTP behavior; a fresh
+browser entry for this lease was not recorded. See
+[activation evidence](../evidence/judge-access-window-activation.json),
+[fresh lease evidence](../evidence/web/hosted-judge-window.json) and
+[judge preparation](judge-provisioning.md).
 
 Synchronous transport reference: [pgsql-http](https://github.com/pramsey/pgsql-http).
 
