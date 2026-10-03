@@ -192,10 +192,11 @@ wake drills remain pending.
 The [155-second recording plan](docs/demo-plan.md) follows one six-friend booking
 and identifies the separate three-buyer recovery proof. The actual recording and
 public YouTube video are not finished. Source uses the [MIT license](LICENSE);
-the [public source repository](https://github.com/gowtham0992/rally-hackathon)
-contains the audited release snapshot, license and setup instructions. The
-original development repository and personal commit metadata remain private.
-See [release provenance](docs/public-source.md) and
+[gowtham0992/rally](https://github.com/gowtham0992/rally) is the sole working
+repository, containing the application, assets, license, setup instructions and
+development history. It stays private until the owner is ready to submit.
+The duplicate snapshot repository is private and awaiting approved removal.
+See [repository policy and release history](docs/public-source.md) and
 [clean setup verification](evidence/clean-source-setup.json).
 The [working submission copy](devpost-submission.md) covers the current official
 form, scoped evidence and remaining release gates. Its description and tool list
