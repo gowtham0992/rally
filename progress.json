@@ -43,7 +43,8 @@
     "With explicit owner approval, deleted the duplicate rally-hackathon repository through the signed-in GitHub browser after the CLI reported missing delete_repo permission. GitHub confirmed deletion and retained rally as private. Removed only the clean duplicate local checkout after rechecking its complete Git bundle; ignored private backup preserved. No Devpost, runtime, deployment, payment or credential changes.",
     "Observed six distinct Personal sandbox logins in the actual PayPal Developer dashboard; no passwords read or accounts created. In the existing hosted fictional demo, Alex closed the six-person roster through Rally. Jordan, Riley, Casey and Taylor each showed their own saved requirements through managed role switches; Sam retained the exact fictional note I leave Friday. Read-only hosted observation confirms CLOSED revision 12, six admitted members and six saved preferences, MERCHANT_REVIEW_REQUIRED, zero model runs, agreed collection arrangements, studio requests, offers or payment operations. Specific Astropods note approval remains pending; no payment or consent outcome fabricated.",
     "With the owner's specific note/destination approval, the actual hosted Astropods clarification asked What needs to happen with your piece after the session? One call and one question are recorded; fictional Sam confirmed NOMINEE_LATER and then explicitly chose Jordan through the intake UI. Budget and raw note stayed unchanged; reviewed meaning survived nomination. Jordan's actual managed session showed no collection request before owner disclosure. Browser role-check snapshots initially raced navigation; corrected checks verify the selected identity and own summary for all four other friends. Automatic review blocked owner disclosure to Jordan/Willow Studio twice, including after a read-only .invalid identity audit; no consent event, studio request, offer or payment operation was created. Specific remaining fictional-step approval is pending; no workaround used.",
-    "After explicit approval of the remaining fictional steps, actual hosted UI recorded Sam's owner disclosure and Jordan's separate nominee agreement. The planner produced the published $48 hand-building session; Alex requested it and the independently selected fictional studio reviewed all six members, the collection arrangement, buffered time and terms, then reserved/opened a two-hour window. Read-only database verification records exactly OWNER_AGREE/NOMINEE_AGREE, one OPEN/HELD six-person $48 USD offer and no qualified payers or captures. One participant acceptance/order is now observed. Independent PayPal sandbox GET confirms Alex's actual order intent AUTHORIZE, $48 USD, configured seller and PAYER_ACTION_REQUIRED with no recorded payer, authorization or capture. Human PayPal approval handoff is open; no complete booking or real merchant availability claim."
+    "After explicit approval of the remaining fictional steps, actual hosted UI recorded Sam's owner disclosure and Jordan's separate nominee agreement. The planner produced the published $48 hand-building session; Alex requested it and the independently selected fictional studio reviewed all six members, the collection arrangement, buffered time and terms, then reserved/opened a two-hour window. Read-only database verification records exactly OWNER_AGREE/NOMINEE_AGREE, one OPEN/HELD six-person $48 USD offer and no qualified payers or captures. One participant acceptance/order is now observed. Independent PayPal sandbox GET confirms Alex's actual order intent AUTHORIZE, $48 USD, configured seller and PAYER_ACTION_REQUIRED with no recorded payer, authorization or capture. Human PayPal approval handoff is open; no complete booking or real merchant availability claim.",
+    "Actual hosted six-friend journey completed: one live AI clarification, explicit Sam/Jordan collection agreements, studio-approved $48 offer, six independently verified PayPal sandbox buyers, exactly one capture per order, $288 gross and $274.98 seller receivables. All six participant views confirm paid booking and all twelve genuine authorization/capture webhooks were received and processed. No live funds or real-world feedback claimed."
   ],
   "evidence": {
     "scope": "Local service tests use real PostgreSQL and a simulated provider; separate reviewed records prove three actual PayPal sandbox scenarios.",
@@ -88,7 +89,7 @@
     "model_api_calls": 221,
     "ai_quality_and_24_case_evaluation": "passed_actual_72_run_final_prompt",
     "intake_scope": "Real PostgreSQL service tests with trusted test actors; not managed email-auth or browser end-to-end proof.",
-    "latest_full_test_run": "123 local tests passed; 22 weakened safeguards caught, including judge-window/calendar bounds, RSA verification and raw-body integrity. TypeScript and production build passed. Actual webhook subscription is configured; genuine signed Sandbox delivery remains pending.",
+    "latest_full_test_run": "124 local tests passed; queued-authorization regression observed failing before the minimal fix and passing afterward. All 22 weakened safeguards caught; TypeScript and production build passed. Six genuine authorization and six capture webhooks received and processed in the hosted six-buyer journey. The queued-status patch is saved locally and has not been deployed.",
     "sandbox_oauth": "Sandbox HTTP 200 access token; supplied Client ID matched Rally app on the selected Business seller.",
     "managed_auth_browser": {
       "scope": "Existing healthy Rally Supabase Auth project; local Next.js app and local PostgreSQL; synthetic studio/name/preferences. User completed email login, agent used resulting verified session.",
@@ -256,7 +257,7 @@
     },
     "hosted_preview": "evidence/hosted-preview.json",
     "hosted_webhooks": {
-      "scope": "actual_deployed_configuration_and_signature_denial_only",
+      "scope": "Initial subscription/signature-denial snapshot plus actual hosted six-authorization and six-capture signed delivery proof.",
       "deployedCommit": "533bc2b",
       "subscriptionVerified": true,
       "privateRuntimeSettingSaved": true,
@@ -264,13 +265,15 @@
       "configuration": "evidence/paypal-webhook-configuration.json",
       "configDisabledGate": "evidence/hosted-webhook-disabled-gate.json",
       "forgedSignatureDenial": "evidence/hosted-webhook-signature-denial.json",
-      "signedSandboxDeliveryVerified": false,
+      "signedSandboxDeliveryVerified": true,
       "recentAppEventListing": {
         "status": 200,
         "eventsReturned": 0,
         "format": "whole-second RFC3339, page size 10"
       },
-      "paymentMutations": 0
+      "paymentMutations": 0,
+      "signedDeliveryEvidence": "evidence/web/hosted-six-friend-settlement.json",
+      "initial_configuration_snapshot_scope": "actual_deployed_configuration_and_signature_denial_only"
     },
     "judging_preparation": {
       "file": "evidence/judging-workspace-preparation.json",
@@ -429,6 +432,38 @@
       "successful_captures": 0,
       "genuine_authorization_webhook_received_and_processed": true,
       "full_booking_verified": false
+    },
+    "hosted_six_friend_settlement": {
+      "file": "evidence/web/hosted-six-friend-settlement.json",
+      "observed_at": "2026-10-03T18:49:39.557Z",
+      "offer_state": "CONFIRMED",
+      "reservation_state": "BOOKED",
+      "distinct_qualified_payers": 6,
+      "successful_captures": 6,
+      "gross_captured_minor": 28800,
+      "paypal_fees_minor": 1302,
+      "seller_net_minor": 27498,
+      "currency": "USD",
+      "all_provider_resources_independently_verified": true,
+      "exactly_one_capture_per_order": true,
+      "authorizations_before_captures": true,
+      "all_captures_before_confirmation": true,
+      "genuine_authorization_webhooks_processed": 6,
+      "genuine_capture_webhooks_processed": 6,
+      "all_six_participant_browser_views_confirmed": true,
+      "full_hosted_happy_path_verified": true,
+      "hosted_failure_recovery_verified": false,
+      "seller_account_balance_delta_verified": false,
+      "same_buyer_return_corrected_before_authorization": true
+    },
+    "queued_authorization_status_fix": {
+      "file": "evidence/web/queued-authorization-status-fix.json",
+      "regression_observed_red_then_green": true,
+      "full_tests_passed": 124,
+      "mutations_caught": 22,
+      "typecheck_passed": true,
+      "production_build_passed": true,
+      "deployed": false
     }
   },
   "external_dependencies": [
@@ -465,7 +500,7 @@
     "Polished public demo video under three minutes",
     "Complete Devpost draft materials; human approval before entry submission"
   ],
-  "next_independent_slice": "Sam's actual hosted $48 offer is open for human acceptance and PayPal approval with a different Personal sandbox buyer. Verify all five remaining buyers, six distinct qualified payer IDs and actual captures before claiming the booking. Alex's authorization and genuine PAYMENT.AUTHORIZATION.CREATED delivery are independently proven; full settlement, capture webhook delivery and hosted recovery remain pending. Fix the observed queued-authorization status projection after preserving this flow. Keep the only Rally repository private; all Devpost actions are owner-managed.",
+  "next_independent_slice": "Deploy the tested queued-authorization status projection fix in the next runtime rollout, then verify hosted failure recovery, real provider webhook retransmission/deduplication, deadline/withdrawal races and seller balance delta in separate approved sandbox scenarios. Current six-friend happy path is independently verified and confirmed; preserve its booking/evidence. Keep the only Rally repository private; all Devpost actions are owner-managed.",
   "release_restrictions": [
     "Core PayPal sandbox scenarios verified; full authenticated application and remaining provider recovery gates are incomplete",
     "No live customer payments",
