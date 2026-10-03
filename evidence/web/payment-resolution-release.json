@@ -1,0 +1,119 @@
+{
+  "scope": "Existing Render Free service and custom domain; compatible cached-artifact rollback/restoration with zero financial operations in flight. No schema, credential or configuration changes.",
+  "observedAt": "2026-10-03T20:18:14.327273Z",
+  "serviceId": "srv-db092cvavr4c73eln89g",
+  "freeInstanceVerified": true,
+  "automaticDeploys": "Off",
+  "runtimeCommit": "6696eeff43aca9b1de2788625c3b3798584bdf82",
+  "previousRuntimeCommit": "e21cd6018b5751c6c28b07a959cd5fdfbeabc096",
+  "forward": {
+    "deployId": "dep-db0m00psrm7s7386ac20",
+    "renderDurationSeconds": 81,
+    "trigger": "Manual"
+  },
+  "rollback": {
+    "deployId": "dep-db0m1mid0e5s73c7l24g",
+    "targetDeployId": "dep-db0lbtad0e5s73c4vn3g",
+    "renderDurationSeconds": 30.3,
+    "configurationChanges": false
+  },
+  "restored": {
+    "deployId": "dep-db0m2m5g1s2s73emccv0",
+    "targetDeployId": "dep-db0m00psrm7s7386ac20",
+    "renderDurationSeconds": 14.6,
+    "configurationChanges": false,
+    "live": true
+  },
+  "checks": [
+    {
+      "globalUnresolved": 0,
+      "stage": "before",
+      "observedAt": "2026-10-03T20:05:10.647Z",
+      "healthReady": true,
+      "state": {
+        "state": "CONFIRMED",
+        "cleanup": "NOT_REQUIRED",
+        "reservation_state": "BOOKED",
+        "qualified": 6,
+        "successful_captures": 6,
+        "operations": 18,
+        "unresolved_operations": 0,
+        "processed_webhooks": 12
+      }
+    },
+    {
+      "globalUnresolved": 0,
+      "stage": "forward",
+      "observedAt": "2026-10-03T20:07:38.236Z",
+      "healthReady": true,
+      "state": {
+        "state": "CONFIRMED",
+        "cleanup": "NOT_REQUIRED",
+        "reservation_state": "BOOKED",
+        "qualified": 6,
+        "successful_captures": 6,
+        "operations": 18,
+        "unresolved_operations": 0,
+        "processed_webhooks": 12
+      }
+    },
+    {
+      "globalUnresolved": 0,
+      "stage": "rollback",
+      "observedAt": "2026-10-03T20:10:28.993Z",
+      "healthReady": true,
+      "state": {
+        "state": "CONFIRMED",
+        "cleanup": "NOT_REQUIRED",
+        "reservation_state": "BOOKED",
+        "qualified": 6,
+        "successful_captures": 6,
+        "operations": 18,
+        "unresolved_operations": 0,
+        "processed_webhooks": 12
+      }
+    },
+    {
+      "globalUnresolved": 0,
+      "stage": "restored",
+      "observedAt": "2026-10-03T20:12:26.954Z",
+      "healthReady": true,
+      "state": {
+        "state": "CONFIRMED",
+        "cleanup": "NOT_REQUIRED",
+        "reservation_state": "BOOKED",
+        "qualified": 6,
+        "successful_captures": 6,
+        "operations": 18,
+        "unresolved_operations": 0,
+        "processed_webhooks": 12
+      }
+    }
+  ],
+  "browser": {
+    "confirmedParticipantBookingObservedInEveryPhase": true,
+    "studioResolutionLoadedOnForwardAndRestored": true,
+    "studioLinkNavigationVerified": true,
+    "participantResolutionAccessDenied": true,
+    "hostedPendingFinancialCasesCreated": false,
+    "existingJudgeLeasePreserved": true
+  },
+  "limits": [
+    "Render duration excludes queue time; not a total button-to-live timing claim",
+    "No in-flight restart/recovery or cold-wake proof from this settled-booking rollout",
+    "Populated new resolution cases were verified locally using SimulatedProvider; hosted failure scenario remains separate"
+  ],
+  "hostedHttpBoundaries": {
+    "observedAt": "2026-10-03T20:18:46.896Z",
+    "anonymous": {
+      "status": 401,
+      "error": "SIGN_IN_REQUIRED",
+      "cacheControl": "no-store"
+    },
+    "foreignOrigin": {
+      "status": 403,
+      "error": "REQUEST_NOT_ALLOWED",
+      "cacheControl": "no-store"
+    }
+  }
+}

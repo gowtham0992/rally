@@ -56,7 +56,7 @@ request; payment state changes happen in the separate bounded web runner. Do not
   the provider. Those setup/diagnostic transactions rolled back; no queue
   extension or secret was left by the failed attempts.
 
-Local proof: 124 tests passed, including seven scheduled-processing tests
+Local proof: 130 tests passed, including seven scheduled-processing tests
 and seven offline judge-preparation tests with simulated provider/Auth accounts.
 Actual production-build HTTP checks rejected anonymous, wrong-key, query-key
 and wrong-method requests; the valid request returned IDLE with zero operations.
@@ -116,10 +116,10 @@ Sources: [Render Free](https://render.com/docs/free),
 
 Current preview: [Rally](https://rally.gowthamsarveswaran.com). Render assigned
 `rally-mx1y.onrender.com`; Cloudflare has one additional DNS-only CNAME for
-`rally`, with the eight previous records preserved. Build `e21cd60` is live after the rollback drill.
+`rally`, with the eight previous records preserved. Build `6696eef` is live with the studio payment-resolution page after its compatible rollback and restoration drill.
 Judge access is gated by the private code in ignored `.env.demo`; one browser
 verification workspace is leased and four hosted workspaces remain available.
-The actual six-buyer journey is confirmed: $288 gross, six distinct buyers, one capture per order and all twelve genuine notifications processed. This is fictional PayPal sandbox evidence; actual customer feedback remains unverified. See [settlement evidence](../evidence/web/hosted-six-friend-settlement.json) and [rollout/rollback evidence](../evidence/web/hosted-rollout-rollback.json).
+The actual six-buyer journey is confirmed: $288 gross, six distinct buyers, one capture per order and all twelve genuine notifications processed. This is fictional PayPal sandbox evidence; actual customer feedback remains unverified. See [settlement evidence](../evidence/web/hosted-six-friend-settlement.json) and [initial rollout/rollback evidence](../evidence/web/hosted-rollout-rollback.json). The subsequent [payment-resolution release](../evidence/web/payment-resolution-release.json) verified studio ownership and participant denial and preserved the booking through rollback/restoration. PayPal Developer confirms [genuine resend delivery and duplicate handling](../evidence/web/hosted-webhook-retransmission.json); no JSON duplicate-response body was captured.
 
 The official judging period runs December 1–15. Four untouched, unclaimed
 workspaces now have January 14/15 studio dates via appended catalog versions and

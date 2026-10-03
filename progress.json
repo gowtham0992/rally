@@ -46,7 +46,8 @@
     "After explicit approval of the remaining fictional steps, actual hosted UI recorded Sam's owner disclosure and Jordan's separate nominee agreement. The planner produced the published $48 hand-building session; Alex requested it and the independently selected fictional studio reviewed all six members, the collection arrangement, buffered time and terms, then reserved/opened a two-hour window. Read-only database verification records exactly OWNER_AGREE/NOMINEE_AGREE, one OPEN/HELD six-person $48 USD offer and no qualified payers or captures. One participant acceptance/order is now observed. Independent PayPal sandbox GET confirms Alex's actual order intent AUTHORIZE, $48 USD, configured seller and PAYER_ACTION_REQUIRED with no recorded payer, authorization or capture. Human PayPal approval handoff is open; no complete booking or real merchant availability claim.",
     "Actual hosted six-friend journey completed: one live AI clarification, explicit Sam/Jordan collection agreements, studio-approved $48 offer, six independently verified PayPal sandbox buyers, exactly one capture per order, $288 gross and $274.98 seller receivables. All six participant views confirm paid booking and all twelve genuine authorization/capture webhooks were received and processed. No live funds or real-world feedback claimed.",
     "Released tested queued-authorization status fix as e21cd60 on Render Free. Exercised cached-artifact rollback to 4ea6c9f and restoration to e21cd60 with no configuration/schema changes. HTTPS readiness and confirmed participant booking passed in each phase; six captures, eighteen operations and twelve processed webhook records preserved. Free instance and auto-deploy Off verified. In-flight recovery and cold wake remain separate gates.",
-    "Implemented studio-owned Payments to check page/API with safe read-only reconciliation requests and payment references. Production-build mobile/desktop UI, duplicate clicks, connection recovery and local simulated resolution verified; 130 tests and 25 guard mutations passed. Hosted deployment and manual evidence remain separate gates."
+    "Implemented studio-owned Payments to check page/API with safe read-only reconciliation requests and payment references. Production-build mobile/desktop UI, duplicate clicks, connection recovery and local simulated resolution verified; 130 tests and 25 guard mutations passed. Hosted deployment and manual evidence remain separate gates.",
+    "Deployed payment-resolution runtime 6696eef on existing Render Free service; actual studio page and participant denial passed. Cached rollback to e21cd60 and restoration preserved confirmed $288 booking, six captures, eighteen operations and twelve webhooks. PayPal Developer independently confirms genuine capture event resend DELIVERED with HTTP 200; same event stored once with original receipt/processing timestamps unchanged. No new financial operations or judge leases."
   ],
   "evidence": {
     "scope": "Local service tests use real PostgreSQL and a simulated provider; separate reviewed records prove three actual PayPal sandbox scenarios.",
@@ -478,12 +479,14 @@
       "file": "evidence/web/hosted-webhook-retransmission.json",
       "genuine_existing_event_bound_to_capture": true,
       "paypal_resend_accepted_202": true,
-      "provider_delivery_verified": false,
+      "provider_delivery_verified": true,
       "hosted_duplicate_response_verified": false,
-      "payment_records_unchanged_after_request": true
+      "payment_records_unchanged_after_request": true,
+      "hosted_duplicate_handling_verified": true,
+      "hosted_duplicate_response_body_observed": false
     },
     "contract_gap_audit": {
-      "observedAt": "2026-10-03T20:04:00.772690Z",
+      "observedAt": "2026-10-03T20:18:14.327273Z",
       "merchant_exception_view_implemented": true,
       "raw_private_text_retention_implemented": false,
       "next_slice_plan": "docs/payment-exceptions-plan.md",
@@ -494,8 +497,9 @@
       "file": "evidence/web/payment-resolution.json",
       "implemented": true,
       "verified_local_production_ui": true,
-      "hosted_deployed": false,
-      "manual_evidence_workflow_implemented": false
+      "hosted_deployed": true,
+      "manual_evidence_workflow_implemented": false,
+      "release_file": "evidence/web/payment-resolution-release.json"
     }
   },
   "external_dependencies": [
@@ -532,7 +536,7 @@
     "Polished public demo video under three minutes",
     "Complete Devpost draft materials; human approval before entry submission"
   ],
-  "next_independent_slice": "Deploy and verify the studio payment-resolution view without changing the confirmed six-friend booking. Verify genuine webhook retransmission delivery, hosted failure recovery, deadline/withdrawal races, seller balance delta and cold wake in isolated sandbox scenarios. Implement raw-text retention and manual reconciliation evidence. Keep the sole repository private and Devpost owner-managed.",
+  "next_independent_slice": "Implement raw private-text retention and merchant reconciliation evidence; verify hosted failure recovery, deadline/withdrawal races, seller balance delta, active worker restart and cold wake in isolated sandbox scenarios. Preserve the confirmed six-friend booking and lease. Keep the single repository private and Devpost owner-managed.",
   "release_restrictions": [
     "Core PayPal sandbox scenarios verified; full authenticated application and remaining provider recovery gates are incomplete",
     "No live customer payments",

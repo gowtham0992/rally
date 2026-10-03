@@ -4,8 +4,8 @@
   "providerEventBoundToRecordedCapture": true,
   "registeredDestinationMatched": true,
   "resendHttpStatus": 202,
-  "providerDeliveryVerified": false,
-  "hostedDuplicateHandlingVerified": false,
+  "providerDeliveryVerified": true,
+  "hostedDuplicateHandlingVerified": true,
   "source": "https://developer.paypal.com/api/webhooks/v1/webhooks-events-resend",
   "afterResendDatabaseCheck": {
     "stage": "restored",
@@ -23,7 +23,19 @@
     }
   },
   "limitations": [
-    "HTTP 202 proves PayPal accepted the resend request, not that notification delivery succeeded. Provider delivery and hosted duplicate response still require observation.",
-    "Payment records remain unchanged after the request. This alone does not prove duplicate notification handling."
-  ]
+    "The original HTTP 202 was only request acceptance; delivery is now independently observed in PayPal Developer as DELIVERED with HTTP 200 at the registered endpoint.",
+    "The JSON duplicate response body was not captured. Duplicate handling is verified through the actual delivered event, signature-before-dedup handler, a single pre-existing processed event row with unchanged timestamps, and unchanged financial records."
+  ],
+  "deliveryObservation": {
+    "observedAt": "2026-10-03T20:16:30.874Z",
+    "providerDashboardBoundToRequestedEvent": true,
+    "trustedWebhookIdMatched": true,
+    "providerDeliveredAt": "2026-10-03T19:26:48Z",
+    "httpStatus": 200,
+    "singleStoredEvent": true,
+    "originalReceiptAndProcessingTimestampsUnchanged": true,
+    "duplicateResponseBodyObserved": false,
+    "duplicateHandlingVerified": true,
+    "proof": "Actual PayPal DELIVERED history and transmission HTTP 200 at the configured endpoint, bound to the requested genuine event/resource and a previously processed single database row. Handler verifies signature before its event-ID duplicate branch. No JSON response body was captured."
+  }
 }

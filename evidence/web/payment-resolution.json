@@ -7,7 +7,13 @@
   },
   "implemented": true,
   "hosted": {
-    "deployed": false
+    "deployed": true,
+    "runtimeCommit": "6696eeff43aca9b1de2788625c3b3798584bdf82",
+    "releaseEvidence": "evidence/web/payment-resolution-release.json",
+    "studioOwnedPageObserved": true,
+    "participantDenied": true,
+    "compatibleRollbackAndRestorationVerified": true,
+    "hostedFinancialFailureScenarioVerified": false
   },
   "verification": {
     "fullLocalTestsPassed": 130,
@@ -56,7 +62,19 @@
   "remaining": [
     "Hosted failure scenario and recovery verification",
     "Manual evidence attachment workflow; payment references are visible, no override exists",
-    "Actual expired-identity navigation on this new screen; shared session boundary is covered separately",
-    "Real provider retransmission delivery proof remains pending PayPal developer login"
-  ]
+    "Actual expired-identity navigation on this new screen; shared session boundary is covered separately"
+  ],
+  "hostedHttpBoundaries": {
+    "observedAt": "2026-10-03T20:18:46.896Z",
+    "anonymous": {
+      "status": 401,
+      "error": "SIGN_IN_REQUIRED",
+      "cacheControl": "no-store"
+    },
+    "foreignOrigin": {
+      "status": 403,
+      "error": "REQUEST_NOT_ALLOWED",
+      "cacheControl": "no-store"
+    }
+  }
 }
