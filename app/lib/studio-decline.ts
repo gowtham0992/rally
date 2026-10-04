@@ -1,0 +1,1 @@
+export const studioDeclineReasons:Record<string,string>={UNAVAILABLE:'That time is no longer available.',CANNOT_DELIVER:'The studio can’t deliver this exact session.',OTHER:'The studio can’t accept this request.'};

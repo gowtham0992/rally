@@ -30,7 +30,7 @@ export class ClarificationService {
   return {group,member};
  }
  private editable(group:any){if(!['COLLECTING','CLOSED','MERCHANT_REVIEW'].includes(group.state))throw new IntakeError('PLANNING_LOCKED');}
- private current(group:any,member:any,p:{expectedRevision:number;preferenceId:string}){if(group.revision!==p.expectedRevision||member.current_preference_id!==p.preferenceId)throw new IntakeError('STALE_REVISION');}
+ private current(group:any,member:any,p:{expectedRevision:number;preferenceId:string}){if(member.current_preference_id!==p.preferenceId)throw new IntakeError('STALE_REVISION');}
  async view(a:IntakeActor,groupId:string):Promise<ClarificationView|null>{return transaction(this.pool,async c=>{
   const {group,member}=await this.owned(c,a,groupId);
   const row=(await c.query(`SELECT * FROM planning_clarifications WHERE member_id=$1 AND (source_preference_id=$2 OR resolved_preference_id=$2) ORDER BY created_at DESC LIMIT 1`,[member.id,member.current_preference_id])).rows[0];
@@ -39,7 +39,7 @@ export class ClarificationService {
    await c.query("UPDATE planning_clarifications SET result=NULL,status=CASE WHEN status IN ('RESERVED','DISPATCHED','READY') THEN 'STALE' ELSE status END WHERE id=$1",[row.id]);
    row.result=null;if(['RESERVED','DISPATCHED','READY'].includes(row.status))row.status='STALE';
   }
-  if(['RESERVED','DISPATCHED','READY'].includes(row.status)&&(row.source_group_revision!==group.revision||row.source_preference_id!==member.current_preference_id)){
+  if(['RESERVED','DISPATCHED','READY'].includes(row.status)&&(!['COLLECTING','CLOSED','MERCHANT_REVIEW'].includes(group.state)||row.source_preference_id!==member.current_preference_id)){
    await c.query("UPDATE planning_clarifications SET status='STALE',result=NULL WHERE id=$1",[row.id]);row.status='STALE';row.result=null;
   }
   if(['RESERVED','DISPATCHED'].includes(row.status)){
@@ -57,17 +57,17 @@ export class ClarificationService {
    if(!member.optional_text?.trim())throw new IntakeError('NO_NOTE');
    if(member.optional_text.length>1500)throw new IntakeError('NOTE_TOO_LONG');
    if(member.wording_bound)throw new IntakeError('NOTE_ALREADY_REVIEWED');
-   const prior=(await c.query('SELECT id FROM planning_clarifications WHERE member_id=$1 AND source_preference_id=$2 AND source_group_revision=$3',[member.id,p.preferenceId,p.expectedRevision])).rows[0];if(prior)return {id:prior.id};
+   const prior=(await c.query('SELECT id FROM planning_clarifications WHERE member_id=$1 AND source_preference_id=$2 ORDER BY created_at DESC LIMIT 1',[member.id,p.preferenceId])).rows[0];if(prior)return {id:prior.id};
    const daily=Number((await c.query(`SELECT count(*) FROM planning_clarifications q JOIN planning_members m ON m.id=q.member_id WHERE m.user_id=$1 AND q.created_at>clock_timestamp()-interval '24 hours'`,[a.userId])).rows[0].count);
    if(member.ai_calls>=4||member.ai_questions>=2||daily>=6)throw new IntakeError('CLARIFICATION_LIMIT');
-   const id=randomUUID();await c.query('INSERT INTO planning_clarifications(id,member_id,source_preference_id,source_group_revision,status) VALUES($1,$2,$3,$4,\'RESERVED\')',[id,member.id,p.preferenceId,p.expectedRevision]);
+   const id=randomUUID();await c.query('INSERT INTO planning_clarifications(id,member_id,source_preference_id,source_group_revision,status) VALUES($1,$2,$3,$4,\'RESERVED\')',[id,member.id,p.preferenceId,group.revision]);
    await c.query('UPDATE planning_members SET ai_calls=ai_calls+1 WHERE id=$1',[member.id]);return {id};
   });
   const input=await transaction(this.pool,async c=>{
    const {group,member}=await this.owned(c,a,p.groupId);this.editable(group);
    const row=(await c.query('SELECT * FROM planning_clarifications WHERE id=$1 AND member_id=$2 FOR UPDATE',[reserved.id,member.id])).rows[0];if(!row)throw new IntakeError('NOT_FOUND');
    if(row.status!=='RESERVED')return null;
-   if(member.private_text_expired||!member.optional_text?.trim()||row.source_group_revision!==group.revision||row.source_preference_id!==member.current_preference_id){await c.query("UPDATE planning_clarifications SET status='STALE',result=NULL WHERE id=$1",[row.id]);return null;}
+   if(member.private_text_expired||!member.optional_text?.trim()||!['COLLECTING','CLOSED','MERCHANT_REVIEW'].includes(group.state)||row.source_preference_id!==member.current_preference_id){await c.query("UPDATE planning_clarifications SET status='STALE',result=NULL WHERE id=$1",[row.id]);return null;}
    await c.query("UPDATE planning_clarifications SET status='DISPATCHED',started_at=clock_timestamp() WHERE id=$1",[row.id]);
    return {revisionId:member.current_preference_id,text:member.optional_text,catalog:group.catalog};
   });
@@ -76,7 +76,7 @@ export class ClarificationService {
    await transaction(this.pool,async c=>{
     const {group,member}=await this.owned(c,a,p.groupId);
     const row=(await c.query('SELECT * FROM planning_clarifications WHERE id=$1 AND member_id=$2 FOR UPDATE',[reserved.id,member.id])).rows[0];if(row.status!=='DISPATCHED')return;
-    if(member.private_text_expired||group.revision!==row.source_group_revision||member.current_preference_id!==row.source_preference_id||!['COLLECTING','CLOSED','MERCHANT_REVIEW'].includes(group.state)){
+    if(member.private_text_expired||member.current_preference_id!==row.source_preference_id||!['COLLECTING','CLOSED','MERCHANT_REVIEW'].includes(group.state)){
      await c.query("UPDATE planning_clarifications SET status='STALE',result=NULL WHERE id=$1",[row.id]);return;
     }
     let proposal:Proposal|null=null;
@@ -110,7 +110,7 @@ export class ClarificationService {
  async answer(a:IntakeActor,value:unknown){const p=answerSchema.parse(value);return this.intake.recordCommand(a,p.commandId,{kind:'ANSWER_CLARIFICATION',...p},async c=>{
   const {group,member}=await this.owned(c,a,p.groupId);this.editable(group);this.current(group,member,p);
   const row=(await c.query('SELECT * FROM planning_clarifications WHERE id=$1 AND member_id=$2 FOR UPDATE',[p.clarificationId,member.id])).rows[0];if(!row)throw new IntakeError('NOT_FOUND');
-  if(row.status!=='READY'||row.source_preference_id!==p.preferenceId||row.source_group_revision!==p.expectedRevision)throw new IntakeError('STALE_CLARIFICATION');
+  if(row.status!=='READY'||row.source_preference_id!==p.preferenceId)throw new IntakeError('STALE_CLARIFICATION');
   const proposal=validateInterpretation(row.result,{revisionId:p.preferenceId,text:member.optional_text,catalog:group.catalog});
   const question=proposal.question;if((question&&!question.options.some(o=>o.id===p.answerId))||(!question&&p.answerId!==null))throw new IntakeError('INVALID_ANSWER');
   const resolved=confirmedMeaning(preferenceSchema.parse(member.confirmed),proposal,p.answerId);
@@ -120,7 +120,7 @@ export class ClarificationService {
  async decline(a:IntakeActor,value:unknown){const p=declineSchema.parse(value);return this.intake.recordCommand(a,p.commandId,{kind:'DECLINE_CLARIFICATION',...p},async c=>{
   const {group,member}=await this.owned(c,a,p.groupId);this.editable(group);this.current(group,member,p);
   const row=(await c.query('SELECT * FROM planning_clarifications WHERE id=$1 AND member_id=$2 FOR UPDATE',[p.clarificationId,member.id])).rows[0];if(!row)throw new IntakeError('NOT_FOUND');
-  if(row.status!=='READY'||row.source_preference_id!==p.preferenceId||row.source_group_revision!==p.expectedRevision)throw new IntakeError('STALE_CLARIFICATION');
+  if(row.status!=='READY'||row.source_preference_id!==p.preferenceId)throw new IntakeError('STALE_CLARIFICATION');
   await c.query("UPDATE planning_clarifications SET status='DECLINED',result=NULL WHERE id=$1",[row.id]);return {declined:true};
  });}
 }

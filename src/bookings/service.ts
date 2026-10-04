@@ -11,6 +11,7 @@ const uuid=z.uuid(),key=z.string().min(1).max(100);
 const requestSchema=z.strictObject({commandId:uuid,groupId:uuid,expectedRevision:z.number().int().nonnegative(),offeringId:key,slotId:key});
 const approveSchema=z.strictObject({commandId:uuid,requestId:uuid,expectedRevision:z.number().int().nonnegative(),
  factsConfirmed:z.literal(true),externalCalendarBlocked:z.literal(true),automaticSettlementAgreed:z.literal(true),collectionArrangementsAgreed:z.literal(true)});
+const declineSchema=z.strictObject({commandId:uuid,requestId:uuid,expectedRevision:z.number().int().nonnegative(),reason:z.enum(['UNAVAILABLE','CANNOT_DELIVER','OTHER'])});
 const reopenSchema=z.strictObject({commandId:uuid,groupId:uuid,offerId:uuid,expectedRevision:z.number().int().nonnegative(),offerHash:z.string().length(64),acknowledgesNewApprovals:z.literal(true)});
 const checkPaymentSchema=z.strictObject({commandId:uuid,offerId:uuid,operationId:uuid});
 const evidenceSchema=z.strictObject({commandId:uuid,operationId:uuid,
@@ -116,6 +117,16 @@ export class BookingService {
    return {offerId,offerHash:hash,revision:g.revision+1};
   });}catch(error){if((error as {code?:string}).code==='23P01')throw new DomainError('RESERVATION_CONFLICT');throw error;}
  }
+ async decline(actor:IntakeActor,value:unknown){const p=declineSchema.parse(value);return this.command(actor,p.commandId,{kind:'DECLINE_STUDIO_REQUEST',...p},async c=>{
+  const request=(await c.query('SELECT r.*,s.owner_user_id FROM merchant_requests r JOIN merchant_studios s ON s.studio_id=r.studio_id WHERE r.id=$1',[p.requestId])).rows[0];
+  if(!request||request.owner_user_id!==actor.userId)throw new DomainError('NOT_FOUND',404);
+  const g=await this.group(c,request.group_id,actor);
+  if(g.state!=='MERCHANT_REVIEW'||g.revision!==p.expectedRevision||request.planning_revision!==g.revision||request.state!=='PENDING')throw new DomainError('STALE_PLANNING');
+  await c.query("UPDATE merchant_requests SET state='DECLINED',decline_reason=$2,declined_at=clock_timestamp() WHERE id=$1",[request.id,p.reason]);
+  await c.query("UPDATE planning_groups SET state='CLOSED',revision=revision+1,candidate=NULL WHERE id=$1",[g.id]);
+  await c.query("INSERT INTO planning_events(group_id,revision,kind) VALUES($1,$2,'STUDIO_DECLINED')",[g.id,g.revision+1]);
+  return {requestId:request.id as string,revision:g.revision+1};
+ });}
  async merchantQueue(actor:IntakeActor,cursor:string|null=null){this.actor(actor);if(cursor)uuid.parse(cursor);
   return transaction(this.pool,async c=>{
    const studios=(await c.query('SELECT studio_id FROM merchant_studios WHERE owner_user_id=$1',[actor.userId])).rows;
@@ -256,6 +267,7 @@ export class BookingService {
    const request=(await c.query('SELECT r.*,s.owner_user_id,s.setup_minutes,s.cleanup_minutes FROM merchant_requests r JOIN merchant_studios s ON s.studio_id=r.studio_id WHERE r.id=$1',[requestId])).rows[0];
    if(!request||request.owner_user_id!==actor.userId)throw new DomainError('NOT_FOUND',404);
    const g=await this.group(c,request.group_id,actor);
+   if(request.state==='DECLINED')return {requestId,state:'DECLINED' as const,reason:request.decline_reason as string};
    if(request.state==='APPROVED')return {requestId,state:'APPROVED' as const,offerId:request.approved_offer_id};
    if(g.state!=='MERCHANT_REVIEW'||g.revision!==request.planning_revision)return {requestId,state:'STALE' as const};
    const plan=await confirmedPlan(c,g.id,g.catalog);if(plan.sourceHash!==request.source_hash)return {requestId,state:'STALE' as const};

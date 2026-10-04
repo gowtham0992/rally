@@ -15,7 +15,7 @@ const actor=():IntakeActor=>({userId:randomUUID(),emailVerified:true});
 const merchant=actor();
 const baseCatalog=JSON.parse(await readFile(new URL('../fixtures/studio.json',import.meta.url),'utf8'));
 const catalog={...baseCatalog,slots:baseCatalog.slots.map((s:{id:string},i:number)=>({...s,startAt:new Date(Date.now()+(3+i)*86400000).toISOString()}))};
-const migrations=['001_payments','004_private_intake','005_collection_consent','006_merchant_offers','007_clarifications','008_cancellations','013_payment_evidence'];
+const migrations=['001_payments','004_private_intake','005_collection_consent','006_merchant_offers','007_clarifications','008_cancellations','013_payment_evidence','014_studio_declines'];
 before(async()=>{await admin.query(`CREATE SCHEMA ${schema}`);for(const file of migrations)await pool.query(await readFile(new URL('../db/'+file+'.sql',import.meta.url),'utf8'));
  await pool.query('INSERT INTO merchant_studios VALUES($1,$2,$3,$4,$5,$6)',[catalog.studioId,merchant.userId,'synthetic_merchant','studio-exclusive',15,20]);
  await pool.query('INSERT INTO merchant_catalog_versions(studio_id,version_id,catalog) VALUES($1,$2,$3)',[catalog.studioId,catalog.versionId,JSON.stringify(catalog)]);
@@ -51,7 +51,7 @@ test('six-person private intake becomes a frozen merchant-approved offer and ver
  for(const a of x.actors){await engine.accept({commandId:randomUUID(),actorId:a.userId,offerId:approved.offerId,offerHash:approved.offerHash});await engine.step(approved.offerId);}
  for(const a of x.actors){await engine.authorize({commandId:randomUUID(),actorId:a.userId,offerId:approved.offerId,offerHash:approved.offerHash});await engine.step(approved.offerId);}
  assert.equal((await bookings.offer(x.actors[0],approved.offerId)).booking,'SETTLING');await settle(engine,approved.offerId);
- assert.equal((await bookings.offer(merchant,approved.offerId)).booking,'CONFIRMED');assert.equal((await intake.participantContext(x.actors[0],x.g.groupId)).bookingState,'CONFIRMED');assert.equal(provider.financialEffects.captures,6);
+ assert.equal((await bookings.offer(merchant,approved.offerId)).booking,'CONFIRMED');const planIndex=(await intake.plans(x.actors[0])).plans.find(p=>p.groupId===x.g.groupId)!;assert.equal(planIndex.bookingState,'CONFIRMED');assert.equal(planIndex.activity,'Hand-build a cup');assert.equal(planIndex.startAt,view.snapshot.candidate.startAt);assert.ok(!JSON.stringify(planIndex).includes('Private words'));assert.equal((await intake.participantContext(x.actors[0],x.g.groupId)).bookingState,'CONFIRMED');assert.equal(provider.financialEffects.captures,6);
  assert.equal((await engine.participantStatus(approved.offerId,x.actors[0].userId)).payment,'PAYMENT_COMPLETED');
  assert.equal((await pool.query('SELECT state FROM reservations WHERE offer_id=$1',[approved.offerId])).rows[0].state,'BOOKED');
  await pool.query("UPDATE reservations SET state='COMPLETED' WHERE offer_id=$1",[approved.offerId]);
@@ -430,4 +430,22 @@ test('studio evidence is immutable, linked to a committed command and cannot be 
  await assert.rejects(pool.query("INSERT INTO payment_reconciliation_evidence(id,operation_id,recorded_by,source,reference,reported_outcome,operation_state_at_recording) VALUES($1,$2,$3,'TRANSACTION','ORPHAN-123','UNRESOLVED','PENDING')",[randomUUID(),op.id,merchant.userId]),{code:'23503'});
  await assert.rejects(pool.query(await readFile(new URL('../db/013_payment_evidence.down.sql',import.meta.url),'utf8')),{code:'23514'});
  assert.equal((await bookings.merchantPaymentRecord(merchant,op.id)).records.length,1);
+});
+
+test('studio decline returns a group to planning without creating an offer or exposing private needs',async()=>{
+ const x=await setup(),r=await request(x),payload={commandId:randomUUID(),requestId:r.requestId,expectedRevision:r.revision,reason:'UNAVAILABLE'};
+ await assert.rejects(bookings.decline(x.actors[0],payload),/NOT_FOUND/);
+ const result=await bookings.decline(merchant,payload);assert.deepEqual(await new BookingService(pool).decline(merchant,payload),result);
+ const context=await intake.participantContext(x.actors[1],x.g.groupId);assert.equal(context.state,'CLOSED');assert.equal(context.offerId,null);assert.equal(context.studioDecline?.reason,'UNAVAILABLE');
+ assert.equal((await bookings.merchantRequest(merchant,r.requestId)).state,'DECLINED');
+ assert.equal((await bookings.merchantQueue(merchant)).requests.some(q=>q.requestId===r.requestId),false);
+ assert.equal((await pool.query('SELECT count(*)::int AS n FROM offer_snapshots WHERE group_id=$1',[x.g.groupId])).rows[0].n,0);
+ await assert.rejects(bookings.approve(merchant,approval(r)),/STALE_PLANNING/);
+ await assert.rejects(bookings.decline(merchant,{...payload,commandId:randomUUID(),reason:'Private words'}));
+ const fresh=await bookings.request(x.actors[0],{commandId:randomUUID(),groupId:x.g.groupId,expectedRevision:result.revision,offeringId:'handbuild',slotId:'thu-evening'});assert.equal((await bookings.merchantRequest(merchant,fresh.requestId)).state,'PENDING');
+});
+test('concurrent studio approval and decline have one decision and never reserve a declined request',async()=>{
+ const x=await setup(),r=await request(x);const decisions=await Promise.allSettled([bookings.decline(merchant,{commandId:randomUUID(),requestId:r.requestId,expectedRevision:r.revision,reason:'CANNOT_DELIVER'}),bookings.approve(merchant,approval(r))]);
+ assert.equal(decisions.filter(d=>d.status==='fulfilled').length,1);assert.ok(decisions.some(d=>d.status==='rejected'&&d.reason.code==='STALE_PLANNING'));
+ const review=await bookings.merchantRequest(merchant,r.requestId);if(review.state==='APPROVED')await release(review.offerId);else{assert.equal(review.state,'DECLINED');assert.equal((await pool.query('SELECT count(*)::int AS n FROM offer_snapshots WHERE request_id=$1',[r.requestId])).rows[0].n,0);}
 });

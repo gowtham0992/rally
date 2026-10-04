@@ -13,7 +13,7 @@ import {localFields} from '../planning/local-time.ts';
 // Only server-authenticated identity may construct this input. Request bodies must
 // never supply actorId/verified. Managed Auth route binding remains a separate gate.
 export interface IntakeActor {userId:string;emailVerified:boolean;demoWorkspaceId?:string}
-export interface PlanSummary {groupId:string;studioName:string;state:string;isOrganizer:boolean;targetSize:number;readyCount:number;members:{displayName:string;isYou:boolean}[]}
+export interface PlanSummary {groupId:string;studioName:string;state:string;isOrganizer:boolean;targetSize:number;readyCount:number;activity:string|null;startAt:string|null;timezone:string|null;bookingState:string|null;offerId:string|null;members:{displayName:string;isYou:boolean}[]}
 export class IntakeError extends Error {constructor(public code:string){super(code);}}
 const uuid=z.uuid(),name=z.string().trim().min(1).max(60);
 const createSchema=z.strictObject({commandId:uuid,targetSize:z.number().int().min(1).max(8),displayName:name,catalog:catalogSchema});
@@ -55,9 +55,10 @@ export class IntakeService {
  });}
  async join(actor:IntakeActor,value:unknown){const p=joinSchema.parse(value);return this.recordCommand(actor,p.commandId,{kind:'JOIN',...p},async c=>{
   const g=(await c.query('SELECT * FROM planning_groups WHERE invite_digest=$1 FOR UPDATE',[digest(p.invite)])).rows[0];
-  if(!g)throw new IntakeError('NOT_FOUND');assertWorkspaceScope(actor,g);if(g.state!=='COLLECTING')throw new IntakeError('ROSTER_CLOSED');
-  const prior=(await c.query('SELECT id FROM planning_members WHERE group_id=$1 AND user_id=$2',[g.id,actor.userId])).rows[0];
-  if(prior)return {groupId:g.id,memberId:prior.id,revision:g.revision};
+  if(!g)throw new IntakeError('NOT_FOUND');assertWorkspaceScope(actor,g);
+  const prior=(await c.query('SELECT id,admitted FROM planning_members WHERE group_id=$1 AND user_id=$2',[g.id,actor.userId])).rows[0];
+  if(prior&&(g.state==='COLLECTING'||prior.admitted))return {groupId:g.id,memberId:prior.id,revision:g.revision};
+  if(g.state!=='COLLECTING')throw new IntakeError('ROSTER_CLOSED');
   if(Number((await c.query('SELECT count(*) FROM planning_members WHERE group_id=$1',[g.id])).rows[0].count)>=8)throw new IntakeError('GROUP_FULL');
   const memberId=randomUUID();await c.query('INSERT INTO planning_members(id,group_id,user_id,display_name) VALUES($1,$2,$3,$4)',[memberId,g.id,actor.userId,p.displayName]);
   return {groupId:g.id,memberId,revision:await this.changed(c,g.id,'MEMBER_JOINED')};
@@ -70,7 +71,7 @@ export class IntakeService {
   if(!m)throw new IntakeError('NOT_FOUND');
   if(!['COLLECTING','CLOSED','MERCHANT_REVIEW'].includes(g.state))throw new IntakeError('PLANNING_LOCKED');
   if(g.state!=='COLLECTING'&&!m.admitted)throw new IntakeError('NOT_FOUND');
-  if(g.revision!==p.expectedRevision||m.current_preference_id!==p.expectedPreferenceId)throw new IntakeError('STALE_REVISION');
+  if(m.current_preference_id!==p.expectedPreferenceId)throw new IntakeError('STALE_REVISION');
   const catalog=catalogSchema.parse(g.catalog);
   if(p.preference.availableSlotIds.some(id=>!catalog.slots.some(s=>s.id===id)))throw new IntakeError('UNKNOWN_SLOT');
   if(p.preference.latestFinishAt){
@@ -106,7 +107,7 @@ export class IntakeService {
   return {groupId,revision:g.revision,state:g.state,targetSize:g.target_size,isOrganizer:g.organizer_id===actor.userId,
    memberId:own.id,displayName:own.display_name,preference:own.confirmed?preferenceSchema.parse(own.confirmed):null,optionalText:own.optional_text??null,wordingReviewed:Boolean(own.wording_bound),privateTextExpired:Boolean(own.private_text_expired),
    catalog:catalogSchema.parse(g.catalog),members,candidate:g.candidate,studioReviewPending:g.state==='MERCHANT_REVIEW',
-   offerId:issued?.approved_offer_id??null,bookingState:issued?.booking_state??null,collectionRequests:await this.collectionProjection(c,actor,groupId),
+   offerId:issued?.approved_offer_id??null,bookingState:issued?.booking_state??null,studioDecline:g.state==='CLOSED'&&(await c.query("SELECT 1 FROM planning_events WHERE group_id=$1 AND revision=$2 AND kind='STUDIO_DECLINED'",[groupId,g.revision])).rowCount?(await c.query("SELECT to_jsonb(r)->>'decline_reason' AS reason FROM merchant_requests r WHERE r.group_id=$1 AND r.state='DECLINED' AND r.planning_revision=$2-1 LIMIT 1",[groupId,g.revision])).rows[0]??null:null,collectionRequests:await this.collectionProjection(c,actor,groupId),
    organizerInvite:g.organizer_id===actor.userId?(await c.query("SELECT result->>'invite' AS invite FROM intake_commands WHERE actor_id=$1 AND result->>'groupId'=$2 AND result ? 'invite' LIMIT 1",[actor.userId,groupId])).rows[0]?.invite??null:null};
  });}
  async roster(actor:IntakeActor,groupId:string){this.actor(actor);uuid.parse(groupId);
@@ -138,7 +139,16 @@ export class IntakeService {
     AND (to_jsonb(g)->>'demo_workspace_id') IS NOT DISTINCT FROM $2::text
     AND ($3::timestamptz IS NULL OR (g.created_at,g.id)<($3::timestamptz,$4::uuid))
     ORDER BY g.created_at DESC,g.id DESC LIMIT 21`,[actor.userId,actor.demoWorkspaceId??null,before?.createdAt??null,before?.id??null])).rows as PlanSummary[];
-   const plans=rows.slice(0,20);return {plans,nextCursor:rows.length>20?plans.at(-1)!.groupId:null};
+   const plans=rows.slice(0,20).map(row=>({...row,activity:null as string|null,startAt:null as string|null,timezone:null as string|null,bookingState:null as string|null,offerId:null as string|null}));
+   const issued=plans.filter(p=>p.state==='OFFER_ISSUED').map(p=>p.groupId);
+   if(issued.length){
+    const bookings=(await c.query(`SELECT DISTINCT ON (r.group_id) r.group_id,o.id,o.state,
+     os.snapshot->'candidate'->>'activity' AS activity,os.snapshot->'candidate'->>'startAt' AS start_at,os.snapshot->'candidate'->>'timezone' AS timezone
+     FROM merchant_requests r JOIN offers o ON o.id=r.approved_offer_id JOIN offer_snapshots os ON os.offer_id=o.id
+     WHERE r.group_id=ANY($1::uuid[]) AND r.state='APPROVED' ORDER BY r.group_id,r.planning_revision DESC`,[issued])).rows;
+    for(const plan of plans){const booking=bookings.find(b=>b.group_id===plan.groupId);if(booking)Object.assign(plan,{activity:booking.activity,startAt:booking.start_at,timezone:booking.timezone,bookingState:booking.state,offerId:booking.id});}
+   }
+   return {plans,nextCursor:rows.length>20?plans.at(-1)!.groupId:null};
   });
  }
  async closeRoster(actor:IntakeActor,value:unknown){const p=closeSchema.parse(value);return this.recordCommand(actor,p.commandId,{kind:'CLOSE',...p},async c=>{

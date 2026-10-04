@@ -195,3 +195,20 @@ test('a closed roster never counts or asks an excluded collector; the owner must
  assert.equal((await service.participantContext(x.a,x.g.groupId)).collectionRequests[0].ownerAgreed,false);
  assert.deepEqual((await service.participantContext(x.b,x.g.groupId)).collectionRequests,[]);
 });
+
+test('six different friends save from the same group revision without overwriting one another',async()=>{
+ const actors=Array.from({length:6},actor),g=await service.create(actors[0],{commandId:randomUUID(),targetSize:6,displayName:'Organizer',catalog});
+ for(let i=1;i<6;i++)await service.join(actors[i],{commandId:randomUUID(),invite:g.invite,displayName:`Friend ${i}`});
+ const revision=(await service.roster(actors[0],g.groupId)).revision;
+ const results=await Promise.all(actors.map((a,i)=>service.save(a,{commandId:randomUUID(),groupId:g.groupId,expectedRevision:revision,expectedPreferenceId:null,preference:{...pref,budgetMinor:5000+i},optionalText:null})));
+ assert.equal(results.length,6);for(let i=0;i<6;i++)assert.equal((await service.ownPreferences(actors[i],g.groupId)).preference.budgetMinor,5000+i);
+ await assert.rejects(service.closeRoster(actors[0],{commandId:randomUUID(),groupId:g.groupId,expectedRevision:revision,memberIds:(await service.roster(actors[0],g.groupId)).members.map(m=>m.id)}),/STALE_REVISION/);
+});
+test('original invite returns admitted members after closure but rejects newcomers and excluded members',async()=>{
+ const x=await ready();const again=await service.join(x.b,{commandId:randomUUID(),invite:x.g.invite,displayName:'Changed'});
+ assert.equal(again.groupId,x.g.groupId);assert.equal(again.memberId,x.joined.memberId);
+ assert.equal((await service.participantContext(x.b,x.g.groupId)).displayName,'Participant');
+ await assert.rejects(service.join(actor(),{commandId:randomUUID(),invite:x.g.invite,displayName:'New'}),/ROSTER_CLOSED/);
+ await pool.query('UPDATE planning_members SET admitted=false WHERE id=$1',[x.joined.memberId]);
+ await assert.rejects(service.join(x.b,{commandId:randomUUID(),invite:x.g.invite,displayName:'Excluded'}),/ROSTER_CLOSED/);
+});

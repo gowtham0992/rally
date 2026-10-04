@@ -99,3 +99,12 @@ test('global model budget is reserved after ownership and once per dispatch; exh
  assert.equal((await service.start(y.a,y.start))?.status,'REVIEW');assert.equal(calls,1);
  assert.equal((await pool.query('SELECT hits FROM request_limits WHERE scope=$1 AND subject_digest=$2',['MODEL_GLOBAL',digest])).rows[0].hits,72);
 });
+
+test('another friend saving during model work preserves the owners valid clarification and answer',async()=>{
+ const x=await setup();let release!:(v:Clarification)=>void,notify!:()=>void,input!:Parameters<typeof proposal>[0];const started=new Promise<void>(r=>notify=r);
+ const service=new ClarificationService(pool,async i=>{input=i;notify();return new Promise<Clarification>(r=>release=r);});const pending=service.start(x.a,x.start);await started;
+ await intake.save(x.b,{commandId:randomUUID(),groupId:x.g.groupId,expectedRevision:x.second.revision,expectedPreferenceId:x.second.preferenceId,preference:{...pref,budgetMinor:5200},optionalText:null});
+ release(proposal(input));const view=await pending;assert.equal(view?.status,'READY');
+ await service.answer(x.a,{commandId:randomUUID(),groupId:x.g.groupId,expectedRevision:x.second.revision,preferenceId:x.first.preferenceId,clarificationId:view!.id,answerId:'collection',confirmsAllEssentials:true});
+ assert.equal((await intake.ownPreferences(x.a,x.g.groupId)).preference.collection,'NOMINEE_LATER');
+});

@@ -1,5 +1,5 @@
 {
-  "status": "sandbox_product_complete",
+  "status": "product_improvements_in_progress",
   "scope": "Product only. The owner explicitly stopped demo and submission work on 2026-10-03; complete Rally functionality, correctness and UI polish.",
   "completed_local_work": [
     "Isolated Git repository, MIT license, pinned Node/TypeScript dependencies and reproducible payment setup guide",
@@ -679,7 +679,13 @@
       "state": "Approved Free Render preview deployed; exact Cloudflare subdomain/HTTPS and private Cron verified for idle transport. Repository remains private; public publication audit is pending."
     }
   ],
-  "remaining_requirements": [],
+  "remaining_requirements": [
+    "Independent private edits and draft recovery",
+    "Blocked plans and studio declines",
+    "Continuous checkout",
+    "Shared plan and truthful plan list",
+    "Reliable invite and auth entry"
+  ],
   "next_independent_slice": null,
   "release_restrictions": [
     "Product is scoped to the demonstration studio and PayPal sandbox. Live merchant operations and live money remain outside authorization.",
@@ -715,6 +721,6 @@
     "repository_publication": false,
     "retain_private_repository": true,
     "product_testing": "Local automated tests and browser verification remain part of finishing the product.",
-    "completion": "Existing narrow sandbox product implementation completed and deployed, with local automated recovery tests and browser product checks. Demo/video/Devpost/publication work is excluded by the owner."
+    "completion": "Five Astra product gaps are being fixed and verified. Demo, submission and publication remain excluded."
   }
 }

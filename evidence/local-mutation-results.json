@@ -2,6 +2,42 @@
   "mode": "local_database_and_simulated_provider",
   "results": [
     {
+      "mutation": "private save rejects an unrelated friend revision",
+      "baselinePassed": true,
+      "caught": true,
+      "exitCode": 1
+    },
+    {
+      "mutation": "private save overwrites the same owners other draft",
+      "baselinePassed": true,
+      "caught": true,
+      "exitCode": 1
+    },
+    {
+      "mutation": "original invite rejects an admitted returning friend",
+      "baselinePassed": true,
+      "caught": true,
+      "exitCode": 1
+    },
+    {
+      "mutation": "unrelated friend invalidates private clarification",
+      "baselinePassed": true,
+      "caught": true,
+      "exitCode": 1
+    },
+    {
+      "mutation": "plan index invents an open window after confirmation",
+      "baselinePassed": true,
+      "caught": true,
+      "exitCode": 1
+    },
+    {
+      "mutation": "private feedback hides an incompatible leave-by time",
+      "baselinePassed": true,
+      "caught": true,
+      "exitCode": 1
+    },
+    {
       "mutation": "plan list exposes other memberships",
       "baselinePassed": true,
       "caught": true,

@@ -1,0 +1,54 @@
+{
+  "observed_at": "2026-10-04T02:04:11.639495+00:00",
+  "scope": "Five Astra product review gaps; product-only instruction.",
+  "fixes": [
+    "Private edits and clarification use the owning preference version; shared decisions retain group locks and revisions.",
+    "Live group facts preserve drafts; explicit replacement is required for same-owner conflicts.",
+    "Private actionable incompatibility feedback; no unsupported promise of a studio request. Owned bounded studio declines return groups to planning without offers or payments.",
+    "One checkout journey after explicit acceptance; returned URLs only trigger checks on existing orders and never establish payment truth. Manual retries remain.",
+    "Shared options and next actions lead after intake. Saved private details expand. Plans show selected activity, date and actual booking state.",
+    "Original invites return admitted members after closure. Auth precedes name entry. Copy failures expose selectable links."
+  ],
+  "verification": {
+    "full_tests_passed": 170,
+    "full_suite_runs": 2,
+    "typecheck": "passed",
+    "production_build": "passed",
+    "mutation_faults_caught": 53,
+    "source_secret_findings": 0
+  },
+  "browser_checks": {
+    "scope": "Actual React product components in StrictMode, isolated loopback harness with mocked API/provider boundaries.",
+    "checks": [
+      "Shared options precede collapsed private details",
+      "Same-owner conflict retains 49.50 draft while displaying 62 saved amount",
+      "Explicit replacement saves exact 49.50 and returns to shared plan",
+      "First save returns to shared plan",
+      "Automatic navigation after accepted order readiness",
+      "Returned checkout makes exactly one authorization check under StrictMode",
+      "Checking payment does not claim confirmation",
+      "Offer clipboard includes URL and approval deadline",
+      "Bounded studio decline renders final reason and return to planning",
+      "Plans show Hand-build a cup, selected date and Booked",
+      "Auth precedes name entry and preserves full invite next URL",
+      "Private leave-by incompatibility is actionable",
+      "320 CSS pixel shared plan has no overflow"
+    ],
+    "new_auth_accounts": 0,
+    "emails": 0,
+    "paypal_calls": 0,
+    "model_calls": 0
+  },
+  "release": {
+    "state": "Schema expanded; code deploy pending",
+    "hosting": "Existing Render Free",
+    "repository": "Single private gowtham0992/rally",
+    "migration": "014_studio_declines",
+    "rollback": "Previous artifact ignores added columns; declined groups return CLOSED and requests are stale to old runtime."
+  },
+  "limits": [
+    "Browser tests use isolated boundary fixtures; no new hosted payment or demo flow.",
+    "Existing six-payer booking is protected during release.",
+    "No new human group or studio validation."
+  ]
+}
