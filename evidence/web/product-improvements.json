@@ -1,5 +1,5 @@
 {
-  "observed_at": "2026-10-04T02:04:11.639495+00:00",
+  "observed_at": "2026-10-04T02:25:20.279263+00:00",
   "scope": "Five Astra product review gaps; product-only instruction.",
   "fixes": [
     "Private edits and clarification use the owning preference version; shared decisions retain group locks and revisions.",
@@ -7,15 +7,18 @@
     "Private actionable incompatibility feedback; no unsupported promise of a studio request. Owned bounded studio declines return groups to planning without offers or payments.",
     "One checkout journey after explicit acceptance; returned URLs only trigger checks on existing orders and never establish payment truth. Manual retries remain.",
     "Shared options and next actions lead after intake. Saved private details expand. Plans show selected activity, date and actual booking state.",
-    "Original invites return admitted members after closure. Auth precedes name entry. Copy failures expose selectable links."
+    "Original invites return admitted members after closure. Auth precedes name entry. Copy failures expose selectable links.",
+    "Checkout polls quickly only while preparing or checking payments, for at most ninety seconds; ordinary updates resume afterward."
   ],
   "verification": {
-    "full_tests_passed": 170,
+    "full_tests_passed": 171,
     "full_suite_runs": 2,
     "typecheck": "passed",
     "production_build": "passed",
     "mutation_faults_caught": 53,
-    "source_secret_findings": 0
+    "source_secret_findings": 0,
+    "fresh_schema": "All fourteen migrations apply to a disposable schema; repeat application passes.",
+    "fresh_schema_file": "evidence/web/product-improvements-fresh-schema.json"
   },
   "browser_checks": {
     "scope": "Actual React product components in StrictMode, isolated loopback harness with mocked API/provider boundaries.",
@@ -40,11 +43,40 @@
     "model_calls": 0
   },
   "release": {
-    "state": "Schema expanded; code deploy pending",
+    "state": "Live",
     "hosting": "Existing Render Free",
     "repository": "Single private gowtham0992/rally",
     "migration": "014_studio_declines",
-    "rollback": "Previous artifact ignores added columns; declined groups return CLOSED and requests are stale to old runtime."
+    "rollback": "Schema fourteen remained healthy on the previous stable runtime during an actual rollback; protected booking and financial history were unchanged.",
+    "runtime_commit": "a28ca7e2ebfa507904ab17f2504c4955c677d236",
+    "deploy_id": "dep-db0rgv1srm7s738sff5g",
+    "rollback_deploy_id": "dep-db0rb2vavr4c7390s92g",
+    "deploy_duration_seconds": 80,
+    "hosted_migrations": 14,
+    "https_readiness": {
+      "path": "/api/health",
+      "status": 200,
+      "ready": true,
+      "error": null,
+      "cache_control": "no-store"
+    },
+    "unauthenticated_plans_api": {
+      "path": "/api/groups",
+      "status": 401,
+      "ready": null,
+      "error": "SIGN_IN_REQUIRED",
+      "cache_control": "no-store"
+    },
+    "protected_history_unchanged": true,
+    "existing_booking": {
+      "state": "CONFIRMED",
+      "cleanup": "NOT_REQUIRED",
+      "reservation_state": "BOOKED",
+      "captures": 6
+    },
+    "unresolved_payments": 0,
+    "restricted_tls_verified": true,
+    "new_hosted_flow_executed": false
   },
   "limits": [
     "Browser tests use isolated boundary fixtures; no new hosted payment or demo flow.",

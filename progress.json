@@ -1,5 +1,5 @@
 {
-  "status": "product_improvements_in_progress",
+  "status": "product_improvements_verified",
   "scope": "Product only. The owner explicitly stopped demo and submission work on 2026-10-03; complete Rally functionality, correctness and UI polish.",
   "completed_local_work": [
     "Isolated Git repository, MIT license, pinned Node/TypeScript dependencies and reproducible payment setup guide",
@@ -98,7 +98,7 @@
     "model_api_calls": 221,
     "ai_quality_and_24_case_evaluation": "passed_actual_72_run_final_prompt",
     "intake_scope": "Real PostgreSQL service tests with trusted test actors; not managed email-auth or browser end-to-end proof.",
-    "latest_full_test_run": "151 local tests passed twice; all forty weakened safeguards caught; TypeScript and production builds passed. Studio reports preserve financial truth, with authenticated local simulated write and draft recovery observed. Hosted owner/participant boundaries and compatible rollback/restoration preserve the completed six-buyer booking and thirteen-migration schema. Hosted financial-failure proof remains separate.",
+    "latest_full_test_run": "171 local tests passed twice, 53 weakened safeguards caught, final production build passed. Five reviewed product improvements are deployed on the existing free sandbox preview. Isolated component tests verify new journeys; release audit preserves existing hosted bookings and financial history. No new hosted payment/demo flow or human validation was performed.",
     "sandbox_oauth": "Sandbox HTTP 200 access token; supplied Client ID matched Rally app on the selected Business seller.",
     "managed_auth_browser": {
       "scope": "Existing healthy Rally Supabase Auth project; local Next.js app and local PostgreSQL; synthetic studio/name/preferences. User completed email login, agent used resulting verified session.",
@@ -657,6 +657,20 @@
         "error": "SIGN_IN_REQUIRED",
         "cache_control": "no-store"
       }
+    },
+    "product_improvements": {
+      "file": "evidence/web/product-improvements.json",
+      "tests_passed": 171,
+      "consecutive_green_runs": 2,
+      "mutation_faults_caught": 53,
+      "production_build": "passed",
+      "runtime_commit": "a28ca7e2ebfa507904ab17f2504c4955c677d236",
+      "deploy_id": "dep-db0rgv1srm7s738sff5g",
+      "deploy_status": "Live",
+      "migration_count": 14,
+      "compatible_rollback_verified": true,
+      "protected_booking_and_payment_history_preserved": true,
+      "new_hosted_flow_executed": false
     }
   },
   "external_dependencies": [
@@ -679,13 +693,7 @@
       "state": "Approved Free Render preview deployed; exact Cloudflare subdomain/HTTPS and private Cron verified for idle transport. Repository remains private; public publication audit is pending."
     }
   ],
-  "remaining_requirements": [
-    "Independent private edits and draft recovery",
-    "Blocked plans and studio declines",
-    "Continuous checkout",
-    "Shared plan and truthful plan list",
-    "Reliable invite and auth entry"
-  ],
+  "remaining_requirements": [],
   "next_independent_slice": null,
   "release_restrictions": [
     "Product is scoped to the demonstration studio and PayPal sandbox. Live merchant operations and live money remain outside authorization.",
@@ -721,6 +729,6 @@
     "repository_publication": false,
     "retain_private_repository": true,
     "product_testing": "Local automated tests and browser verification remain part of finishing the product.",
-    "completion": "Five Astra product gaps are being fixed and verified. Demo, submission and publication remain excluded."
+    "completion": "Five reviewed product gaps implemented, locally verified and deployed. New demo runs, submission, publication and human validation remain outside this completed fix scope."
   }
 }
