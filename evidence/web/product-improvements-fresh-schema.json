@@ -1,0 +1,7 @@
+{
+  "observedAt": "2026-10-04T02:14:13.461Z",
+  "scope": "Fresh disposable loopback schema; no provider, model, email or Auth services",
+  "migrations": 14,
+  "repeatedApplicationPassed": true,
+  "originalDatabaseModified": false
+}
