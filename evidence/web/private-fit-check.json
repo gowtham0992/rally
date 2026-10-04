@@ -1,0 +1,89 @@
+{
+  "observed_at": "2026-10-04T03:45:09.439106+00:00",
+  "scope": "Concrete private fit check from the latest Astra review; product only.",
+  "fixes": [
+    "Public studio activities, actual prices, dates, durations and collection context appear before sign-in, including loading and authentication failure states.",
+    "One activity requirement selector replaces two questions; every older field combination stays intact until an explicit replacement.",
+    "Immediate owner-only session previews use the same published fact filters as authoritative group planning, while unresolved notes, meaning and collection agreement remain pending.",
+    "Collection needs can be saved before another friend joins or a collector is chosen; explicit disclosure and both-party agreement remain required for a studio request.",
+    "All valid activity/date combinations remain visible, grouped by activity, with exact price and end time.",
+    "Collective incompatibility keeps choices unchanged and shows owner-only possibilities without disclosing another participant\u2019s constraints.",
+    "A note review is reused in an editing preview only while its owning saved revision and every private choice remain unchanged."
+  ],
+  "verification": {
+    "full_tests_passed": 178,
+    "full_suite_runs_on_final_source": 2,
+    "typecheck": "passed in production build",
+    "production_build": "passed",
+    "mutation_faults_caught": 62,
+    "mutation_baselines_passed": 62,
+    "mutation_scope": "Planner, privacy, consent, provider, persistence and new presentation/helper guards; final note-preview correction separately reproduced before and after in the actual component.",
+    "source_secret_findings": 0,
+    "viewport_override_reset": true
+  },
+  "browser_checks": {
+    "scope": "Actual React product components in StrictMode, isolated loopback fixture with mocked API/provider boundaries; actual built entry page also inspected before sign-in.",
+    "checks": [
+      "All six session request actions remain at 375/768/1280 CSS pixels with no horizontal overflow",
+      "Actual production entry at 320 pixels has no horizontal overflow",
+      "Early sole friend saves $50, own-cup, Thursday and friend collection without a nominee; readiness becomes one of six, own $48 possibility remains explicitly pending agreement",
+      "Wheel/ANY legacy pair remains unchanged after saving",
+      "Network-failed save preserves 49.50 draft; retry saves exact 49.50",
+      "Group no-fit shows only own possible session; Keep my choices performs zero saves",
+      "Authentication error and loading preserve public studio context",
+      "Collapsed essential note remains saved, explicitly unverified; no model dispatch",
+      "Reviewed-note regression: unchanged reviewed note fits; changing 50 to 49.50 previously claimed fit but now explicitly leaves note pending"
+    ],
+    "new_auth_accounts": 0,
+    "emails": 0,
+    "paypal_calls": 0,
+    "model_calls": 0,
+    "new_hosted_groups": 0,
+    "live_checks": [
+      "Hosted /groups/new exposes public activities, actual prices and collection explanation before sign-in; the sign-in link preserves /groups/new.",
+      "Hosted /join with a fictional unused invitation shows public context and preserves the entire invitation in login next; no membership operation or email."
+    ]
+  },
+  "release": {
+    "state": "Live",
+    "hosting": "Existing Render Free",
+    "repository": "Single private gowtham0992/rally",
+    "runtime_commit": "1ac81bad565b1f5b73dd9dcd230a632e364e4db6",
+    "deploy_id": "dep-db0slvhsrm7s7390nnn0",
+    "schema_migrations_added": 0,
+    "hosted_migrations": 14,
+    "previous_compatible_runtime": "a28ca7e2ebfa507904ab17f2504c4955c677d236",
+    "earlier_update_deploy_id": "dep-db0sjhnavr4c7395mfe0",
+    "new_hosted_flow_executed": false,
+    "deploy_duration_seconds": 77,
+    "protected_history_unchanged": true,
+    "hosted_counts_unchanged": true,
+    "existing_booking": {
+      "state": "CONFIRMED",
+      "cleanup": "NOT_REQUIRED",
+      "reservation_state": "BOOKED",
+      "captures": 6
+    },
+    "unresolved_payments": 0,
+    "restricted_tls_verified": true,
+    "https_readiness": {
+      "path": "/api/health",
+      "status": 200,
+      "ready": true,
+      "error": null,
+      "cache_control": "no-store"
+    },
+    "unauthenticated_groups_api": {
+      "path": "/api/groups",
+      "status": 401,
+      "ready": null,
+      "error": "SIGN_IN_REQUIRED",
+      "cache_control": "no-store"
+    },
+    "live_entry_browser_verified": true
+  },
+  "limits": [
+    "No new hosted payment journey or human group/studio validation in this slice.",
+    "Payment timing and fixed-roster contract are unchanged; larger contract redesign remains a separate product decision."
+  ]
+}

@@ -1,5 +1,5 @@
 {
-  "status": "product_improvements_verified",
+  "status": "private_fit_check_verified",
   "scope": "Product only. The owner explicitly stopped demo and submission work on 2026-10-03; complete Rally functionality, correctness and UI polish.",
   "completed_local_work": [
     "Isolated Git repository, MIT license, pinned Node/TypeScript dependencies and reproducible payment setup guide",
@@ -52,7 +52,8 @@
     "Implemented and deployed append-only studio payment reports on Render Free. Nine new PostgreSQL tests and nine caught mutations; 151 full tests passed twice and forty mutations caught. Local authenticated simulated-report save, stale rejection, draft retention, failed refresh/retry and mobile layout verified. Hosted owner read and participant denial passed; thirteen-migration schema and protected financial/consent history preserved through forward 99bb9af, cached rollback 43215f7 and fresh-build restoration 6eccc29 with final copy corrections. No hosted report writes or new payments.",
     "Product-only refinement: added optional private leave-by date/time entry, exact studio-timezone conversion, clock-change rejection, actor-scoped catalog-date validation and private saved summary. Fixed rounded cents in displayed budgets and false dirty state for saved $19.99 budgets. Observed local browser save/reload/discard/remove and mobile layouts; no model calls, payments, new identities, demo runs or submission work. All 158 local tests, 43 mutation checks and production build pass.",
     "Deployed product fixes at 00967e2 to the existing Render Free service: live in 79 seconds and HTTPS database readiness returned 200/ready:true. No configuration or schema changes and no hosted demo or payment steps.",
-    "Product-only completion slice: authenticated private Your plans with membership/workspace isolation, stable bounded pagination, normal sign-out, login return and mobile navigation. Corrected group summaries for expired, withdrawn, canceled, aborted and unresolved offers. 164 local tests, 47 prior caught mutations, typecheck and production build passed. Actual local normal-account empty/list/pagination/reload/ownership-error/logout checks completed. No demo, model, PayPal, email, submission or publication work."
+    "Product-only completion slice: authenticated private Your plans with membership/workspace isolation, stable bounded pagination, normal sign-out, login return and mobile navigation. Corrected group summaries for expired, withdrawn, canceled, aborted and unresolved offers. 164 local tests, 47 prior caught mutations, typecheck and production build passed. Actual local normal-account empty/list/pagination/reload/ownership-error/logout checks completed. No demo, model, PayPal, email, submission or publication work.",
+    "Concrete private fit check: public studio context before sign-in, combined activity requirements preserving legacy choices, immediate owner-only possibilities, collection needs saved before choosing a friend, complete grouped activity/date options, and truthful private group-conflict handling. Edited notes remain pending on changed private details. Verified locally and deployed on the existing Free preview without new hosted flows."
   ],
   "evidence": {
     "scope": "Local service tests use real PostgreSQL and a simulated provider; separate reviewed records prove three actual PayPal sandbox scenarios.",
@@ -671,6 +672,21 @@
       "compatible_rollback_verified": true,
       "protected_booking_and_payment_history_preserved": true,
       "new_hosted_flow_executed": false
+    },
+    "private_fit_check": {
+      "file": "evidence/web/private-fit-check.json",
+      "tests_passed": 178,
+      "consecutive_green_runs_on_final_source": 2,
+      "mutation_faults_caught": 62,
+      "production_build": "passed",
+      "runtime_commit": "1ac81bad565b1f5b73dd9dcd230a632e364e4db6",
+      "deploy_id": "dep-db0slvhsrm7s7390nnn0",
+      "deploy_status": "Live",
+      "schema_migrations_added": 0,
+      "migration_count": 14,
+      "protected_booking_and_payment_history_preserved": true,
+      "new_hosted_flow_executed": false,
+      "new_model_or_paypal_calls": 0
     }
   },
   "external_dependencies": [
@@ -729,6 +745,6 @@
     "repository_publication": false,
     "retain_private_repository": true,
     "product_testing": "Local automated tests and browser verification remain part of finishing the product.",
-    "completion": "Five reviewed product gaps implemented, locally verified and deployed. New demo runs, submission, publication and human validation remain outside this completed fix scope."
+    "completion": "The latest Astra concrete private-fit slice and earlier product gaps are implemented, verified and deployed. Demo runs, submission, publication, human validation and payment-window/roster redesign remain outside this completed fix scope."
   }
 }
