@@ -82,7 +82,7 @@ function PreferenceCard({context:c,refresh,structuredOnly,refreshSafe}:{context:
   else{const resolved=resolveLocalTime(finishDate,finishTime,c.catalog.timezone);if(resolved.status==='VALID')draftFinishAt=resolved.instant;else validFinish=false;}
  }
  const draftCents=Math.round(Number(budget)*100);
- const sameNoteMeaning=Boolean(p&&c.wordingReviewed&&text.trim()===(c.optionalText??'').trim()&&technique===p.technique&&outcome===p.outcome&&collection===p.collection&&JSON.stringify([...slots].sort())===JSON.stringify([...p.availableSlotIds].sort()));
+ const sameNoteMeaning=Boolean(p&&c.wordingReviewed&&!dirty&&basePreferenceId===p.revisionId&&text.trim()===(c.optionalText??'').trim()&&technique===p.technique&&outcome===p.outcome&&collection===p.collection&&JSON.stringify([...slots].sort())===JSON.stringify([...p.availableSlotIds].sort()));
  const draftPreference:Preference|null=/^\d+(\.\d{1,2})?$/.test(budget)&&draftCents>=1&&draftCents<=1000000&&validFinish?{
   memberId:c.memberId,revisionId:p?.revisionId??c.memberId,budgetMinor:draftCents,availableSlotIds:slots,latestFinishAt:draftFinishAt,technique,outcome,collection,nomineeMemberId:collection==='NOMINEE_LATER'?nominee||null:null,
   extraRequirement:text.trim()?(sameNoteMeaning?p!.extraRequirement:'MERCHANT_REVIEW_REQUIRED'):'NONE',unresolvedKeys:collection==='UNRESOLVED'||collection==='NOMINEE_LATER'&&!nominee?['COLLECTION']:[]
