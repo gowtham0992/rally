@@ -30,3 +30,5 @@
 .saved-details[open]>summary::after,.studio-decline[open]>summary::after{content:'−'}
 .saved-details>summary span{font-size:12px;color:var(--muted,#6d716c);font-weight:400;margin-left:auto}
 .saved-details .private-summary{margin-top:22px}.offer-share{margin:24px 0}.private-blocker{margin:24px 0}.plan-date{margin:10px 0 0;font-size:15px}
+
+.readiness-value span{letter-spacing:-.035em;margin-left:4px}
