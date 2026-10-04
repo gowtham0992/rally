@@ -15,6 +15,16 @@ before(async()=>{await admin.query(`CREATE SCHEMA ${schema}`);await pool.query(a
 after(async()=>{await pool.end();await admin.query(`DROP SCHEMA ${schema} CASCADE`);await admin.end();});
 const actor=():IntakeActor=>({userId:randomUUID(),emailVerified:true});
 const pref={budgetMinor:5000,availableSlotIds:['thu-evening'],latestFinishAt:null,technique:'ANY',outcome:'FORM_OWN_CUP',collection:'SELF_LATER',nomineeMemberId:null,extraRequirement:'NONE',unresolvedKeys:[]};
+test('an early friend can save a collection need before another friend joins without creating a bookable plan',async()=>{
+ const a=actor(),b=actor(),g=await service.create(a,{commandId:randomUUID(),targetSize:2,displayName:'Early friend',catalog});
+ const saved=await service.save(a,{commandId:randomUUID(),groupId:g.groupId,expectedRevision:g.revision,expectedPreferenceId:null,preference:{...pref,collection:'NOMINEE_LATER',unresolvedKeys:['COLLECTION']},optionalText:null});
+ const own=await service.ownPreferences(a,g.groupId);assert.equal(own.preference.nomineeMemberId,null);assert.equal(own.preference.collection,'NOMINEE_LATER');
+ const joined=await service.join(b,{commandId:randomUUID(),invite:g.invite,displayName:'Later friend'});
+ const second=await service.save(b,{commandId:randomUUID(),groupId:g.groupId,expectedRevision:joined.revision,expectedPreferenceId:null,preference:pref,optionalText:null});
+ await service.closeRoster(a,{commandId:randomUUID(),groupId:g.groupId,expectedRevision:second.revision,memberIds:[g.memberId,joined.memberId]});
+ const result=await service.plan(a,g.groupId);assert.equal(result.result.state,'NEEDS_CLARIFICATION');assert.equal((await service.ownPreferences(a,g.groupId)).preference.revisionId,saved.preferenceId);
+ assert.equal((await service.participantContext(a,g.groupId)).collectionRequests.length,0);
+});
 async function setup(){const a=actor(),b=actor();const g=await service.create(a,{commandId:randomUUID(),targetSize:2,displayName:'Organizer',catalog});const joined=await service.join(b,{commandId:randomUUID(),invite:g.invite,displayName:'Participant'});return {a,b,g,joined};}
 async function ready(){const x=await setup();let rev=x.joined.revision;
  const draft=await service.save(x.a,{commandId:randomUUID(),groupId:x.g.groupId,expectedRevision:rev,expectedPreferenceId:null,preference:pref,optionalText:'Private sentence'});const first=await new ClarificationService(pool).confirmStructuredNote(x.a,{commandId:randomUUID(),groupId:x.g.groupId,expectedRevision:draft.revision,preferenceId:draft.preferenceId,declaresNoAdditionalMustHaves:true});rev=first.revision;

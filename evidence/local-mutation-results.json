@@ -2,6 +2,60 @@
   "mode": "local_database_and_simulated_provider",
   "results": [
     {
+      "mutation": "session presentation hides valid dates or activities",
+      "baselinePassed": true,
+      "caught": true,
+      "exitCode": 1
+    },
+    {
+      "mutation": "personal fit ignores the private spending limit",
+      "baselinePassed": true,
+      "caught": true,
+      "exitCode": 1
+    },
+    {
+      "mutation": "personal preview treats a nominee as agreed",
+      "baselinePassed": true,
+      "caught": true,
+      "exitCode": 1
+    },
+    {
+      "mutation": "personal preview hides an unsupported essential note",
+      "baselinePassed": true,
+      "caught": true,
+      "exitCode": 1
+    },
+    {
+      "mutation": "personal preview forgets the owners existing collection agreement",
+      "baselinePassed": true,
+      "caught": true,
+      "exitCode": 1
+    },
+    {
+      "mutation": "personal preview ignores the owners selected dates",
+      "baselinePassed": true,
+      "caught": true,
+      "exitCode": 1
+    },
+    {
+      "mutation": "combined choice normalizes legacy requirements",
+      "baselinePassed": true,
+      "caught": true,
+      "exitCode": 1
+    },
+    {
+      "mutation": "public preview invents session durations",
+      "baselinePassed": true,
+      "caught": true,
+      "exitCode": 1
+    },
+    {
+      "mutation": "early collection need requires a nonexistent friend",
+      "baselinePassed": true,
+      "caught": true,
+      "exitCode": 1
+    },
+    {
       "mutation": "private save rejects an unrelated friend revision",
       "baselinePassed": true,
       "caught": true,

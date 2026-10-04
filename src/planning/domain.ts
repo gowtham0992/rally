@@ -58,6 +58,14 @@ export function planGroup(catalogValue:unknown,preferenceValues:unknown[],consen
     if(!pref.nomineeMemberId||pref.nomineeMemberId===pref.memberId||!roster.has(pref.nomineeMemberId)||!consent||!consent.ownerAgreed||!consent.nomineeAgreed||!consent.disclosureAgreed||consent.revoked)
       return {state:'NEEDS_CLARIFICATION',message:'The collection arrangement needs agreement before an offer can be issued.'};
   }
+  const candidates=matchingSessions(catalog,preferences,preferences.length);
+  return candidates.length ? {state:'CANDIDATE_READY',candidates} : catalog.offerings.some(o=>!o.verified) ? review : unavailable;
+}
+
+// Public catalog filters shared by authoritative planning and owner-only previews.
+// The caller remains responsible for validation, meaning and collection consent.
+export function matchingSessions(catalog:Catalog,preferences:readonly Preference[],groupSize:number):Candidate[]{
+  const slots=new Map(catalog.slots.map(s=>[s.id,s]));
   const candidates:Candidate[]=[];
   for(const offering of catalog.offerings) for(const slotId of offering.slotIds) {
     if(!offering.verified) continue;
@@ -70,14 +78,14 @@ export function planGroup(catalogValue:unknown,preferenceValues:unknown[],consen
       &&(p.outcome==='ANY'||p.outcome===offering.outcome)
       &&(!offering.requiresLaterCollection||p.collection!=='SAME_DAY_REQUIRED')
       &&(p.collection!=='NOMINEE_LATER'||offering.nomineeCollectionAllowed));
-    if(!eligible||preferences.length<offering.minPeople||preferences.length>offering.maxPeople) continue;
+    if(!eligible||groupSize<offering.minPeople||groupSize>offering.maxPeople) continue;
     // Only published facts cross into this shared projection. Private inputs and
     // participant identities never enter a shared explanatory model prompt.
     candidates.push({catalogVersionId:catalog.versionId,studioId:catalog.studioId,studioName:catalog.studioName,
       offeringId:offering.id,activity:offering.name,slotId,startAt:slot.startAt,endAt,timezone:catalog.timezone,
-      amountMinor:offering.priceMinor,currency:'USD',groupSize:preferences.length,
+      amountMinor:offering.priceMinor,currency:'USD',groupSize,
       collectionDescription:offering.collectionDescription,cancellationTerms:offering.cancellationTerms,synthetic:catalog.synthetic});
   }
   candidates.sort((a,b)=>a.amountMinor-b.amountMinor||Date.parse(a.startAt)-Date.parse(b.startAt)||a.offeringId.localeCompare(b.offeringId)||a.slotId.localeCompare(b.slotId));
-  return candidates.length ? {state:'CANDIDATE_READY',candidates} : catalog.offerings.some(o=>!o.verified) ? review : unavailable;
+  return candidates;
 }
