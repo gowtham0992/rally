@@ -65,9 +65,13 @@ test('request and approval reject foreign actors, invented candidates, changed a
 });
 test('pre-issuance edits invalidate pending merchant review and require a fresh request',async()=>{
  const x=await setup(),r=await request(x);
+ assert.equal((await intake.participantContext(x.actors[0],x.g.groupId)).studioReviewNeedsRefresh,false);
  const saved=await intake.save(x.actors[1],{commandId:randomUUID(),groupId:x.g.groupId,expectedRevision:r.revision,expectedPreferenceId:x.preferenceIds[1],preference:{...preference,budgetMinor:9000},optionalText:null});
  assert.equal((await bookings.merchantRequest(merchant,r.requestId)).state,'STALE');await assert.rejects(bookings.approve(merchant,approval(r)),/STALE_PLANNING/);
+ for(const actor of x.actors){const context=await intake.participantContext(actor,x.g.groupId);assert.equal(context.studioReviewNeedsRefresh,true);assert.equal(context.studioReviewPending,false);assert.equal(context.studioDecline,null);const index=(await intake.plans(actor)).plans.find(p=>p.groupId===x.g.groupId)!;assert.equal(index.studioReviewNeedsRefresh,true);for(const forbidden of ['Private words','budgetMinor','optionalText','preferenceId'])assert.ok(!JSON.stringify(index).includes(forbidden));}
+ await intake.plan(x.actors[0],x.g.groupId);assert.equal((await intake.participantContext(x.actors[2],x.g.groupId)).studioReviewNeedsRefresh,true);
  const fresh=await bookings.request(x.actors[0],{commandId:randomUUID(),groupId:x.g.groupId,expectedRevision:saved.revision,offeringId:'handbuild',slotId:'thu-evening'});
+ assert.equal((await intake.participantContext(x.actors[2],x.g.groupId)).studioReviewNeedsRefresh,false);assert.equal((await intake.plans(x.actors[2])).plans.find(p=>p.groupId===x.g.groupId)!.studioReviewNeedsRefresh,false);
  const approved=await bookings.approve(merchant,approval(fresh));await assert.rejects(intake.save(x.actors[1],{commandId:randomUUID(),groupId:x.g.groupId,expectedRevision:approved.revision,expectedPreferenceId:saved.preferenceId,preference,optionalText:null}),/PLANNING_LOCKED/);await release(approved.offerId);
 });
 test('concurrent overlapping merchant approvals have one persisted winner and a safe conflict',async()=>{

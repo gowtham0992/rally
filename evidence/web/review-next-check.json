@@ -1,0 +1,54 @@
+{
+  "checkedAt": "2026-10-08T02:43:09.759Z",
+  "boundary": "Actual React components and services with isolated local PostgreSQL and preauthenticated fictional actors. No external model, email, PayPal or hosted test writes.",
+  "journey": [
+    "Pending-review screen explains that a saved change requires a fresh request",
+    "Keyboard activation opens saved details with budget, both dates, cup requirement and self-collection intact",
+    "Sam changes only their private budget; group returns to planning with explicit request update notice",
+    "Your plans gives Sam a waiting cue and Taylor an organizer action cue",
+    "Old studio request shows that it cannot be approved",
+    "Taylor rechecks fitting sessions; request update notice persists",
+    "No horizontal overflow at mobile, tablet and desktop widths",
+    "Keyboard activation sends a fresh Friday request; notice clears",
+    "Sam sees Waiting for the studio\u2019s answer",
+    "Studio receives Friday public session facts without private preferences"
+  ],
+  "counts": {
+    "offers": 0,
+    "payments": 0,
+    "reservations": 0,
+    "model_calls": 0,
+    "requests": 2,
+    "declined_requests": 0,
+    "pending_requests": 2,
+    "studio_declines": 0
+  },
+  "viewportChecks": [
+    {
+      "width": 375,
+      "scrollWidth": 375
+    },
+    {
+      "width": 768,
+      "scrollWidth": 768
+    },
+    {
+      "width": 1280,
+      "scrollWidth": 1280
+    }
+  ],
+  "validation": {
+    "regressionSeenRed": true,
+    "tests": 178,
+    "typecheck": "passed",
+    "build": "passed",
+    "secretFindings": 0
+  },
+  "release": {
+    "status": "pending"
+  },
+  "fixture": {
+    "disposed": true,
+    "hostedChanges": 0
+  }
+}
