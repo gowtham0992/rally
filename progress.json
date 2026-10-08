@@ -687,6 +687,38 @@
       "protected_booking_and_payment_history_preserved": true,
       "new_hosted_flow_executed": false,
       "new_model_or_paypal_calls": 0
+    },
+    "planning_draft_session_recovery": {
+      "file": "evidence/web/draft-next-check.json",
+      "tests_passed": 179,
+      "mutation_faults_caught": 62,
+      "typecheck": "passed",
+      "production_build": "passed",
+      "local_browser_verified": true,
+      "provider_proof": "Simulation only; no new hosted payment flow",
+      "new_model_or_paypal_calls": 0,
+      "schema_migrations_added": 0,
+      "hosted_test_writes": 0,
+      "release_status": "live",
+      "runtime_commit": "dace8535de98c42ea18d2dfbf279478ba2eb7a36",
+      "deploy_id": "dep-db3hkjom7kps73ens070",
+      "protected_booking_and_payment_history_preserved": true
+    },
+    "verified_group_payment_progress": {
+      "file": "evidence/web/progress-next-check.json",
+      "tests_passed": 179,
+      "mutation_faults_caught": 62,
+      "typecheck": "passed",
+      "production_build": "passed",
+      "local_browser_verified": true,
+      "provider_proof": "Simulation only; no new hosted payment flow",
+      "new_model_or_paypal_calls": 0,
+      "schema_migrations_added": 0,
+      "hosted_test_writes": 0,
+      "release_status": "live",
+      "runtime_commit": "dace8535de98c42ea18d2dfbf279478ba2eb7a36",
+      "deploy_id": "dep-db3hkjom7kps73ens070",
+      "protected_booking_and_payment_history_preserved": true
     }
   },
   "external_dependencies": [
