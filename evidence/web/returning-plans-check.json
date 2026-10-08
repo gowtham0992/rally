@@ -1,0 +1,42 @@
+{
+  "scope": "Returning friends can see their next step and open the current offer from Your plans.",
+  "boundary": "Actual React components and services, isolated PostgreSQL, preauthenticated fictional actors, simulated provider. No hosted groups, email, model or PayPal calls.",
+  "changes": [
+    "Caller-specific saved-details readiness on collecting group cards",
+    "Role-specific next-step labels without claiming personal approval is due",
+    "Frozen offer approval deadline with studio timezone",
+    "Issued cards link directly to the current offer",
+    "Existing resource hook refreshes every 10 seconds; manual Refresh plans retains cards while loading",
+    "One navigation arrow per card, using existing product colors and type"
+  ],
+  "observedChecks": [
+    "Sam saw Save your details while organizer saw Waiting for friends",
+    "Sam saved through actual group form; organizer tab automatically changed to Confirm who\u2019s coming without navigation or manual refresh",
+    "Sam returned to see Waiting for your organizer to confirm the group",
+    "Offer card opened exact current offer; approval deadline matched frozen offer and authorized share remained accurate",
+    "Slow initial load showed loading state and disabled refresh",
+    "Slow manual refresh retained cards and disabled Refreshing button",
+    "503 response showed retry; restoring local API and Try again restored cards",
+    "Empty index showed start-group guidance",
+    "Keyboard Enter activated refresh",
+    "375, 768 and 1280 pixel viewports had no horizontal overflow",
+    "Critique removed duplicate arrows and used internal navigation arrow"
+  ],
+  "verification": {
+    "testsPassed": 178,
+    "failures": 0,
+    "mutationsCaught": 62,
+    "productionBuild": "passed",
+    "typecheck": "passed",
+    "sourceSecretFindings": 0,
+    "actionTextContrast": 5.37,
+    "viewportOverrideReset": true
+  },
+  "privacy": "List includes only caller readiness plus existing roster/public studio facts and frozen deadline. No budgets, private notes, preferences, invite or provider URL selected. Membership, namespace and pagination tests passed.",
+  "limits": [
+    "Payment provider and Supabase sign-in not retested",
+    "Personal payment state remains on the offer; index wording never says an already-authorized friend must approve again",
+    "Real-human usability not established"
+  ],
+  "disposableLocalEnvironment": "removed"
+}

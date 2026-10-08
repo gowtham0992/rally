@@ -154,7 +154,7 @@ test('browser participant context combines consistent revision with only caller 
 test('your plans lists only current membership and never includes private requirements or invites',async()=>{
  const x=await ready(),other=await ready(),index=await service.plans(x.b);
  assert.deepEqual(index.plans.map(p=>p.groupId),[x.g.groupId]);assert.equal(index.nextCursor,null);
- assert.equal(index.plans[0].isOrganizer,false);assert.equal(index.plans[0].readyCount,2);
+ assert.equal(index.plans[0].isOrganizer,false);assert.equal(index.plans[0].readyCount,2);assert.equal(index.plans[0].ownReady,true);assert.equal(index.plans[0].deadline,null);
  assert.deepEqual(index.plans[0].members.map(m=>m.displayName).sort(),['Organizer','Participant']);
  const serialized=JSON.stringify(index);for(const secret of ['budgetMinor','latestFinishAt','Private sentence','confirmed',x.g.invite,other.g.groupId])assert.ok(!serialized.includes(secret));
  assert.deepEqual((await service.plans(actor())).plans,[]);
@@ -164,7 +164,8 @@ test('your plans lists only current membership and never includes private requir
 });
 test('your plans hides a joiner once the organizer excludes them from the closed roster',async()=>{
  const x=await setup(),excluded=actor();await service.join(excluded,{commandId:randomUUID(),invite:x.g.invite,displayName:'Excluded'});
- assert.equal((await service.plans(excluded)).plans.length,1);
+ const before=(await service.plans(excluded)).plans;assert.equal(before.length,1);assert.equal(before[0].ownReady,false);assert.equal((await service.plans(x.a)).plans[0].ownReady,false);
+ assert.equal((await service.plans(excluded)).plans[0].deadline,null);
  const context=await service.participantContext(x.a,x.g.groupId),a=await service.save(x.a,{commandId:randomUUID(),groupId:x.g.groupId,expectedRevision:context.revision,expectedPreferenceId:null,preference:pref,optionalText:null});
  const b=await service.save(x.b,{commandId:randomUUID(),groupId:x.g.groupId,expectedRevision:a.revision,expectedPreferenceId:null,preference:pref,optionalText:null});
  await service.closeRoster(x.a,{commandId:randomUUID(),groupId:x.g.groupId,expectedRevision:b.revision,memberIds:[x.g.memberId,x.joined.memberId]});

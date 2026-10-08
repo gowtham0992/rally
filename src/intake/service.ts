@@ -13,7 +13,7 @@ import {localFields} from '../planning/local-time.ts';
 // Only server-authenticated identity may construct this input. Request bodies must
 // never supply actorId/verified. Managed Auth route binding remains a separate gate.
 export interface IntakeActor {userId:string;emailVerified:boolean;demoWorkspaceId?:string}
-export interface PlanSummary {groupId:string;studioName:string;state:string;isOrganizer:boolean;targetSize:number;readyCount:number;activity:string|null;startAt:string|null;timezone:string|null;bookingState:string|null;offerId:string|null;members:{displayName:string;isYou:boolean}[]}
+export interface PlanSummary {groupId:string;studioName:string;state:string;isOrganizer:boolean;targetSize:number;readyCount:number;ownReady:boolean;deadline:string|null;activity:string|null;startAt:string|null;timezone:string|null;bookingState:string|null;offerId:string|null;members:{displayName:string;isYou:boolean}[]}
 export class IntakeError extends Error {constructor(public code:string){super(code);}}
 const uuid=z.uuid(),name=z.string().trim().min(1).max(60);
 const createSchema=z.strictObject({commandId:uuid,targetSize:z.number().int().min(1).max(8),displayName:name,catalog:catalogSchema});
@@ -130,7 +130,7 @@ export class IntakeService {
    // Only membership/readiness and public studio facts. Never select a preference,
    // invite, candidate or private note. Preserve PostgreSQL timestamp precision.
    const rows=(await c.query(`SELECT g.id AS "groupId",g.catalog->>'studioName' AS "studioName",g.state,
-    g.organizer_id=$1 AS "isOrganizer",g.target_size AS "targetSize",roster."readyCount",roster.members
+    g.organizer_id=$1 AS "isOrganizer",g.target_size AS "targetSize",own.current_preference_id IS NOT NULL AS "ownReady",roster."readyCount",roster.members
     FROM planning_groups g JOIN planning_members own ON own.group_id=g.id
     CROSS JOIN LATERAL (SELECT count(*) FILTER(WHERE m.current_preference_id IS NOT NULL)::int AS "readyCount",
      jsonb_agg(jsonb_build_object('displayName',m.display_name,'isYou',m.user_id=$1) ORDER BY m.id) AS members
@@ -139,14 +139,14 @@ export class IntakeService {
     AND (to_jsonb(g)->>'demo_workspace_id') IS NOT DISTINCT FROM $2::text
     AND ($3::timestamptz IS NULL OR (g.created_at,g.id)<($3::timestamptz,$4::uuid))
     ORDER BY g.created_at DESC,g.id DESC LIMIT 21`,[actor.userId,actor.demoWorkspaceId??null,before?.createdAt??null,before?.id??null])).rows as PlanSummary[];
-   const plans=rows.slice(0,20).map(row=>({...row,activity:null as string|null,startAt:null as string|null,timezone:null as string|null,bookingState:null as string|null,offerId:null as string|null}));
+   const plans=rows.slice(0,20).map(row=>({...row,deadline:null as string|null,activity:null as string|null,startAt:null as string|null,timezone:null as string|null,bookingState:null as string|null,offerId:null as string|null}));
    const issued=plans.filter(p=>p.state==='OFFER_ISSUED').map(p=>p.groupId);
    if(issued.length){
     const bookings=(await c.query(`SELECT DISTINCT ON (r.group_id) r.group_id,o.id,o.state,
-     os.snapshot->'candidate'->>'activity' AS activity,os.snapshot->'candidate'->>'startAt' AS start_at,os.snapshot->'candidate'->>'timezone' AS timezone
+     os.snapshot->'candidate'->>'activity' AS activity,os.snapshot->'candidate'->>'startAt' AS start_at,os.snapshot->'candidate'->>'timezone' AS timezone,os.snapshot->>'deadline' AS deadline
      FROM merchant_requests r JOIN offers o ON o.id=r.approved_offer_id JOIN offer_snapshots os ON os.offer_id=o.id
      WHERE r.group_id=ANY($1::uuid[]) AND r.state='APPROVED' ORDER BY r.group_id,r.planning_revision DESC`,[issued])).rows;
-    for(const plan of plans){const booking=bookings.find(b=>b.group_id===plan.groupId);if(booking)Object.assign(plan,{activity:booking.activity,startAt:booking.start_at,timezone:booking.timezone,bookingState:booking.state,offerId:booking.id});}
+    for(const plan of plans){const booking=bookings.find(b=>b.group_id===plan.groupId);if(booking)Object.assign(plan,{activity:booking.activity,startAt:booking.start_at,timezone:booking.timezone,deadline:booking.deadline,bookingState:booking.state,offerId:booking.id});}
    }
    return {plans,nextCursor:rows.length>20?plans.at(-1)!.groupId:null};
   });
