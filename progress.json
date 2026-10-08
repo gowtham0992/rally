@@ -719,6 +719,21 @@
       "runtime_commit": "dace8535de98c42ea18d2dfbf279478ba2eb7a36",
       "deploy_id": "dep-db3hkjom7kps73ens070",
       "protected_booking_and_payment_history_preserved": true
+    },
+    "studio_draft_session_recovery": {
+      "file": "evidence/web/studio-draft-next-check.json",
+      "tests_passed": 179,
+      "typecheck": "passed",
+      "production_build": "passed",
+      "local_browser_verified": true,
+      "provider_proof": "Simulation only; no new hosted payment flow",
+      "new_model_or_paypal_calls": 0,
+      "schema_migrations_added": 0,
+      "hosted_test_writes": 0,
+      "release_status": "live",
+      "runtime_commit": "2e14e987bc0e50974b208ac993c798ab591a68c5",
+      "deploy_id": "dep-db3i4hmgekts73estpcg",
+      "protected_booking_and_payment_history_preserved": true
     }
   },
   "external_dependencies": [
