@@ -1,0 +1,78 @@
+{
+  "checkedAt": "2026-10-08T01:41:39.922Z",
+  "boundary": "Actual React components and services with isolated local PostgreSQL and preauthenticated fictional actors. No external email, AI, PayPal or hosted writes.",
+  "journey": [
+    "Owner-only ask cue before sharing",
+    "Nominee review cue after explicit disclosure; organizer initially unchanged",
+    "Both parties agree; fitting session returns",
+    "Nominee withdraws; owner update cue appears",
+    "Keyboard recovery button opens saved form without saving",
+    "Owner switches collector; new recipient remains unaware until disclosure",
+    "New recipient reviews and agrees; fitting session returns; former nominee loses current request"
+  ],
+  "counts": {
+    "offers": 0,
+    "payments": 0,
+    "consent_events": 5,
+    "revoked": 1,
+    "active_agreements": 1
+  },
+  "finalHints": [
+    {
+      "person": "Taylor",
+      "nextStep": null
+    },
+    {
+      "person": "Sam",
+      "nextStep": null
+    },
+    {
+      "person": "Jordan",
+      "nextStep": null
+    },
+    {
+      "person": "Alex",
+      "nextStep": null
+    },
+    {
+      "person": "Riley",
+      "nextStep": null
+    },
+    {
+      "person": "Casey",
+      "nextStep": null
+    }
+  ],
+  "keyboardRecovery": true,
+  "preservedChoices": [
+    "50 USD limit",
+    "Thursday availability",
+    "Make own cup"
+  ],
+  "responsiveFinalPlan": [
+    {
+      "width": 375,
+      "scrollWidth": 375
+    },
+    {
+      "width": 768,
+      "scrollWidth": 768
+    },
+    {
+      "width": 1280,
+      "scrollWidth": 1280
+    }
+  ],
+  "validation": {
+    "redBeforeImplementation": true,
+    "regressionTests": 2,
+    "fullTests": 178,
+    "mutationFaultsCaught": 62,
+    "typecheck": "passed",
+    "build": "passed",
+    "secretFindings": 0
+  },
+  "release": {
+    "status": "pending"
+  }
+}

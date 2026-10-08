@@ -11,6 +11,7 @@ const states:Record<string,string>={COLLECTING:'Getting everyone in',CLOSED:'Cho
 function people(plan:PlanSummary){const others=plan.members.filter(m=>!m.isYou).map(m=>m.displayName);return others.length?`You${others.length===1?' and ':', '}${others.join(', ')}`:'Just you so far';}
 function nextStep(plan:PlanSummary){
  if(plan.state==='COLLECTING')return !plan.ownReady?'Save your details':plan.readyCount>=plan.targetSize?(plan.isOrganizer?'Confirm who’s coming':'Waiting for your organizer to confirm the group'):'Waiting for friends to save their details';
+ if(['CLOSED','MERCHANT_REVIEW'].includes(plan.state)&&plan.collectionNextStep)return ({ASK_COLLECTOR:'Ask your friend to collect',REVIEW_REQUEST:'Review a friend’s collection request',CHOOSE_COLLECTOR:'Update your collection choice'})[plan.collectionNextStep];
  if(plan.state==='CLOSED')return plan.isOrganizer?'Check the group’s options':'Open the group’s plan';
  if(plan.state==='MERCHANT_REVIEW')return 'Waiting for the studio’s answer';
  if(plan.state==='OFFER_ISSUED'&&plan.offerId){

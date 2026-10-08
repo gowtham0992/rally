@@ -13,7 +13,8 @@ import {localFields} from '../planning/local-time.ts';
 // Only server-authenticated identity may construct this input. Request bodies must
 // never supply actorId/verified. Managed Auth route binding remains a separate gate.
 export interface IntakeActor {userId:string;emailVerified:boolean;demoWorkspaceId?:string}
-export interface PlanSummary {groupId:string;studioName:string;state:string;isOrganizer:boolean;targetSize:number;readyCount:number;ownReady:boolean;deadline:string|null;activity:string|null;startAt:string|null;timezone:string|null;bookingState:string|null;offerId:string|null;members:{displayName:string;isYou:boolean}[]}
+export type CollectionNextStep='ASK_COLLECTOR'|'REVIEW_REQUEST'|'CHOOSE_COLLECTOR';
+export interface PlanSummary {groupId:string;studioName:string;state:string;isOrganizer:boolean;targetSize:number;readyCount:number;ownReady:boolean;collectionNextStep:CollectionNextStep|null;deadline:string|null;activity:string|null;startAt:string|null;timezone:string|null;bookingState:string|null;offerId:string|null;members:{displayName:string;isYou:boolean}[]}
 export class IntakeError extends Error {constructor(public code:string){super(code);}}
 const uuid=z.uuid(),name=z.string().trim().min(1).max(60);
 const createSchema=z.strictObject({commandId:uuid,targetSize:z.number().int().min(1).max(8),displayName:name,catalog:catalogSchema});
@@ -139,7 +140,7 @@ export class IntakeService {
     AND (to_jsonb(g)->>'demo_workspace_id') IS NOT DISTINCT FROM $2::text
     AND ($3::timestamptz IS NULL OR (g.created_at,g.id)<($3::timestamptz,$4::uuid))
     ORDER BY g.created_at DESC,g.id DESC LIMIT 21`,[actor.userId,actor.demoWorkspaceId??null,before?.createdAt??null,before?.id??null])).rows as PlanSummary[];
-   const plans=rows.slice(0,20).map(row=>({...row,deadline:null as string|null,activity:null as string|null,startAt:null as string|null,timezone:null as string|null,bookingState:null as string|null,offerId:null as string|null}));
+   const plans=rows.slice(0,20).map(row=>({...row,collectionNextStep:null as CollectionNextStep|null,deadline:null as string|null,activity:null as string|null,startAt:null as string|null,timezone:null as string|null,bookingState:null as string|null,offerId:null as string|null}));
    const issued=plans.filter(p=>p.state==='OFFER_ISSUED').map(p=>p.groupId);
    if(issued.length){
     const bookings=(await c.query(`SELECT DISTINCT ON (r.group_id) r.group_id,o.id,o.state,
@@ -147,6 +148,16 @@ export class IntakeService {
      FROM merchant_requests r JOIN offers o ON o.id=r.approved_offer_id JOIN offer_snapshots os ON os.offer_id=o.id
      WHERE r.group_id=ANY($1::uuid[]) AND r.state='APPROVED' ORDER BY r.group_id,r.planning_revision DESC`,[issued])).rows;
     for(const plan of plans){const booking=bookings.find(b=>b.group_id===plan.groupId);if(booking)Object.assign(plan,{activity:booking.activity,startAt:booking.start_at,timezone:booking.timezone,deadline:booking.deadline,bookingState:booking.state,offerId:booking.id});}
+   }
+   const editable=plans.filter(p=>['CLOSED','MERCHANT_REVIEW'].includes(p.state)).map(p=>p.groupId);
+   if(editable.length){
+    // Reuse the disclosure boundary from the group view. Only the action code
+    // enters the index; collection identities and requirements stay on the plan.
+    const requests=await this.collectionRows(c,actor,editable);
+    for(const plan of plans){
+     const actions=requests.filter(r=>r.groupId===plan.groupId).map(r=>r.role==='OWNER'?(r.revoked?'CHOOSE_COLLECTOR':!r.ownerAgreed?'ASK_COLLECTOR':null):!r.revoked&&!r.nomineeAgreed?'REVIEW_REQUEST':null);
+     plan.collectionNextStep=(['CHOOSE_COLLECTOR','REVIEW_REQUEST','ASK_COLLECTOR'] as const).find(action=>actions.includes(action))??null;
+    }
    }
    return {plans,nextCursor:rows.length>20?plans.at(-1)!.groupId:null};
   });
@@ -194,16 +205,19 @@ export class IntakeService {
   return this.collectionProjection(this.pool,actor,groupId);
  }
  private async collectionProjection(c:pg.Pool|pg.PoolClient,actor:IntakeActor,groupId:string):Promise<CollectionRequest[]>{
+  return (await this.collectionRows(c,actor,[groupId])).map(({groupId:_,...request})=>request);
+ }
+ private async collectionRows(c:pg.Pool|pg.PoolClient,actor:IntakeActor,groupIds:string[]):Promise<(CollectionRequest&{groupId:string})[]>{
   // Only an explicitly consenting owner can disclose a collection request to its
   // nominee. Names are never accompanied by private text, ceilings or constraints.
-  const rows=(await c.query(`SELECT p.id AS "preferenceId",o.display_name AS "ownerName",
+  const rows=(await c.query(`SELECT o.group_id AS "groupId",p.id AS "preferenceId",o.display_name AS "ownerName",
     n.display_name AS "nomineeName",coalesce(cs.owner_agreed,false) AS "ownerAgreed",coalesce(cs.nominee_agreed,false) AS "nomineeAgreed",coalesce(cs.revoked,false) AS revoked,
     CASE WHEN o.user_id=$2 THEN 'OWNER' ELSE 'NOMINEE' END AS role
     FROM planning_members o JOIN preference_revisions p ON o.current_preference_id=p.id
     JOIN planning_members n ON n.id=(p.confirmed->>'nomineeMemberId')::uuid AND n.group_id=o.group_id
     LEFT JOIN collection_consents cs ON cs.preference_id=p.id AND cs.owner_member_id=o.id AND cs.nominee_member_id=n.id
-    WHERE o.group_id=$1 AND o.admitted AND n.admitted AND p.confirmed->>'collection'='NOMINEE_LATER'
-    AND (o.user_id=$2 OR (n.user_id=$2 AND cs.owner_agreed AND cs.disclosure_agreed)) ORDER BY p.id`,[groupId,actor.userId])).rows;
+    WHERE o.group_id=ANY($1::uuid[]) AND o.admitted AND n.admitted AND p.confirmed->>'collection'='NOMINEE_LATER'
+    AND (o.user_id=$2 OR (n.user_id=$2 AND cs.owner_agreed AND cs.disclosure_agreed)) ORDER BY p.id`,[groupIds,actor.userId])).rows;
   return rows;
  }
  async plan(actor:IntakeActor,groupId:string){this.actor(actor);uuid.parse(groupId);return transaction(this.pool,async c=>{
