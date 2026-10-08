@@ -10,6 +10,7 @@ type List=Awaited<ReturnType<IntakeService['plans']>>&{demo:boolean};
 const states:Record<string,string>={COLLECTING:'Getting everyone in',CLOSED:'Choosing a session',MERCHANT_REVIEW:'Studio is checking',OFFER_ISSUED:'Studio offer',ABANDONED:'Planning ended'};
 function people(plan:PlanSummary){const others=plan.members.filter(m=>!m.isYou).map(m=>m.displayName);return others.length?`You${others.length===1?' and ':', '}${others.join(', ')}`:'Just you so far';}
 function nextStep(plan:PlanSummary){
+ if(plan.ownNoteNeedsReview)return 'Review your private note';
  if(plan.state==='COLLECTING')return !plan.ownReady?'Save your details':plan.readyCount>=plan.targetSize?(plan.isOrganizer?'Confirm who’s coming':'Waiting for your organizer to confirm the group'):'Waiting for friends to save their details';
  if(['CLOSED','MERCHANT_REVIEW'].includes(plan.state)&&plan.collectionNextStep)return ({ASK_COLLECTOR:'Ask your friend to collect',REVIEW_REQUEST:'Review a friend’s collection request',CHOOSE_COLLECTOR:'Update your collection choice'})[plan.collectionNextStep];
  if(plan.state==='CLOSED')return plan.isOrganizer?'Check the group’s options':'Open the group’s plan';

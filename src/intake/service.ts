@@ -14,7 +14,7 @@ import {localFields} from '../planning/local-time.ts';
 // never supply actorId/verified. Managed Auth route binding remains a separate gate.
 export interface IntakeActor {userId:string;emailVerified:boolean;demoWorkspaceId?:string}
 export type CollectionNextStep='ASK_COLLECTOR'|'REVIEW_REQUEST'|'CHOOSE_COLLECTOR';
-export interface PlanSummary {groupId:string;studioName:string;state:string;isOrganizer:boolean;targetSize:number;readyCount:number;ownReady:boolean;collectionNextStep:CollectionNextStep|null;deadline:string|null;activity:string|null;startAt:string|null;timezone:string|null;bookingState:string|null;offerId:string|null;members:{displayName:string;isYou:boolean}[]}
+export interface PlanSummary {groupId:string;studioName:string;state:string;isOrganizer:boolean;targetSize:number;readyCount:number;ownReady:boolean;ownNoteNeedsReview:boolean;collectionNextStep:CollectionNextStep|null;deadline:string|null;activity:string|null;startAt:string|null;timezone:string|null;bookingState:string|null;offerId:string|null;members:{displayName:string;isYou:boolean}[]}
 export class IntakeError extends Error {constructor(public code:string){super(code);}}
 const uuid=z.uuid(),name=z.string().trim().min(1).max(60);
 const createSchema=z.strictObject({commandId:uuid,targetSize:z.number().int().min(1).max(8),displayName:name,catalog:catalogSchema});
@@ -128,11 +128,13 @@ export class IntakeService {
      AND (to_jsonb(g)->>'demo_workspace_id') IS NOT DISTINCT FROM $2::text`,[actor.userId,actor.demoWorkspaceId??null,cursor])).rows[0];
     if(!before)throw new IntakeError('NOT_FOUND');
    }
-   // Only membership/readiness and public studio facts. Never select a preference,
-   // invite, candidate or private note. Preserve PostgreSQL timestamp precision.
+   // Only membership/readiness, public facts and an owner-only review flag.
+   // Never return a preference, invite, candidate or note in this list.
    const rows=(await c.query(`SELECT g.id AS "groupId",g.catalog->>'studioName' AS "studioName",g.state,
-    g.organizer_id=$1 AS "isOrganizer",g.target_size AS "targetSize",own.current_preference_id IS NOT NULL AS "ownReady",roster."readyCount",roster.members
+    g.organizer_id=$1 AS "isOrganizer",g.target_size AS "targetSize",own.current_preference_id IS NOT NULL AS "ownReady",
+    coalesce(g.state IN ('COLLECTING','CLOSED','MERCHANT_REVIEW') AND own_p.optional_text IS NOT NULL AND own_p.confirmed->>'extraRequirement'='MERCHANT_REVIEW_REQUIRED',false) AS "ownNoteNeedsReview",roster."readyCount",roster.members
     FROM planning_groups g JOIN planning_members own ON own.group_id=g.id
+    LEFT JOIN preference_revisions own_p ON own_p.id=own.current_preference_id AND own_p.member_id=own.id
     CROSS JOIN LATERAL (SELECT count(*) FILTER(WHERE m.current_preference_id IS NOT NULL)::int AS "readyCount",
      jsonb_agg(jsonb_build_object('displayName',m.display_name,'isYou',m.user_id=$1) ORDER BY m.id) AS members
      FROM planning_members m WHERE m.group_id=g.id AND (g.state='COLLECTING' OR m.admitted)) roster

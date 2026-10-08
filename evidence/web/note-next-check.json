@@ -1,0 +1,54 @@
+{
+  "checkedAt": "2026-10-08T02:01:56.399Z",
+  "boundary": "Actual React components and services with isolated local PostgreSQL and preauthenticated fictional actors. No external model, email, PayPal, hosted test writes or bookings.",
+  "journey": [
+    "Owner sees review cue on Your plans; organizer sees no private-note cue",
+    "Enter on Review my note focuses the existing review section",
+    "Saved note is readable before a check",
+    "Explicit owner confirmation clears review requirement and restores fitting sessions",
+    "Editing a saved note makes review necessary again",
+    "A 1982-character unbroken note with literal script text is escaped and wraps at mobile/tablet/desktop widths",
+    "Fresh confirmation clears the index cue; original private budget, dates and cup requirement are retained"
+  ],
+  "counts": {
+    "offers": 0,
+    "payments": 0,
+    "model_calls": 0,
+    "confirmations": 2
+  },
+  "keyboard": {
+    "focusId": "private-note-review",
+    "width": 375,
+    "reviewTop": 265.9375
+  },
+  "longNote": {
+    "length": 1982,
+    "scriptElements": 0,
+    "beforeFixMobileScrollWidth": 12761,
+    "afterFixWidths": [
+      {
+        "width": 375,
+        "scrollWidth": 375
+      },
+      {
+        "width": 768,
+        "scrollWidth": 768
+      },
+      {
+        "width": 1280,
+        "scrollWidth": 1280
+      }
+    ]
+  },
+  "validation": {
+    "regressionSeenRed": true,
+    "tests": 178,
+    "mutationFaultsCaught": 62,
+    "typecheck": "passed",
+    "build": "passed",
+    "secretFindings": 0
+  },
+  "release": {
+    "status": "pending"
+  }
+}

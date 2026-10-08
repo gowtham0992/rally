@@ -47,7 +47,8 @@ export default function ClarificationPanel({groupId,revision,preferenceId,note,r
  if(!note)return null;
  if(reviewed)return <section className="clarification"><p className="saved-note">✓ Your saved note is covered by your confirmed choices.</p></section>;
  const proposal=view?.proposal,question=proposal?.question,pending=busy||loading||Boolean(view&&['RESERVED','DISPATCHED'].includes(view.status)),ready=view?.status==='READY'&&proposal;
- return <section className="clarification" aria-label="Review your private note"><p className="eyebrow">One more detail</p><h3>Let’s make sure we’ve got you.</h3><p className="muted">Your note stays private. Your choices won’t change until you confirm them.</p>
+ return <section id="private-note-review" tabIndex={-1} className="clarification" aria-label="Review your private note"><p className="eyebrow">One more detail</p><h3>Let’s make sure we’ve got you.</h3><p className="muted">Your note stays private. Your choices won’t change until you confirm them.</p>
+  {!ready&&<blockquote className="note-quote">{note}</blockquote>}
   {disabled&&<p className="field-help">Save your edits before reviewing this note.</p>}
   {error&&<p className="error" role="alert">{error}</p>}
   {stale&&<button className="text-button" onClick={refresh} disabled={disabled||busy}>Load the latest plan</button>}

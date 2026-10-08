@@ -68,11 +68,12 @@ test('irrelevant questions and unsupported evidence fail closed; structured note
  const x=await setup(3000),service=new ClarificationService(pool,async input=>proposal(input));assert.equal((await service.start(x.a,x.start))?.status,'REVIEW');
  assert.equal((await pool.query('SELECT ai_questions FROM planning_members WHERE id=$1',[x.g.memberId])).rows[0].ai_questions,0);
  assert.equal((await intake.ownPreferences(x.a,x.g.groupId)).preference.extraRequirement,'MERCHANT_REVIEW_REQUIRED');
+ assert.equal((await intake.plans(x.a)).plans[0].ownNoteNeedsReview,true);const friendIndex=await intake.plans(x.b);assert.equal(friendIndex.plans[0].ownNoteNeedsReview,false);for(const forbidden of ['I leave Friday.','optionalText','budgetMinor','preferenceId','MERCHANT_REVIEW_REQUIRED'])assert.ok(!JSON.stringify(friendIndex).includes(forbidden));
  const p={commandId:randomUUID(),groupId:x.g.groupId,expectedRevision:x.second.revision,preferenceId:x.first.preferenceId,declaresNoAdditionalMustHaves:true};
- await assert.rejects(service.confirmStructuredNote(x.a,{...p,declaresNoAdditionalMustHaves:false}));
+ await assert.rejects(service.confirmStructuredNote(x.a,{...p,declaresNoAdditionalMustHaves:false}));assert.equal((await intake.plans(x.a)).plans[0].ownNoteNeedsReview,true);
  const confirmed=await service.confirmStructuredNote(x.a,p);assert.equal((await intake.ownPreferences(x.a,x.g.groupId)).preference.budgetMinor,3000);
- assert.equal((await intake.participantContext(x.a,x.g.groupId)).wordingReviewed,true);
- await intake.save(x.a,{commandId:randomUUID(),groupId:x.g.groupId,expectedRevision:confirmed.revision,expectedPreferenceId:confirmed.preferenceId,preference:{...pref,budgetMinor:3000,technique:'WHEEL'},optionalText:'I leave Friday.'});
+ assert.equal((await intake.participantContext(x.a,x.g.groupId)).wordingReviewed,true);assert.equal((await intake.plans(x.a)).plans[0].ownNoteNeedsReview,false);
+ await intake.save(x.a,{commandId:randomUUID(),groupId:x.g.groupId,expectedRevision:confirmed.revision,expectedPreferenceId:confirmed.preferenceId,preference:{...pref,budgetMinor:3000,technique:'WHEEL'},optionalText:'I leave Friday.'});assert.equal((await intake.plans(x.a)).plans[0].ownNoteNeedsReview,true);
  assert.equal((await intake.ownPreferences(x.a,x.g.groupId)).preference.extraRequirement,'MERCHANT_REVIEW_REQUIRED');
 });
 test('interrupted reservations and dispatches expire to review without another model call',async()=>{
