@@ -15,7 +15,7 @@ import {localFields} from '../planning/local-time.ts';
 export interface IntakeActor {userId:string;emailVerified:boolean;demoWorkspaceId?:string}
 export type CollectionNextStep='ASK_COLLECTOR'|'REVIEW_REQUEST'|'CHOOSE_COLLECTOR';
 export interface StudioDecline {reason:string;catalogVersionId:string;offeringId:string;slotId:string;activity:string;startAt:string;timezone:string}
-export interface PlanSummary {groupId:string;studioName:string;state:string;isOrganizer:boolean;targetSize:number;readyCount:number;ownReady:boolean;ownNoteNeedsReview:boolean;studioDeclined:boolean;studioReviewNeedsRefresh:boolean;noSharedSession:boolean;collectionNextStep:CollectionNextStep|null;deadline:string|null;activity:string|null;startAt:string|null;timezone:string|null;bookingState:string|null;bookingCleanup:string|null;offerId:string|null;members:{displayName:string;isYou:boolean}[]}
+export interface PlanSummary {groupId:string;studioName:string;state:string;isOrganizer:boolean;targetSize:number;readyCount:number;ownReady:boolean;ownNoteNeedsReview:boolean;studioDeclined:boolean;studioReviewNeedsRefresh:boolean;noSharedSession:boolean;collectionNextStep:CollectionNextStep|null;deadline:string|null;activity:string|null;startAt:string|null;timezone:string|null;bookingState:string|null;bookingCleanup:string|null;offerId:string|null;previousOfferId:string|null;members:{displayName:string;isYou:boolean}[]}
 export class IntakeError extends Error {constructor(public code:string){super(code);}}
 const uuid=z.uuid(),name=z.string().trim().min(1).max(60);
 const createSchema=z.strictObject({commandId:uuid,targetSize:z.number().int().min(1).max(8),displayName:name,catalog:catalogSchema});
@@ -111,7 +111,7 @@ export class IntakeService {
   return {groupId,revision:g.revision,state:g.state,targetSize:g.target_size,isOrganizer:g.organizer_id===actor.userId,
    memberId:own.id,displayName:own.display_name,preference:own.confirmed?preferenceSchema.parse(own.confirmed):null,optionalText:own.optional_text??null,wordingReviewed:Boolean(own.wording_bound),privateTextExpired:Boolean(own.private_text_expired),
    catalog:catalogSchema.parse(g.catalog),members,candidate:g.candidate,studioReviewPending:g.state==='MERCHANT_REVIEW',
-   offerId:issued?.approved_offer_id??null,bookingState:issued?.booking_state??null,studioDecline:answer?.decline??null,studioReviewNeedsRefresh:answer?.state==='PENDING',collectionRequests:await this.collectionProjection(c,actor,groupId),
+   previousOfferId:(await this.previousOffers(c,[groupId]))[0]?.offerId??null,offerId:issued?.approved_offer_id??null,bookingState:issued?.booking_state??null,studioDecline:answer?.decline??null,studioReviewNeedsRefresh:answer?.state==='PENDING',collectionRequests:await this.collectionProjection(c,actor,groupId),
    organizerInvite:g.organizer_id===actor.userId?(await c.query("SELECT result->>'invite' AS invite FROM intake_commands WHERE actor_id=$1 AND result->>'groupId'=$2 AND result ? 'invite' LIMIT 1",[actor.userId,groupId])).rows[0]?.invite??null:null};
  });}
  async roster(actor:IntakeActor,groupId:string){this.actor(actor);uuid.parse(groupId);
@@ -148,7 +148,9 @@ export class IntakeService {
     AND (to_jsonb(g)->>'demo_workspace_id') IS NOT DISTINCT FROM $2::text
     AND ($3::timestamptz IS NULL OR (g.created_at,g.id)<($3::timestamptz,$4::uuid))
     ORDER BY g.created_at DESC,g.id DESC LIMIT 21`,[actor.userId,actor.demoWorkspaceId??null,before?.createdAt??null,before?.id??null])).rows as PlanSummary[];
-   const plans=rows.slice(0,20).map(row=>({...row,collectionNextStep:null as CollectionNextStep|null,deadline:null as string|null,activity:null as string|null,startAt:null as string|null,timezone:null as string|null,bookingState:null as string|null,bookingCleanup:null as string|null,offerId:null as string|null}));
+   const plans=rows.slice(0,20).map(row=>({...row,collectionNextStep:null as CollectionNextStep|null,deadline:null as string|null,activity:null as string|null,startAt:null as string|null,timezone:null as string|null,bookingState:null as string|null,bookingCleanup:null as string|null,offerId:null as string|null,previousOfferId:null as string|null}));
+   const previous=await this.previousOffers(c,plans.map(p=>p.groupId));
+   for(const plan of plans)plan.previousOfferId=previous.find(p=>p.groupId===plan.groupId)?.offerId??null;
    const issued=plans.filter(p=>p.state==='OFFER_ISSUED').map(p=>p.groupId);
    if(issued.length){
     const bookings=(await c.query(`SELECT DISTINCT ON (r.group_id) r.group_id,o.id,o.state,o.cleanup,
@@ -171,6 +173,18 @@ export class IntakeService {
    if(reviewed.length){const answers=await this.studioAnswers(c,reviewed);for(const plan of plans){const answer=answers.find(a=>a.groupId===plan.groupId);plan.studioDeclined=Boolean(answer?.decline);plan.studioReviewNeedsRefresh=answer?.state==='PENDING';}}
    return {plans,nextCursor:rows.length>20?plans.at(-1)!.groupId:null};
   });
+ }
+ private async previousOffers(c:pg.PoolClient,groupIds:string[]):Promise<{groupId:string;offerId:string}[]>{
+  if(!groupIds.length)return [];
+  const restarted=(await c.query("SELECT DISTINCT group_id FROM planning_events WHERE group_id=ANY($1::uuid[]) AND kind='PLANNING_REOPENED'",[groupIds])).rows.map(r=>r.group_id);
+  if(!restarted.length)return [];
+  // The reopening event establishes which offer is historical. A current
+  // cancellation alone must not tell friends that another round has started.
+  return (await c.query(`SELECT DISTINCT ON (r.group_id) r.group_id AS "groupId",r.approved_offer_id AS "offerId"
+   FROM merchant_requests r JOIN (SELECT group_id,max(revision) AS revision FROM planning_events
+    WHERE group_id=ANY($1::uuid[]) AND kind='PLANNING_REOPENED' GROUP BY group_id) reopened ON reopened.group_id=r.group_id
+   WHERE r.state='APPROVED' AND r.approved_offer_id IS NOT NULL AND r.planning_revision<reopened.revision
+   ORDER BY r.group_id,r.planning_revision DESC`,[restarted])).rows;
  }
  private async studioAnswers(c:pg.Pool|pg.PoolClient,groupIds:string[]):Promise<{groupId:string;state:string;decline:StudioDecline|null}[]>{
   // A friend edit does not erase the studio's answer. Only the latest request

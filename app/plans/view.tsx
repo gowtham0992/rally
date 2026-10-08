@@ -16,7 +16,7 @@ function nextStep(plan:PlanSummary){
  if(plan.noSharedSession)return plan.isOrganizer?'No session fits yet — check in with friends':'No session fits yet — review choices with your group';
  if(plan.studioDeclined)return 'Studio declined — review your options';
  if(plan.studioReviewNeedsRefresh)return plan.isOrganizer?'Check options and ask the studio again':'Waiting for your organizer to send a fresh request';
- if(plan.state==='CLOSED')return plan.isOrganizer?'Check the group’s options':'Open the group’s plan';
+ if(plan.state==='CLOSED')return plan.previousOfferId?(plan.isOrganizer?'Choose a session for the new round':'New planning round — review your saved details'):(plan.isOrganizer?'Check the group’s options':'Open the group’s plan');
  if(plan.state==='MERCHANT_REVIEW')return 'Waiting for the studio’s answer';
  if(plan.state==='OFFER_ISSUED'&&plan.offerId){
   if(plan.bookingState==='CONFIRMED')return 'See your booking';

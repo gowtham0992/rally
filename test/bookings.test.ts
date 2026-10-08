@@ -163,6 +163,8 @@ async function funded(){
 test('studio cancellation releases confirmed inventory, refunds every capture once and gates a separate planning round',async()=>{
  const f=await funded();await settle(f.engine,f.issued.offerId);
  assert.equal((await bookings.offer(f.x.actors[0],f.issued.offerId)).booking,'CONFIRMED');
+ assert.equal((await intake.participantContext(f.x.actors[0],f.x.g.groupId)).previousOfferId,null);
+ assert.equal((await intake.plans(f.x.actors[1])).plans.find(p=>p.groupId===f.x.g.groupId)!.previousOfferId,null);
  await assert.rejects(f.engine.cancelByMerchant({...f.command(f.x.actors[0]),agreesToFullRefund:true}),/NOT_FOUND/);
  await assert.rejects(f.engine.cancelByMerchant({...f.command(merchant),agreesToFullRefund:false}));
  const cancel={...f.command(merchant),agreesToFullRefund:true},before=await bookings.offer(merchant,f.issued.offerId);
@@ -176,13 +178,28 @@ test('studio cancellation releases confirmed inventory, refunds every capture on
  assert.equal((await f.engine.participantStatus(f.issued.offerId,f.x.actors[0].userId)).payment,'REFUND_COMPLETED');
  const after=await bookings.offer(f.x.actors[0],f.issued.offerId);assert.deepEqual(after.snapshot,before.snapshot);assert.equal(after.canReopen,true);assert.equal(after.isCurrentRound,true);
  await assert.rejects(bookings.reopen(f.x.actors[1],{...reopen,commandId:randomUUID()}),/NOT_FOUND/);
+ const savedDetails=await Promise.all(f.x.actors.map(a=>intake.ownPreferences(a,f.x.g.groupId)));
  const reopened=await bookings.reopen(f.x.actors[0],reopen);assert.deepEqual(await bookings.reopen(f.x.actors[0],reopen),reopened);
+ for(const [i,a] of f.x.actors.entries()){
+  const context=await intake.participantContext(a,f.x.g.groupId),index=(await intake.plans(a)).plans.find(p=>p.groupId===f.x.g.groupId)!;
+  assert.equal(context.previousOfferId,f.issued.offerId);assert.equal(context.offerId,null);assert.equal(index.previousOfferId,f.issued.offerId);assert.equal(index.offerId,null);
+  assert.deepEqual(await intake.ownPreferences(a,f.x.g.groupId),savedDetails[i]);
+  for(const forbidden of ['Private words','budgetMinor','payment_operations','provider_id'])assert.ok(!JSON.stringify(index).includes(forbidden));
+ }
+ await assert.rejects(intake.participantContext(actor(),f.x.g.groupId),/NOT_FOUND/);assert.equal((await intake.plans(actor())).plans.length,0);
  for(const a of [f.x.actors[0],f.x.actors[1],merchant]){const historical=await bookings.offer(a,f.issued.offerId);assert.equal(historical.isCurrentRound,false);assert.equal(historical.canReopen,false);assert.deepEqual(historical.snapshot,before.snapshot);}
  const next=await bookings.request(f.x.actors[0],{commandId:randomUUID(),groupId:f.x.g.groupId,expectedRevision:reopened.revision,offeringId:'handbuild',slotId:'thu-evening'});
  const replacement=await bookings.approve(merchant,approval(next));assert.notEqual(replacement.offerId,f.issued.offerId);assert.notEqual(replacement.offerHash,f.issued.offerHash);
  assert.equal((await f.engine.participantStatus(replacement.offerId,f.x.actors[0].userId)).canAccept,true);
  assert.equal((await bookings.offer(f.x.actors[1],replacement.offerId)).isCurrentRound,true);assert.equal((await bookings.offer(f.x.actors[1],f.issued.offerId)).isCurrentRound,false);
- assert.equal((await bookings.offer(f.x.actors[0],f.issued.offerId)).canReopen,false);await release(replacement.offerId);
+ assert.equal((await bookings.offer(f.x.actors[0],f.issued.offerId)).canReopen,false);
+ assert.equal((await intake.participantContext(f.x.actors[1],f.x.g.groupId)).offerId,replacement.offerId);
+ assert.equal((await intake.participantContext(f.x.actors[1],f.x.g.groupId)).previousOfferId,f.issued.offerId);
+ assert.equal((await intake.plans(f.x.actors[1])).plans.find(p=>p.groupId===f.x.g.groupId)!.previousOfferId,f.issued.offerId);
+ await f.engine.withdraw({commandId:randomUUID(),actorId:f.x.actors[1].userId,offerId:replacement.offerId,offerHash:replacement.offerHash});await settle(f.engine,replacement.offerId);
+ await bookings.reopen(f.x.actors[0],{commandId:randomUUID(),groupId:f.x.g.groupId,offerId:replacement.offerId,offerHash:replacement.offerHash,expectedRevision:replacement.revision,acknowledgesNewApprovals:true});
+ for(const a of f.x.actors){assert.equal((await intake.participantContext(a,f.x.g.groupId)).previousOfferId,replacement.offerId);assert.equal((await intake.plans(a)).plans.find(p=>p.groupId===f.x.g.groupId)!.previousOfferId,replacement.offerId);}
+ await release(replacement.offerId);
 });
 test('participant cancellation requests require studio review and are private and naturally deduplicated',async()=>{
  const f=await funded(),cmd=f.command(f.x.actors[0]);

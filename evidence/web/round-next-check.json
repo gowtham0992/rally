@@ -1,0 +1,49 @@
+{
+  "checkedAt": "2026-10-08T03:47:16.766718+00:00",
+  "boundary": "Actual React components, services and worker with isolated local PostgreSQL and preauthenticated fictional actors. Provider observations are simulated; no PayPal, email, model, real-money or hosted test calls.",
+  "journey": [
+    "Organizer explicitly opens a new round after verified simulated recovery",
+    "All six saved preferences and earlier offer financial records remain unchanged",
+    "Returning friend sees new-round cue and opens current group by keyboard",
+    "Group explains retained details and fresh approvals with role-appropriate next step",
+    "Captured fictional friend reaches own earlier refunded share through history link",
+    "Organizer checks options and sends a fresh studio request",
+    "Pending studio review updates guidance without removing earlier-record link",
+    "Fictional studio issues a replacement offer; earlier record stays reachable on current group",
+    "Replacement offer has zero accepted members and zero payment operations",
+    "Returning index clears planning cue and points to the current offer",
+    "Service regression verifies a second restart links to the most recent earlier offer and foreign actors cannot access group history"
+  ],
+  "simulatedFinancialCounts": {
+    "offers": 2,
+    "captures": 1,
+    "refunds": 1,
+    "voids": 5,
+    "unresolvedOperations": 0,
+    "modelCalls": 0
+  },
+  "viewportChecks": [
+    {
+      "width": 375,
+      "scrollWidth": 375
+    },
+    {
+      "width": 1920,
+      "scrollWidth": 1920
+    }
+  ],
+  "validation": {
+    "regressionSeenRed": true,
+    "tests": 179,
+    "typecheck": "passed",
+    "build": "passed",
+    "secretFindings": 0
+  },
+  "release": {
+    "status": "pending"
+  },
+  "fixture": {
+    "disposed": true,
+    "hostedChanges": 0
+  }
+}
