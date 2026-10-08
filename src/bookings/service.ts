@@ -281,6 +281,7 @@ export class BookingService {
   const row=(await this.pool.query(`SELECT os.snapshot,o.offer_hash,o.state,o.cleanup,g.revision AS planning_revision,g.state AS planning_state,
     to_jsonb(g)->>'demo_workspace_id' AS demo_workspace_id,
     g.organizer_id=$2 AS is_organizer,
+    (SELECT count(*)::integer FROM offer_members m WHERE m.offer_id=o.id AND m.qualified_at IS NOT NULL) AS verified_approvals,
     NOT EXISTS(SELECT 1 FROM merchant_requests r WHERE r.group_id=g.id AND r.state='APPROVED' AND r.planning_revision>(os.snapshot->>'planningRevision')::integer) AS is_latest,
     EXISTS(SELECT 1 FROM cancellation_requests cr JOIN offer_members m ON m.id=cr.member_id WHERE m.offer_id=o.id AND m.user_id=$2) AS cancellation_requested,
     (SELECT count(*)::integer FROM cancellation_requests cr JOIN offer_members m ON m.id=cr.member_id WHERE m.offer_id=o.id) AS cancellation_request_count,
@@ -297,7 +298,7 @@ export class BookingService {
   return {offerHash:row.offer_hash,booking:row.state,snapshot,cleanup:row.cleanup as string,planningRevision:row.planning_revision as number,
    isParticipant:row.is_participant as boolean,isMerchant:row.is_merchant as boolean,isOrganizer:row.is_organizer as boolean,
    isCurrentRound:Boolean(row.is_latest&&row.planning_state==='OFFER_ISSUED'),
-   paymentRecords,cancellationRequested:row.is_participant?row.cancellation_requested as boolean:false,
+   paymentApprovalProgress:{verified:row.verified_approvals as number,total:snapshot.roster.length},paymentRecords,cancellationRequested:row.is_participant?row.cancellation_requested as boolean:false,
    cancellationRequestCount:row.is_merchant?row.cancellation_request_count as number:null,
    canReopen:Boolean(row.is_organizer&&row.is_latest&&row.planning_state==='OFFER_ISSUED'&&closedBookings.has(row.state)&&row.cleanup==='COMPLETE')};
  }

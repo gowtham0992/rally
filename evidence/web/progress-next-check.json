@@ -1,0 +1,44 @@
+{
+  "checkedAt": "2026-10-08T04:20:42.679586+00:00",
+  "boundary": "Actual React offer components, services and worker with isolated local PostgreSQL and preauthenticated fictional actors. Provider observations simulated; no PayPal, email, model, real-money or hosted test calls.",
+  "journey": [
+    "Regression: accepting an offer and queueing authorization does not count as verified approval",
+    "Provider-verified authorization increases aggregate progress one friend at a time",
+    "Actual offer screen polls from one to three approvals without reload",
+    "Six verified approvals with one pending capture stays unconfirmed",
+    "All six successful simulated captures confirm booking and clear waiting progress",
+    "All six preferences remain unchanged and aggregate projection omits individual private and payment identifiers"
+  ],
+  "simulatedFinancialCounts": {
+    "offers": 1,
+    "captures": 6,
+    "pendingCaptures": 0,
+    "modelCalls": 0
+  },
+  "viewportChecks": [
+    {
+      "width": 375,
+      "scrollWidth": 375
+    },
+    {
+      "width": 1280,
+      "layoutVisuallyChecked": true
+    }
+  ],
+  "validation": {
+    "regressionSeenRed": true,
+    "tests": 179,
+    "typecheck": "passed",
+    "build": "passed",
+    "secretFindings": 0,
+    "paymentSafetyMutations": 62,
+    "mutationsCaught": 62
+  },
+  "fixture": {
+    "disposed": true,
+    "hostedChanges": 0
+  },
+  "release": {
+    "status": "pending"
+  }
+}

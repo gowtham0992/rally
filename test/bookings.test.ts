@@ -42,14 +42,22 @@ test('six-person private intake becomes a frozen merchant-approved offer and ver
  const command=approval(r),approved=await bookings.approve(merchant,command);
  const issuedContext=await intake.participantContext(x.actors[0],x.g.groupId);assert.equal(issuedContext.studioReviewPending,false);assert.equal(issuedContext.offerId,approved.offerId);assert.equal(issuedContext.bookingState,'OPEN');const openIndex=(await intake.plans(x.actors[1])).plans.find(p=>p.groupId===x.g.groupId)!;assert.equal(openIndex.offerId,approved.offerId);assert.equal(openIndex.bookingState,'OPEN');assert.equal(openIndex.ownReady,true);
  assert.deepEqual(await new BookingService(pool).approve(merchant,command),approved);
- const view=await bookings.offer(x.actors[0],approved.offerId);assert.equal(view.isParticipant,true);assert.equal(view.isMerchant,false);const merchantView=await bookings.offer(merchant,approved.offerId);assert.equal(merchantView.isParticipant,false);assert.equal(merchantView.isMerchant,true);assert.equal(view.booking,'OPEN');assert.equal(openIndex.deadline,view.snapshot.deadline);assert.equal(view.snapshot.candidate.amountMinor,4800);assert.equal(view.snapshot.roster.length,6);
+ const view=await bookings.offer(x.actors[0],approved.offerId);assert.equal(view.isParticipant,true);assert.equal(view.isMerchant,false);const merchantView=await bookings.offer(merchant,approved.offerId);assert.equal(merchantView.isParticipant,false);assert.equal(merchantView.isMerchant,true);assert.equal(view.booking,'OPEN');assert.equal(openIndex.deadline,view.snapshot.deadline);assert.equal(view.snapshot.candidate.amountMinor,4800);assert.equal(view.snapshot.roster.length,6);assert.deepEqual(view.paymentApprovalProgress,{verified:0,total:6});
  assert.equal(Date.parse(view.snapshot.deadline)-Date.parse(view.snapshot.openedAt),7200000);assert.equal(Date.parse(view.snapshot.reservationEnd)-Date.parse(view.snapshot.deadline),1800000);
  assert.equal(Date.parse(view.snapshot.candidate.startAt)-Date.parse(view.snapshot.reservation.occupiedStart),15*60000);
  assert.equal(Date.parse(view.snapshot.reservation.occupiedEnd)-Date.parse(view.snapshot.candidate.endAt),20*60000);
  assert.ok(!JSON.stringify(view).includes('budgetMinor'));assert.ok(!JSON.stringify(view).includes(x.actors[0].userId));
  const provider=new SimulatedProvider(),engine=new PaymentEngine(pool,provider,{reconcileDelayMs:0});
  for(const a of x.actors){await engine.accept({commandId:randomUUID(),actorId:a.userId,offerId:approved.offerId,offerHash:approved.offerHash});await engine.step(approved.offerId);}
- for(const a of x.actors){await engine.authorize({commandId:randomUUID(),actorId:a.userId,offerId:approved.offerId,offerHash:approved.offerHash});await engine.step(approved.offerId);}
+ assert.deepEqual((await bookings.offer(x.actors[1],approved.offerId)).paymentApprovalProgress,{verified:0,total:6});
+ for(const [i,a] of x.actors.entries()){
+  await engine.authorize({commandId:randomUUID(),actorId:a.userId,offerId:approved.offerId,offerHash:approved.offerHash});
+  assert.deepEqual((await bookings.offer(x.actors[1],approved.offerId)).paymentApprovalProgress,{verified:i,total:6});
+  await engine.step(approved.offerId);
+  const groupView=await bookings.offer(x.actors[1],approved.offerId);assert.deepEqual(groupView.paymentApprovalProgress,{verified:i+1,total:6});assert.deepEqual((await engine.participantStatus(approved.offerId,x.actors[1].userId)).paymentApprovalProgress,groupView.paymentApprovalProgress);
+  for(const privateField of ['qualified_at','authorization_id','payer_id','budgetMinor','Private words'])assert.ok(!JSON.stringify(groupView).includes(privateField));
+ }
+ assert.deepEqual((await bookings.offer(merchant,approved.offerId)).paymentApprovalProgress,{verified:6,total:6});
  assert.equal((await bookings.offer(x.actors[0],approved.offerId)).booking,'SETTLING');await settle(engine,approved.offerId);
  assert.equal((await bookings.offer(merchant,approved.offerId)).booking,'CONFIRMED');const planIndex=(await intake.plans(x.actors[0])).plans.find(p=>p.groupId===x.g.groupId)!;assert.equal(planIndex.bookingState,'CONFIRMED');assert.equal(planIndex.activity,'Hand-build a cup');assert.equal(planIndex.startAt,view.snapshot.candidate.startAt);assert.ok(!JSON.stringify(planIndex).includes('Private words'));assert.equal((await intake.participantContext(x.actors[0],x.g.groupId)).bookingState,'CONFIRMED');assert.equal(provider.financialEffects.captures,6);
  assert.equal((await engine.participantStatus(approved.offerId,x.actors[0].userId)).payment,'PAYMENT_COMPLETED');

@@ -1,0 +1,45 @@
+{
+  "checkedAt": "2026-10-08T04:13:05.000181+00:00",
+  "boundary": "Actual React group and note components with isolated PostgreSQL and preauthenticated fictional actors. Local fault injection returns 401, 409 VIEWER_CHANGED and 503; no email, PayPal, model, real-money or hosted test calls.",
+  "regression": "Old group polling redirected an already-open form to login, discarding its unsaved budget and note. Observed before the fix.",
+  "journey": [
+    "Enter unsaved budget and essential note",
+    "Inject sign-in expiry on group refresh",
+    "Remain on current group with exact draft fields intact",
+    "Sign-in link opens a separate tab; saves and group actions are disabled while access is unverified",
+    "Restore original identity; successful refresh retains both fields and restores saving",
+    "Inject unavailable response; draft remains intact and saving pauses",
+    "Inject VIEWER_CHANGED; original viewer binding rejects access, draft remains and saving stays paused",
+    "Restore original account and save draft successfully",
+    "Database check confirms only intended friend changed and other five preferences stayed byte-equivalent"
+  ],
+  "calls": {
+    "offers": 0,
+    "paymentOperations": 0,
+    "modelCalls": 0,
+    "hostedTestWrites": 0
+  },
+  "viewportChecks": [
+    {
+      "width": 375,
+      "scrollWidth": 375
+    },
+    {
+      "width": 1280,
+      "layoutVisuallyChecked": true
+    }
+  ],
+  "validation": {
+    "tests": 179,
+    "typecheck": "passed",
+    "build": "passed",
+    "secretFindings": 0
+  },
+  "fixture": {
+    "disposed": true,
+    "hostedChanges": 0
+  },
+  "release": {
+    "status": "pending"
+  }
+}

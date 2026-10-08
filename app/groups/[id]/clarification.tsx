@@ -14,7 +14,7 @@ const values:Record<string,string>={WHEEL:'Using the wheel',HANDBUILD:'Hand-buil
 function label(value:string,key:string){return value==='ANY'?(key==='TECHNIQUE'?'Any technique works for me':'I’m open to either kind of piece'):values[value];}
 const errors:Record<string,string>={STALE_REVISION:'The plan has changed. Your saved details are safe. Load the latest plan before continuing.',STALE_CLARIFICATION:'This answer belongs to an earlier version of the plan. Load the latest plan before continuing.',CLARIFICATION_LIMIT:'You’ve reached the note-check limit for now. Update your selections or shorten your note. No request has been sent to the studio.',NOTE_TOO_LONG:'Shorten your note to 1,500 characters for this check. No request has been sent to the studio.',NOTE_ALREADY_REVIEWED:'Your note has already been confirmed. Load the latest plan to see your choices.'};
 
-export default function ClarificationPanel({groupId,revision,preferenceId,note,reviewed,disabled,structuredOnly,refresh,onBusyChange}:{groupId:string;revision:number;preferenceId:string;note:string;reviewed:boolean;disabled:boolean;structuredOnly:boolean;refresh:()=>void;onBusyChange:(busy:boolean)=>void}){
+export default function ClarificationPanel({groupId,revision,preferenceId,note,reviewed,disabled,structuredOnly,refresh,onBusyChange,onSessionExpired}:{groupId:string;revision:number;preferenceId:string;note:string;reviewed:boolean;disabled:boolean;structuredOnly:boolean;refresh:()=>void;onBusyChange:(busy:boolean)=>void;onSessionExpired:()=>void}){
  const [view,setView]=useState<ClarificationView|null>(null),[loading,setLoading]=useState(!reviewed),[busy,setBusy]=useState(false),[error,setError]=useState(''),[consent,setConsent]=useState(false),[answer,setAnswer]=useState<string|null>(null),[confirmed,setConfirmed]=useState(false),[structuredConfirmed,setStructuredConfirmed]=useState(false),[reload,setReload]=useState(0),[stale,setStale]=useState(false);
  const command=useRef<{fingerprint:string;id:string}|null>(null),mounted=useRef(true);
  useEffect(()=>{mounted.current=true;return()=>{mounted.current=false;};},[]);
@@ -23,6 +23,7 @@ export default function ClarificationPanel({groupId,revision,preferenceId,note,r
   const controller=new AbortController();let timer:ReturnType<typeof setTimeout>|undefined;
   async function read(){try{
    const r=await apiFetch(`/api/groups/${groupId}/clarification`,{signal:controller.signal,cache:'no-store'});
+   if(r.status===401){onSessionExpired();throw new Error('Sign in again before checking your note. Your saved choices are safe.');}
    if(!r.ok)throw new Error('We couldn’t load the note check. Your saved choices are safe.');
    const result:ClarificationView|null=await r.json();if(controller.signal.aborted)return;
    setView(result);setLoading(false);
@@ -36,6 +37,7 @@ export default function ClarificationPanel({groupId,revision,preferenceId,note,r
   if(command.current?.fingerprint!==fingerprint)command.current={fingerprint,id:crypto.randomUUID()};
   try{
    const r=await apiFetch(`/api/groups/${groupId}/clarification`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action,payload:{...payload,commandId:command.current.id}})});
+   if(r.status===401){onSessionExpired();throw new Error('Sign in again before checking your note. Your saved choices are safe.');}
    const result=await r.json();if(!mounted.current)return;
    if(!r.ok){setStale(['STALE_REVISION','STALE_CLARIFICATION','NOTE_ALREADY_REVIEWED'].includes(result.error));throw new Error(errors[result.error]??'The note check couldn’t finish. Your saved choices are safe. Try again shortly.');}
    if(action==='ANSWER'||action==='STRUCTURED'){refresh();return;}

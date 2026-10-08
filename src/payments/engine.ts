@@ -278,7 +278,9 @@ export class PaymentEngine {
   async participantStatus(offerId: string, actorId: string) {
     z.uuid().parse(offerId); z.uuid().parse(actorId);
     // One database snapshot binds booking, owned member and operation states.
-    const row=(await this.pool.query<Offer&{accepted_hash:string|null;order_id:string|null;time:Date;ops:(Pick<Operation,'kind'|'state'|'approval_url'>&{safe_code:string|null})[]}>(`SELECT o.*,m.accepted_hash,m.order_id,clock_timestamp() AS time,
+    const row=(await this.pool.query<Offer&{accepted_hash:string|null;order_id:string|null;time:Date;verified_approvals:number;approval_total:number;ops:(Pick<Operation,'kind'|'state'|'approval_url'>&{safe_code:string|null})[]}>(`SELECT o.*,m.accepted_hash,m.order_id,clock_timestamp() AS time,
+      (SELECT count(*)::integer FROM offer_members peers WHERE peers.offer_id=o.id AND peers.qualified_at IS NOT NULL) AS verified_approvals,
+      (SELECT count(*)::integer FROM offer_members peers WHERE peers.offer_id=o.id) AS approval_total,
       (SELECT COALESCE(jsonb_agg(jsonb_build_object('kind',p.kind,'state',p.state,'approval_url',p.approval_url,'safe_code',p.safe_code)),'[]'::jsonb) FROM payment_operations p WHERE p.member_id=m.id) AS ops
       FROM offer_members m JOIN offers o ON o.id=m.offer_id WHERE m.offer_id=$1 AND m.user_id=$2`,[offerId,actorId])).rows[0];
     if(!row)throw new DomainError('NOT_A_MEMBER',403);
@@ -298,7 +300,7 @@ export class PaymentEngine {
       try{const url=new URL(create.approval_url);if(url.origin==='https://www.sandbox.paypal.com'&&!url.username&&!url.password&&url.searchParams.get('token')===row.order_id)approvalUrl=url.toString();}catch{/* Invalid persisted links are never browser destinations. */}
     }
     return {booking:row.state,payment,amountMinor:row.amount_minor,currency:row.currency,cleanup:row.cleanup,approvalUrl,
-      accepted,canAccept:active&&!accepted,canAuthorize,preparingOrder:active&&accepted&&!row.order_id&&!needsAction,
+      paymentApprovalProgress:{verified:row.verified_approvals,total:row.approval_total},accepted,canAccept:active&&!accepted,canAuthorize,preparingOrder:active&&accepted&&!row.order_id&&!needsAction,
       payerApprovalRequired:auth?.state==='FAILED'&&auth.safe_code==='PAYER_APPROVAL_REQUIRED'};
   }
 
