@@ -1,5 +1,5 @@
 {
-  "observed_at": "2026-10-08T00:29:20.951112+00:00",
+  "observed_at": "2026-10-08T00:33:32.689751+00:00",
   "scope": "Product fixes for the five-friend usability study; no demo or submission work.",
   "fixes": [
     "No-fit notices and copied check-ins belong to the current planning revision and disappear when an offer opens, without remounting private form drafts.",
@@ -22,7 +22,9 @@
       1280
     ],
     "horizontal_overflow": false,
-    "keyboard_policy_disclosure": "Enter expands native summary and focus stays visible"
+    "keyboard_policy_disclosure": "Enter expands native summary and focus stays visible",
+    "viewport_override_reset": true,
+    "temporary_test_database_removed": true
   },
   "browser_checks": {
     "scope": "Actual React components in StrictMode with a loopback mock API and provider; no hosted group flow or human retest.",
@@ -39,13 +41,17 @@
     "emails": 0,
     "model_calls": 0,
     "paypal_calls": 0,
-    "new_hosted_groups": 0
+    "new_hosted_groups": 0,
+    "live_checks": [
+      "Hosted /groups/new displays the published terms and new payment/cancellation workflow before sign-in.",
+      "Native policy disclosure expands on the hosted page, with no payment, model, membership or email actions."
+    ]
   },
   "release": {
-    "state": "Verified source; deployment pending",
+    "state": "Live",
     "repository": "Single private gowtham0992/rally",
     "hosting": "Existing Render Free",
-    "runtime_commit": null,
+    "runtime_commit": "bb13580cb83dd133fa7a84a37c9fac9d48da86c2",
     "schema_migrations_added": 0,
     "previous_compatible_runtime": "1ac81bad565b1f5b73dd9dcd230a632e364e4db6",
     "hosted_precheck": {
@@ -55,7 +61,20 @@
       "reservation": "BOOKED",
       "captures": 6,
       "migrations": 14
-    }
+    },
+    "deploy_id": "dep-db3e88t9fdbs73ddlsrg",
+    "deploy_duration_seconds": 109,
+    "health_ready": true,
+    "protected_history_unchanged": true,
+    "hosted_counts_unchanged": true,
+    "existing_booking": {
+      "state": "CONFIRMED",
+      "cleanup": "NOT_REQUIRED",
+      "reservation_state": "BOOKED",
+      "captures": 6
+    },
+    "restricted_tls_verified": true,
+    "live_policy_before_sign_in_verified": true
   },
   "limits": [
     "Simulated friend agents do not establish real-human usability.",
