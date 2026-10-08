@@ -47,12 +47,35 @@
     "failures": 0,
     "mutationsCaught": 62,
     "productionBuild": "passed",
-    "sourceSecretFindings": 0
+    "sourceSecretFindings": 0,
+    "typecheck": "passed"
   },
   "limits": [
     "Preauthenticated fictional actors; Supabase login not retested",
     "Payment provider simulated; external PayPal checkout not retested",
     "No hosted groups or payments created",
     "Real-human usability remains unverified"
-  ]
+  ],
+  "disposableLocalEnvironment": "removed",
+  "release": {
+    "runtimeCommit": "ce81b6737c4b15c0e4d0099a8e09cf5423d731a6",
+    "service": "srv-db092cvavr4c73eln89g",
+    "deploy": "dep-db3eqkugekts73eg38s0",
+    "state": "Live",
+    "durationSeconds": 75,
+    "url": "https://rally.gowthamsarveswaran.com",
+    "repositoryPrivate": true,
+    "plan": "Render Free",
+    "healthReady": true,
+    "hostedProtectedHistoryUnchanged": true,
+    "hostedUnresolvedPayments": 0,
+    "migrations": 14,
+    "originalHostedBooking": {
+      "state": "CONFIRMED",
+      "cleanup": "NOT_REQUIRED",
+      "reservation_state": "BOOKED",
+      "captures": 6
+    },
+    "observedAt": "2026-10-08T01:11:20.531Z"
+  }
 }
