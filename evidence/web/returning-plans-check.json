@@ -36,7 +36,30 @@
   "limits": [
     "Payment provider and Supabase sign-in not retested",
     "Personal payment state remains on the offer; index wording never says an already-authorized friend must approve again",
-    "Real-human usability not established"
+    "Real-human usability not established",
+    "Live authenticated cards were not retested; existing browser demo session had changed."
   ],
-  "disposableLocalEnvironment": "removed"
+  "disposableLocalEnvironment": "removed",
+  "release": {
+    "runtimeCommit": "e9bcacc7888a373ae91d488eac38f16ce7e4b7a7",
+    "state": "Live",
+    "deployId": "dep-db3evkfavr4c739gqe2g",
+    "durationSeconds": 103,
+    "url": "https://rally.gowthamsarveswaran.com",
+    "plan": "Existing Render Free",
+    "repositoryPrivate": true,
+    "healthReady": true,
+    "signedOutPlansApiStatus": 401,
+    "hostedProtectedHistoryUnchanged": true,
+    "hostedCountsUnchanged": true,
+    "originalBooking": {
+      "state": "CONFIRMED",
+      "cleanup": "NOT_REQUIRED",
+      "reservation_state": "BOOKED",
+      "captures": 6
+    },
+    "migrations": 14,
+    "observedAt": "2026-10-08T01:22:50.426Z",
+    "liveUi": "Refresh control and session-unavailable retry rendered. Existing demo cookie had changed; no restore or hosted workflow attempted."
+  }
 }
