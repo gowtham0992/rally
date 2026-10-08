@@ -1,0 +1,58 @@
+{
+  "observedAt": "2026-10-08T01:08:50.810Z",
+  "boundary": "Actual components, real services and isolated PostgreSQL. Preauthenticated fictional actors; simulated provider; no email/model/PayPal calls.",
+  "journey": [
+    "Casey withdrew first offer",
+    "Three earlier authorizations canceled",
+    "Taylor reopened after recovery",
+    "Sam changed Thursday to Friday",
+    "Sam and Jordan renewed collection consent",
+    "Organizer blocked until collection agreement",
+    "Studio approved Friday offer",
+    "All six independently accepted and authorized through actual UI",
+    "Revised offer CONFIRMED and reservation BOOKED"
+  ],
+  "freshApprovals": {
+    "members": 6,
+    "inheritedAcceptances": 0,
+    "inheritedOrders": 0,
+    "inheritedAuthorizations": 0,
+    "operations": 0
+  },
+  "oldOffer": {
+    "state": "WITHDRAWN",
+    "cleanup": "COMPLETE",
+    "hashUnchanged": true,
+    "currentRound": false,
+    "canReopen": false,
+    "voids": 3,
+    "captures": 0
+  },
+  "newOffer": {
+    "state": "CONFIRMED",
+    "reservation": "BOOKED",
+    "authorizations": 6,
+    "captures": 6,
+    "distinctOfferHash": true,
+    "currentRound": true
+  },
+  "unresolvedPayments": 0,
+  "fix": {
+    "problem": "Old offer incorrectly invited another restart after a new planning round already opened; closed collection text suggested a future arrangement.",
+    "behavior": "Historical banner links participants to current group; frozen terms and payment records remain visible; obsolete restart guidance hidden; closed collection text uses historical tense.",
+    "regression": "Failed before isCurrentRound projection, passed after fix; verifies organizer, participant and merchant access before and after replacement."
+  },
+  "verification": {
+    "tests": 178,
+    "failures": 0,
+    "mutationsCaught": 62,
+    "productionBuild": "passed",
+    "sourceSecretFindings": 0
+  },
+  "limits": [
+    "Preauthenticated fictional actors; Supabase login not retested",
+    "Payment provider simulated; external PayPal checkout not retested",
+    "No hosted groups or payments created",
+    "Real-human usability remains unverified"
+  ]
+}

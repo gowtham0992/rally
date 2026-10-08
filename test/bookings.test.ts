@@ -170,12 +170,14 @@ test('studio cancellation releases confirmed inventory, refunds every capture on
  await settle(f.engine,f.issued.offerId);assert.deepEqual(f.provider.financialEffects,{captures:6,refunds:6,voids:0});
  await f.engine.cancelByMerchant(cancel);await settle(f.engine,f.issued.offerId);assert.equal(f.provider.financialEffects.refunds,6);
  assert.equal((await f.engine.participantStatus(f.issued.offerId,f.x.actors[0].userId)).payment,'REFUND_COMPLETED');
- const after=await bookings.offer(f.x.actors[0],f.issued.offerId);assert.deepEqual(after.snapshot,before.snapshot);assert.equal(after.canReopen,true);
+ const after=await bookings.offer(f.x.actors[0],f.issued.offerId);assert.deepEqual(after.snapshot,before.snapshot);assert.equal(after.canReopen,true);assert.equal(after.isCurrentRound,true);
  await assert.rejects(bookings.reopen(f.x.actors[1],{...reopen,commandId:randomUUID()}),/NOT_FOUND/);
  const reopened=await bookings.reopen(f.x.actors[0],reopen);assert.deepEqual(await bookings.reopen(f.x.actors[0],reopen),reopened);
+ for(const a of [f.x.actors[0],f.x.actors[1],merchant]){const historical=await bookings.offer(a,f.issued.offerId);assert.equal(historical.isCurrentRound,false);assert.equal(historical.canReopen,false);assert.deepEqual(historical.snapshot,before.snapshot);}
  const next=await bookings.request(f.x.actors[0],{commandId:randomUUID(),groupId:f.x.g.groupId,expectedRevision:reopened.revision,offeringId:'handbuild',slotId:'thu-evening'});
  const replacement=await bookings.approve(merchant,approval(next));assert.notEqual(replacement.offerId,f.issued.offerId);assert.notEqual(replacement.offerHash,f.issued.offerHash);
  assert.equal((await f.engine.participantStatus(replacement.offerId,f.x.actors[0].userId)).canAccept,true);
+ assert.equal((await bookings.offer(f.x.actors[1],replacement.offerId)).isCurrentRound,true);assert.equal((await bookings.offer(f.x.actors[1],f.issued.offerId)).isCurrentRound,false);
  assert.equal((await bookings.offer(f.x.actors[0],f.issued.offerId)).canReopen,false);await release(replacement.offerId);
 });
 test('participant cancellation requests require studio review and are private and naturally deduplicated',async()=>{

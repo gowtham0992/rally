@@ -296,6 +296,7 @@ export class BookingService {
     OR EXISTS(SELECT 1 FROM payment_reconciliation_evidence e WHERE e.operation_id=p.id)) ORDER BY m.ordinal,p.created_at,p.id LIMIT 40`,[offerId])).rows.map(p=>({operationId:p.id as string,kind:p.kind as string,memberName:snapshot.roster[p.ordinal].displayName})):[];
   return {offerHash:row.offer_hash,booking:row.state,snapshot,cleanup:row.cleanup as string,planningRevision:row.planning_revision as number,
    isParticipant:row.is_participant as boolean,isMerchant:row.is_merchant as boolean,isOrganizer:row.is_organizer as boolean,
+   isCurrentRound:Boolean(row.is_latest&&row.planning_state==='OFFER_ISSUED'),
    paymentRecords,cancellationRequested:row.is_participant?row.cancellation_requested as boolean:false,
    cancellationRequestCount:row.is_merchant?row.cancellation_request_count as number:null,
    canReopen:Boolean(row.is_organizer&&row.is_latest&&row.planning_state==='OFFER_ISSUED'&&closedBookings.has(row.state)&&row.cleanup==='COMPLETE')};
