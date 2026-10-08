@@ -1,0 +1,65 @@
+{
+  "observed_at": "2026-10-08T00:29:20.951112+00:00",
+  "scope": "Product fixes for the five-friend usability study; no demo or submission work.",
+  "fixes": [
+    "No-fit notices and copied check-ins belong to the current planning revision and disappear when an offer opens, without remounting private form drafts.",
+    "Published cancellation terms and supported payment/cancellation workflow are available before sign-in and beside private choices; personal refunds are not invented or promised.",
+    "Collection selection explains that disclosure and a request become available after roster confirmation; both-party agreement remains required.",
+    "Essential-note guidance distinguishes session must-haves from policy questions; existing unresolved notes remain pending until their owner explicitly changes or reviews them.",
+    "Public-only copyable group check-in and role-specific recovery guidance explain who can start a new round and that approvals must be renewed."
+  ],
+  "verification": {
+    "tests_passed": 178,
+    "mutation_faults_caught": 62,
+    "mutation_baselines_passed": 62,
+    "production_build": "passed",
+    "typecheck": "passed in production build",
+    "source_secret_findings": 0,
+    "muted_on_white_contrast": 5.15,
+    "viewport_widths": [
+      375,
+      768,
+      1280
+    ],
+    "horizontal_overflow": false,
+    "keyboard_policy_disclosure": "Enter expands native summary and focus stays visible"
+  },
+  "browser_checks": {
+    "scope": "Actual React components in StrictMode with a loopback mock API and provider; no hosted group flow or human retest.",
+    "checks": [
+      "Before fix: Keep my choices notice remained after studio issued an offer; after fix: offer link appears and stale notice/copy text disappear.",
+      "Keep my choices and copy public check-in perform zero saves or payment operations.",
+      "Saved nominee in collecting stage explicitly says chosen friend has not been asked and explains roster-confirmation timing.",
+      "Unresolved cancellation question remains a must-have requiring review; policy can be opened and no model call or save occurs.",
+      "Withdrawing/recovered participant sees authorization canceled, organizer\u2019s next action, and fresh-approval requirement.",
+      "49.50 unsaved draft survives refresh while current saved choice changes to 62; Update stays disabled until explicit comparison.",
+      "Signed-out policy page has no overflow at phone, tablet or desktop sizes; native keyboard disclosure works."
+    ],
+    "external_auth_accounts": 0,
+    "emails": 0,
+    "model_calls": 0,
+    "paypal_calls": 0,
+    "new_hosted_groups": 0
+  },
+  "release": {
+    "state": "Verified source; deployment pending",
+    "repository": "Single private gowtham0992/rally",
+    "hosting": "Existing Render Free",
+    "runtime_commit": null,
+    "schema_migrations_added": 0,
+    "previous_compatible_runtime": "1ac81bad565b1f5b73dd9dcd230a632e364e4db6",
+    "hosted_precheck": {
+      "ready": true,
+      "unresolved_payments": 0,
+      "existing_booking": "CONFIRMED",
+      "reservation": "BOOKED",
+      "captures": 6,
+      "migrations": 14
+    }
+  },
+  "limits": [
+    "Simulated friend agents do not establish real-human usability.",
+    "No new hosted PayPal/model journey was executed.",
+    "Personal cancellation still requires studio review; no new personal refund cutoff, partial-refund or transfer feature was added."
+  ]
+}

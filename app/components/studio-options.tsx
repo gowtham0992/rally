@@ -1,7 +1,8 @@
 import type {Catalog} from '../../src/planning/domain';
 import {money,localDate} from '../lib/format';
+import StudioPolicies from './booking-rules';
 
-export default function StudioOptions({catalog,showDates=true}:{catalog:Catalog;showDates?:boolean}){
+export default function StudioOptions({catalog,showDates=true,showPolicies=true}:{catalog:Catalog;showDates?:boolean;showPolicies?:boolean}){
  const offerings=catalog.offerings.filter(o=>o.verified).toSorted((a,b)=>a.priceMinor-b.priceMinor);
  const slots=catalog.slots.filter(s=>offerings.some(o=>o.slotIds.includes(s.id)));
  return <section className="studio-options" aria-label="Published studio activities">
@@ -12,5 +13,6 @@ export default function StudioOptions({catalog,showDates=true}:{catalog:Catalog;
   </li>)}</ul>:<p className="muted">The studio hasn’t published verified activities yet.</p>}
   {offerings.length>0&&<p className="field-help">{offerings.every(o=>o.requiresLaterCollection)?'Pieces are fired after your visit and collected later.':'Collection depends on your activity.'} {offerings.every(o=>o.nomineeCollectionAllowed)?'You can collect your piece, or ask a friend to agree to collect it.':'Check the studio’s collection arrangements before booking.'}</p>}
   {showDates&&<div className="published-dates"><p className="eyebrow">Published starts · {catalog.timezone}</p>{slots.length?<ul>{slots.map(s=><li key={s.id}>{localDate(s.startAt,catalog.timezone)}</li>)}</ul>:<p className="field-help">The studio hasn’t published dates yet.</p>}</div>}
+  {showPolicies&&<StudioPolicies catalog={catalog}/>}
  </section>;
 }
