@@ -1,0 +1,52 @@
+{
+  "checkedAt": "2026-10-08T03:32:55.457Z",
+  "boundary": "Actual React components, services and worker with isolated local PostgreSQL and preauthenticated fictional actors. Provider outcomes are simulated; no PayPal, email, model, real-money or hosted test calls.",
+  "journey": [
+    "Your plans shows recovery being checked for every friend",
+    "Keyboard navigation opens the existing offer",
+    "Captured friend sees own refund in progress; organizer sees own authorization being canceled",
+    "Restart action is absent while recovery is pending",
+    "Simulator returns a completed refund; actual worker verifies recovery and completes remaining voids",
+    "Returning organizer sees restart cue; friend sees payment record cue",
+    "Captured friend sees refunded payment; others see canceled authorizations",
+    "Organizer explicitly acknowledges fresh approvals and opens another planning round",
+    "Index returns to planning with no old recovery cue; all six saved preferences are unchanged",
+    "Old offer remains an earlier offer and its financial records are unchanged"
+  ],
+  "simulatedFinancialCounts": {
+    "offers": 1,
+    "captures": 1,
+    "refunds": 1,
+    "voids": 5,
+    "unresolved_operations": 0,
+    "model_calls": 0
+  },
+  "viewportChecks": [
+    {
+      "width": 375,
+      "scrollWidth": 375
+    },
+    {
+      "width": 768,
+      "scrollWidth": 768
+    },
+    {
+      "width": 1280,
+      "scrollWidth": 1280
+    }
+  ],
+  "validation": {
+    "regressionSeenRed": true,
+    "tests": 179,
+    "typecheck": "passed",
+    "build": "passed",
+    "secretFindings": 0
+  },
+  "release": {
+    "status": "pending"
+  },
+  "fixture": {
+    "disposed": true,
+    "hostedChanges": 0
+  }
+}

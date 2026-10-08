@@ -22,6 +22,11 @@ function nextStep(plan:PlanSummary){
   if(plan.bookingState==='CONFIRMED')return 'See your booking';
   if(plan.bookingState==='OPEN')return 'Review the offer and check your share';
   if(plan.bookingState==='SETTLING')return 'Check your payment';
+  if(['EXPIRED','WITHDRAWN','SUPERSEDED','ABORTED','CANCELED'].includes(plan.bookingState??'')){
+   if(plan.bookingCleanup==='ACTION_REQUIRED')return 'An unresolved payment needs studio review — open the offer';
+   if(plan.bookingCleanup==='COMPLETE')return plan.isOrganizer?'Payment recovery complete — start another round':'Payment recovery complete — see your payment record';
+   if(['REQUIRED','RUNNING'].includes(plan.bookingCleanup??''))return 'Payment recovery is being checked — open the offer';
+  }
   return 'Check this offer’s payment status';
  }
  return 'Open your plan';

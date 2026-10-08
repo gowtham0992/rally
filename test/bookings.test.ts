@@ -216,9 +216,10 @@ test('withdrawn offer can reopen only after recovery; unresolved refunds retain 
  await assert.rejects(bookings.reopen(f.x.actors[0],reopen),/PAYMENT_RECOVERY_REQUIRED/);
  const captured=(await pool.query('SELECT user_id FROM offer_members WHERE offer_id=$1 ORDER BY ordinal LIMIT 1',[f.issued.offerId])).rows[0];
  assert.equal((await f.engine.participantStatus(f.issued.offerId,captured.user_id)).payment,'REFUND_IN_PROGRESS');
+ for(const actor of f.x.actors){const plan=(await intake.plans(actor)).plans.find(p=>p.groupId===f.x.g.groupId)!;assert.equal(plan.bookingCleanup,'RUNNING');assert.equal(plan.bookingState,'CANCELED');for(const forbidden of ['Private words','budgetMinor','payment_operations','provider_id','REFUND_IN_PROGRESS'])assert.ok(!JSON.stringify(plan).includes(forbidden));}
  f.provider.pendingKinds.delete('REFUND');const refund=(await pool.query("SELECT request_id FROM payment_operations WHERE offer_id=$1 AND kind='REFUND'",[f.issued.offerId])).rows[0];
  const observed=f.provider.results.get(refund.request_id)!;f.provider.results.set(refund.request_id,{...observed,outcome:'success',status:'COMPLETED'});
- await settle(f.engine,f.issued.offerId);await bookings.reopen(f.x.actors[0],reopen);
+ await settle(f.engine,f.issued.offerId);for(const actor of f.x.actors)assert.equal((await intake.plans(actor)).plans.find(p=>p.groupId===f.x.g.groupId)!.bookingCleanup,'COMPLETE');await bookings.reopen(f.x.actors[0],reopen);assert.equal((await intake.plans(f.x.actors[0])).plans.find(p=>p.groupId===f.x.g.groupId)!.bookingCleanup,null);
  const x=await setup(),r=await request(x),issued=await bookings.approve(merchant,approval(r)),engine=new PaymentEngine(pool,new SimulatedProvider());
  await engine.withdraw({commandId:randomUUID(),actorId:x.actors[1].userId,offerId:issued.offerId,offerHash:issued.offerHash});await engine.step(issued.offerId);
  await bookings.reopen(x.actors[0],{commandId:randomUUID(),groupId:x.g.groupId,offerId:issued.offerId,offerHash:issued.offerHash,expectedRevision:issued.revision,acknowledgesNewApprovals:true});
@@ -304,6 +305,7 @@ test('definitive refund rejection remains a studio exception with its amount and
  assert.equal(item.awaitingVerifiedRefundMinor,28800);assert.equal(rejected.state,'FAILED');assert.equal(rejected.canCheck,false);
  await assert.rejects(bookings.checkMerchantPayment(merchant,{commandId:randomUUID(),offerId:f.issued.offerId,operationId:op.id}),/PAYMENT_CHECK_UNAVAILABLE/);
  assert.equal((await pool.query('SELECT state FROM payment_operations WHERE id=$1',[op.id])).rows[0].state,'FAILED');
+ await f.engine.step(f.issued.offerId);assert.equal((await intake.plans(f.x.actors[0])).plans.find(p=>p.groupId===f.x.g.groupId)!.bookingCleanup,'ACTION_REQUIRED');
 });
 test('uncertain capture amounts never imply a completed charge or duplicate an authorization total',async()=>{
  const f=await funded();await f.engine.step(f.issued.offerId);

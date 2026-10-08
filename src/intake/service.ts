@@ -15,7 +15,7 @@ import {localFields} from '../planning/local-time.ts';
 export interface IntakeActor {userId:string;emailVerified:boolean;demoWorkspaceId?:string}
 export type CollectionNextStep='ASK_COLLECTOR'|'REVIEW_REQUEST'|'CHOOSE_COLLECTOR';
 export interface StudioDecline {reason:string;catalogVersionId:string;offeringId:string;slotId:string;activity:string;startAt:string;timezone:string}
-export interface PlanSummary {groupId:string;studioName:string;state:string;isOrganizer:boolean;targetSize:number;readyCount:number;ownReady:boolean;ownNoteNeedsReview:boolean;studioDeclined:boolean;studioReviewNeedsRefresh:boolean;noSharedSession:boolean;collectionNextStep:CollectionNextStep|null;deadline:string|null;activity:string|null;startAt:string|null;timezone:string|null;bookingState:string|null;offerId:string|null;members:{displayName:string;isYou:boolean}[]}
+export interface PlanSummary {groupId:string;studioName:string;state:string;isOrganizer:boolean;targetSize:number;readyCount:number;ownReady:boolean;ownNoteNeedsReview:boolean;studioDeclined:boolean;studioReviewNeedsRefresh:boolean;noSharedSession:boolean;collectionNextStep:CollectionNextStep|null;deadline:string|null;activity:string|null;startAt:string|null;timezone:string|null;bookingState:string|null;bookingCleanup:string|null;offerId:string|null;members:{displayName:string;isYou:boolean}[]}
 export class IntakeError extends Error {constructor(public code:string){super(code);}}
 const uuid=z.uuid(),name=z.string().trim().min(1).max(60);
 const createSchema=z.strictObject({commandId:uuid,targetSize:z.number().int().min(1).max(8),displayName:name,catalog:catalogSchema});
@@ -148,14 +148,14 @@ export class IntakeService {
     AND (to_jsonb(g)->>'demo_workspace_id') IS NOT DISTINCT FROM $2::text
     AND ($3::timestamptz IS NULL OR (g.created_at,g.id)<($3::timestamptz,$4::uuid))
     ORDER BY g.created_at DESC,g.id DESC LIMIT 21`,[actor.userId,actor.demoWorkspaceId??null,before?.createdAt??null,before?.id??null])).rows as PlanSummary[];
-   const plans=rows.slice(0,20).map(row=>({...row,collectionNextStep:null as CollectionNextStep|null,deadline:null as string|null,activity:null as string|null,startAt:null as string|null,timezone:null as string|null,bookingState:null as string|null,offerId:null as string|null}));
+   const plans=rows.slice(0,20).map(row=>({...row,collectionNextStep:null as CollectionNextStep|null,deadline:null as string|null,activity:null as string|null,startAt:null as string|null,timezone:null as string|null,bookingState:null as string|null,bookingCleanup:null as string|null,offerId:null as string|null}));
    const issued=plans.filter(p=>p.state==='OFFER_ISSUED').map(p=>p.groupId);
    if(issued.length){
-    const bookings=(await c.query(`SELECT DISTINCT ON (r.group_id) r.group_id,o.id,o.state,
+    const bookings=(await c.query(`SELECT DISTINCT ON (r.group_id) r.group_id,o.id,o.state,o.cleanup,
      os.snapshot->'candidate'->>'activity' AS activity,os.snapshot->'candidate'->>'startAt' AS start_at,os.snapshot->'candidate'->>'timezone' AS timezone,os.snapshot->>'deadline' AS deadline
      FROM merchant_requests r JOIN offers o ON o.id=r.approved_offer_id JOIN offer_snapshots os ON os.offer_id=o.id
      WHERE r.group_id=ANY($1::uuid[]) AND r.state='APPROVED' ORDER BY r.group_id,r.planning_revision DESC`,[issued])).rows;
-    for(const plan of plans){const booking=bookings.find(b=>b.group_id===plan.groupId);if(booking)Object.assign(plan,{activity:booking.activity,startAt:booking.start_at,timezone:booking.timezone,deadline:booking.deadline,bookingState:booking.state,offerId:booking.id});}
+    for(const plan of plans){const booking=bookings.find(b=>b.group_id===plan.groupId);if(booking)Object.assign(plan,{activity:booking.activity,startAt:booking.start_at,timezone:booking.timezone,deadline:booking.deadline,bookingState:booking.state,bookingCleanup:booking.cleanup,offerId:booking.id});}
    }
    const editable=plans.filter(p=>['CLOSED','MERCHANT_REVIEW'].includes(p.state)).map(p=>p.groupId);
    if(editable.length){
