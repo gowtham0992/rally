@@ -1,0 +1,55 @@
+{
+  "checkedAt": "2026-10-08T02:31:55.318Z",
+  "boundary": "Actual React components and services with isolated local PostgreSQL and preauthenticated fictional actors. No external model, email, PayPal or hosted test writes.",
+  "journey": [
+    "Studio declines the Thursday session as unavailable; no booking or payment is created",
+    "Your plans tells a returning friend that the studio declined",
+    "Group shows the exact declined activity, time and studio answer",
+    "Keyboard activation of Review my details opens the saved form with choices intact",
+    "Friend changes only their private budget; studio answer remains visible",
+    "Checking options keeps the studio answer and marks the declined Thursday choice",
+    "Organizer sees Ask the studio again for Thursday and Ask the studio for Friday",
+    "Keyboard activation sends a fresh Friday request; the old decline clears",
+    "Your plans returns to Waiting for the studio\u2019s answer",
+    "Studio receives the Friday request with public group facts and no private budgets or notes"
+  ],
+  "counts": {
+    "offers": 0,
+    "payments": 0,
+    "reservations": 0,
+    "model_calls": 0,
+    "requests": 2,
+    "declined_requests": 1,
+    "pending_requests": 1,
+    "studio_declines": 1
+  },
+  "viewportChecks": [
+    {
+      "width": 375,
+      "scrollWidth": 375
+    },
+    {
+      "width": 768,
+      "scrollWidth": 768
+    },
+    {
+      "width": 1280,
+      "scrollWidth": 1280
+    }
+  ],
+  "validation": {
+    "regressionSeenRed": true,
+    "tests": 178,
+    "mutationFaultsCaught": 62,
+    "typecheck": "passed",
+    "build": "passed",
+    "secretFindings": 0
+  },
+  "release": {
+    "status": "pending"
+  },
+  "fixture": {
+    "disposed": true,
+    "hostedChanges": 0
+  }
+}

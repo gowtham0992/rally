@@ -14,7 +14,8 @@ import {localFields} from '../planning/local-time.ts';
 // never supply actorId/verified. Managed Auth route binding remains a separate gate.
 export interface IntakeActor {userId:string;emailVerified:boolean;demoWorkspaceId?:string}
 export type CollectionNextStep='ASK_COLLECTOR'|'REVIEW_REQUEST'|'CHOOSE_COLLECTOR';
-export interface PlanSummary {groupId:string;studioName:string;state:string;isOrganizer:boolean;targetSize:number;readyCount:number;ownReady:boolean;ownNoteNeedsReview:boolean;collectionNextStep:CollectionNextStep|null;deadline:string|null;activity:string|null;startAt:string|null;timezone:string|null;bookingState:string|null;offerId:string|null;members:{displayName:string;isYou:boolean}[]}
+export interface StudioDecline {reason:string;catalogVersionId:string;offeringId:string;slotId:string;activity:string;startAt:string;timezone:string}
+export interface PlanSummary {groupId:string;studioName:string;state:string;isOrganizer:boolean;targetSize:number;readyCount:number;ownReady:boolean;ownNoteNeedsReview:boolean;studioDeclined:boolean;collectionNextStep:CollectionNextStep|null;deadline:string|null;activity:string|null;startAt:string|null;timezone:string|null;bookingState:string|null;offerId:string|null;members:{displayName:string;isYou:boolean}[]}
 export class IntakeError extends Error {constructor(public code:string){super(code);}}
 const uuid=z.uuid(),name=z.string().trim().min(1).max(60);
 const createSchema=z.strictObject({commandId:uuid,targetSize:z.number().int().min(1).max(8),displayName:name,catalog:catalogSchema});
@@ -105,10 +106,12 @@ export class IntakeService {
   // participant's confirmed fields/text enter this private response.
   const members=(await c.query('SELECT id,display_name AS "displayName",admitted,current_preference_id IS NOT NULL AS ready FROM planning_members WHERE group_id=$1 AND ($2 OR admitted) ORDER BY id',[groupId,g.state==='COLLECTING'])).rows;
   const issued=g.state==='OFFER_ISSUED'?(await c.query("SELECT r.approved_offer_id,o.state AS booking_state FROM merchant_requests r JOIN offers o ON o.id=r.approved_offer_id WHERE r.group_id=$1 AND r.state='APPROVED' ORDER BY r.planning_revision DESC LIMIT 1",[groupId])).rows[0]:null;
+  const hadDecline=g.state==='CLOSED'&&(await c.query("SELECT 1 FROM planning_events WHERE group_id=$1 AND kind='STUDIO_DECLINED' LIMIT 1",[groupId])).rowCount;
+  const decline=hadDecline?(await this.studioDeclines(c,[groupId]))[0]:null;
   return {groupId,revision:g.revision,state:g.state,targetSize:g.target_size,isOrganizer:g.organizer_id===actor.userId,
    memberId:own.id,displayName:own.display_name,preference:own.confirmed?preferenceSchema.parse(own.confirmed):null,optionalText:own.optional_text??null,wordingReviewed:Boolean(own.wording_bound),privateTextExpired:Boolean(own.private_text_expired),
    catalog:catalogSchema.parse(g.catalog),members,candidate:g.candidate,studioReviewPending:g.state==='MERCHANT_REVIEW',
-   offerId:issued?.approved_offer_id??null,bookingState:issued?.booking_state??null,studioDecline:g.state==='CLOSED'&&(await c.query("SELECT 1 FROM planning_events WHERE group_id=$1 AND revision=$2 AND kind='STUDIO_DECLINED'",[groupId,g.revision])).rowCount?(await c.query("SELECT to_jsonb(r)->>'decline_reason' AS reason FROM merchant_requests r WHERE r.group_id=$1 AND r.state='DECLINED' AND r.planning_revision=$2-1 LIMIT 1",[groupId,g.revision])).rows[0]??null:null,collectionRequests:await this.collectionProjection(c,actor,groupId),
+   offerId:issued?.approved_offer_id??null,bookingState:issued?.booking_state??null,studioDecline:decline?(({groupId:_,...answer})=>answer)(decline):null,collectionRequests:await this.collectionProjection(c,actor,groupId),
    organizerInvite:g.organizer_id===actor.userId?(await c.query("SELECT result->>'invite' AS invite FROM intake_commands WHERE actor_id=$1 AND result->>'groupId'=$2 AND result ? 'invite' LIMIT 1",[actor.userId,groupId])).rows[0]?.invite??null:null};
  });}
  async roster(actor:IntakeActor,groupId:string){this.actor(actor);uuid.parse(groupId);
@@ -132,7 +135,8 @@ export class IntakeService {
    // Never return a preference, invite, candidate or note in this list.
    const rows=(await c.query(`SELECT g.id AS "groupId",g.catalog->>'studioName' AS "studioName",g.state,
     g.organizer_id=$1 AS "isOrganizer",g.target_size AS "targetSize",own.current_preference_id IS NOT NULL AS "ownReady",
-    coalesce(g.state IN ('COLLECTING','CLOSED','MERCHANT_REVIEW') AND own_p.optional_text IS NOT NULL AND own_p.confirmed->>'extraRequirement'='MERCHANT_REVIEW_REQUIRED',false) AS "ownNoteNeedsReview",roster."readyCount",roster.members
+    coalesce(g.state IN ('COLLECTING','CLOSED','MERCHANT_REVIEW') AND own_p.optional_text IS NOT NULL AND own_p.confirmed->>'extraRequirement'='MERCHANT_REVIEW_REQUIRED',false) AS "ownNoteNeedsReview",
+    g.state='CLOSED' AND EXISTS(SELECT 1 FROM planning_events e WHERE e.group_id=g.id AND e.kind='STUDIO_DECLINED') AS "studioDeclined",roster."readyCount",roster.members
     FROM planning_groups g JOIN planning_members own ON own.group_id=g.id
     LEFT JOIN preference_revisions own_p ON own_p.id=own.current_preference_id AND own_p.member_id=own.id
     CROSS JOIN LATERAL (SELECT count(*) FILTER(WHERE m.current_preference_id IS NOT NULL)::int AS "readyCount",
@@ -161,7 +165,22 @@ export class IntakeService {
      plan.collectionNextStep=(['CHOOSE_COLLECTOR','REVIEW_REQUEST','ASK_COLLECTOR'] as const).find(action=>actions.includes(action))??null;
     }
    }
+   const declined=plans.filter(p=>p.studioDeclined).map(p=>p.groupId);
+   if(declined.length){const answers=await this.studioDeclines(c,declined);for(const plan of plans)plan.studioDeclined=answers.some(answer=>answer.groupId===plan.groupId);}
    return {plans,nextCursor:rows.length>20?plans.at(-1)!.groupId:null};
+  });
+ }
+ private async studioDeclines(c:pg.Pool|pg.PoolClient,groupIds:string[]):Promise<(StudioDecline&{groupId:string})[]>{
+  // A friend edit does not erase the studio's answer. Only the latest request
+  // counts, and its public session facts come from the frozen catalog version.
+  const rows=(await c.query(`SELECT DISTINCT ON (r.group_id) r.group_id AS "groupId",r.state,to_jsonb(r)->>'decline_reason' AS reason,
+   r.catalog_version_id AS "catalogVersionId",r.offering_id AS "offeringId",r.slot_id AS "slotId",v.catalog
+   FROM merchant_requests r JOIN merchant_catalog_versions v ON v.studio_id=r.studio_id AND v.version_id=r.catalog_version_id
+   WHERE r.group_id=ANY($1::uuid[]) ORDER BY r.group_id,r.planning_revision DESC`,[groupIds])).rows;
+  return rows.filter(row=>row.state==='DECLINED').map(({state:_,catalog:value,...answer})=>{
+   const catalog=catalogSchema.parse(value),offering=catalog.offerings.find(o=>o.id===answer.offeringId),slot=catalog.slots.find(s=>s.id===answer.slotId);
+   if(!offering||!slot)throw new IntakeError('INVALID_CATALOG');
+   return {...answer,activity:offering.name,startAt:slot.startAt,timezone:catalog.timezone};
   });
  }
  async closeRoster(actor:IntakeActor,value:unknown){const p=closeSchema.parse(value);return this.recordCommand(actor,p.commandId,{kind:'CLOSE',...p},async c=>{
