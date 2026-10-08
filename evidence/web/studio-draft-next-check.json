@@ -1,0 +1,51 @@
+{
+  "checkedAt": "2026-10-08T04:54:28.277738+00:00",
+  "boundary": "Actual React hook and studio record components with isolated PostgreSQL and preauthenticated fictional actors. Next navigation and links use a local browser adapter. Sign-in placeholder sends no email; identity revalidation uses the real verified-session binder. Provider observations simulated; no PayPal, model, real-money or hosted test calls.",
+  "regression": "Old expired-save sign-in link navigated the same document and lost the report fields; expired GET refresh also redirected away. Both observed before the fix.",
+  "journey": [
+    "Enter unsaved support-case source, fictional reference and pending outcome",
+    "Expired POST preserves all fields, pauses saving and labels payment status as last loaded",
+    "Sign-in link opens another tab while original document retains draft",
+    "Different account rejected by actual immutable viewer binding; draft kept and saving disabled",
+    "503 unavailable refresh retains draft and keeps saving disabled",
+    "Expired GET on an already-open record retains document and draft",
+    "Original account refresh resumes exact draft; save creates one report and one audit event",
+    "Report save leaves booking, financial operations, preferences and non-report payment events byte-equivalent",
+    "Default hook expired refresh still redirects to login",
+    "Opted-in expired first load still redirects before any private data loads",
+    "Second unsaved reference remains visible but disabled after simulated worker resolves payment; no second report created"
+  ],
+  "simulatedCounts": {
+    "studioReports": 1,
+    "studioReportAuditEvents": 1,
+    "captures": 6,
+    "pendingCaptures": 0,
+    "modelCalls": 0,
+    "hostedTestWrites": 0
+  },
+  "viewportChecks": [
+    {
+      "width": 375,
+      "scrollWidth": 375
+    },
+    {
+      "width": 1280,
+      "layoutVisuallyChecked": true
+    }
+  ],
+  "validation": {
+    "tests": 179,
+    "typecheck": "passed",
+    "build": "passed",
+    "secretFindings": 0,
+    "applicationConsoleErrors": 0,
+    "regressionObservedBeforeFix": true
+  },
+  "fixture": {
+    "disposed": true,
+    "hostedChanges": 0
+  },
+  "release": {
+    "status": "pending"
+  }
+}

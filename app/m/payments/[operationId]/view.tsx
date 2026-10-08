@@ -19,24 +19,25 @@ function paymentStatus(data:RecordPage){
  return 'Outcome needs verification';
 }
 export default function PaymentRecord({operationId,cursor}:{operationId:string;cursor:string|null}){
- const path=`/m/payments/${operationId}`,{data,loading,error,refresh}=useResource<RecordPage>(`/api/studio/payment-evidence?operationId=${operationId}${cursor?`&cursor=${encodeURIComponent(cursor)}`:''}`,path,0,true);
+ const path=`/m/payments/${operationId}`,{data,loading,error,sessionExpired,pauseForSignIn,refresh}=useResource<RecordPage>(`/api/studio/payment-evidence?operationId=${operationId}${cursor?`&cursor=${encodeURIComponent(cursor)}`:''}`,path,0,true,undefined,true);
  const [source,setSource]=useState<Source>('TRANSACTION'),[reference,setReference]=useState(''),[outcome,setOutcome]=useState<Outcome>('UNRESOLVED');
- const [draftState,setDraftState]=useState<string|null>(null),[saving,setSaving]=useState(false),[message,setMessage]=useState(''),[actionError,setActionError]=useState(''),[signIn,setSignIn]=useState(false);
+ const [draftState,setDraftState]=useState<string|null>(null),[saving,setSaving]=useState(false),[message,setMessage]=useState(''),[actionError,setActionError]=useState('');
  const busy=useRef(false),command=useRef<{id:string;key:string}|null>(null);
  const stale=Boolean(data&&draftState&&draftState!==data.state);
+ const readError=error.includes('switched friends')?'You signed into a different account in another tab. Return to the original studio account, then try again to keep this draft.':error;
  function editing(){if(!draftState&&data)setDraftState(data.state);setMessage('');setActionError('');}
  async function save(event:FormEvent<HTMLFormElement>){
-  event.preventDefault();if(busy.current||!data?.canRecord||stale||loading||error)return;
+  event.preventDefault();if(busy.current||!data?.canRecord||stale||loading||error||sessionExpired)return;
   const normalized=reference.trim().toUpperCase();
   if(!/^[A-Z0-9][A-Z0-9-]{2,63}$/.test(normalized)){setActionError('Use the PayPal reference: 3–64 letters, numbers or hyphens.');return;}
   const payload={operationId,expectedOperationState:draftState??data.state,source,reference:normalized,reportedOutcome:outcome},key=JSON.stringify(payload);
   if(command.current?.key!==key)command.current={id:crypto.randomUUID(),key};
-  busy.current=true;setSaving(true);setMessage('');setActionError('');setSignIn(false);
+  busy.current=true;setSaving(true);setMessage('');setActionError('');
   try{
    const response=await apiFetch('/api/studio/payment-evidence',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({commandId:command.current.id,...payload})});
    if(!response.ok){
     const code=await response.json().catch(()=>({error:''}));
-    if(response.status===401){setSignIn(true);throw new Error('Your session expired. Sign in again to save your record.');}
+    if(response.status===401){pauseForSignIn();throw new Error('Your studio report has not been saved.');}
     if(code.error==='PAYMENT_EVIDENCE_LIMIT')throw new Error('This payment has reached its record limit. Your draft has not been saved.');
     if(response.status===409)throw new Error('This payment changed. Refresh its status before saving. Your draft is still here.');
     if(response.status===429)throw new Error('Please wait a minute before trying again. Your draft is still here.');
@@ -48,9 +49,9 @@ export default function PaymentRecord({operationId,cursor}:{operationId:string;c
   finally{busy.current=false;setSaving(false);}
  }
  return <main className="studio-layout payment-record"><section className="studio-heading"><Link className="back-link" href="/m/exceptions">← Payments to check</Link><p className="eyebrow">Your studio</p><h1 className="page-title">Payment record.</h1>{data&&<><p className="muted">{data.memberName} · {kinds[data.kind]}</p><p className="field-help">{data.activity}</p><Link className="text-button" href={`/offers/${data.offerId}`}>View booking ↗</Link></>}</section>
- <section className="card" aria-label="Studio payment record"><div className="card-top"><p className="eyebrow">{error&&data?"Last loaded payment status":"Current payment status"}</p><button className="text-button" onClick={refresh} disabled={loading||saving}>Refresh status</button></div>
+ <section className="card" aria-label="Studio payment record"><div className="card-top"><p className="eyebrow">{(error||sessionExpired)&&data?"Last loaded payment status":"Current payment status"}</p><button className="text-button" onClick={refresh} disabled={loading||saving}>Refresh status</button></div>
  {loading&&!data&&<p aria-busy="true">Opening this payment…</p>}
- {error&&<><p className="error" role="alert">{error}</p><button className="secondary" disabled={loading||saving} onClick={refresh}>Try again</button></>}
+ {sessionExpired?<section className="notice" aria-label="Studio sign-in paused"><h3>Keep your draft here.</h3><p role="status">{readError||'Your report fields are still here. Sign in in another tab, then check this record before saving.'}</p><a className="secondary" target="_blank" rel="noopener" href={`/login?next=${encodeURIComponent(path)}`}>Sign in again in another tab ↗</a><button className="text-button keep-choices" disabled={loading||saving} onClick={refresh}>{loading?'Checking…':'Check my sign-in, keep my draft'}</button></section>:error&&<><p className="error" role="alert">{readError}</p><button className="secondary" disabled={loading||saving} onClick={refresh}>Try again</button></>}
  {data&&<><h2 className="payment-record-status">{paymentStatus(data)}</h2><p className="field-help">{money(data.amountMinor)} · {kinds[data.kind].toLowerCase()} for {data.memberName}</p>
  <p className="field-help">{data.state==='SUCCEEDED'?'Verified from PayPal.':data.state==='FAILED'?'This operation has a failed result. Review its PayPal record for the next step.':'A studio report does not confirm a payment or refund.'}</p>
  <details className="resolution-reference"><summary>Payment references</summary><p>PayPal: {data.providerReference??'Not available yet'}</p>{data.originalProviderReference&&<p>Original {data.kind==='REFUND'?'payment':data.kind==='AUTHORIZE'?'checkout':'authorization'}: {data.originalProviderReference}</p>}<p>Rally: {operationId}</p></details>
@@ -58,7 +59,7 @@ export default function PaymentRecord({operationId,cursor}:{operationId:string;c
  {data.records.length?<ol>{data.records.map(record=><li key={record.id}><p className="eyebrow">Studio report · Unverified</p><h4>Reported {outcomes[record.reportedOutcome].toLowerCase()}</h4><p className="evidence-ref">{record.source==='TRANSACTION'?'Transaction':'Support case'} · {record.reference}</p><p className="field-help">{localDate(record.recordedAt,data.timezone)} · {data.timezone}</p></li>)}</ol>:<p className="muted">No studio reports yet.</p>}
  <nav className="queue-navigation" aria-label="Studio report pages">{cursor&&<Link className="text-button" href={path}>Back to newest reports</Link>}{data.nextCursor&&<Link className="secondary" href={`${path}?cursor=${data.nextCursor}`}>Older reports →</Link>}</nav></section>
  {(data.canRecord||reference)&&<section className="payment-observation" aria-label="Record a studio observation"><h3>What did you find?</h3><p className="muted">After reviewing PayPal, save the transaction or support-case reference and the outcome it shows.</p>
- <form onSubmit={save}><fieldset disabled={saving||loading||Boolean(error)||!data.canRecord}><label htmlFor="evidence-source">Where you checked</label><select id="evidence-source" value={source} onChange={e=>{editing();setSource(e.target.value as Source);}}><option value="TRANSACTION">PayPal transaction</option><option value="SUPPORT_CASE">PayPal support case</option></select>
+ <form onSubmit={save}><fieldset disabled={saving||loading||Boolean(error)||sessionExpired||!data.canRecord}><label htmlFor="evidence-source">Where you checked</label><select id="evidence-source" value={source} onChange={e=>{editing();setSource(e.target.value as Source);}}><option value="TRANSACTION">PayPal transaction</option><option value="SUPPORT_CASE">PayPal support case</option></select>
  <label htmlFor="evidence-reference">{source==='TRANSACTION'?'Transaction reference':'Support-case reference'}</label><input id="evidence-reference" value={reference} maxLength={64} required autoComplete="off" autoCapitalize="characters" spellCheck={false} aria-describedby="reference-help" onChange={e=>{editing();setReference(e.target.value);}}/><p id="reference-help" className="field-help">Only the reference. Leave out names, emails and private notes.</p>
  <label htmlFor="evidence-outcome">Outcome shown in PayPal</label><select id="evidence-outcome" value={outcome} onChange={e=>{editing();setOutcome(e.target.value as Outcome);}}>{Object.entries(outcomes).map(([value,label])=><option key={value} value={value}>{label}</option>)}</select>
  <p className="field-help">Saved as an unverified studio report. This does not charge, refund or change payment status. Records cannot be edited or removed.</p>
@@ -67,6 +68,6 @@ export default function PaymentRecord({operationId,cursor}:{operationId:string;c
  <button className="button" disabled={stale||!reference.trim()}>{saving?'Saving record…':'Save studio report'}</button></fieldset></form></section>}
  {!data.canRecord&&<p className="field-help">{data.recordLimitReached?'This payment has reached its record limit. Previous reports stay in the history.':'New reports are available while a payment needs resolution. Previous reports stay in the history.'}</p>}
 </>}
- {message&&<p role="status" className="saved-note">{message}</p>}{actionError&&<p role="alert" className="error">{actionError}</p>}{signIn&&<Link className="secondary" href={`/login?next=${encodeURIComponent(path)}`}>Sign in again →</Link>}
+ {message&&<p role="status" className="saved-note">{message}</p>}{actionError&&<p role="alert" className="error">{actionError}</p>}
  </section></main>;
 }
