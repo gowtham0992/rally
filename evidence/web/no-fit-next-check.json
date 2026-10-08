@@ -41,7 +41,22 @@
     "secretFindings": 0
   },
   "release": {
-    "status": "pending"
+    "status": "live",
+    "runtimeCommit": "5f1fabce1a537846e5e3fc06c0e8e993bb6db445",
+    "deploymentId": "dep-db3gp1t9fdbs73dnri8g",
+    "url": "https://rally.gowthamsarveswaran.com",
+    "freePreview": true,
+    "repositoryPrivate": true,
+    "healthReady": true,
+    "protectedBookingAndPaymentHistoryUnchanged": true,
+    "unresolvedPayments": 0,
+    "originalBooking": {
+      "state": "CONFIRMED",
+      "reservation": "BOOKED",
+      "successfulCaptures": 6
+    },
+    "schemaMigrations": 14,
+    "hostedTestWrites": 0
   },
   "fixture": {
     "disposed": true,
