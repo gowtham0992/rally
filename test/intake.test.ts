@@ -225,3 +225,19 @@ test('original invite returns admitted members after closure but rejects newcome
  await pool.query('UPDATE planning_members SET admitted=false WHERE id=$1',[x.joined.memberId]);
  await assert.rejects(service.join(x.b,{commandId:randomUUID(),invite:x.g.invite,displayName:'Excluded'}),/ROSTER_CLOSED/);
 });
+
+test('returning plans shows no shared session without exposing individual constraints and clears after an edit',async()=>{
+ const x=await ready();
+ const changed=await service.save(x.b,{commandId:randomUUID(),groupId:x.g.groupId,expectedRevision:x.closed.revision,expectedPreferenceId:x.second.preferenceId,preference:{...pref,availableSlotIds:['fri-evening']},optionalText:null});
+ assert.equal((await service.plan(x.a,x.g.groupId)).result.state,'INFEASIBLE');
+ for(const actor of [x.a,x.b]){
+  const summary=(await service.plans(actor)).plans.find(p=>p.groupId===x.g.groupId)!;
+  assert.equal(summary.noSharedSession,true);
+  for(const forbidden of ['Private sentence','budgetMinor','availableSlotIds','optionalText','preferenceId','thu-evening','fri-evening'])assert.ok(!JSON.stringify(summary).includes(forbidden));
+ }
+ const saved=await service.save(x.b,{commandId:randomUUID(),groupId:x.g.groupId,expectedRevision:changed.revision,expectedPreferenceId:changed.preferenceId,preference:pref,optionalText:null});
+ assert.equal((await service.plans(x.a)).plans.find(p=>p.groupId===x.g.groupId)!.noSharedSession,false);
+ assert.equal((await service.participantContext(x.b,x.g.groupId)).preference?.revisionId,saved.preferenceId);
+ assert.equal((await service.plan(x.a,x.g.groupId)).result.state,'CANDIDATE_READY');
+ assert.equal((await service.plans(x.b)).plans.find(p=>p.groupId===x.g.groupId)!.noSharedSession,false);
+});

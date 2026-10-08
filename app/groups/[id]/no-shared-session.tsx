@@ -12,7 +12,7 @@ export default function NoSharedSession({groupId,studioName,isOrganizer,disabled
  }
  return <div className="no-shared-session">
   <h3>No published session works with everyone’s saved choices.</h3>
-  <p>Your choices are unchanged. No studio request has been sent.</p>
+  <p>Your choices are unchanged. There’s no current studio request.</p>
   <p className="field-help">{isOrganizer?'Check in with your friends about another date or activity, or a different outing.':'Ask your organizer about another date or activity, or a different outing.'} Keep any must-haves; you don’t need to share your spending limit.</p>
   <div className="fit-actions"><button type="button" className="text-button" disabled={disabled} onClick={onReview}>Review my choices</button><button type="button" className="text-button" disabled={disabled} onClick={()=>setKept(true)}>Keep my choices</button></div>
   {kept&&<p className="field-help" role="status">Your choices are unchanged. No payment approval is needed for this planning round.</p>}

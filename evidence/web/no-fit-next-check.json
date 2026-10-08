@@ -1,0 +1,51 @@
+{
+  "checkedAt": "2026-10-08T03:21:02.686Z",
+  "boundary": "Actual React components and services with isolated local PostgreSQL and preauthenticated fictional actors. No external model, email, PayPal or hosted test writes.",
+  "journey": [
+    "Your plans gives organizer and friend clear no-shared-session cues",
+    "Group headline explains the shared result before any personal preview",
+    "Keep my choices leaves all six saved preference revisions unchanged",
+    "Displayed group check-in includes only public studio context and an authenticated group link",
+    "Keyboard review opens Jordan\u2019s saved Friday choice, private budget and collection requirement intact",
+    "Jordan adds Thursday explicitly; all other friends\u2019 exact saved preferences remain unchanged",
+    "Old shared result clears after the edit; Taylor rechecks fitting sessions",
+    "A Thursday hand-build session fits and no-shared-session index cue clears"
+  ],
+  "counts": {
+    "preferences": 7,
+    "offers": 0,
+    "requests": 0,
+    "payments": 0,
+    "model_calls": 0
+  },
+  "viewportChecks": [
+    {
+      "width": 375,
+      "scrollWidth": 375
+    },
+    {
+      "width": 768,
+      "scrollWidth": 768
+    },
+    {
+      "width": 1280,
+      "scrollWidth": 1280
+    }
+  ],
+  "groupResultBeforePrivatePreview": true,
+  "validation": {
+    "regressionSeenRed": true,
+    "tests": 179,
+    "typecheck": "passed",
+    "build": "passed",
+    "secretFindings": 0
+  },
+  "release": {
+    "status": "pending"
+  },
+  "fixture": {
+    "disposed": true,
+    "hostedChanges": 0
+  },
+  "screenshotsNote": "Local UI proof; group captures precede the final wording clarification that there is no current studio request in this round."
+}
