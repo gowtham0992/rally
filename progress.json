@@ -1,5 +1,5 @@
 {
-  "status": "studio_review_verified_awaiting_deployment",
+  "status": "studio_review_recovery_verified",
   "scope": "Product only. The owner explicitly stopped demo and submission work on 2026-10-03; complete Rally functionality, correctness and UI polish.",
   "completed_local_work": [
     "Isolated Git repository, MIT license, pinned Node/TypeScript dependencies and reproducible payment setup guide",
@@ -54,7 +54,8 @@
     "Deployed product fixes at 00967e2 to the existing Render Free service: live in 79 seconds and HTTPS database readiness returned 200/ready:true. No configuration or schema changes and no hosted demo or payment steps.",
     "Product-only completion slice: authenticated private Your plans with membership/workspace isolation, stable bounded pagination, normal sign-out, login return and mobile navigation. Corrected group summaries for expired, withdrawn, canceled, aborted and unresolved offers. 164 local tests, 47 prior caught mutations, typecheck and production build passed. Actual local normal-account empty/list/pagination/reload/ownership-error/logout checks completed. No demo, model, PayPal, email, submission or publication work.",
     "Concrete private fit check: public studio context before sign-in, combined activity requirements preserving legacy choices, immediate owner-only possibilities, collection needs saved before choosing a friend, complete grouped activity/date options, and truthful private group-conflict handling. Edited notes remain pending on changed private details. Verified locally and deployed on the existing Free preview without new hosted flows.",
-    "Studio request review recovery verified locally and pushed as f2fd982: same-request refresh and expired sign-in preserve four confirmations and decline choice, decisions pause until the original account rechecks, changed planning invalidates old review, and lost approval/decline responses recover verified single decisions. Actual React components with real isolated services, 179 tests/typecheck/build, scan0 and hosted read-only precheck passed. Disposable schemas/container removed. Existing preview remains on 2e14e98; Google-to-Render login requires specific approval for sharing account name/profile/email before deployment. No new email/model/PayPal calls or hosted test writes; real-human usability remains unobserved."
+    "Studio request review recovery verified locally and pushed as f2fd982: same-request refresh and expired sign-in preserve four confirmations and decline choice, decisions pause until the original account rechecks, changed planning invalidates old review, and lost approval/decline responses recover verified single decisions. Actual React components with real isolated services, 179 tests/typecheck/build, scan0 and hosted read-only precheck passed. Disposable schemas/container removed. Existing preview remains on 2e14e98; Google-to-Render login requires specific approval for sharing account name/profile/email before deployment. No new email/model/PayPal calls or hosted test writes; real-human usability remains unobserved.",
+    "With the owner\u2019s specific Google-to-Render sign-in sharing approval, deployed studio review recovery f2fd982 on the existing Render Free service (dep-db4pv0t9fdbs73ag3re0, Live in 90 seconds). Read-only verified-TLS postdeploy audit matched all protected precheck fingerprints; original booking remains CONFIRMED/BOOKED with six successful captures, zero unresolved payments and fourteen migrations. HTTPS readiness passed and unauthenticated studio request reads returned 401 SIGN_IN_REQUIRED/no-store. No hosted test writes, new provider/model calls, schema changes or paid services; actual human usability remains unobserved."
   ],
   "evidence": {
     "scope": "Local service tests use real PostgreSQL and a simulated provider; separate reviewed records prove three actual PayPal sandbox scenarios.",
@@ -746,10 +747,16 @@
       "new_model_or_paypal_calls": 0,
       "schema_migrations_added": 0,
       "hosted_test_writes": 0,
-      "release_status": "awaiting Render sign-in approval",
+      "release_status": "live",
       "verified_source_commit": "f2fd982140b6aaa803c87bb380bedf1cece4b746",
       "previous_live_runtime_commit": "2e14e987bc0e50974b208ac993c798ab591a68c5",
-      "hosted_precheck_passed": true
+      "hosted_precheck_passed": true,
+      "runtime_commit": "f2fd982140b6aaa803c87bb380bedf1cece4b746",
+      "deploy_id": "dep-db4pv0t9fdbs73ag3re0",
+      "protected_booking_and_payment_history_preserved": true,
+      "hosting_plan": "existing Render Free",
+      "health_ready": true,
+      "sign_in_sharing_explicitly_approved": true
     }
   },
   "external_dependencies": [
@@ -772,9 +779,7 @@
       "state": "Approved Free Render preview deployed; exact Cloudflare subdomain/HTTPS and private Cron verified for idle transport. Repository remains private; public publication audit is pending."
     }
   ],
-  "remaining_requirements": [
-    "Deploy verified studio review recovery after specifically approved Google-to-Render sign-in."
-  ],
+  "remaining_requirements": [],
   "next_independent_slice": null,
   "release_restrictions": [
     "Product is scoped to the demonstration studio and PayPal sandbox. Live merchant operations and live money remain outside authorization.",

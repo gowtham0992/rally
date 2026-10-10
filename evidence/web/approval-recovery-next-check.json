@@ -57,7 +57,7 @@
     "hostedChanges": 0
   },
   "release": {
-    "status": "awaiting Render sign-in approval",
+    "status": "live",
     "previousRuntimeCommit": "2e14e987bc0e50974b208ac993c798ab591a68c5",
     "schemaMigrationsAdded": 0,
     "runtimeCommit": "f2fd982140b6aaa803c87bb380bedf1cece4b746",
@@ -71,6 +71,28 @@
       "reservation_state": "BOOKED",
       "captures": 6
     },
-    "approvalBlock": "Automatic approval review requires explicit permission for Google to share name, profile picture and account email with Render. Existing service remains on its previous verified runtime."
+    "deploymentId": "dep-db4pv0t9fdbs73ag3re0",
+    "url": "https://rally.gowthamsarveswaran.com",
+    "freePreview": true,
+    "healthReady": true,
+    "protectedBookingAndPaymentHistoryUnchanged": true,
+    "unresolvedPayments": 0,
+    "hostedTestWrites": 0,
+    "deployDurationSeconds": 90,
+    "observedAt": "2026-10-10T02:16:06.411Z",
+    "restrictedTlsVerified": true,
+    "signInSharingExplicitlyApproved": true,
+    "originalBooking": {
+      "state": "CONFIRMED",
+      "reservation": "BOOKED",
+      "successfulCaptures": 6
+    },
+    "unauthenticatedStudioRequestApi": {
+      "status": 401,
+      "error": "SIGN_IN_REQUIRED",
+      "cacheControl": "no-store"
+    },
+    "previousRuntimeIsRollbackTarget": true,
+    "rollbackExercisedForThisRelease": false
   }
 }
