@@ -55,7 +55,7 @@
     "installedGuide": "node_modules/next/dist/docs/01-app/03-api-reference/01-directives/use-client.md"
   },
   "release": {
-    "status": "verified awaiting deployment",
+    "status": "live",
     "previousRuntimeCommit": "f2fd982140b6aaa803c87bb380bedf1cece4b746",
     "schemaMigrationsAdded": 0,
     "repositoryPrivate": true,
@@ -66,6 +66,29 @@
       "reservation_state": "BOOKED",
       "captures": 6
     },
-    "schemaMigrations": 14
+    "schemaMigrations": 14,
+    "runtimeCommit": "b0b029a9f380e87b1e54dc16467d3bcf9b3523c0",
+    "deploymentId": "dep-db4q5qid0e5s73d3kpq0",
+    "url": "https://rally.gowthamsarveswaran.com",
+    "freePreview": true,
+    "deployDurationSeconds": 79,
+    "healthReady": true,
+    "observedAt": "2026-10-10T02:30:49.664Z",
+    "protectedBookingAndPaymentHistoryUnchanged": true,
+    "unresolvedPayments": 0,
+    "restrictedTlsVerified": true,
+    "originalBooking": {
+      "state": "CONFIRMED",
+      "cleanup": "NOT_REQUIRED",
+      "reservation_state": "BOOKED",
+      "captures": 6
+    },
+    "unauthenticatedOfferApi": {
+      "status": 401,
+      "error": "SIGN_IN_REQUIRED",
+      "cacheControl": "no-store"
+    },
+    "previousRuntimeIsRollbackTarget": true,
+    "rollbackExercisedForThisRelease": false
   }
 }
