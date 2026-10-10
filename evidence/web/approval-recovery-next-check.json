@@ -1,0 +1,76 @@
+{
+  "observedAt": "2026-10-10T02:04:28.903516+00:00",
+  "scope": "Studio review continuity and safe decisions; product only.",
+  "boundary": "Actual React components and real services in disposable local PostgreSQL schemas. Fictional preauthenticated accounts; native link/router adapters. No hosted group exercise, email, AI or PayPal call.",
+  "beforeFix": "An expired approval leaves no sign-in link; refreshing the same unchanged request clears all four confirmations.",
+  "journeys": [
+    "Successful refresh keeps confirmations and the selected decline reason for the same request revision.",
+    "Expired approval and decline POSTs keep the review and pause decisions.",
+    "Expired GET on an already loaded review keeps the document; first-load expiry redirects before any private review loads.",
+    "Sign-in opens in a separate tab while the original review stays open.",
+    "GET 503 keeps the review and pauses both decisions.",
+    "Different account rejected by actual immutable viewer binding on GET and mutation; original account refresh restores the same review.",
+    "A changed saved preference makes the old request stale and removes decision controls.",
+    "A fresh request starts with four unchecked confirmations.",
+    "A lost approval response plus retry retains one command identity and produces exactly one offer, reservation and offer-open event.",
+    "A lost decline response is recovered by refresh, showing the saved CANNOT_DELIVER decision with no new booking or payment.",
+    "Native keyboard disclosure and Enter submission exercised."
+  ],
+  "localCounts": {
+    "offers": 1,
+    "reservations": 1,
+    "offerMembers": 6,
+    "offerOpenEvents": 1,
+    "paymentOperations": 0,
+    "declines": 1,
+    "externalProviderCalls": 0,
+    "modelCalls": 0,
+    "hostedTestWrites": 0
+  },
+  "viewportChecks": [
+    {
+      "width": 375,
+      "scrollWidth": 375
+    },
+    {
+      "width": 1280,
+      "layoutVisuallyChecked": true
+    }
+  ],
+  "validation": {
+    "tests": 179,
+    "typecheck": "passed",
+    "productionBuild": "passed",
+    "sourceSecretFindings": 0,
+    "applicationConsoleErrors": 0,
+    "regressionObservedBeforeFix": true,
+    "newAutomatedUiTests": 0
+  },
+  "verificationCorrection": "The first local decline adapter passed its action discriminator into a strict service schema. Retested using an adapter that strips action exactly as the production route does; the source API was already correct.",
+  "limits": [
+    "Simulated checks do not establish real-human usability.",
+    "No new hosted group, provider payment, model inference or merchant commitment.",
+    "Review choices remain in this open document; a full page reload or closed tab requires a fresh review."
+  ],
+  "fixture": {
+    "disposed": true,
+    "hostedChanges": 0
+  },
+  "release": {
+    "status": "awaiting Render sign-in approval",
+    "previousRuntimeCommit": "2e14e987bc0e50974b208ac993c798ab591a68c5",
+    "schemaMigrationsAdded": 0,
+    "runtimeCommit": "f2fd982140b6aaa803c87bb380bedf1cece4b746",
+    "repositoryPrivate": true,
+    "precheckHealthReady": true,
+    "precheckUnresolvedPayments": 0,
+    "schemaMigrations": 14,
+    "precheckOriginalBooking": {
+      "state": "CONFIRMED",
+      "cleanup": "NOT_REQUIRED",
+      "reservation_state": "BOOKED",
+      "captures": 6
+    },
+    "approvalBlock": "Automatic approval review requires explicit permission for Google to share name, profile picture and account email with Render. Existing service remains on its previous verified runtime."
+  }
+}
