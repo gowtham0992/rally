@@ -4,7 +4,7 @@ import {useRef,useState} from 'react';
 import {useRouter} from 'next/navigation';
 import type {BookingService} from '../../../src/bookings/service';
 type Offer=Awaited<ReturnType<BookingService['offer']>>;
-export default function Changes({id,offer:o,disabled,refresh}:{id:string;offer:Offer;disabled:boolean;refresh:()=>void}){
+export default function Changes({id,offer:o,disabled,pauseForSignIn,refresh}:{id:string;offer:Offer;disabled:boolean;pauseForSignIn:()=>void;refresh:()=>void}){
  const router=useRouter(),[withdrawAgreed,setWithdraw]=useState(false),[refundAgreed,setRefund]=useState(false),[reopenAgreed,setReopen]=useState(false),[busy,setBusy]=useState(false),[error,setError]=useState('');
  const command=useRef<{action:string;id:string}|null>(null);
  async function act(action:'WITHDRAW'|'REQUEST_CANCELLATION'|'MERCHANT_CANCEL'|'REOPEN'){
@@ -13,9 +13,9 @@ export default function Changes({id,offer:o,disabled,refresh}:{id:string;offer:O
   try{
    const shared={commandId:command.current.id,offerHash:o.offerHash};
    const response=await apiFetch(action==='REOPEN'?`/api/groups/${o.snapshot.groupId}`:`/api/offers/${id}`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(action==='REOPEN'?{action,payload:{...shared,groupId:o.snapshot.groupId,offerId:id,expectedRevision:o.planningRevision,acknowledgesNewApprovals:true}}:{action,...shared,...(action==='WITHDRAW'?{agreesToWithdraw:true}:action==='MERCHANT_CANCEL'?{agreesToFullRefund:true}:{})})});
-   const result=await response.json();if(!response.ok)throw new Error(result.error==='PAYMENT_RECOVERY_REQUIRED'?'Payments are still being recovered. Wait for the final status before starting again.':['STALE_OFFER','STALE_PLANNING','OFFER_CLOSED','CANCELLATION_REVIEW_REQUIRED'].includes(result.error)?'The booking changed. Refresh its status before continuing.':'This request did not finish. Your confirmation is still here; retry the same request.');
+   if(response.status===401){pauseForSignIn();return;}const result=await response.json();if(!response.ok)throw new Error(result.error==='PAYMENT_RECOVERY_REQUIRED'?'Payments are still being recovered. Wait for the final status before starting again.':['STALE_OFFER','STALE_PLANNING','OFFER_CLOSED','CANCELLATION_REVIEW_REQUIRED'].includes(result.error)?'The booking changed. Refresh its status before continuing.':'We couldn’t check whether this change saved. Your confirmation is still here; retry or refresh to check the same request.');
    command.current=null;if(action==='REOPEN')router.push(`/groups/${o.snapshot.groupId}`);else refresh();
-  }catch(e){setError(e instanceof Error?e.message:'Connection interrupted. Retry the same request.');}finally{setBusy(false);}
+  }catch(e){if(e instanceof Error&&e.message.includes('switched friends')){refresh();return;}setError(e instanceof Error?e.message:'Connection interrupted. Retry the same request.');}finally{setBusy(false);}
  }
  const live=['OPEN','SETTLING','CONFIRMED'].includes(o.booking);
  return <section className="booking-changes" aria-label="Booking changes">

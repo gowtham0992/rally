@@ -4,15 +4,15 @@ import {useEffect,useRef,useState} from 'react';
 import type {PaymentEngine} from '../../../src/payments/engine';
 import {money} from '../../lib/format';
 type Status=Awaited<ReturnType<PaymentEngine['participantStatus']>>;
-export default function Checkout({offerId,offerHash,status:s,disabled,returnState,refresh}:{offerId:string;offerHash:string;status:Status;disabled:boolean;returnState:'returned'|'canceled'|null;refresh:()=>void}){
+export default function Checkout({offerId,offerHash,status:s,disabled,returnState,pauseForSignIn,refresh}:{offerId:string;offerHash:string;status:Status;disabled:boolean;returnState:'returned'|'canceled'|null;pauseForSignIn:()=>void;refresh:()=>void}){
  const [agreed,setAgreed]=useState(false),[busy,setBusy]=useState(false),[error,setError]=useState(''),command=useRef<{action:string;id:string}|null>(null),inFlight=useRef(false),continueToPayPal=useRef(false),returnChecked=useRef(false);
  async function act(action:'ACCEPT'|'AUTHORIZE'){
   if(inFlight.current||disabled||(action==='ACCEPT'&&!agreed))return;inFlight.current=true;setBusy(true);setError('');
   if(command.current?.action!==action)command.current={action,id:crypto.randomUUID()};
-  try{const response=await apiFetch(`/api/offers/${offerId}`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action,commandId:command.current.id,offerHash,...(action==='ACCEPT'?{agreesToOffer:true}:{})})});const result=await response.json();
-   if(!response.ok)throw new Error(result.error==='OFFER_CLOSED'?'The booking window closed. Refresh to check your payment status.':['STALE_OFFER','STALE_ACCEPTANCE'].includes(result.error)?'This offer changed. Refresh before continuing.':result.error==='ORDER_NOT_READY'?'Your PayPal order is still being prepared. Check again shortly.':result.error==='SIGN_IN_REQUIRED'?'Sign in again before continuing.':'That request could not finish. Your confirmation is still here. Retry to check the same request.');
+  try{const response=await apiFetch(`/api/offers/${offerId}`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action,commandId:command.current.id,offerHash,...(action==='ACCEPT'?{agreesToOffer:true}:{})})});if(response.status===401){pauseForSignIn();return;}const result=await response.json();
+   if(!response.ok)throw new Error(result.error==='OFFER_CLOSED'?'The booking window closed. Refresh to check your payment status.':['STALE_OFFER','STALE_ACCEPTANCE'].includes(result.error)?'This offer changed. Refresh before continuing.':result.error==='ORDER_NOT_READY'?'Your PayPal order is still being prepared. Check again shortly.':result.error==='SIGN_IN_REQUIRED'?'Sign in again before continuing.':'We couldn’t check whether that request finished. Your confirmation is still here. Retry or refresh to check the same request.');
    command.current=null;if(action==='ACCEPT')continueToPayPal.current=true;refresh();
-  }catch(e){setError(e instanceof Error?e.message:'Connection interrupted. Retry to check the same request.');}finally{inFlight.current=false;setBusy(false);}
+  }catch(e){if(e instanceof Error&&e.message.includes('switched friends')){refresh();return;}setError(e instanceof Error?e.message:'Connection interrupted. Retry to check the same request.');}finally{inFlight.current=false;setBusy(false);}
  }
  useEffect(()=>{
   if(disabled||busy)return;

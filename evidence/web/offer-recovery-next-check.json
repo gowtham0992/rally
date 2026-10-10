@@ -1,0 +1,71 @@
+{
+  "observedAt": "2026-10-10T02:27:55.036204+00:00",
+  "scope": "Booking offer sign-in recovery; product only.",
+  "boundary": "Actual React components in StrictMode, native navigation adapters and real booking/payment services in disposable local PostgreSQL. Fictional preauthenticated users, actual immutable viewer binding and simulated provider; no hosted group exercise, email, model or PayPal calls.",
+  "beforeFix": "Expired payment mutations left the action active with no sign-in path. An expired refresh redirected away from the loaded offer and discarded confirmations.",
+  "journeys": [
+    "Expired acceptance, approval check, withdrawal and studio cancellation pause actions while retaining the loaded offer and applicable confirmations.",
+    "Separate-tab sign-in leaves the original booking review open.",
+    "Successful same-account refresh preserves applicable confirmations.",
+    "GET failure retains the last loaded offer and disables payment/booking actions.",
+    "A different account is rejected by the actual immutable viewer binding; the loaded review stays paused.",
+    "Expired first load redirects to sign-in before any private offer loads.",
+    "Two lost acceptance responses retain one retry ID and create exactly one participant order.",
+    "Restored studio identity preserves cancellation confirmation; its fictional cancellation is reflected on the participant refresh, removing previous payment and withdrawal actions."
+  ],
+  "validation": {
+    "tests": 179,
+    "typecheck": "passed",
+    "productionBuild": "passed",
+    "sourceSecretFindings": 0,
+    "reviewedFinalApplicationConsoleErrorsAndWarnings": 0,
+    "beforeFixObserved": true
+  },
+  "viewportChecks": [
+    {
+      "width": 375,
+      "scrollWidth": 375
+    },
+    {
+      "desktop": "default viewport visually checked"
+    }
+  ],
+  "verificationCorrection": "Initial sibling keys collided and duplicated a checkout panel. Corrected to distinct checkout/change keys before final UI checks. Local studio adapter now queries participant status only for participants, matching the source route.",
+  "localCounts": {
+    "acceptAttempts": 2,
+    "distinctAcceptanceCommandIds": 1,
+    "participantOrders": 1,
+    "completedCaptures": 0,
+    "externalProviderCalls": 0,
+    "modelCalls": 0,
+    "hostedTestWrites": 0
+  },
+  "fixture": {
+    "disposed": true,
+    "hostedChanges": 0
+  },
+  "limits": [
+    "Local simulated checks do not establish real-human usability or a new PayPal integration result.",
+    "Choices remain in the open document; a full reload or closed tab requires a fresh review.",
+    "No new hosted group flow or payment action was exercised."
+  ],
+  "documentation": {
+    "context7": "Resolve attempted; provider quota exhausted.",
+    "fallback": "https://react.dev/learn/preserving-and-resetting-state",
+    "installedGuide": "node_modules/next/dist/docs/01-app/03-api-reference/01-directives/use-client.md"
+  },
+  "release": {
+    "status": "verified awaiting deployment",
+    "previousRuntimeCommit": "f2fd982140b6aaa803c87bb380bedf1cece4b746",
+    "schemaMigrationsAdded": 0,
+    "repositoryPrivate": true,
+    "precheckHealthReady": true,
+    "precheckOriginalBooking": {
+      "state": "CONFIRMED",
+      "cleanup": "NOT_REQUIRED",
+      "reservation_state": "BOOKED",
+      "captures": 6
+    },
+    "schemaMigrations": 14
+  }
+}

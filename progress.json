@@ -1,5 +1,5 @@
 {
-  "status": "studio_review_recovery_verified",
+  "status": "booking_recovery_verified_awaiting_deployment",
   "scope": "Product only. The owner explicitly stopped demo and submission work on 2026-10-03; complete Rally functionality, correctness and UI polish.",
   "completed_local_work": [
     "Isolated Git repository, MIT license, pinned Node/TypeScript dependencies and reproducible payment setup guide",
@@ -757,6 +757,16 @@
       "hosting_plan": "existing Render Free",
       "health_ready": true,
       "sign_in_sharing_explicitly_approved": true
+    },
+    "booking_offer_session_recovery": {
+      "file": "evidence/web/offer-recovery-next-check.json",
+      "tests_passed": 179,
+      "production_build": "passed",
+      "local_browser_verified": true,
+      "provider_proof": "Local simulation only; no new PayPal or hosted group flow",
+      "release_status": "verified awaiting deployment",
+      "hosted_test_writes": 0,
+      "schema_migrations_added": 0
     }
   },
   "external_dependencies": [
@@ -779,7 +789,9 @@
       "state": "Approved Free Render preview deployed; exact Cloudflare subdomain/HTTPS and private Cron verified for idle transport. Repository remains private; public publication audit is pending."
     }
   ],
-  "remaining_requirements": [],
+  "remaining_requirements": [
+    "Deploy the verified booking offer recovery fix to the existing Free preview and compare protected hosted records."
+  ],
   "next_independent_slice": null,
   "release_restrictions": [
     "Product is scoped to the demonstration studio and PayPal sandbox. Live merchant operations and live money remain outside authorization.",
