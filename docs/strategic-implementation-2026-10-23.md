@@ -59,3 +59,20 @@ Rollback uses the previous Render artifact. There is no runtime schema change,
 no change to existing payment transitions, and no credential/configuration
 change. Newly provisioned fictional groups remain isolated even if code is
 rolled back; prior groups and financial history are retained.
+
+## Released
+
+Commit `4ac7304` is live on the existing Render Free service, deploy
+`dep-dbe0gbgm7kps73budg0g`, completed in 80 seconds. The production build ran
+on Node 22.22.0. Twenty read-only HTTPS checks passed: ready health, updated
+home and access pages, the recorded journey, original JSON bytes, all twelve
+screenshot hashes and anonymous denial for the protected booking. No workspace
+was claimed by release verification. Original hosted history fingerprints were
+unchanged; ten untouched workspaces remain.
+
+Local verification: 186 tests passed, TypeScript and production build passed,
+**62 existing guard mutations caught**. The review’s 40 count was stale.
+The staged source secret scan found no leaks. No new model or PayPal calls,
+emails, live money, paid services or repository visibility changes occurred.
+
+[Hosted release check](../evidence/web/strategic-release-2026-10-23.json).

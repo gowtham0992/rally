@@ -77,7 +77,9 @@
     ],
     "phoneWidth": 375,
     "phoneScrollWidth": 375,
-    "productionStaticPage": "Actual Next.js production server served /journey/index.html without Auth or runtime credentials"
+    "productionStaticPage": "Actual Next.js production server served /journey/index.html without Auth or runtime credentials",
+    "applicationConsoleErrorsAndWarnings": 0,
+    "consoleExclusions": "Browser extension warnings excluded from application count."
   },
   "capacity": {
     "observedAt": "2026-10-24T01:13:13.166Z",
@@ -101,8 +103,18 @@
   "newPayPalOperations": 0,
   "emailsSent": 0,
   "hosting": {
-    "state": "waiting for approved GitHub Render sign-in",
-    "reason": "Previously approved Google login has no access to the existing Rally service. Automatic approval review requires specific GitHub sign-in approval."
+    "state": "live",
+    "origin": "https://rally.gowthamsarveswaran.com",
+    "plan": "Free",
+    "runtimeNode": "22.22.0",
+    "commit": "4ac7304052b963931970c8263fae0996bb60151c",
+    "deployId": "dep-dbe0gbgm7kps73budg0g",
+    "observedDurationSeconds": 80,
+    "readOnlyHttpsChecksPassed": 20,
+    "exactScreenshotHashesMatched": 12,
+    "protectedAnonymousBookingStatus": 401,
+    "protectedHostedHistoryUnchanged": true,
+    "report": "evidence/web/strategic-release-2026-10-23.json"
   },
   "ownerControlledDeferred": [
     "Demo video",
