@@ -80,8 +80,8 @@ export class JudgingPreparation {
   return {workspaceId:id,status:'RELEASED',groupId,catalogVersion:replacement.versionId};
  }
  async run(workspaceIds:string[],apply=false){
-  z.array(z.uuid()).length(5).refine(ids=>new Set(ids).size===5).parse(workspaceIds);
-  // One transaction covers the fixed five-workspace release. A rejected fixture
+  z.array(z.uuid()).min(1).max(25).refine(ids=>new Set(ids).size===ids.length).parse(workspaceIds);
+  // One transaction covers the selected workspace release. A rejected fixture
   // rolls back all changes, including newly published versions and groups.
   return transaction(this.pool,async c=>{const results=[];for(const id of [...workspaceIds].sort())results.push(await this.prepare(c,id,apply));return results;});
  }

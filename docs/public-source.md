@@ -16,7 +16,13 @@ GitHub repository and local checkout were deleted. GitHub displayed its deletion
 success message and the retained `rally` repository as private. Render remains
 connected to `rally`.
 
-## Current source passes clean local setup
+## Current verification
+
+See [the dated current record](../evidence/current-verification.json) and
+[the evidence index](../evidence/README.md). The current test path needs no
+external account credentials. Repository visibility remains private.
+
+## Earlier clean setup at 4b3d712
 
 A clean archive of `4b3d712` passed an offline locked dependency installation,
 all thirteen migrations on a fresh disposable loopback PostgreSQL container,
@@ -24,7 +30,7 @@ TypeScript, all 151 local tests, all 40 mutation checks and the production build
 on Node 25.6.0 with npm 11.8.0. The weakened source was restored exactly;
 both the temporary database and checkout were removed. No private environment
 files or external provider credentials were supplied.
-See [current setup evidence](../evidence/clean-source-setup-current.json).
+See [October 2 setup evidence](../evidence/clean-source-setup-current.json).
 
 This proves controlled local setup for that revision. It does not prove
 anonymous access to the private repository, hosted recovery, or compatibility

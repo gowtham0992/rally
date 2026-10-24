@@ -1,0 +1,113 @@
+{
+  "date": "2026-10-23",
+  "observedAt": "2026-10-24T01:14:44.007711+00:00",
+  "truthRows": [
+    {
+      "claim": "Hosted group booking",
+      "result": "6 buyers \u00b7 6 \u00d7 $48 \u00b7 $288 gross",
+      "scope": "Actual hosted PayPal sandbox, 3 Oct"
+    },
+    {
+      "claim": "Signed notifications",
+      "result": "12 processed; delivered duplicate unchanged",
+      "scope": "Hosted 3 Oct; duplicate response body not captured"
+    },
+    {
+      "claim": "Failure compensation",
+      "result": "Refund + remaining voids; lost-response recovery",
+      "scope": "Separate local service with 3 real sandbox buyers"
+    },
+    {
+      "claim": "AI evaluation",
+      "result": "72/72 final quality assessments; 0 safety failures",
+      "scope": "24 authored cases \u00d7 3; earlier failures retained, 2 Oct"
+    },
+    {
+      "claim": "Local suite",
+      "result": "186 passed; 0 failed",
+      "scope": "Disposable PostgreSQL; controlled Auth/model/provider, 23 Oct"
+    },
+    {
+      "claim": "Guard mutations",
+      "result": "62/62 caught",
+      "scope": "Existing checks rerun on 23 Oct; review\u2019s 40 count was stale"
+    },
+    {
+      "claim": "TypeScript / production build",
+      "result": "Passed",
+      "scope": "23 Oct; Node 25.6.0"
+    },
+    {
+      "claim": "Judge capacity",
+      "result": "10 untouched of 12 total workspaces",
+      "scope": "49 approved new fictional Auth accounts; no emails or payments, 23 Oct"
+    },
+    {
+      "claim": "Hosted active failure recovery",
+      "result": "Unverified",
+      "scope": "The hosted six-buyer success is separate"
+    },
+    {
+      "claim": "Human groups / studios observed",
+      "result": "0 / 0",
+      "scope": "Capacity-hold demand remains unvalidated"
+    }
+  ],
+  "local": {
+    "tests": 186,
+    "passed": 186,
+    "failed": 0,
+    "mutations": 62,
+    "mutationsCaught": 62,
+    "typecheck": "passed",
+    "productionBuild": "passed",
+    "node": "25.6.0",
+    "extraWorkspaceBatchChecks": 7
+  },
+  "browser": {
+    "scope": "Actual React StrictMode components and real intake/clarification/booking services in disposable local PostgreSQL; controlled AI fixture, simulated provider, preauthenticated fictional actors. Not managed Auth, independent human usability or a new provider run.",
+    "verified": [
+      "Saved note review is above longer group controls",
+      "All three answer consequences appear before confirmation",
+      "Cannot-attend branch has no sessions; collection branch shows actual Thursday $48 hand-build with agreement condition",
+      "Owner confirms meaning, chooses Jordan, agrees disclosure; Jordan separately agrees",
+      "Shared fit appears after real two-party consent; organizer requests the matching studio session",
+      "Recorded journey has twelve captioned actual hosted screenshots and no account requirement",
+      "Access page explains recorded, live planning and optional live sandbox payment layers before its code field"
+    ],
+    "phoneWidth": 375,
+    "phoneScrollWidth": 375,
+    "productionStaticPage": "Actual Next.js production server served /journey/index.html without Auth or runtime credentials"
+  },
+  "capacity": {
+    "observedAt": "2026-10-24T01:13:13.166Z",
+    "applied": true,
+    "untouchedAvailable": 10,
+    "targetAvailable": 10,
+    "newAuthAccounts": 49,
+    "totalWorkspaces": 12,
+    "existingWorkspacesRecycled": 0,
+    "emailsSent": 0,
+    "paymentsInitiated": 0,
+    "consentsRecorded": 0,
+    "scope": "Additive fictional judge identities and untouched planning groups in the existing Free project; original five workspace histories retained."
+  },
+  "protectedHostedHistoryUnchanged": true,
+  "freshManagedAuthBrowserRehearsal": "not performed in this slice",
+  "independentComprehensionCheck": "prepared, not run",
+  "humanFriendGroupsObserved": 0,
+  "studiosObserved": 0,
+  "newModelCalls": 0,
+  "newPayPalOperations": 0,
+  "emailsSent": 0,
+  "hosting": {
+    "state": "waiting for approved GitHub Render sign-in",
+    "reason": "Previously approved Google login has no access to the existing Rally service. Automatic approval review requires specific GitHub sign-in approval."
+  },
+  "ownerControlledDeferred": [
+    "Demo video",
+    "Devpost edits and submission",
+    "Repository publication"
+  ],
+  "sourceSecretFindings": 0
+}

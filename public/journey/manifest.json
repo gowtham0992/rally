@@ -1,0 +1,89 @@
+{
+  "scope": "Actual hosted screenshots, fictional group and studio, PayPal sandbox. Original pixels copied after visual review. No credentials, login screens, provider account details or invitation URLs.",
+  "frames": [
+    {
+      "file": "screens/six-friend-baseline.png",
+      "title": "Private limits, a real decision",
+      "caption": "Alex wants to form a cup and has a $50 limit. The $72 wheel session exceeds it; the published $48 hand-build session can fit. Other people never see Alex’s private limit.",
+      "recordedDate": "2026-10-03",
+      "sourceSha256": "97c0604fbc83fc8fefddddf3774a65ef262a75b71cb3fb17c3900f712977cba7"
+    },
+    {
+      "file": "screens/sam-note-ready-for-approval.png",
+      "title": "Ask before interpreting",
+      "caption": "Sam’s fictional note says “I leave Friday.” Only with Sam’s permission does the note and public studio catalog go to Astropods. Budgets and the group’s details stay out.",
+      "recordedDate": "2026-10-03",
+      "sourceSha256": "5f00c56f1dd369349a023c5cbdbbd0f4109a1b94ff3abd5fd399e6ffc29ddf32"
+    },
+    {
+      "file": "screens/hosted-ai-collection-question.png",
+      "title": "One grounded question",
+      "caption": "In this recorded run, the AI asked about collection: same-day pickup, self-collection later, or collection by a friend. Sam confirms the meaning. The model cannot invent a session, volunteer a friend or approve a payment.",
+      "recordedDate": "2026-10-03",
+      "sourceSha256": "70b2a58705836d2f731cca2fc088ec039e8894935846515982e9ed85bfc287db"
+    },
+    {
+      "file": "screens/sam-collection-ready-for-approval.png",
+      "title": "An answer is not someone else’s agreement",
+      "caption": "Sam chooses Jordan. Before sharing, Sam explicitly agrees to disclose the collection arrangement to Jordan and, if booked, the studio.",
+      "recordedDate": "2026-10-03",
+      "sourceSha256": "67ade177a3e9cdf41005bab9765772eb12bdf5c4b89a9c10d2803117783bfc47"
+    },
+    {
+      "file": "screens/sam-waiting-for-jordan.png",
+      "title": "Wait for the other person",
+      "caption": "Jordan has not agreed yet. The arrangement cannot count toward an offer until Jordan accepts it.",
+      "recordedDate": "2026-10-03",
+      "sourceSha256": "44a7053d6dd611353de3ef89c8c20bf4298cabbe8ec7f4ff79607a9ca1a48e89"
+    },
+    {
+      "file": "screens/jordan-agreement-and-feasible-plan.png",
+      "title": "A session fits everyone",
+      "caption": "Jordan agrees. The deterministic planner checks the group’s confirmed choices and the published catalog. Thursday hand-building at $48 per person is now a group candidate.",
+      "recordedDate": "2026-10-03",
+      "sourceSha256": "afbea68403d95599b4ce2423f6568a6ed04d1ee384886fd4ca1cf49860f6d838"
+    },
+    {
+      "file": "screens/fictional-studio-offer-review.png",
+      "title": "The studio makes the reservation",
+      "caption": "The studio reviews the exact activity, six-person roster, collection agreement, buffered calendar time and cancellation terms. It explicitly permits automatic collection after all payments qualify.",
+      "recordedDate": "2026-10-03",
+      "sourceSha256": "a171b337bb1040a72317067bbb4e9c37657089dc5f2baba2d11c7477cc89aa52"
+    },
+    {
+      "file": "screens/hosted-studio-reserved-offer.png",
+      "title": "One frozen offer for the group",
+      "caption": "The studio reserves the session and opens a two-hour approval window. Each person reviews the same immutable price and terms. The group is not booked yet.",
+      "recordedDate": "2026-10-03",
+      "sourceSha256": "0606ddfbc0d4ad7c094241e7bdcb43d53b122a3f7c12fbf669a9b5b507c090e1"
+    },
+    {
+      "file": "screens/alex-hosted-checkout-ready.png",
+      "title": "Everyone approves their own share",
+      "caption": "Alex opens PayPal sandbox to approve $48. Each of the six friends uses a distinct sandbox buyer. No friend is charged for another person’s share.",
+      "recordedDate": "2026-10-03",
+      "sourceSha256": "498ec32312ded6e1ea4f776e15e5e9b2f17bf5ab6acd9ac652ae84418aa4e675"
+    },
+    {
+      "file": "screens/alex-hosted-authorized.png",
+      "title": "A hold comes before collection",
+      "caption": "Alex’s authorization is verified. It has not been captured. Rally waits for all six qualified authorizations before starting collection.",
+      "recordedDate": "2026-10-03",
+      "sourceSha256": "46340443dc724b70fdccaa33e09fb5dbcca61975045fdb169a4f623195ed7ac6"
+    },
+    {
+      "file": "screens/hosted-six-friend-booking-confirmed.png",
+      "title": "Six captures, one confirmed booking",
+      "caption": "The hosted run completed six $48 captures, $288 gross. Only after every capture was independently verified did Rally confirm the booking and keep the studio reservation booked.",
+      "recordedDate": "2026-10-03",
+      "sourceSha256": "2887e2f054137815ea95416c7cf6dd543f4118aed7b0623b62a063cd591e1724"
+    },
+    {
+      "file": "screens/confirmed-sam.png",
+      "title": "Each friend sees their own completed payment",
+      "caption": "Sam’s own payment is complete and the shared booking is confirmed. Six authorization and six capture webhooks were processed. A delivered duplicate left the original receipt and financial state unchanged.",
+      "recordedDate": "2026-10-03",
+      "sourceSha256": "ee7013515fe86b2ab6632876a51e710b0ad0e7363f43565299a6dd5004fdd4cc"
+    }
+  ]
+}

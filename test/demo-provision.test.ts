@@ -76,6 +76,7 @@ test('judging preparation appends future catalogs and fresh untouched groups whi
  const published=(await pool.query('SELECT * FROM merchant_catalog_versions ORDER BY version_id')).rows;
  const preparation=new JudgingPreparation(pool,catalog,judgingCatalog(catalog));
  const dry=await preparation.run(ids);assert.equal(dry.filter(r=>r.status==='RELEASED').length,4);assert.equal((await pool.query('SELECT count(*) FROM planning_groups')).rows[0].count,'5');
+ assert.equal((await preparation.run([ids[0]])).length,1);await assert.rejects(preparation.run([]));await assert.rejects(preparation.run(Array.from({length:26},()=>randomUUID())));
  const runs=await Promise.all([preparation.run(ids,true),preparation.run(ids,true)]);
  assert.equal(runs.flat().filter(r=>r.status==='RELEASED').length,4);assert.equal(runs.flat().filter(r=>r.status==='ALREADY_RELEASED').length,4);
  assert.equal(accounts.calls,35);assert.equal((await pool.query('SELECT count(*) FROM planning_groups')).rows[0].count,'9');

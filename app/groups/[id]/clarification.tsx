@@ -3,6 +3,7 @@ import {apiFetch} from '../../lib/api-fetch';
 import {useEffect,useRef,useState} from 'react';
 import type {ClarificationView} from '../../../src/intake/clarifications';
 import type {Proposal} from '../../../src/planning/meaning';
+import AnswerConsequencePreview from '../../components/answer-consequence';
 
 const questions:Record<string,string>={
  TRAVEL_MEANING:'Does leaving affect attending the session or collecting your piece afterward?',
@@ -57,7 +58,8 @@ export default function ClarificationPanel({groupId,revision,preferenceId,note,r
   {loading?<p className="field-help" role="status">Loading your note check…</p>:view&&['RESERVED','DISPATCHED'].includes(view.status)?<p className="field-help" role="status">Checking your note. You can leave this page and come back.</p>:ready?<fieldset disabled={disabled||busy}>
    <blockquote className="note-quote">“{[...new Set(proposal.interpretations.map(i=>i.sourceSpan))].join(' … ')}”</blockquote>
    <ProposedDetails proposal={proposal}/>
-   {question&&<fieldset className="clarification-options"><legend>{questions[question.templateId]}</legend>{question.options.map(o=><label className="choice" key={o.id}><input type="radio" name="clarification-answer" value={o.id} checked={answer===o.id} onChange={()=>{setAnswer(o.id);setConfirmed(false);}}/><span>{label(o.value,question.requirementKey)}</span></label>)}</fieldset>}
+   {question&&<fieldset className="clarification-options"><legend>{questions[question.templateId]}</legend><p className="field-help">Here’s what each answer changes. These previews use your saved choices and the studio’s published sessions.</p>{question.options.map(o=>{const consequence=view.consequences?.find(c=>c.answerId===o.id);return <label className="choice consequence-choice" key={o.id}><input type="radio" name="clarification-answer" value={o.id} checked={answer===o.id} onChange={()=>{setAnswer(o.id);setConfirmed(false);}}/><span><strong>{label(o.value,question.requirementKey)}</strong>{consequence&&<AnswerConsequencePreview consequence={consequence}/>}</span></label>;})}</fieldset>}
+   {!question&&view.consequences?.[0]&&<AnswerConsequencePreview consequence={view.consequences[0]}/>}
    {question?.options.find(o=>o.id===answer)?.value==='COLLECTION_ONLY'&&<p className="field-help">You’ll choose someone from the group next. They’ll need to agree before we count on them.</p>}
    <label className="choice confirm"><input type="checkbox" checked={confirmed} onChange={e=>setConfirmed(e.target.checked)}/><span>These details{question?' and my answer':''} cover every must-have in my note.</span></label>
    <button className="button full" disabled={!confirmed||Boolean(question&&!answer)} onClick={()=>act('ANSWER',{clarificationId:view.id,answerId:question?answer:null,confirmsAllEssentials:true})}>{busy?'Saving…':question?'Confirm my answer':'Confirm these details'}</button>

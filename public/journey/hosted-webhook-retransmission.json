@@ -1,0 +1,41 @@
+{
+  "requestedAt": "2026-10-03T19:26:45.470Z",
+  "scope": "PayPal sandbox resend of an existing genuine completed capture event to the previously registered Rally listener. Does not create a payment or a simulated event.",
+  "providerEventBoundToRecordedCapture": true,
+  "registeredDestinationMatched": true,
+  "resendHttpStatus": 202,
+  "providerDeliveryVerified": true,
+  "hostedDuplicateHandlingVerified": true,
+  "source": "https://developer.paypal.com/api/webhooks/v1/webhooks-events-resend",
+  "afterResendDatabaseCheck": {
+    "stage": "restored",
+    "observedAt": "2026-10-03T19:27:59.650Z",
+    "healthReady": true,
+    "state": {
+      "state": "CONFIRMED",
+      "cleanup": "NOT_REQUIRED",
+      "reservation_state": "BOOKED",
+      "qualified": 6,
+      "successful_captures": 6,
+      "operations": 18,
+      "unresolved_operations": 0,
+      "processed_webhooks": 12
+    }
+  },
+  "limitations": [
+    "The original HTTP 202 was only request acceptance; delivery is now independently observed in PayPal Developer as DELIVERED with HTTP 200 at the registered endpoint.",
+    "The JSON duplicate response body was not captured. Duplicate handling is verified through the actual delivered event, signature-before-dedup handler, a single pre-existing processed event row with unchanged timestamps, and unchanged financial records."
+  ],
+  "deliveryObservation": {
+    "observedAt": "2026-10-03T20:16:30.874Z",
+    "providerDashboardBoundToRequestedEvent": true,
+    "trustedWebhookIdMatched": true,
+    "providerDeliveredAt": "2026-10-03T19:26:48Z",
+    "httpStatus": 200,
+    "singleStoredEvent": true,
+    "originalReceiptAndProcessingTimestampsUnchanged": true,
+    "duplicateResponseBodyObserved": false,
+    "duplicateHandlingVerified": true,
+    "proof": "Actual PayPal DELIVERED history and transmission HTTP 200 at the configured endpoint, bound to the requested genuine event/resource and a previously processed single database row. Handler verifies signature before its event-ID duplicate branch. No JSON response body was captured."
+  }
+}

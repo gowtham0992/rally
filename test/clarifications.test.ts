@@ -109,3 +109,27 @@ test('another friend saving during model work preserves the owners valid clarifi
  await service.answer(x.a,{commandId:randomUUID(),groupId:x.g.groupId,expectedRevision:x.second.revision,preferenceId:x.first.preferenceId,clarificationId:view!.id,answerId:'collection',confirmsAllEssentials:true});
  assert.equal((await intake.ownPreferences(x.a,x.g.groupId)).preference.collection,'NOMINEE_LATER');
 });
+
+test('private answer consequences are read-only, persist across reload and do not depend on peer limits',async()=>{
+ const x=await setup(),service=new ClarificationService(pool,async input=>proposal(input));
+ const view=await service.start(x.a,x.start),before=await intake.ownPreferences(x.a,x.g.groupId);
+ assert.deepEqual(view?.consequences.map(c=>c.state),['NO_MATCH','POSSIBLE']);
+ assert.equal(view?.consequences[1].sessions[0].amountMinor,4800);
+ assert.equal(view?.consequences[1].needsCollectionAgreement,true);
+ assert.deepEqual((await new ClarificationService(pool).view(x.a,x.g.groupId))?.consequences,view?.consequences);
+ await intake.save(x.b,{commandId:randomUUID(),groupId:x.g.groupId,expectedRevision:x.second.revision,expectedPreferenceId:x.second.preferenceId,preference:{...pref,budgetMinor:100},optionalText:'Private peer need.'});
+ assert.deepEqual((await service.view(x.a,x.g.groupId))?.consequences,view?.consequences);
+ assert.deepEqual(await intake.ownPreferences(x.a,x.g.groupId),before);
+ assert.equal(await service.view(x.b,x.g.groupId),null);
+ const serialized=JSON.stringify(view?.consequences);for(const value of [x.a.userId,x.b.userId,x.join.memberId,'Private peer need.','budgetMinor','nomineeMemberId'])assert.ok(!serialized.includes(value));
+});
+
+test('stale or declined questions expose no consequence previews',async()=>{
+ const x=await setup(),service=new ClarificationService(pool,async input=>proposal(input)),view=await service.start(x.a,x.start);
+ await service.decline(x.a,{commandId:randomUUID(),groupId:x.g.groupId,expectedRevision:x.second.revision,preferenceId:x.first.preferenceId,clarificationId:view!.id});
+ assert.deepEqual((await service.view(x.a,x.g.groupId))?.consequences,[]);
+ const y=await setup(),ready=await service.start(y.a,y.start);
+ await intake.closeRoster(y.a,{commandId:randomUUID(),groupId:y.g.groupId,expectedRevision:y.second.revision,memberIds:[y.g.memberId,y.join.memberId]});
+ await intake.save(y.a,{commandId:randomUUID(),groupId:y.g.groupId,expectedRevision:y.second.revision+1,expectedPreferenceId:y.first.preferenceId,preference:pref,optionalText:'Changed note.'});
+ const next=await service.view(y.a,y.g.groupId);assert.ok(!next||next.id!==ready!.id||next.consequences.length===0);
+});

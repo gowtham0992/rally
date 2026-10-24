@@ -118,3 +118,33 @@ Catalog readiness does not establish a completed payment or judge usability test
 
 Source: [Supabase pricing](https://supabase.com/pricing), verified October 2,
 2026, and Rally's dashboard showing its Free organization plan.
+
+## Add capacity without recycling groups
+
+The October 23 review calls for ten untouched workspaces. The existing hosted
+dry run found three available. `scripts/expand-judging-workspaces.ts` prepares
+an additive expansion with a separate mode-0600 checkpoint; it preserves the
+original five-workspace checkpoint, credentials, leases and payment history.
+It uses the existing provisioner and applies the future judging catalog only
+to untouched new groups. A dry run makes no Auth calls or writes.
+
+```sh
+ENABLE_DEMO_AUTH_PROVISION=true node --env-file=.env.local \
+  --env-file=.env.provision --env-file=.env.hosted --import tsx \
+  scripts/expand-judging-workspaces.ts --available=10
+```
+
+After explicit approval for the exact additional persistent account count, add
+`--apply`. The observed plan is seven new workspaces and 49 reserved-address
+Auth identities, with no emails, collection consent, offers or payments. The owner approved the exact count after the initial automatic-review block.
+The expansion completed: **ten untouched workspaces, twelve total**, with
+49 new identities, zero emails, zero payments and zero recorded consents.
+Fingerprints of the original groups, workspaces, consents and all financial
+tables were unchanged. [Capacity evidence](../evidence/judge-capacity-2026-10-23.json). If interrupted, rerun the same checkpoint to
+resume the registered identities and groups rather than resetting anything.
+The command reports actual account creation and untouched capacity; repeat
+applications adopt already registered groups. Runtime receives no Admin key.
+
+Before final-week evaluation, use one fresh browser to rehearse managed login
+through studio approval and time it. The local controlled-fixture product check
+is not that managed-auth rehearsal.

@@ -56,7 +56,7 @@ request; payment state changes happen in the separate bounded web runner. Do not
   the provider. Those setup/diagnostic transactions rolled back; no queue
   extension or secret was left by the failed attempts.
 
-Local proof: 151 tests passed, including seven scheduled-processing tests
+Historical October 2 local proof: 151 tests passed, including seven scheduled-processing tests
 and seven offline judge-preparation tests with simulated provider/Auth accounts.
 Actual production-build HTTP checks rejected anonymous, wrong-key, query-key
 and wrong-method requests; the valid request returned IDLE with zero operations.
@@ -66,6 +66,10 @@ and one database-to-preview authenticated HTTPS request returning IDLE.
 `evidence/hosted-settlement-schedule.json` records zero payment operations and
 no browser/runtime ability to invoke the private function or read Vault.
 Cold wake and active provider recovery remain unverified on the hosted runner.
+
+Current local verification is recorded in [the evidence index](../evidence/README.md).
+The recorded journey at `/journey/index.html` is static and requires no Auth or
+workspace. It does not remove the Free service’s first-request wake time.
 
 ## Release order
 

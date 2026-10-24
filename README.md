@@ -1,220 +1,127 @@
 # Rally
 
-Six friends, one studio booking, everyone pays their own share.
+[See the recorded six-friend booking](https://rally.gowthamsarveswaran.com/journey/index.html) · [Try live planning](https://rally.gowthamsarveswaran.com/demo) · [Inspect the evidence](evidence/README.md)
 
-Rally finds a published session that fits each friend’s confirmed requirements
-without exposing their spending limits. A friend can clarify an ambiguous note,
-arrange collection with another friend’s explicit agreement, and review the
-same fixed offer as everyone else. The studio approves the reservation; each
-participant approves their own PayPal sandbox payment.
+**A plan that fits everyone. Six holds. One booking.**
 
-**Preview:** [rally.gowthamsarveswaran.com](https://rally.gowthamsarveswaran.com).
-The app uses a fictional studio and sandbox money. Judge entry requires a
-private access code and has five isolated, non-recycled workspaces; three remain
-untouched after verification. New sessions end December 16 at 00:00 UTC. Render
-Free may take about a minute to wake after inactivity.
+Rally helps friends book a private studio session without someone fronting the
+group’s bill. Each friend saves private requirements. When a note is ambiguous,
+AI proposes one grounded question; each answer previews the published sessions
+it would allow. The friend confirms the meaning, and a deterministic planner
+checks the group’s fit.
 
-## What has been verified
+The studio reserves the exact session and freezes the offer. Each person
+authorizes their own PayPal share directly to the merchant. Rally starts
+collecting only after every authorization qualifies, and confirms the booking
+only after every capture is verified. The hosted six-friend run completed
+**six separate $48 sandbox payments: $288 gross**.
 
-| Evidence | Verified scope |
-| --- | --- |
-| [PayPal sandbox report](evidence/paypal-sandbox/index.html) | Three distinct buyers completed a $144 booking. A separate partial failure refunded one $48 capture and voided the other two authorizations. A deliberately dropped capture response recovered after restart without an extra capture. Each result was independently checked through PayPal GETs. |
-| [AI evaluation](evidence/ai/evaluation-index.json) | 24 authored cases, repeated three times: 72/72 final quality assessments passed, zero safety failures. The equal structured baseline and hard-constraint oracle are independent. Earlier failed runs remain in the history. |
-| [Hosted preview](evidence/hosted-preview.json) | Valid custom-domain HTTPS, one Render Free service, seven distinct managed demo roles, private preferences and separate studio scope. |
-| [Fresh judge access](evidence/web/hosted-judge-window.json) | Deployed HTTP entry received the fixed December 16 lease. All seven roles, stale-viewer denial, lease-only sign-in restoration and foreign-group/offer denial passed. Existing financial and intake history stayed unchanged. This was a separate HTTP client, not a fresh browser-entry recording. |
-| [Hosted scheduler](evidence/hosted-settlement-schedule.json) | Private Supabase Cron/Vault transport reached the deployed settlement endpoint and completed idle runs. Cold wake and active payment recovery are still pending. |
-| [Webhook tests](evidence/webhook-local-verification.json) | Original-byte RSA verification, hostile certificate URLs, bounded input, duplicate authentication and safe errors. Disposable test certificates are used locally. |
-| [Hosted signature denial](evidence/hosted-webhook-signature-denial.json) | The live receiver rejected a forged signature using a real PayPal public certificate. Payment and notification records remained unchanged. |
-| [Private note expiry](evidence/web/private-text-retention.json) | Actual native hosted cleanup removed an isolated fictional note and AI quotation while preserving existing financial and consent history. [Policy and setup](docs/private-text-retention.md). |
-| [Studio payment reports](evidence/web/payment-evidence.json) | Authenticated local UI saved one unverified fictional report without changing simulated payment, booking or reservation records. Stale-state and connection failures preserve the draft. |
-| [Video review cut](evidence/video/review-cut.json) | A 163-second private draft uses real UI stills, temporary local narration and a separately labeled three-buyer report. It is not the final interaction recording or public video. |
+## The question changes the plan
 
-The latest full suite has **151 passing tests** using isolated local PostgreSQL
-schemas and controlled provider/Auth/model fixtures. All 40 deliberate guard mutations
-were caught. TypeScript and the production build pass.
+“I leave Friday.” Does that prevent attending, or just collecting the fired
+piece? The first answer can leave no session; the second can allow Thursday’s
+$48 hand-build session if a friend explicitly agrees to collect. The preview
+uses the same confirmed-meaning transition and catalog filters as the saved
+plan. It does not read peer preferences, invent consent or reserve a session.
 
-The six-buyer hosted browser booking and genuine signed webhook delivery are
-verified, including a delivered duplicate event. Active hosted failure recovery,
-real user/merchant feedback and the finished demo video remain open gates. Prepared friends and studio facts are
-fictional demo data. Engineering evidence is not a customer success rate.
+Unlike collecting money into an organizer’s pool, each person’s share goes to
+the merchant through its own authorization and capture. Nobody backstops another
+friend’s share. These are separate payments: if settlement fails, completed
+captures require refunds and remaining authorizations require voids. Uncertain
+results remain visible until verified; they never count as a confirmed booking.
 
-## Run locally
+## Choose how far to try it
 
-Use Node.js 22 or newer, npm, Docker and OpenSSL. OpenSSL creates disposable
-certificates for the signature tests; no test key is committed. The current
-[clean-source setup](evidence/clean-source-setup-current.json) passed on Node
-25.6.0 and npm 11.8.0 with thirteen migrations, all 151 tests, all 40 mutation
-checks and a production build. The minimum Node version was not tested.
-Start a local
-PostgreSQL database with credentials used only for this development container:
+1. **Recorded journey — no code or account.** [Twelve actual hosted screens](public/journey/index.html), dated October 3, with settlement and webhook reports. Fictional group, fictional studio, PayPal sandbox. Screens show the interface at that date.
+2. **Live planning — private access code.** [/demo](https://rally.gowthamsarveswaran.com/demo) lets you add Alex’s and Sam’s details, clarify a note, agree collection and obtain a studio offer. Stop there; PayPal sign-in is optional for this layer.
+3. **Live checkout — six distinct sandbox buyers.** Continue from the offer and approve each person’s share. The server verifies the expected payer and order; returning from PayPal is not proof of approval.
+
+The Free preview may take about a minute to wake. Live entry claims an isolated,
+non-recycled workspace; return using the same browser session. Newly claimed
+judge sessions end December 16 at 00:00 UTC. [Capacity and provisioning](docs/judge-provisioning.md).
+
+## Verified scope
+
+<!-- BEGIN CURRENT TRUTH -->
+Verified 2026-10-23. Historical provider and AI runs retain their own dates.
+
+| Claim | Result | Scope |
+| --- | --- | --- |
+| Hosted group booking | 6 buyers · 6 × $48 · $288 gross | Actual hosted PayPal sandbox, 3 Oct |
+| Signed notifications | 12 processed; delivered duplicate unchanged | Hosted 3 Oct; duplicate response body not captured |
+| Failure compensation | Refund + remaining voids; lost-response recovery | Separate local service with 3 real sandbox buyers |
+| AI evaluation | 72/72 final quality assessments; 0 safety failures | 24 authored cases × 3; earlier failures retained, 2 Oct |
+| Local suite | 186 passed; 0 failed | Disposable PostgreSQL; controlled Auth/model/provider, 23 Oct |
+| Guard mutations | 62/62 caught | Existing checks rerun on 23 Oct; review’s 40 count was stale |
+| TypeScript / production build | Passed | 23 Oct; Node 25.6.0 |
+| Judge capacity | 10 untouched of 12 total workspaces | 49 approved new fictional Auth accounts; no emails or payments, 23 Oct |
+| Hosted active failure recovery | Unverified | The hosted six-buyer success is separate |
+| Human groups / studios observed | 0 / 0 | Capacity-hold demand remains unvalidated |
+<!-- END CURRENT TRUTH -->
+
+[The evidence index](evidence/README.md) leads to the hosted six-buyer result,
+signed webhooks, separate three-buyer compensation proof, AI evaluation and
+dated local checks. Historical counts in archived reports describe those
+revisions. Validation gaps are stated once in
+[What remains untested](evidence/README.md#what-remains-untested).
+
+## Test without external accounts
+
+Use Node.js 22+, npm, Docker and OpenSSL. No `.env`, Supabase project, AI key or
+PayPal account is needed for the suite. The test provider, model and Auth
+responses are controlled fixtures. Each database test creates and removes its
+own schema; it does not truncate application tables.
 
 ```sh
 npm ci
-docker run --detach --name rally-postgres --publish 127.0.0.1:55432:5432 \
+docker run --detach --name rally-test-postgres --publish 127.0.0.1:55439:5432 \
   --env POSTGRES_USER=rally --env POSTGRES_PASSWORD=rally_local_only \
   --env POSTGRES_DB=rally postgres:17-alpine
-npm run db:migrate
+TEST_DATABASE_URL=postgresql://rally:rally_local_only@127.0.0.1:55439/rally npm test
 npm run typecheck
-npm test
-npm run test:mutations
+npm run build
 ```
 
-If the container exists, use `docker start rally-postgres`. Tests create and
-remove their own schemas; they do not truncate application tables. The test
-login needs schema creation privileges. Hosted runtime credentials are restricted
-and must never use this development login.
-
-Copy the example without replacing an existing configuration:
+If this test container exists, start it with `docker start rally-test-postgres`.
+The database needs schema creation privileges. Use these credentials only for
+the local test container. Optional deliberate guard checks, run **after** the
+suite and without concurrent source edits:
 
 ```sh
-cp -n .env.example .env.local
+TEST_DATABASE_URL=postgresql://rally:rally_local_only@127.0.0.1:55439/rally npm run test:mutations
 ```
 
-Configure the existing Supabase project’s `SUPABASE_URL` and client-safe
-`SUPABASE_PUBLISHABLE_KEY`. Use `APP_ORIGIN=http://localhost:3000` and allow
-exactly `http://localhost:3000/auth/callback` in Supabase Auth. Generate a stable
-private `RALLY_RATE_LIMIT_KEY` with `openssl rand -hex 32`. Keep runtime keys in
-ignored environment files or your hosting provider’s private settings.
+The October 23 verification used Node 25.6.0. The declared minimum Node version
+has not been independently tested.
+
+## Run the app
+
+The app needs the existing Supabase Auth project for email-link login. Copy
+`.env.example` to `.env.local` without overwriting an existing configuration.
+Set a local application database, `APP_ORIGIN=http://localhost:3000`, the
+Supabase URL/client-safe publishable key and a stable private rate-limit key.
+Allow exactly `http://localhost:3000/auth/callback` in Auth. Keep secrets in
+ignored configuration, never in source or chat.
 
 ```sh
+node --env-file=.env.local --import tsx scripts/migrate.ts
 npm run dev
 npm run worker
 ```
 
-Run the worker in a second terminal. The app is at `http://localhost:3000`.
-Managed email login uses your own email and a sign-in link. Judge identities
-use a separate HttpOnly cookie namespace and are provisioned offline; see
-[judge provisioning](docs/judge-provisioning.md). No Auth Admin or Management
-token belongs in the running web app.
+Run the worker in another terminal. The app is at `http://localhost:3000`.
+Configure only PayPal **sandbox** credentials for checkout. The adapter has a
+fixed sandbox origin; AI has no payment authority. [Studio setup](docs/studio-setup.md),
+[sandbox success/recovery report](evidence/paypal-sandbox/index.html),
+[AI protocol](docs/ai-evaluation.md), [private-text retention](docs/private-text-retention.md).
 
-## Configure PayPal sandbox
+## Implementation
 
-In [PayPal Developer](https://developer.paypal.com/dashboard/), select Sandbox.
-Create the REST app under one Business seller. The isolated CLI proof needs
-three distinct Personal buyers; the published six-person product booking needs
-six distinct Personal buyers. Do not lower the studio capacity or reuse a payer
-identity to manufacture a six-person booking.
+- **Private by actor:** the organizer sees names/readiness and shared candidates, never peer budgets or notes. AI receives only a consenting owner’s note and public studio facts.
+- **Exact offers:** studio approval reserves buffered resource capacity and freezes roster, catalog, price and cancellation terms. Preference edits invalidate a draft; issued offers cannot be rewritten.
+- **Verified payments:** expected payer checks, stable request IDs, durable operation leases, provider reconciliation, compensation and signed webhook deduplication. A failed fifth capture cannot produce a confirmed booking.
+- **One Free deployment:** Next.js on the existing Render Free service; PostgreSQL/Auth and private scheduled settlement on the existing Supabase Free project. [Deployment](docs/deployment.md), [database](docs/hosted-database.md), [webhooks](docs/paypal-webhooks.md).
 
-Save `PAYPAL_CLIENT_ID`, `PAYPAL_CLIENT_SECRET` and the seller’s
-`PAYPAL_MERCHANT_ID` privately. `PAYPAL_BUYER_IDS` contains the three personal
-payer IDs, comma-separated in approval order, for the CLI harness. These are
-account IDs, not email addresses. Keep buyer passwords in PayPal’s dashboard.
-
-```sh
-npm run sandbox -- doctor
-```
-
-The doctor reports configuration presence without printing values. The payment
-adapter has a fixed sandbox API origin and no live endpoint setting.
-
-## Reproduce the three-buyer payment proof
-
-Use a fresh offer for each scenario and finish reconciliation between runs.
-Stop the background worker during these fault scenarios: the CLI provides the
-barrier between captures.
-
-1. Run `npm run sandbox -- init` to create a labeled $48-per-person test offer
-   and obtain three approval links.
-2. Approve each link using its corresponding distinct Personal sandbox account.
-3. Run `npm run sandbox -- authorize`. It checks payer identity and authorization
-   qualification, then stops before capture.
-4. Run the selected scenario and verify the actual provider resources.
-
-| Scenario | Command and expected outcome |
-| --- | --- |
-| Success | Repeat `npm run sandbox -- step` until CONFIRMED. All three captures must be COMPLETED. |
-| Partial failure | `npm run sandbox -- partial-failure` captures A, pauses, deliberately voids B’s authorization through PayPal, resumes, and compensates. The booking must abort; A’s refund and remaining voids must complete. |
-| Lost response | `npm run sandbox -- lost-response` drops a successful capture response locally, then recovers through GETs. It must not create a replacement charge. |
-
-`npm run sandbox -- status` shows private participant status.
-`npm run sandbox -- evidence` saves reviewed run material under ignored
-`evidence/private/`. `scripts/verify-sandbox.ts` independently reads provider
-resources for the documented scenarios. No pending or unknown result counts as
-completed; continue reconciliation or retain an explicit action-required state.
-
-## Product and payment boundaries
-
-Private budgets, notes and proposals are actor-scoped. The organizer sees
-readiness, not peer spending limits. Protected browser mutations check the exact
-configured Origin and a verified managed identity. The provider webhook uses
-its signature instead of browser authentication; the internal settlement route
-uses its private Bearer key.
-
-The AI receives only the consenting participant’s note and published studio
-facts. It proposes a bounded clarification grounded in an exact quotation.
-The participant confirms meaning; the shared deterministic planner applies
-published prices, availability, technique, outcome, collection and consent
-requirements. Unsupported or unresolved needs block an automatic offer.
-`?mode=structured` preserves the same inputs and note-review controls without
-an AI suggestion. See [the AI protocol](docs/ai-evaluation.md).
-
-Only the registered studio operator can approve a current request. Approval
-atomically reserves the session’s buffered resource interval and freezes its
-catalog facts, roster, price and cancellation terms. Preference changes
-invalidate drafts; issued offers cannot be rewritten.
-
-Each accepted share creates a participant-owned AUTHORIZE order. Returning
-from PayPal is not proof of approval: the server checks the stored order and
-payer. Sequential capture begins only after all required authorizations qualify.
-A booking confirms only after every capture is verified and the reservation
-still qualifies before its deadline. Failed or late settlement schedules actual
-refunds and voids; unresolved results remain visible.
-
-Durable operations retain their original request IDs and payload hashes. Stale
-workers cannot overwrite newer results. Unknown outcomes are checked through
-GETs; replay is disabled when retention is unknown or expired. Provider links
-cannot select an untrusted outbound destination. PostgreSQL enforces overlapping
-reservation exclusion and persistent webhook deduplication.
-
-Studio cancellation releases inventory and schedules full refunds. A participant
-cancellation request alone changes no booking. Another planning round opens only
-when the prior round’s financial recovery is complete. See
-[studio setup](docs/studio-setup.md) and the scoped
-[cancellation evidence](evidence/web/cancellation-flow.json).
-
-## Free deployment
-
-The live preview uses one Render Free Node service, the existing Supabase Free
-project, and a DNS-only Cloudflare CNAME for the subdomain. The local origin and
-other domain records are preserved. `render.yaml` keeps code deploys manual and
-stores no credentials.
-
-Supabase’s private Cron function invokes bounded settlement processing only
-while offers or recovery work exist. It uses synchronous HTTPS with verified
-TLS and a private Vault key; no shared HTTP request queue or paid worker is used.
-The app runtime cannot read Vault or invoke the private Cron function.
-
-Read [deployment](docs/deployment.md), [hosted database](docs/hosted-database.md),
-[shared request limits](docs/request-limits.md) and
-[PayPal webhook configuration](docs/paypal-webhooks.md) before reproducing hosting.
-The sandbox webhook subscription is registered and its trusted ID is saved in
-Render. All twelve genuine notifications for the hosted six-buyer booking were
-processed. PayPal Developer also confirms a delivered duplicate with HTTP 200;
-the original receipt and six captures stayed unchanged. See
-[webhook retransmission evidence](evidence/web/hosted-webhook-retransmission.json).
-
-Before rollback, stop new checkout and preserve compatible recovery processing
-until outstanding financial work is reconciled. Keep payment history and additive
-schema. Removing the trusted webhook ID makes the receiver fail closed; that
-disabled gate was exercised on hosting. Full active-payment rollback and cold
-wake drills remain pending.
-
-## Demo and release
-
-The [155-second recording plan](docs/demo-plan.md) follows one six-friend booking
-and identifies the separate three-buyer recovery proof. The actual recording and
-public YouTube video are not finished. Source uses the [MIT license](LICENSE);
-[gowtham0992/rally](https://github.com/gowtham0992/rally) is the sole working
-repository, containing the application, assets, license, setup instructions and
-development history. It stays private until the owner is ready to submit.
-The duplicate snapshot repository and its local checkout were removed with
-the owner's approval; its Git history remains in an ignored private backup.
-See [repository policy and release history](docs/public-source.md) and
-[clean setup verification](evidence/clean-source-setup.json).
-The [working submission copy](devpost-submission.md) covers the current official
-form, scoped evidence and remaining release gates. Its description and tool list
-were saved to the existing [Devpost project](https://devpost.com/software/rally-m2lakh).
-Saving unexpectedly published the project page; it is hidden from the owner's
-portfolio, but its direct URL remains accessible. The hackathon entry remains
-incomplete and unsubmitted, and the video is missing. See
-[the verified save record](evidence/devpost-project-save.json).
+The sole repository is `gowtham0992/rally`, under the [MIT license](LICENSE).
+It remains private until the owner chooses to publish. Video and Devpost
+submission are owner-controlled final-week work.

@@ -6,6 +6,7 @@ import {transaction} from '../db.ts';
 import {clarify,type Clarification} from '../ai/clarifier.ts';
 import {validateInterpretation} from '../planning/interpretation.ts';
 import {preferenceSchema} from '../planning/domain.ts';
+import {answerConsequences,type AnswerConsequence} from '../planning/consequences.ts';
 import {confirmedMeaning,reviewProposal,type Proposal,type MeaningBound} from '../planning/meaning.ts';
 import {IntakeService,IntakeError,type IntakeActor} from './service.ts';
 const base={commandId:z.uuid(),groupId:z.uuid(),expectedRevision:z.number().int().nonnegative(),preferenceId:z.uuid()};
@@ -14,7 +15,7 @@ const answerSchema=z.strictObject({...base,clarificationId:z.uuid(),answerId:z.s
 const structuredSchema=z.strictObject({...base,declaresNoAdditionalMustHaves:z.literal(true)});
 const declineSchema=z.strictObject({...base,clarificationId:z.uuid()});
 type Model=(input:{revisionId:string;text:string;catalog:unknown})=>Promise<Clarification>;
-export type ClarificationView={id:string;status:string;sourcePreferenceId:string;sourceGroupRevision:number;proposal:Proposal|null;questionsRemaining:number};
+export type ClarificationView={id:string;status:string;sourcePreferenceId:string;sourceGroupRevision:number;proposal:Proposal|null;questionsRemaining:number;consequences:AnswerConsequence[]};
 export class ClarificationService {
  private intake:IntakeService;
  constructor(private pool:pg.Pool,private model:Model=clarify){this.intake=new IntakeService(pool);}
@@ -46,7 +47,9 @@ export class ClarificationService {
    const expired=(await c.query("UPDATE planning_clarifications SET status='REVIEW',result=NULL WHERE id=$1 AND clock_timestamp()>coalesce(started_at,created_at)+interval '45 seconds' RETURNING id",[row.id])).rowCount;
    if(expired){row.status='REVIEW';row.result=null;}
   }
-  return {id:row.id,status:row.status,sourcePreferenceId:row.source_preference_id,sourceGroupRevision:row.source_group_revision,proposal:row.status==='READY'?row.result:null,questionsRemaining:2-member.ai_questions};
+  const proposal:Proposal|null=row.status==='READY'?row.result:null;
+  const consequences=proposal?answerConsequences(group.catalog,preferenceSchema.parse(member.confirmed),proposal,group.target_size):[];
+  return {id:row.id,status:row.status,sourcePreferenceId:row.source_preference_id,sourceGroupRevision:row.source_group_revision,proposal,questionsRemaining:2-member.ai_questions,consequences};
  });}
  async start(a:IntakeActor,value:unknown){
   const p=startSchema.parse(value);
