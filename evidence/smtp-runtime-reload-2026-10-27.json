@@ -1,0 +1,15 @@
+{
+  "observedAt": "2026-10-28T05:09:07.249Z",
+  "runtimeReloadVerified": true,
+  "authEmailLimitPerHour": 30,
+  "changes": [
+    {
+      "time": "2026-10-28T05:08:44.000000",
+      "message": "reloading api with new configuration"
+    },
+    {
+      "time": "2026-10-28T05:08:44.000000",
+      "message": "env GOTRUE_RATE_LIMIT_EMAIL_SENT changed, updating Email limiter from 29 to 30"
+    }
+  ]
+}

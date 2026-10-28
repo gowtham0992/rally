@@ -30,9 +30,9 @@ to enter it. Being away for two weeks alone does not prove later self-pickup
 is impossible. Do not instruct anyone to write “I leave Friday”, invoke AI or
 choose a particular friend.
 
-Before recruiting, configure an owner-approved SMTP sender: the current
-built-in sender delivers only to project-team addresses. Do not work around
-this by adding research participants to the administrative project team.
+The owner-approved [Resend Free sender](free-smtp-2026-10-27.md) is configured.
+Confirm the recorded delivery result before recruiting. Do not add research
+participants to the administrative project team.
 
 Use their own phones/browsers and emails, with sandbox buyer credentials for
 checkout. First rehearse with team members through the actual WhatsApp/iMessage

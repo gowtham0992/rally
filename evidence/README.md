@@ -38,6 +38,7 @@ Verified 2026-10-27. Historical provider and AI runs retain their own dates.
 | Judge capacity | 10 untouched of 12 total workspaces | Read-only checks, 27 Oct; no new identities or leases |
 | Hosted active failure recovery | Unverified | The hosted six-buyer success is separate |
 | Human groups / studios observed | 0 / 0 | Capacity-hold demand remains unvalidated |
+| Free email sign-in | Resend Delivered; owner confirmed sign-in | One external-to-team recipient, same Chrome browser; phones unverified, 27 Oct |
 <!-- END CURRENT TRUTH -->
 
 ## What remains untested

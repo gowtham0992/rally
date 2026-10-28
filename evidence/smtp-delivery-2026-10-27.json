@@ -1,0 +1,19 @@
+{
+  "observedAt": "2026-10-28T05:10:33.032265+00:00",
+  "provider": "Resend",
+  "providerPlan": "Free",
+  "domain": "mail.rally.gowthamsarveswaran.com",
+  "status": "Delivered",
+  "providerEmailId": "01a180e9-88d4-7404-a0bc-110070e39d5c",
+  "recipientOutsideSupabaseProjectTeam": true,
+  "recipientAddressOmitted": true,
+  "approvedEmailRequests": 2,
+  "firstRequestSender": "Supabase built-in sender; runtime had not reloaded restored SMTP configuration",
+  "replacementRequestSender": "Resend custom SMTP after observed runtime reload",
+  "sameBrowserSigninConfirmedByOwner": true,
+  "independentBrowserObservationOfCompletedSignin": false,
+  "newAuthAccountsCreated": 0,
+  "phoneAndChatAppFlowVerified": false,
+  "independentFriendGroupStudyPerformed": false,
+  "privateScreenshot": "evidence/private/resend-auth-delivered.png"
+}

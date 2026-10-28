@@ -1,0 +1,10 @@
+{
+  "observedAt": "2026-10-28T04:51:18.736Z",
+  "host": "smtp.resend.com",
+  "port": 465,
+  "tlsCertificateVerified": true,
+  "tlsProtocol": "TLSv1.3",
+  "smtpAuthenticationVerified": true,
+  "emailsSent": 0,
+  "scope": "TLS handshake and SMTP AUTH only; no MAIL, RCPT or DATA command."
+}

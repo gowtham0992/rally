@@ -33,7 +33,7 @@ payment corrections. Video and submission remain owner-controlled later work.
   and refund. Separate payments can partially succeed; completed charges then
   need refunds. No immediate-release or all-or-nothing payment promise is made.
 
-## Free email sign-in decision
+## Earlier Free email sign-in decision
 
 The owner explicitly chose to retain Free magic-link sign-in. Supabase rejected
 both template update attempts: its Free built-in provider does not permit email
@@ -44,7 +44,8 @@ managed identity, HttpOnly cookies, exact-Origin checks and quotas remain.
 The login page now explains opening chat invitations in the intended browser
 before requesting the email link. The built-in sender also delivers only to project-team email addresses, per
 [Supabase’s SMTP documentation](https://supabase.com/docs/guides/auth/auth-smtp).
-External friends need custom SMTP before an uncoached email-login study. Actual
+This earlier sender decision was superseded by the owner-approved
+[Resend Free SMTP setup](free-smtp-2026-10-27.md). Actual
 multi-device/browser delivery remains a rehearsal gate; instructions do not
 resolve or verify it.
 

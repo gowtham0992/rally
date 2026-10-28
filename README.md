@@ -57,6 +57,7 @@ Verified 2026-10-27. Historical provider and AI runs retain their own dates.
 | Judge capacity | 10 untouched of 12 total workspaces | Read-only checks, 27 Oct; no new identities or leases |
 | Hosted active failure recovery | Unverified | The hosted six-buyer success is separate |
 | Human groups / studios observed | 0 / 0 | Capacity-hold demand remains unvalidated |
+| Free email sign-in | Resend Delivered; owner confirmed sign-in | One external-to-team recipient, same Chrome browser; phones unverified, 27 Oct |
 <!-- END CURRENT TRUTH -->
 
 [The evidence index](evidence/README.md) leads to the hosted six-buyer result,
@@ -97,10 +98,11 @@ has not been independently tested.
 ## Run the app
 
 The app uses the existing Supabase Auth project for PKCE email-link login.
-The owner retains the Free built-in sender, whose recipients are restricted to
-project-team addresses. External friend testing needs custom SMTP; it is not
-configured in this release. The prepared judge path uses separate managed
-identities. Copy
+The hosted project uses Resend Free custom SMTP from the verified
+`mail.rally.gowthamsarveswaran.com` subdomain. Email confirmation and the
+same-browser magic-link flow remain enabled. Delivery verification is recorded
+in [the SMTP setup notes](docs/free-smtp-2026-10-27.md). The prepared judge path
+uses separate managed identities. Copy
 `.env.example` to `.env.local` without overwriting an existing configuration.
 Set a local application database, `APP_ORIGIN=http://localhost:3000`, the
 Supabase URL/client-safe publishable key and a stable private rate-limit key.

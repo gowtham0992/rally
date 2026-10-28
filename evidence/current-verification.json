@@ -51,6 +51,11 @@
       "claim": "Human groups / studios observed",
       "result": "0 / 0",
       "scope": "Capacity-hold demand remains unvalidated"
+    },
+    {
+      "claim": "Free email sign-in",
+      "result": "Resend Delivered; owner confirmed sign-in",
+      "scope": "One external-to-team recipient, same Chrome browser; phones unverified, 27 Oct"
     }
   ],
   "local": {
@@ -130,13 +135,20 @@
   ],
   "sourceSecretFindings": 0,
   "emailSignin": {
-    "ownerDecision": "Keep Free magic-link sign-in",
+    "ownerDecision": "Use Resend Free custom SMTP with existing magic-link sign-in",
     "pkceFlowPreserved": true,
     "emailTemplatesUnchanged": true,
     "emailCodeRuntimeShipped": false,
-    "recipientGate": "Supabase built-in SMTP is restricted to project-team addresses. External friend trials require custom SMTP.",
+    "recipientGate": "Verified dedicated sender; one recipient outside the project team received the test email and confirmed same-browser sign-in.",
     "source": "https://supabase.com/docs/guides/auth/auth-smtp",
-    "deliveryTestPerformed": false
+    "deliveryTestPerformed": true,
+    "provider": "Resend Free",
+    "smtpConfigured": true,
+    "emailConfirmationPreserved": true,
+    "authEmailLimitPerHour": 30,
+    "deliveryReport": "evidence/smtp-delivery-2026-10-27.json",
+    "sameBrowserSigninConfirmedByOwner": true,
+    "phoneAndChatAppFlowVerified": false
   },
   "newAuthAccounts": 0,
   "newJudgeLeases": 0,

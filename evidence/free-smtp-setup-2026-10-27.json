@@ -1,0 +1,19 @@
+{
+  "observedAt": "2026-10-28T05:08:41.549Z",
+  "provider": "Resend",
+  "providerPlan": "Free",
+  "smtpHost": "smtp.resend.com",
+  "port": 465,
+  "from": "signin@mail.rally.gowthamsarveswaran.com",
+  "senderName": "Rally",
+  "authEmailLimitPerHour": 30,
+  "allOtherAuthSettingsUnchanged": true,
+  "emailVerificationPreserved": true,
+  "magicLinkTemplatesPreserved": true,
+  "credentialsStored": "Supabase private Auth configuration; ignored local .env.smtp only",
+  "credentialsInAppRuntime": false,
+  "emailsSentBySetup": 0,
+  "deliveryVerified": true,
+  "deliveryReport": "evidence/smtp-delivery-2026-10-27.json",
+  "sameBrowserSigninConfirmedByOwner": true
+}
