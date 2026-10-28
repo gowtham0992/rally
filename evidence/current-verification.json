@@ -111,10 +111,17 @@
   "newPayPalOperations": 0,
   "emailsSent": 0,
   "hosting": {
-    "state": "release pending",
-    "previousCommit": "4ac7304052b963931970c8263fae0996bb60151c",
+    "state": "live",
+    "origin": "https://rally.gowthamsarveswaran.com",
+    "plan": "Free",
+    "commit": "0073eab0a5f57707852b841766ed1806c9ce4c8f",
+    "deployId": "dep-dbgn8puc6qcc73c5djc0",
+    "observedDurationSeconds": 79,
     "migration": "015_planning_roster",
-    "protectedHostedHistoryUnchanged": true
+    "readOnlyAndAnonymousDenialChecksPassed": 24,
+    "exactScreenshotHashesMatched": 12,
+    "protectedHostedHistoryUnchanged": true,
+    "report": "evidence/web/usability-release-2026-10-27.json"
   },
   "ownerControlledDeferred": [
     "Demo video",

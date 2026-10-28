@@ -93,3 +93,21 @@ The corrected [study plan](uncoached-study-2026-10-27.md) separates comprehensio
 uncoached completion, preference and infrastructure. No adoption or usability
 success is inferred from these automated/controlled checks. The video, Devpost
 page and repository visibility are unchanged by this work.
+
+## Released verification
+
+Runtime commit `0073eab` is live on the existing Render Free service, deploy
+`dep-dbgn8puc6qcc73c5djc0`, completed in 79 seconds. Final source passed
+**194 tests**, all **62 existing deliberate guard mutations**, typecheck and
+production build. The staged source scan found no secrets. Responsive checks
+covered 375px, 768px and the desktop layout; application console warnings/errors
+were zero, excluding browser extensions.
+
+Twenty-four hosted checks passed, including ready health, public pages, the
+original twelve recorded screenshot hashes and reports, anonymous denial of
+planning commands and the absence of the deferred email-code endpoint. No
+judge workspace was claimed. All original financial, offer, preference, consent
+and original workspace/group fingerprints matched the before-release snapshot.
+Ten untouched judge workspaces remain; no existing membership was excluded.
+
+[Hosted release report](../evidence/web/usability-release-2026-10-27.json).
