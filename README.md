@@ -43,7 +43,7 @@ judge sessions end December 16 at 00:00 UTC. [Capacity and provisioning](docs/ju
 ## Verified scope
 
 <!-- BEGIN CURRENT TRUTH -->
-Verified 2026-10-23. Historical provider and AI runs retain their own dates.
+Verified 2026-10-27. Historical provider and AI runs retain their own dates.
 
 | Claim | Result | Scope |
 | --- | --- | --- |
@@ -51,10 +51,10 @@ Verified 2026-10-23. Historical provider and AI runs retain their own dates.
 | Signed notifications | 12 processed; delivered duplicate unchanged | Hosted 3 Oct; duplicate response body not captured |
 | Failure compensation | Refund + remaining voids; lost-response recovery | Separate local service with 3 real sandbox buyers |
 | AI evaluation | 72/72 final quality assessments; 0 safety failures | 24 authored cases × 3; earlier failures retained, 2 Oct |
-| Local suite | 186 passed; 0 failed | Disposable PostgreSQL; controlled Auth/model/provider, 23 Oct |
-| Guard mutations | 62/62 caught | Existing checks rerun on 23 Oct; review’s 40 count was stale |
-| TypeScript / production build | Passed | 23 Oct; Node 25.6.0 |
-| Judge capacity | 10 untouched of 12 total workspaces | 49 approved new fictional Auth accounts; no emails or payments, 23 Oct |
+| Local suite | 194 passed; 0 failed | Disposable PostgreSQL; controlled Auth/model/provider, 27 Oct |
+| Guard mutations | 62/62 caught | Existing checks rerun on 27 Oct |
+| TypeScript / production build | Passed | 27 Oct; Node 25.6.0 locally |
+| Judge capacity | 10 untouched of 12 total workspaces | Read-only checks, 27 Oct; no new identities or leases |
 | Hosted active failure recovery | Unverified | The hosted six-buyer success is separate |
 | Human groups / studios observed | 0 / 0 | Capacity-hold demand remains unvalidated |
 <!-- END CURRENT TRUTH -->
@@ -91,12 +91,16 @@ suite and without concurrent source edits:
 TEST_DATABASE_URL=postgresql://rally:rally_local_only@127.0.0.1:55439/rally npm run test:mutations
 ```
 
-The October 23 verification used Node 25.6.0. The declared minimum Node version
+The October 27 verification used Node 25.6.0. The declared minimum Node version
 has not been independently tested.
 
 ## Run the app
 
-The app needs the existing Supabase Auth project for email-link login. Copy
+The app uses the existing Supabase Auth project for PKCE email-link login.
+The owner retains the Free built-in sender, whose recipients are restricted to
+project-team addresses. External friend testing needs custom SMTP; it is not
+configured in this release. The prepared judge path uses separate managed
+identities. Copy
 `.env.example` to `.env.local` without overwriting an existing configuration.
 Set a local application database, `APP_ORIGIN=http://localhost:3000`, the
 Supabase URL/client-safe publishable key and a stable private rate-limit key.
@@ -125,3 +129,6 @@ fixed sandbox origin; AI has no payment authority. [Studio setup](docs/studio-se
 The sole repository is `gowtham0992/rally`, under the [MIT license](LICENSE).
 It remains private until the owner chooses to publish. Video and Devpost
 submission are owner-controlled final-week work.
+
+[October 27 usability changes](docs/usability-implementation-2026-10-27.md) ·
+[Corrected uncoached study](docs/uncoached-study-2026-10-27.md).

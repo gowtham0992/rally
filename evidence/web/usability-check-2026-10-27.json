@@ -1,0 +1,20 @@
+{
+  "date": "2026-10-27",
+  "scope": "Actual React StrictMode components with real planning/clarification/booking services and disposable local PostgreSQL. Preauthenticated fictional actors, controlled model/payment responses. Not independent human usability or managed email delivery.",
+  "tests": 194,
+  "guardMutationsCaught": 62,
+  "typecheck": "passed",
+  "build": "passed",
+  "phoneWidth": 375,
+  "phoneScrollWidth": 375,
+  "emailsSent": 0,
+  "hostedJudgeLeasesClaimed": 0,
+  "managedEmailDelivery": "not tested; owner retains Free magic links",
+  "observedHumanGroups": 0,
+  "protectedHistoryUnchangedAfterMigration": true,
+  "sourceChangesFromBrowserPass": "Action controls moved above optional session preview; withdrawn pickup clears old nominee selection; removed-friend view hides the live group progress counter.",
+  "externalPayPalCalls": 0,
+  "externalModelCalls": 0,
+  "controlledModelFixtureUsed": true,
+  "simulatedPaymentProviderUsed": true
+}

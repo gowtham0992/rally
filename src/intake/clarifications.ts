@@ -26,7 +26,7 @@ export class ClarificationService {
   const member=(await c.query(`SELECT m.*,p.confirmed,p.optional_text,p.wording_bound,
    coalesce((to_jsonb(p)->>'private_text_expires_at')::timestamptz<=clock_timestamp(),false) AS private_text_expired
    FROM planning_members m LEFT JOIN preference_revisions p ON p.id=m.current_preference_id WHERE m.group_id=$1 AND m.user_id=$2`,[id,a.userId])).rows[0];
-  if(!member||(group.state!=='COLLECTING'&&!member.admitted))throw new IntakeError('NOT_FOUND');
+  if(!member||member.excluded||(group.state!=='COLLECTING'&&!member.admitted))throw new IntakeError('NOT_FOUND');
   if(member.private_text_expired)member.optional_text=null;
   return {group,member};
  }

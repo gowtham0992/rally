@@ -1,0 +1,11 @@
+{
+  "observedAt": "2026-10-28T03:55:46.367Z",
+  "ownerDecision": "Keep Free magic-link sign-in",
+  "pkceFlowPreserved": true,
+  "emailTemplatesUnchanged": true,
+  "emailCodeRuntimeShipped": false,
+  "providerRestriction": "The Free built-in email provider rejected template modification with HTTP 400.",
+  "smtpConfigured": false,
+  "paidPlanEnabled": false,
+  "emailsSent": 0
+}

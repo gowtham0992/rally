@@ -12,7 +12,7 @@ const requestSchema=z.strictObject({commandId:uuid,groupId:uuid,expectedRevision
 const approveSchema=z.strictObject({commandId:uuid,requestId:uuid,expectedRevision:z.number().int().nonnegative(),
  factsConfirmed:z.literal(true),externalCalendarBlocked:z.literal(true),automaticSettlementAgreed:z.literal(true),collectionArrangementsAgreed:z.literal(true)});
 const declineSchema=z.strictObject({commandId:uuid,requestId:uuid,expectedRevision:z.number().int().nonnegative(),reason:z.enum(['UNAVAILABLE','CANNOT_DELIVER','OTHER'])});
-const reopenSchema=z.strictObject({commandId:uuid,groupId:uuid,offerId:uuid,expectedRevision:z.number().int().nonnegative(),offerHash:z.string().length(64),acknowledgesNewApprovals:z.literal(true)});
+const reopenSchema=z.strictObject({commandId:uuid,groupId:uuid,offerId:uuid,expectedRevision:z.number().int().nonnegative(),offerHash:z.string().length(64),acknowledgesNewApprovals:z.literal(true),reviewRoster:z.boolean().optional()});
 const checkPaymentSchema=z.strictObject({commandId:uuid,offerId:uuid,operationId:uuid});
 const evidenceSchema=z.strictObject({commandId:uuid,operationId:uuid,
  expectedOperationState:z.enum(['UNKNOWN','PENDING','ACTION_REQUIRED','FAILED']),
@@ -77,7 +77,7 @@ export class BookingService {
    WHERE r.group_id=$1 AND r.state='APPROVED' ORDER BY r.planning_revision DESC LIMIT 1`,[g.id])).rows[0];
   if(!latest||latest.id!==p.offerId||latest.offer_hash!==p.offerHash)throw new DomainError('STALE_OFFER');
   await this.recovered(c,g.id);
-  await c.query("UPDATE planning_groups SET state='CLOSED',revision=revision+1,candidate=NULL WHERE id=$1",[g.id]);
+  await c.query("UPDATE planning_groups SET state=$2,revision=revision+1,candidate=NULL WHERE id=$1",[g.id,p.reviewRoster?'COLLECTING':'CLOSED']);
   await c.query("INSERT INTO planning_events(group_id,revision,kind) VALUES($1,$2,'PLANNING_REOPENED')",[g.id,g.revision+1]);
   return {groupId:g.id as string,revision:g.revision+1};
  });}
@@ -292,13 +292,19 @@ export class BookingService {
     OR EXISTS(SELECT 1 FROM merchant_studios s WHERE s.studio_id=os.snapshot->'candidate'->>'studioId' AND s.owner_user_id=$2))`,[offerId,actor.userId])).rows[0];
   if(!row)throw new DomainError('NOT_FOUND',404);assertWorkspaceScope(actor,row);const snapshot=snapshotSchema.parse(row.snapshot);
   if(fingerprint(snapshot)!==row.offer_hash)throw new DomainError('OFFER_INTEGRITY_FAILURE',500);
+  // Organizer sees only an action status. No payer identity, provider reference,
+  // decline reason or per-person transaction history crosses this projection.
+  const approvalSteps=row.is_organizer?(await this.pool.query(`SELECT m.ordinal,
+   CASE WHEN m.qualified_at IS NOT NULL THEN 'VERIFIED'
+    WHEN EXISTS(SELECT 1 FROM payment_operations p WHERE p.member_id=m.id AND p.kind='AUTHORIZE' AND p.state IN ('PLANNED','DISPATCHED','UNKNOWN','PENDING','ACTION_REQUIRED')) THEN 'CHECKING'
+    ELSE 'NEEDS_APPROVAL' END AS status FROM offer_members m WHERE m.offer_id=$1 ORDER BY m.ordinal`,[offerId])).rows.map(m=>({memberId:snapshot.roster[m.ordinal].memberId,displayName:snapshot.roster[m.ordinal].displayName,status:m.status as 'VERIFIED'|'CHECKING'|'NEEDS_APPROVAL'})):null;
   const paymentRecords=row.is_merchant?(await this.pool.query(`SELECT p.id,p.kind,m.ordinal FROM payment_operations p JOIN offer_members m ON m.id=p.member_id
    WHERE p.offer_id=$1 AND (p.state IN ('UNKNOWN','PENDING','ACTION_REQUIRED') OR p.kind IN ('VOID','REFUND') AND p.state='FAILED'
     OR EXISTS(SELECT 1 FROM payment_reconciliation_evidence e WHERE e.operation_id=p.id)) ORDER BY m.ordinal,p.created_at,p.id LIMIT 40`,[offerId])).rows.map(p=>({operationId:p.id as string,kind:p.kind as string,memberName:snapshot.roster[p.ordinal].displayName})):[];
   return {offerHash:row.offer_hash,booking:row.state,snapshot,cleanup:row.cleanup as string,planningRevision:row.planning_revision as number,
    isParticipant:row.is_participant as boolean,isMerchant:row.is_merchant as boolean,isOrganizer:row.is_organizer as boolean,
    isCurrentRound:Boolean(row.is_latest&&row.planning_state==='OFFER_ISSUED'),
-   paymentApprovalProgress:{verified:row.verified_approvals as number,total:snapshot.roster.length},paymentRecords,cancellationRequested:row.is_participant?row.cancellation_requested as boolean:false,
+   paymentApprovalProgress:{verified:row.verified_approvals as number,total:snapshot.roster.length},approvalSteps,paymentRecords,cancellationRequested:row.is_participant?row.cancellation_requested as boolean:false,
    cancellationRequestCount:row.is_merchant?row.cancellation_request_count as number:null,
    canReopen:Boolean(row.is_organizer&&row.is_latest&&row.planning_state==='OFFER_ISSUED'&&closedBookings.has(row.state)&&row.cleanup==='COMPLETE')};
  }

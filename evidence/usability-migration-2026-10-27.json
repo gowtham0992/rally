@@ -1,0 +1,11 @@
+{
+  "observedAt": "2026-10-28T03:36:19.056Z",
+  "version": "015_planning_roster",
+  "applied": true,
+  "paymentRowsChanged": 0,
+  "offerRowsChanged": 0,
+  "consentRowsChanged": 0,
+  "existingMembershipsExcluded": 0,
+  "browserPermissionsAdded": 0,
+  "scope": "Existing planning_members rows receive excluded=false; collection audit and email verification quota scopes remain finite. No public/API grants or financial transitions changed."
+}

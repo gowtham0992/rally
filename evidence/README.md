@@ -24,7 +24,7 @@ credentials, and it does not send email or create real payments. Follow the
 ## Current truth
 
 <!-- BEGIN CURRENT TRUTH -->
-Verified 2026-10-23. Historical provider and AI runs retain their own dates.
+Verified 2026-10-27. Historical provider and AI runs retain their own dates.
 
 | Claim | Result | Scope |
 | --- | --- | --- |
@@ -32,10 +32,10 @@ Verified 2026-10-23. Historical provider and AI runs retain their own dates.
 | Signed notifications | 12 processed; delivered duplicate unchanged | Hosted 3 Oct; duplicate response body not captured |
 | Failure compensation | Refund + remaining voids; lost-response recovery | Separate local service with 3 real sandbox buyers |
 | AI evaluation | 72/72 final quality assessments; 0 safety failures | 24 authored cases × 3; earlier failures retained, 2 Oct |
-| Local suite | 186 passed; 0 failed | Disposable PostgreSQL; controlled Auth/model/provider, 23 Oct |
-| Guard mutations | 62/62 caught | Existing checks rerun on 23 Oct; review’s 40 count was stale |
-| TypeScript / production build | Passed | 23 Oct; Node 25.6.0 |
-| Judge capacity | 10 untouched of 12 total workspaces | 49 approved new fictional Auth accounts; no emails or payments, 23 Oct |
+| Local suite | 194 passed; 0 failed | Disposable PostgreSQL; controlled Auth/model/provider, 27 Oct |
+| Guard mutations | 62/62 caught | Existing checks rerun on 27 Oct |
+| TypeScript / production build | Passed | 27 Oct; Node 25.6.0 locally |
+| Judge capacity | 10 untouched of 12 total workspaces | Read-only checks, 27 Oct; no new identities or leases |
 | Hosted active failure recovery | Unverified | The hosted six-buyer success is separate |
 | Human groups / studios observed | 0 / 0 | Capacity-hold demand remains unvalidated |
 <!-- END CURRENT TRUTH -->

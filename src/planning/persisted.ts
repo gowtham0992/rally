@@ -7,7 +7,7 @@ export async function confirmedPlan(client:PoolClient,groupId:string,catalogValu
  const catalog=catalogSchema.parse(catalogValue);
  const rows=(await client.query(`SELECT m.id,m.user_id,m.display_name,p.id AS preference_id,p.confirmed
   FROM planning_members m JOIN preference_revisions p ON p.id=m.current_preference_id
-  WHERE m.group_id=$1 AND m.admitted ORDER BY m.id`,[groupId])).rows;
+  WHERE m.group_id=$1 AND m.admitted AND NOT coalesce((to_jsonb(m)->>'excluded')::boolean,false) ORDER BY m.id`,[groupId])).rows;
  const preferences=rows.map(r=>preferenceSchema.parse(r.confirmed));
  if(preferences.some((p,i)=>p.memberId!==rows[i].id||p.revisionId!==rows[i].preference_id))throw new Error('Invalid preference ownership');
  const consentRows=(await client.query(`SELECT cs.* FROM collection_consents cs

@@ -48,5 +48,5 @@ test('fit summary distinguishes unsaved, private unresolved and actually shared 
  const candidate=planGroup(catalog,Array.from({length:6},(_,i)=>({...pref,extraRequirement:'NONE',memberId:`00000000-0000-4000-8000-00000000000${i}`})));
  assert.ok(html(pref,false,candidate).includes('everyone’s confirmed choices'));
  assert.ok(!html(pref,true,candidate).includes('everyone’s confirmed choices'));
- assert.ok(html({...pref,extraRequirement:'NONE',collection:'NOMINEE_LATER'}).includes('collection plan needs agreement'));
+ assert.ok(html({...pref,extraRequirement:'NONE',collection:'NOMINEE_LATER'}).includes('pickup plan needs agreement'));
 });

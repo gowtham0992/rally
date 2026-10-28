@@ -13,6 +13,6 @@ export function privateFeedback(catalog:Catalog,p:Preference,groupSize:number):s
  options=options.filter(({o})=>o.priceMinor<=p.budgetMinor);if(!options.length)return 'No matching session is within your spending limit. Your limit stays private and won’t be changed for you.';
  options=options.filter(({o,slot})=>!p.latestFinishAt||Date.parse(slot.startAt)+o.durationMinutes*60000<=Date.parse(p.latestFinishAt));if(!options.length)return 'No matching session ends before your leave-by time. Your time limit stays private and saved.';
  options=options.filter(({o})=>(!o.requiresLaterCollection||p.collection!=='SAME_DAY_REQUIRED')&&(p.collection!=='NOMINEE_LATER'||o.nomineeCollectionAllowed));if(!options.length)return 'The available sessions can’t meet your collection requirement. Your must-have stays saved.';
- if(p.collection==='NOMINEE_LATER'&&!p.nomineeMemberId)return 'Your collection need is saved. Once your friends join, choose a collector in your details. Both of you need to agree before a session can be requested.';
+ if(p.collection==='NOMINEE_LATER'&&!p.nomineeMemberId)return 'Your pickup need is saved. Ask a friend here; both of you need to agree before a session can be requested.';
  return null;
 }
