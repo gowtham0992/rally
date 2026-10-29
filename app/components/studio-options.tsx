@@ -11,8 +11,8 @@ export default function StudioOptions({catalog,showDates=true,showPolicies=true}
    <div><h3>{o.name}</h3><p>{o.outcome==='DECORATE_EXISTING'?'Decorate an existing piece':o.technique==='WHEEL'?'Form your own cup on the wheel':'Form your own cup by hand'} · {o.durationMinutes} minutes</p></div>
    <strong>{money(o.priceMinor)}</strong>
   </li>)}</ul>:<p className="muted">The studio hasn’t published verified activities yet.</p>}
-  {offerings.length>0&&<p className="field-help">{offerings.every(o=>o.requiresLaterCollection)?'Pieces are fired after your visit and collected later.':'Collection depends on your activity.'} {offerings.every(o=>o.nomineeCollectionAllowed)?'You can collect your piece, or ask a friend to agree to collect it.':'Check the studio’s collection arrangements before booking.'}</p>}
-  {showDates&&<div className="published-dates"><p className="eyebrow">Published starts · {catalog.timezone}</p>{slots.length?<ul>{slots.map(s=><li key={s.id}>{localDate(s.startAt,catalog.timezone)}</li>)}</ul>:<p className="field-help">The studio hasn’t published dates yet.</p>}</div>}
+  {offerings.length>0&&<p className="field-help">{offerings.every(o=>o.requiresLaterCollection)?'Pieces are fired after your visit and picked up later.':'Pickup depends on your activity.'} {offerings.every(o=>o.nomineeCollectionAllowed)?'You can pick up your piece, or ask a friend to agree to pick it up.':'Check the studio’s pickup arrangements before booking.'}</p>}
+  {showDates&&<div className="published-dates"><p className="eyebrow">Session times · {catalog.timezone}</p>{slots.length?<ul>{slots.map(s=><li key={s.id}>{localDate(s.startAt,catalog.timezone)}</li>)}</ul>:<p className="field-help">The studio hasn’t published dates yet.</p>}</div>}
   {showPolicies&&<StudioPolicies catalog={catalog}/>}
  </section>;
 }

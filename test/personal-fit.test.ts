@@ -64,7 +64,7 @@ test('combined activity choices preserve every existing field combination until 
 
 test('public outing preview explains the actual prices, dates and collection without invitation information',()=>{
  const html=renderToStaticMarkup(createElement(StudioOptions,{catalog}));
- for(const fact of ['$42','$48','$72','75 minutes','90 minutes','120 minutes','Nov 19','Nov 20','collected later'])assert.ok(html.includes(fact),fact);
+ for(const fact of ['$42','$48','$72','75 minutes','90 minutes','120 minutes','Nov 19','Nov 20','picked up later'])assert.ok(html.includes(fact),fact);
  assert.ok(!html.includes(preference.memberId));assert.ok(!html.includes('budgetMinor'));
  const unpublished=renderToStaticMarkup(createElement(StudioOptions,{catalog:{...catalog,offerings:catalog.offerings.map(o=>({...o,verified:false}))}}));assert.ok(!unpublished.includes('$48'));assert.ok(unpublished.includes('hasn’t published verified activities'));
  const empty=renderToStaticMarkup(createElement(StudioOptions,{catalog:{...catalog,slots:[],offerings:[]}}));assert.ok(empty.includes('hasn’t published verified activities'));assert.ok(empty.includes('hasn’t published dates'));

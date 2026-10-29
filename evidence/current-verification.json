@@ -1,6 +1,6 @@
 {
-  "date": "2026-10-27",
-  "observedAt": "2026-10-28T03:58:48.486924+00:00",
+  "date": "2026-10-28",
+  "observedAt": "2026-10-29T02:13:52.690943+00:00",
   "truthRows": [
     {
       "claim": "Hosted group booking",
@@ -24,18 +24,18 @@
     },
     {
       "claim": "Local suite",
-      "result": "194 passed; 0 failed",
-      "scope": "Disposable PostgreSQL; controlled Auth/model/provider, 27 Oct"
+      "result": "204 passed; 0 failed",
+      "scope": "Disposable PostgreSQL; controlled Auth/model/provider, 28 Oct"
     },
     {
       "claim": "Guard mutations",
       "result": "62/62 caught",
-      "scope": "Existing checks rerun on 27 Oct"
+      "scope": "Existing checks rerun on 28 Oct"
     },
     {
       "claim": "TypeScript / production build",
       "result": "Passed",
-      "scope": "27 Oct; Node 25.6.0 locally"
+      "scope": "28 Oct; Node 25.6.0 locally"
     },
     {
       "claim": "Judge capacity",
@@ -59,15 +59,15 @@
     }
   ],
   "local": {
-    "tests": 194,
-    "passed": 194,
+    "tests": 204,
+    "passed": 204,
     "failed": 0,
     "mutations": 62,
     "mutationsCaught": 62,
     "typecheck": "passed",
     "productionBuild": "passed",
     "node": "25.6.0",
-    "newBehaviorTests": 8
+    "newBehaviorTests": 10
   },
   "browser": {
     "scope": "Actual React StrictMode components with real planning/clarification/booking services and disposable local PostgreSQL. Preauthenticated fictional actors, controlled model/payment responses. Not independent human usability or managed email delivery.",
@@ -100,7 +100,7 @@
     ]
   },
   "capacity": {
-    "observedDate": "2026-10-27",
+    "observedDate": "2026-10-28",
     "untouchedAvailable": 10,
     "totalWorkspaces": 12,
     "authAccountsCreatedThisSlice": 0,
@@ -152,5 +152,15 @@
   },
   "newAuthAccounts": 0,
   "newJudgeLeases": 0,
-  "migration": "015_planning_roster"
+  "migration": "015_planning_roster",
+  "emailCountScope": "No email was sent by this coherence release; the earlier SMTP test remains in its linked report.",
+  "coherence": {
+    "status": "implemented and locally verified; deployment pending",
+    "report": "evidence/web/coherence-check-2026-10-28.json",
+    "sharedNextStepResolver": true,
+    "sharedPlanShell": true,
+    "nameOnlyCreation": true,
+    "invitationFirst": true,
+    "humanUsabilityVerified": false
+  }
 }

@@ -10,6 +10,6 @@ export function groupStatus(state:string,offerId:string|null,booking:string|null
   if(booking==='SUPERSEDED'||booking==='ABORTED')return {label:'Booking closed',title:'This booking is closed.',heading:'This session did not book.',message:'Open the offer to check your payment recovery. Your organizer can start another round after recovery finishes; a new offer needs fresh approval.'};
   return {label:'Check booking status',title:'Check the studio’s offer.',heading:'Open the offer for its current status.',message:'A booking is confirmed only when every required payment completes.'};
  }
- if(state==='ABANDONED')return {label:'Planning ended',title:'This planning round ended.',heading:'Your details are saved.',message:'This round has no studio offer. You can start a new group from Your plans.'};
- return {label:state==='COLLECTING'?'Getting everyone in':state==='CLOSED'?'Choosing a plan':'Studio review',title:null,heading:null,message:null};
+ if(state==='ABANDONED')return {label:'Planning ended',title:'This plan ended.',heading:'Your details are saved.',message:'This round has no studio offer. You can start a new group from Your plans.'};
+ return {label:state==='COLLECTING'?'Everyone in':state==='CLOSED'?'Pick a session':'Studio is checking',title:null,heading:null,message:null};
 }

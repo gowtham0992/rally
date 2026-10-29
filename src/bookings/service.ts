@@ -281,6 +281,7 @@ export class BookingService {
   const row=(await this.pool.query(`SELECT os.snapshot,o.offer_hash,o.state,o.cleanup,g.revision AS planning_revision,g.state AS planning_state,
     to_jsonb(g)->>'demo_workspace_id' AS demo_workspace_id,
     g.organizer_id=$2 AS is_organizer,
+    (SELECT m.ordinal FROM offer_members m WHERE m.offer_id=o.id AND m.user_id=$2) AS own_ordinal,
     (SELECT count(*)::integer FROM offer_members m WHERE m.offer_id=o.id AND m.qualified_at IS NOT NULL) AS verified_approvals,
     NOT EXISTS(SELECT 1 FROM merchant_requests r WHERE r.group_id=g.id AND r.state='APPROVED' AND r.planning_revision>(os.snapshot->>'planningRevision')::integer) AS is_latest,
     EXISTS(SELECT 1 FROM cancellation_requests cr JOIN offer_members m ON m.id=cr.member_id WHERE m.offer_id=o.id AND m.user_id=$2) AS cancellation_requested,
@@ -301,7 +302,7 @@ export class BookingService {
   const paymentRecords=row.is_merchant?(await this.pool.query(`SELECT p.id,p.kind,m.ordinal FROM payment_operations p JOIN offer_members m ON m.id=p.member_id
    WHERE p.offer_id=$1 AND (p.state IN ('UNKNOWN','PENDING','ACTION_REQUIRED') OR p.kind IN ('VOID','REFUND') AND p.state='FAILED'
     OR EXISTS(SELECT 1 FROM payment_reconciliation_evidence e WHERE e.operation_id=p.id)) ORDER BY m.ordinal,p.created_at,p.id LIMIT 40`,[offerId])).rows.map(p=>({operationId:p.id as string,kind:p.kind as string,memberName:snapshot.roster[p.ordinal].displayName})):[];
-  return {offerHash:row.offer_hash,booking:row.state,snapshot,cleanup:row.cleanup as string,planningRevision:row.planning_revision as number,
+  return {ownPickupNames:row.is_participant?snapshot.collectionArrangements.filter(a=>a.nomineeMemberId===snapshot.roster[row.own_ordinal]?.memberId).map(a=>a.ownerName):[],offerHash:row.offer_hash,booking:row.state,snapshot,cleanup:row.cleanup as string,planningRevision:row.planning_revision as number,
    isParticipant:row.is_participant as boolean,isMerchant:row.is_merchant as boolean,isOrganizer:row.is_organizer as boolean,
    isCurrentRound:Boolean(row.is_latest&&row.planning_state==='OFFER_ISSUED'),
    paymentApprovalProgress:{verified:row.verified_approvals as number,total:snapshot.roster.length},approvalSteps,paymentRecords,cancellationRequested:row.is_participant?row.cancellation_requested as boolean:false,

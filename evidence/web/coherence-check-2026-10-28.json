@@ -1,0 +1,69 @@
+{
+  "observedAt": "2026-10-29T02:13:52.690943+00:00",
+  "scope": "Actual React StrictMode components and real services in disposable PostgreSQL; controlled Auth, AI and payment provider. Not human usability or PayPal integration evidence.",
+  "tests": 204,
+  "testsPassed": 204,
+  "guardMutations": 62,
+  "guardMutationsCaught": 62,
+  "typecheck": "passed",
+  "productionBuild": "passed",
+  "roleStateMatrix": {
+    "scenarios": 17,
+    "roles": 4,
+    "kind": "pure resolver tests"
+  },
+  "browserChecks": [
+    "private note meaning confirmed before changing choices",
+    "inline pickup nomination with disclosure",
+    "collector request first, separate agreement",
+    "organizer seven-to-six dropout",
+    "everyone ready to pending studio review in two actions",
+    "four studio attestations retained",
+    "financial consent initially unchecked; continuation enabled only after checking",
+    "inviter and join action before collapsed catalog",
+    "login names invited plan",
+    "creation asks only for name",
+    "booked collector sees own pickup duty",
+    "canceled session shows refund and recovery; no active approval marker",
+    "stale loaded data pauses actions and retains consent"
+  ],
+  "viewports": [
+    {
+      "width": 375,
+      "height": 755,
+      "screenshots": [
+        "evidence/web/coherence-pickup-mobile-2026-10-28.png",
+        "evidence/web/coherence-invitation-mobile-2026-10-28.png"
+      ]
+    },
+    {
+      "width": 375,
+      "height": 812,
+      "scope": "Final recovery screen"
+    },
+    {
+      "width": 768,
+      "height": 812,
+      "scope": "Recovery screen"
+    },
+    {
+      "browserWidth": 1920,
+      "scope": "Desktop recovery screen"
+    }
+  ],
+  "overflowCheck": "visual inspection; no programmatic scroll-width measurement",
+  "console": {
+    "applicationErrors": 0,
+    "applicationWarnings": 0,
+    "scope": "Final recovery page",
+    "excluded": "Six MetaMask extension warnings and React DevTools informational message"
+  },
+  "externalProviderCalls": 0,
+  "hostedGroupsCreated": 0,
+  "hostedAuthAccountsCreated": 0,
+  "judgeLeasesClaimed": 0,
+  "emailsSent": 0,
+  "humanGroupsObserved": 0,
+  "studiosObserved": 0,
+  "deployment": "pending separate hosted verification"
+}
