@@ -44,7 +44,7 @@ judge sessions end December 16 at 00:00 UTC. [Capacity and provisioning](docs/ju
 ## Verified scope
 
 <!-- BEGIN CURRENT TRUTH -->
-Verified 2026-10-28. Historical provider and AI runs retain their own dates.
+Verified 2026-10-29. Historical provider and AI runs retain their own dates.
 
 | Claim | Result | Scope |
 | --- | --- | --- |
@@ -52,15 +52,15 @@ Verified 2026-10-28. Historical provider and AI runs retain their own dates.
 | Signed notifications | 12 processed; delivered duplicate unchanged | Hosted 3 Oct; duplicate response body not captured |
 | Failure compensation | Refund + remaining voids; lost-response recovery | Separate local service with 3 real sandbox buyers |
 | AI evaluation | 72/72 final quality assessments; 0 safety failures | 24 authored cases × 3; earlier failures retained, 2 Oct |
-| Message-first AI | 8/8 final hosted checks; travel ambiguity fixed | Eight authored fictional cases, one batch; 7/8 earlier attempt preserved, 28 Oct |
-| Local suite | 217 passed; 0 failed | Disposable PostgreSQL; controlled Auth/model/provider, 28 Oct |
-| Guard mutations | 62/62 caught | Existing checks rerun on 28 Oct |
-| TypeScript / production build | Passed | 28 Oct; Node 25.6.0 locally |
-| Judge capacity | 10 untouched of 12 total workspaces | Read-only checks, 28 Oct; no new identities or leases |
+| Optional draft AI | 5/5 final hosted checks; earlier 2/5 retained | Five new authored fictional cases; 10 approved calls total, 29 Oct |
+| Local suite | 224 passed; 0 failed | Disposable PostgreSQL; controlled Auth/model/provider, 29 Oct |
+| Guard mutations | 63/63 caught | Existing protections plus private conflict explanation, 29 Oct |
+| TypeScript / production build | Passed | 29 Oct; Node 25.6.0 locally |
+| Judge capacity | 9 untouched of 12 total workspaces | Read-only checks, 29 Oct; no new identities or leases |
 | Hosted active failure recovery | Unverified | The hosted six-buyer success is separate |
 | Human groups / studios observed | 0 / 0 | Capacity-hold demand remains unvalidated |
 | Free email sign-in | Resend Delivered; owner confirmed sign-in | One external-to-team recipient, same Chrome browser; phones unverified, 27 Oct |
-| Plan interface | One next step, shared plan layout | Controlled browser checks plus 9 public/access checks, 28 Oct; human usability unmeasured |
+| Plan interface | Form first; private blockers and explicit friend decisions | Controlled phone flows plus 12 public/access checks, 29 Oct; human usability unmeasured |
 | Production dependency audit | 0 advisories | Next 16.4.3, Zod 4.6.7; checked 28 Oct |
 <!-- END CURRENT TRUTH -->
 

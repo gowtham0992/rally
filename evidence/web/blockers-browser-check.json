@@ -55,5 +55,22 @@
       "excludedExtensionWarnings": 6
     }
   ],
-  "viewportRestored": true
+  "viewportRestored": true,
+  "automated": {
+    "tests": 224,
+    "passed": 224,
+    "guards": 63,
+    "caught": 63,
+    "typecheck": "passed",
+    "productionBuild": "passed"
+  },
+  "model": {
+    "workerBuild": "fe68b2d4",
+    "firstQualityPassed": 2,
+    "finalQualityPassed": 5,
+    "finalCases": 5,
+    "approvedCalls": 10,
+    "usedCalls": 10,
+    "report": "evidence/message-draft-evaluation-1793256757077.json"
+  }
 }

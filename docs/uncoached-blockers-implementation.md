@@ -77,9 +77,15 @@ a withdrawn person who has not confirmed attendance. Studio-contact attestations
 are private participant assertions, never merchant-verified facts. The repository
 stays private; hosting stays on the existing free services and model credits.
 
-The final release verification and hosted before/after comparison are recorded
-after deployment. No additional judge workspace, Auth account, email or PayPal
-operation is part of this release. Demo video and submission remain deferred.
+Runtime commit `9de452a` is live on the existing Render Free service as deployment
+`dep-dbhfgc942hec73cb1tog`. The final suite passes 224 tests, all 63 deliberate
+guard mutations are caught, and typechecking and the production build pass.
+Twelve public readiness and anonymous/foreign-origin denial checks pass in
+`evidence/blockers-release-verification.json`. The hosted before/after comparison
+confirms protected payment, preference and consent history is unchanged and nine
+untouched workspaces remain. No additional judge workspace, Auth account, email
+or PayPal operation is part of this release. Demo video and submission remain
+deferred.
 
 The remaining test is with independent friends: invitation and email transitions
 on actual phones, asynchronous decisions, comprehension and studio willingness.

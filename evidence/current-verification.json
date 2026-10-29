@@ -1,6 +1,6 @@
 {
-  "date": "2026-10-28",
-  "observedAt": "2026-10-29T05:03:17.237Z",
+  "date": "2026-10-29",
+  "observedAt": "2026-10-29T07:43:15.347Z",
   "truthRows": [
     {
       "claim": "Hosted group booking",
@@ -23,29 +23,29 @@
       "scope": "24 authored cases × 3; earlier failures retained, 2 Oct"
     },
     {
-      "claim": "Message-first AI",
-      "result": "8/8 final hosted checks; travel ambiguity fixed",
-      "scope": "Eight authored fictional cases, one batch; 7/8 earlier attempt preserved, 28 Oct"
+      "claim": "Optional draft AI",
+      "result": "5/5 final hosted checks; earlier 2/5 retained",
+      "scope": "Five new authored fictional cases; 10 approved calls total, 29 Oct"
     },
     {
       "claim": "Local suite",
-      "result": "217 passed; 0 failed",
-      "scope": "Disposable PostgreSQL; controlled Auth/model/provider, 28 Oct"
+      "result": "224 passed; 0 failed",
+      "scope": "Disposable PostgreSQL; controlled Auth/model/provider, 29 Oct"
     },
     {
       "claim": "Guard mutations",
-      "result": "62/62 caught",
-      "scope": "Existing checks rerun on 28 Oct"
+      "result": "63/63 caught",
+      "scope": "Existing protections plus private conflict explanation, 29 Oct"
     },
     {
       "claim": "TypeScript / production build",
       "result": "Passed",
-      "scope": "28 Oct; Node 25.6.0 locally"
+      "scope": "29 Oct; Node 25.6.0 locally"
     },
     {
       "claim": "Judge capacity",
-      "result": "10 untouched of 12 total workspaces",
-      "scope": "Read-only checks, 28 Oct; no new identities or leases"
+      "result": "9 untouched of 12 total workspaces",
+      "scope": "Read-only checks, 29 Oct; no new identities or leases"
     },
     {
       "claim": "Hosted active failure recovery",
@@ -64,8 +64,8 @@
     },
     {
       "claim": "Plan interface",
-      "result": "One next step, shared plan layout",
-      "scope": "Controlled browser checks plus 9 public/access checks, 28 Oct; human usability unmeasured"
+      "result": "Form first; private blockers and explicit friend decisions",
+      "scope": "Controlled phone flows plus 12 public/access checks, 29 Oct; human usability unmeasured"
     },
     {
       "claim": "Production dependency audit",
@@ -74,73 +74,77 @@
     }
   ],
   "local": {
-    "tests": 217,
-    "passed": 217,
+    "tests": 224,
+    "passed": 224,
     "failed": 0,
-    "mutations": 62,
-    "mutationsCaught": 62,
+    "mutations": 63,
+    "mutationsCaught": 63,
     "typecheck": "passed",
     "productionBuild": "passed",
     "node": "25.6.0",
-    "newBehaviorTests": 13
+    "newBehaviorTests": 7
   },
   "browser": {
-    "scope": "Actual React StrictMode components with real planning/clarification/booking services and disposable local PostgreSQL. Preauthenticated fictional actors, controlled model/payment responses. Not independent human usability or managed email delivery.",
+    "scope": "Actual React components and services against disposable local PostgreSQL; fictional actors and controlled Auth/AI/PayPal. No independent humans, managed login, external email or payment.",
     "verified": [
-      "AI consent and meaning confirmation remain deliberate named actions without duplicate checkboxes",
-      "Same-visit pickup request before roster closure; nominee can decline, then a fresh request can be sent to another friend",
-      "Nominee sees public studio facts and arrangement only, never the owner’s travel note",
-      "Organizer sees generic pending steps and can copy a reminder, with no automatic message",
-      "Pickup field has no default; explicit unsure choice explains the blocking consequence",
-      "Seven becomes six; five remains blocked at the studio minimum; removed friend sees a notice",
-      "Valid six-person group reaches studio review and an issued local offer with four merchant attestations",
-      "Organizer-only named payment action states and reminder; peer cannot see the list; payment consent checkbox remains"
+      "Form is the default; budget is empty and has no placeholder",
+      "Private $72 versus $60 conflict before and after Save; Sam has a step",
+      "Decliner acknowledgement and no default re-ask",
+      "Refresh resumes the unfinished note as next step",
+      "Unsupported need quoted; carried forward without a second AI step",
+      "Participant studio confirmation recorded with explicit unverified disclaimer",
+      "Provider failure has separate copy and explicit retry",
+      "Saving an edit warns collector must agree again",
+      "Former collector sees invalidation; renewed request states why",
+      "All-ready resolves only when pending steps finish",
+      "Four studio confirmations retained; no payment approval clicked",
+      "Offer amount and viewer-local deadline visible on plan",
+      "Withdrawal is discoverable outside terms and names Taylor to organizer",
+      "New planning requires Taylor’s attendance decision; five remains below minimum",
+      "Taylor can explicitly return; earlier offer/payment records remain separate"
     ],
     "phoneWidth": 375,
     "phoneScrollWidth": 375,
     "applicationConsoleErrorsAndWarnings": 0,
-    "consoleExclusions": "Browser extension warnings excluded.",
+    "consoleExclusions": "Browser-extension warnings excluded.",
     "viewportChecks": [
       {
         "width": 375,
-        "scrollWidth": 375
-      },
-      {
-        "width": 768,
-        "scrollWidth": 768
-      },
-      {
-        "desktop": "1920px visually checked"
+        "height": 812,
+        "scrollWidth": 375,
+        "report": "evidence/web/blockers-browser-check.json"
       }
-    ]
+    ],
+    "currentReport": "evidence/web/blockers-browser-check.json"
   },
   "capacity": {
-    "observedDate": "2026-10-28",
-    "untouchedAvailable": 10,
+    "observedDate": "2026-10-29",
+    "untouchedAvailable": 9,
     "totalWorkspaces": 12,
     "authAccountsCreatedThisSlice": 0,
     "leasesClaimedThisSlice": 0,
-    "scope": "Read-only hosted counts; original prepared groups retained."
+    "scope": "Read-only hosted counts; original prepared groups retained.",
+    "observedAt": "2026-10-29T07:43:15.347Z"
   },
   "protectedHostedHistoryUnchanged": true,
   "freshManagedAuthBrowserRehearsal": "not performed in this slice",
   "independentComprehensionCheck": "prepared, not run",
   "humanFriendGroupsObserved": 0,
   "studiosObserved": 0,
-  "newModelCalls": 16,
+  "newModelCalls": 10,
   "newPayPalOperations": 0,
   "emailsSent": 0,
   "hosting": {
     "state": "live",
     "origin": "https://rally.gowthamsarveswaran.com",
     "plan": "Free",
-    "commit": "30a78a49ca64b2282f77f4604ad4bf815dc1cb71",
-    "deployId": "dep-dbhd66qfngtc73bbf720",
-    "observedDurationSeconds": 78,
+    "commit": "9de452a8d8ac6c89aec63a2c4faa2aac844332bf",
+    "deployId": "dep-dbhfgc942hec73cb1tog",
+    "observedDurationSeconds": 79,
     "migration": "016_message_drafts",
-    "readOnlyAndAnonymousDenialChecksPassed": 9,
+    "readOnlyAndAnonymousDenialChecksPassed": 12,
     "protectedHostedHistoryUnchanged": true,
-    "report": "evidence/message-release-verification.json",
+    "report": "evidence/blockers-release-verification.json",
     "nodeVersion": "22.22.0",
     "nextVersion": "16.4.3",
     "rollbackExecuted": false,
@@ -189,7 +193,7 @@
     "report": "evidence/dependency-readiness-2026-10-28.json"
   },
   "messageFirst": {
-    "status": "live and verified",
+    "status": "Historical first-screen design superseded; drafting is now optional",
     "report": "docs/message-first-intake.md",
     "localControlledBrowserChecks": [
       "clear two-field draft",
@@ -212,5 +216,21 @@
     "workerDatabaseOrPaypalCredentials": false,
     "humanUsabilityVerified": false
   },
-  "newModelCallsScope": "Final 16-call approval only; complete message-first feature counts are under messageFirst."
+  "newModelCallsScope": "This readiness release: first five-case batch plus one five-case corrective run. Earlier approvals remain exhausted.",
+  "uncoachedBlockers": {
+    "status": "live and verified",
+    "report": "docs/uncoached-blockers-implementation.md",
+    "defaultEntry": "FORM",
+    "drafting": "optional",
+    "workerBuild": "fe68b2d4",
+    "finalModelQualityPassed": 5,
+    "finalModelCases": 5,
+    "modelCalls": 10,
+    "approvedModelLimit": 10,
+    "modelReport": "evidence/message-draft-evaluation-1793256757077.json",
+    "databaseMigration": false,
+    "studioContactAssertion": "participant-only; unverified by Rally",
+    "paymentEngineChanged": false,
+    "humanUsabilityVerified": false
+  }
 }
