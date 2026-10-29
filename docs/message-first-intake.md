@@ -41,8 +41,16 @@ participant's daily allowance. There are no automatic model retries.
   prompt correction, the three approved targeted rechecks passed 2/3. Named-friend
   pickup and same-day pickup passed; ambiguous travel failed validation and
   returned review. These reports are preserved separately under `evidence/`.
-- The latest exact-ID prompt correction has not yet received live acceptance
-  testing. A fresh complete matrix is required before claiming an 8/8 result.
+- Under the final 16-call approval, the first eight checks passed 7/8. The actual
+  travel response contained the correct question but an empty evidence array;
+  strict validation rejected it. The draft prompt now explicitly requires quoted
+  ambiguous evidence alongside a question. The validator was not relaxed.
+- The final eight checks passed **8/8 through the actual hosted worker**, build
+  `6b867042`, using managed production gateway credentials. Travel offered the
+  two correct alternatives in one question; supported choices remained
+  drafts and unsupported needs safely required review. See
+  `evidence/message-draft-evaluation-1793250016234.json`. All 16 approved calls
+  were used; there are no further calls or automatic retries under that approval.
 
 No human-group usability claim follows from these checks. Demo video and
 submission preparation remain deferred.
@@ -61,8 +69,8 @@ Build the worker from the repository root with
 `node --import tsx scripts/build-ai-worker.ts`. The Docker context is confined
 to `deploy/ai-worker`; the blueprint must be private. The owner approved one
 first-agent free-compute deployment, with no card or paid plan and a stop if
-compute is shown above $0. Deployment and final model acceptance are still
-partially complete at this checkpoint. Private blueprint build `09c5ae9e` runs
+compute is shown above $0. Final model acceptance passes. Private blueprint
+build `6b867042` runs
 as deployment `bg4-h5i-dok`. After explicit owner approval, its Public transport
 allows Render machine access while the worker's bearer check remains mandatory
 before inference. The deployment form labels first-agent compute free; no card
@@ -71,7 +79,5 @@ or paid plan was added. The proxy timeout is 30 seconds.
 Live boundary checks return health 200, anonymous inference 403 and authenticated
 invalid input 400, with zero model calls. See
 `evidence/message-ai-worker-boundaries.json`. The URL and dedicated token are
-saved privately in Render with Save only; the app has not been redeployed.
-Final model acceptance still requires the pending additional-call approval.
-Keep the running Render release until that gate passes; never substitute a
-temporary development key to finish a release.
+saved privately in Render. The tested app release is ready for the existing Free
+service. Never substitute a temporary development key to finish a release.

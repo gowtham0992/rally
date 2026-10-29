@@ -1,0 +1,404 @@
+{
+  "observedAt": "2026-10-29T05:00:16.233Z",
+  "scope": "Authored fictional first-message cases, one request each; not human usability evidence.",
+  "mode": "hosted message-first draft",
+  "model": "claude-sonnet-4-6",
+  "requests": 8,
+  "maxApprovedRequests": 16,
+  "maxOutputTokensPerRequest": 1400,
+  "qualityPassed": 8,
+  "operationalPassed": 8,
+  "results": [
+    {
+      "id": "cup-and-friend",
+      "passed": true,
+      "operational": true,
+      "expected": "FIELDS",
+      "fields": {
+        "outcome": "FORM_OWN_CUP",
+        "collection": "NOMINEE_LATER"
+      },
+      "proposal": {
+        "schemaVersion": 1,
+        "preferenceRevisionId": "7f44e707-f1a1-448a-b1da-5f6130fcf215",
+        "interpretations": [
+          {
+            "requirementKey": "OUTCOME",
+            "proposedValue": "FORM_OWN_CUP",
+            "sourceStart": 10,
+            "sourceEnd": 25,
+            "sourceSpan": "make my own cup",
+            "certainty": "explicit"
+          },
+          {
+            "requirementKey": "COLLECTION",
+            "proposedValue": "NOMINEE_LATER",
+            "sourceStart": 27,
+            "sourceEnd": 55,
+            "sourceSpan": "A friend needs to pick it up",
+            "certainty": "explicit"
+          }
+        ],
+        "question": null
+      },
+      "validatedModelProposal": {
+        "schemaVersion": 1,
+        "preferenceRevisionId": "7f44e707-f1a1-448a-b1da-5f6130fcf215",
+        "interpretations": [
+          {
+            "requirementKey": "OUTCOME",
+            "proposedValue": "FORM_OWN_CUP",
+            "sourceStart": 10,
+            "sourceEnd": 25,
+            "sourceSpan": "make my own cup",
+            "certainty": "explicit"
+          },
+          {
+            "requirementKey": "COLLECTION",
+            "proposedValue": "NOMINEE_LATER",
+            "sourceStart": 27,
+            "sourceEnd": 55,
+            "sourceSpan": "A friend needs to pick it up",
+            "certainty": "explicit"
+          }
+        ],
+        "question": null
+      },
+      "diagnostic": null,
+      "syntheticModelContent": null
+    },
+    {
+      "id": "wheel-and-self",
+      "passed": true,
+      "operational": true,
+      "expected": "FIELDS",
+      "fields": {
+        "technique": "WHEEL",
+        "collection": "SELF_LATER"
+      },
+      "proposal": {
+        "schemaVersion": 1,
+        "preferenceRevisionId": "4e84589d-6daa-49ed-99dc-42ee57af79b1",
+        "interpretations": [
+          {
+            "requirementKey": "TECHNIQUE",
+            "proposedValue": "WHEEL",
+            "sourceStart": 10,
+            "sourceEnd": 23,
+            "sourceSpan": "use the wheel",
+            "certainty": "explicit"
+          },
+          {
+            "requirementKey": "COLLECTION",
+            "proposedValue": "SELF_LATER",
+            "sourceStart": 31,
+            "sourceEnd": 53,
+            "sourceSpan": "pick up my piece later",
+            "certainty": "explicit"
+          }
+        ],
+        "question": null
+      },
+      "validatedModelProposal": {
+        "schemaVersion": 1,
+        "preferenceRevisionId": "4e84589d-6daa-49ed-99dc-42ee57af79b1",
+        "interpretations": [
+          {
+            "requirementKey": "TECHNIQUE",
+            "proposedValue": "WHEEL",
+            "sourceStart": 10,
+            "sourceEnd": 23,
+            "sourceSpan": "use the wheel",
+            "certainty": "explicit"
+          },
+          {
+            "requirementKey": "COLLECTION",
+            "proposedValue": "SELF_LATER",
+            "sourceStart": 31,
+            "sourceEnd": 53,
+            "sourceSpan": "pick up my piece later",
+            "certainty": "explicit"
+          }
+        ],
+        "question": null
+      },
+      "diagnostic": null,
+      "syntheticModelContent": null
+    },
+    {
+      "id": "named-friend-is-not-consent",
+      "passed": true,
+      "operational": true,
+      "expected": "FIELDS",
+      "fields": {
+        "technique": "HANDBUILD",
+        "outcome": "FORM_OWN_CUP",
+        "collection": "NOMINEE_LATER"
+      },
+      "proposal": {
+        "schemaVersion": 1,
+        "preferenceRevisionId": "276c1f84-de57-4d0d-bdb3-2bb170643fc8",
+        "interpretations": [
+          {
+            "requirementKey": "TECHNIQUE",
+            "proposedValue": "HANDBUILD",
+            "sourceStart": 7,
+            "sourceEnd": 17,
+            "sourceSpan": "hand-build",
+            "certainty": "explicit"
+          },
+          {
+            "requirementKey": "OUTCOME",
+            "proposedValue": "FORM_OWN_CUP",
+            "sourceStart": 20,
+            "sourceEnd": 23,
+            "sourceSpan": "cup",
+            "certainty": "explicit"
+          },
+          {
+            "requirementKey": "COLLECTION",
+            "proposedValue": "NOMINEE_LATER",
+            "sourceStart": 25,
+            "sourceEnd": 55,
+            "sourceSpan": "Jordan could pick it up for me",
+            "certainty": "explicit"
+          }
+        ],
+        "question": null
+      },
+      "validatedModelProposal": {
+        "schemaVersion": 1,
+        "preferenceRevisionId": "276c1f84-de57-4d0d-bdb3-2bb170643fc8",
+        "interpretations": [
+          {
+            "requirementKey": "TECHNIQUE",
+            "proposedValue": "HANDBUILD",
+            "sourceStart": 7,
+            "sourceEnd": 17,
+            "sourceSpan": "hand-build",
+            "certainty": "explicit"
+          },
+          {
+            "requirementKey": "OUTCOME",
+            "proposedValue": "FORM_OWN_CUP",
+            "sourceStart": 20,
+            "sourceEnd": 23,
+            "sourceSpan": "cup",
+            "certainty": "explicit"
+          },
+          {
+            "requirementKey": "COLLECTION",
+            "proposedValue": "NOMINEE_LATER",
+            "sourceStart": 25,
+            "sourceEnd": 55,
+            "sourceSpan": "Jordan could pick it up for me",
+            "certainty": "explicit"
+          }
+        ],
+        "question": null
+      },
+      "diagnostic": null,
+      "syntheticModelContent": null
+    },
+    {
+      "id": "ambiguous-travel",
+      "passed": true,
+      "operational": true,
+      "expected": "QUESTION",
+      "fields": null,
+      "proposal": {
+        "schemaVersion": 1,
+        "preferenceRevisionId": "39badb85-4efd-4b79-9d2a-2cdd446404e5",
+        "interpretations": [
+          {
+            "requirementKey": "TRAVEL",
+            "proposedValue": "COLLECTION_ONLY",
+            "sourceStart": 0,
+            "sourceEnd": 15,
+            "sourceSpan": "I leave Friday.",
+            "certainty": "ambiguous"
+          }
+        ],
+        "question": {
+          "templateId": "TRAVEL_MEANING",
+          "requirementKey": "TRAVEL",
+          "relevantOfferingIds": [
+            "wheel",
+            "handbuild",
+            "decorate"
+          ],
+          "options": [
+            {
+              "id": "attendance",
+              "value": "CANNOT_ATTEND"
+            },
+            {
+              "id": "pickup",
+              "value": "COLLECTION_ONLY"
+            }
+          ]
+        }
+      },
+      "validatedModelProposal": {
+        "schemaVersion": 1,
+        "preferenceRevisionId": "39badb85-4efd-4b79-9d2a-2cdd446404e5",
+        "interpretations": [
+          {
+            "requirementKey": "TRAVEL",
+            "proposedValue": "COLLECTION_ONLY",
+            "sourceStart": 0,
+            "sourceEnd": 15,
+            "sourceSpan": "I leave Friday.",
+            "certainty": "ambiguous"
+          }
+        ],
+        "question": {
+          "templateId": "TRAVEL_MEANING",
+          "requirementKey": "TRAVEL",
+          "relevantOfferingIds": [
+            "wheel",
+            "handbuild",
+            "decorate"
+          ],
+          "options": [
+            {
+              "id": "attendance",
+              "value": "CANNOT_ATTEND"
+            },
+            {
+              "id": "pickup",
+              "value": "COLLECTION_ONLY"
+            }
+          ]
+        }
+      },
+      "diagnostic": null,
+      "syntheticModelContent": null
+    },
+    {
+      "id": "unsupported-accessibility",
+      "passed": true,
+      "operational": true,
+      "expected": "REVIEW",
+      "fields": null,
+      "proposal": null,
+      "validatedModelProposal": {
+        "schemaVersion": 1,
+        "preferenceRevisionId": "851765dd-bda3-4b74-8cae-419d3dd52cb6",
+        "interpretations": [
+          {
+            "requirementKey": "EXTRA",
+            "proposedValue": "MERCHANT_REVIEW_REQUIRED",
+            "sourceStart": 0,
+            "sourceEnd": 49,
+            "sourceSpan": "I need a kiln-free session and wheelchair access.",
+            "certainty": "explicit"
+          }
+        ],
+        "question": null
+      },
+      "diagnostic": null,
+      "syntheticModelContent": null
+    },
+    {
+      "id": "conflicting-must-haves",
+      "passed": true,
+      "operational": true,
+      "expected": "REVIEW",
+      "fields": null,
+      "proposal": null,
+      "validatedModelProposal": {
+        "schemaVersion": 1,
+        "preferenceRevisionId": "d81f46da-2b73-4384-9bb8-ae23f19be36b",
+        "interpretations": [
+          {
+            "requirementKey": "TECHNIQUE",
+            "proposedValue": "WHEEL",
+            "sourceStart": 0,
+            "sourceEnd": 23,
+            "sourceSpan": "Wheel work is essential",
+            "certainty": "explicit"
+          },
+          {
+            "requirementKey": "TECHNIQUE",
+            "proposedValue": "HANDBUILD",
+            "sourceStart": 25,
+            "sourceEnd": 56,
+            "sourceSpan": "Hand-building is also essential",
+            "certainty": "explicit"
+          },
+          {
+            "requirementKey": "EXTRA",
+            "proposedValue": "MERCHANT_REVIEW_REQUIRED",
+            "sourceStart": 0,
+            "sourceEnd": 57,
+            "sourceSpan": "Wheel work is essential. Hand-building is also essential.",
+            "certainty": "explicit"
+          }
+        ],
+        "question": null
+      },
+      "diagnostic": null,
+      "syntheticModelContent": null
+    },
+    {
+      "id": "payment-injection",
+      "passed": true,
+      "operational": true,
+      "expected": "REVIEW",
+      "fields": null,
+      "proposal": null,
+      "validatedModelProposal": null,
+      "diagnostic": null,
+      "syntheticModelContent": null
+    },
+    {
+      "id": "same-day-piece",
+      "passed": true,
+      "operational": true,
+      "expected": "FIELDS",
+      "fields": {
+        "collection": "SAME_DAY_REQUIRED"
+      },
+      "proposal": {
+        "schemaVersion": 1,
+        "preferenceRevisionId": "8076482b-e76b-4806-bc90-040a742683f8",
+        "interpretations": [
+          {
+            "requirementKey": "COLLECTION",
+            "proposedValue": "SAME_DAY_REQUIRED",
+            "sourceStart": 0,
+            "sourceEnd": 51,
+            "sourceSpan": "I need to take my finished piece home the same day.",
+            "certainty": "explicit"
+          }
+        ],
+        "question": null
+      },
+      "validatedModelProposal": {
+        "schemaVersion": 1,
+        "preferenceRevisionId": "8076482b-e76b-4806-bc90-040a742683f8",
+        "interpretations": [
+          {
+            "requirementKey": "COLLECTION",
+            "proposedValue": "SAME_DAY_REQUIRED",
+            "sourceStart": 0,
+            "sourceEnd": 51,
+            "sourceSpan": "I need to take my finished piece home the same day.",
+            "certainty": "explicit"
+          }
+        ],
+        "question": null
+      },
+      "diagnostic": null,
+      "syntheticModelContent": null
+    }
+  ],
+  "workerBuild": "6b867042",
+  "sourceSha256": "0445bc319e2b6cded192da6b29e9b6aa45cff1d356de2211dd252bcb66868cb4",
+  "approvalUsage": {
+    "limit": 16,
+    "used": 16,
+    "furtherCallsAuthorized": false
+  }
+}

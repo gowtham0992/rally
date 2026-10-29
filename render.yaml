@@ -47,3 +47,7 @@ services:
         sync: false
       - key: MODEL_DEFAULT
         sync: false
+      - key: RALLY_AI_WORKER_URL
+        sync: false
+      - key: RALLY_AI_WORKER_TOKEN
+        sync: false

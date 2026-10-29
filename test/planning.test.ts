@@ -62,6 +62,9 @@ test('interpretations need exact evidence and cannot invent capability or paymen
   const revisionId=randomUUID(),text='I leave Friday';
   const valid={schemaVersion:1,preferenceRevisionId:revisionId,interpretations:[{requirementKey:'TRAVEL',proposedValue:'COLLECTION_ONLY',sourceStart:0,sourceEnd:text.length,sourceSpan:text,certainty:'ambiguous'}],question:{templateId:'TRAVEL_MEANING',requirementKey:'TRAVEL',relevantOfferingIds:['handbuild'],options:[{id:'attendance',value:'CANNOT_ATTEND'},{id:'collection',value:'COLLECTION_ONLY'}]}};
   assert.deepEqual(validateInterpretation(valid,{revisionId,text,catalog}),valid);
+  // A useful-looking travel question still needs quoted ambiguous evidence.
+  assert.throws(()=>validateInterpretation({...valid,interpretations:[]},{revisionId,text,catalog}),/lacks ambiguous evidence/);
+  assert.throws(()=>validateInterpretation({...valid,interpretations:[{...valid.interpretations[0],certainty:'explicit'}]},{revisionId,text,catalog}),/lacks ambiguous evidence/);
   assert.throws(()=>validateInterpretation({...valid,preferenceRevisionId:randomUUID()},{revisionId,text,catalog}));
   assert.throws(()=>validateInterpretation({...valid,interpretations:[{...valid.interpretations[0],sourceSpan:'invented text'}]},{revisionId,text,catalog}));
   assert.throws(()=>validateInterpretation({...valid,interpretations:[{...valid.interpretations[0],sourceEnd:text.length+1}]},{revisionId,text,catalog}));
