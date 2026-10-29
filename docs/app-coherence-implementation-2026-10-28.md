@@ -87,9 +87,31 @@ publication remain deferred.
 
 ## Release and recovery
 
-Deploy to the existing Render Free service after the staged secret scan. Preserve
-the read-only hosted-history fingerprint before and after release. The rollback
-artifact is the previous live application commit `0073eab`; there is no schema
-change. Reload the application after rollback so its client and server match.
-Existing offers and financial recovery processing must remain intact. Record
-actual deployment and rollback results in the hosted release report.
+The release uses the existing Render Free service and private repository. Source
+secret scans passed. Read-only hosted-history fingerprints match before and after
+release; ten untouched judge workspaces remain. No schema or service configuration
+changed. The [hosted release report](../evidence/web/coherence-release-2026-10-28.json)
+records the final artifact and public checks.
+
+Render’s install step exposed dependency advisories. A separate follow-up pinned
+Next.js 16.4.3 and Zod 4.6.7. The full 204-test suite, all 62 guard checks, type
+checking and build passed on the patched dependencies; the production audit is
+clean. A final live-browser check caught the authenticated malformed-invite case.
+That guard reuses the tested capability parser; its ten focused coherence tests,
+type checking and build passed again. No new full-suite or guard run was needed
+for the two-line client preflight.
+
+The older `0073eab` artifact is a historical recovery reference. Automatic approval
+review rejected a live rollback rehearsal because it lacked specific production
+reversal authorization. The owner explicitly chose to skip that rehearsal and
+keep the patched release. No rollback was executed. Preserve patched dependencies
+and financial recovery processing in any subsequent UI repair or restoration.
+
+
+Final runtime commit `6fbf33b` is live, Render deploy `dep-dbhb1o88v5cc73fvmtag`,
+completed in 78 seconds on Node 22.22.0 and Next.js 16.4.3. Twenty-nine public
+HTTPS/content/denial checks passed, including all twelve original screenshot
+hashes. The signed-in live browser check confirms malformed links show the
+unavailable state without a join form or group identity. All protected hosted
+fingerprints still match and ten untouched judge workspaces remain. The local
+fictional schema and its dedicated test container were disposed.

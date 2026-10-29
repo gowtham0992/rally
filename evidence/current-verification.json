@@ -1,6 +1,6 @@
 {
   "date": "2026-10-28",
-  "observedAt": "2026-10-29T02:13:52.690943+00:00",
+  "observedAt": "2026-10-29T02:40:09.289312+00:00",
   "truthRows": [
     {
       "claim": "Hosted group booking",
@@ -56,6 +56,16 @@
       "claim": "Free email sign-in",
       "result": "Resend Delivered; owner confirmed sign-in",
       "scope": "One external-to-team recipient, same Chrome browser; phones unverified, 27 Oct"
+    },
+    {
+      "claim": "Plan interface",
+      "result": "One next step, shared plan layout",
+      "scope": "Controlled browser checks and 29 hosted checks, 28 Oct; human usability unmeasured"
+    },
+    {
+      "claim": "Production dependency audit",
+      "result": "0 advisories",
+      "scope": "Next 16.4.3, Zod 4.6.7; checked 28 Oct"
     }
   ],
   "local": {
@@ -119,14 +129,18 @@
     "state": "live",
     "origin": "https://rally.gowthamsarveswaran.com",
     "plan": "Free",
-    "commit": "0073eab0a5f57707852b841766ed1806c9ce4c8f",
-    "deployId": "dep-dbgn8puc6qcc73c5djc0",
-    "observedDurationSeconds": 79,
+    "commit": "6fbf33b64dd7bf4801d969d74b8a56913c7fe816",
+    "deployId": "dep-dbhb1o88v5cc73fvmtag",
+    "observedDurationSeconds": 78,
     "migration": "015_planning_roster",
-    "readOnlyAndAnonymousDenialChecksPassed": 24,
+    "readOnlyAndAnonymousDenialChecksPassed": 29,
     "exactScreenshotHashesMatched": 12,
     "protectedHostedHistoryUnchanged": true,
-    "report": "evidence/web/usability-release-2026-10-27.json"
+    "report": "evidence/web/coherence-release-2026-10-28.json",
+    "nodeVersion": "22.22.0",
+    "nextVersion": "16.4.3",
+    "rollbackExecuted": false,
+    "rollbackOwnerDecision": "Skip live rollback; keep patched release"
   },
   "ownerControlledDeferred": [
     "Demo video",
@@ -155,12 +169,19 @@
   "migration": "015_planning_roster",
   "emailCountScope": "No email was sent by this coherence release; the earlier SMTP test remains in its linked report.",
   "coherence": {
-    "status": "implemented and locally verified; deployment pending",
+    "status": "live and verified",
     "report": "evidence/web/coherence-check-2026-10-28.json",
     "sharedNextStepResolver": true,
     "sharedPlanShell": true,
     "nameOnlyCreation": true,
     "invitationFirst": true,
-    "humanUsabilityVerified": false
+    "humanUsabilityVerified": false,
+    "browserInvalidInviteVerified": true
+  },
+  "dependencyReadiness": {
+    "productionAdvisories": 0,
+    "next": "16.4.3",
+    "zod": "4.6.7",
+    "report": "evidence/dependency-readiness-2026-10-28.json"
   }
 }

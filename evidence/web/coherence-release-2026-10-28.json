@@ -1,0 +1,172 @@
+{
+  "observedAt": "2026-10-29T02:37:07.559Z",
+  "scope": "Public unauthenticated HTTPS reads and anonymous planning-command denial checks after deployment. No judge workspace claimed, model request, managed login, preference write, consent or payment operation.",
+  "origin": "https://rally.gowthamsarveswaran.com",
+  "commit": "6fbf33b64dd7bf4801d969d74b8a56913c7fe816",
+  "renderDeploy": "dep-dbhb1o88v5cc73fvmtag",
+  "checks": [
+    {
+      "path": "/api/health",
+      "status": 200,
+      "ready": true
+    },
+    {
+      "path": "/",
+      "status": 200,
+      "expectedContent": true
+    },
+    {
+      "path": "/demo",
+      "status": 200,
+      "expectedContent": true
+    },
+    {
+      "path": "/journey/index.html",
+      "status": 200,
+      "expectedContent": true
+    },
+    {
+      "path": "/journey/hosted-six-friend-settlement.json",
+      "status": 200,
+      "exactLocalBytes": true
+    },
+    {
+      "path": "/journey/hosted-webhook-retransmission.json",
+      "status": 200,
+      "exactLocalBytes": true
+    },
+    {
+      "path": "/journey/manifest.json",
+      "status": 200,
+      "exactLocalBytes": true
+    },
+    {
+      "path": "/journey/screens/six-friend-baseline.png",
+      "status": 200,
+      "sourceSha256Matched": true
+    },
+    {
+      "path": "/journey/screens/sam-note-ready-for-approval.png",
+      "status": 200,
+      "sourceSha256Matched": true
+    },
+    {
+      "path": "/journey/screens/alex-hosted-authorized.png",
+      "status": 200,
+      "sourceSha256Matched": true
+    },
+    {
+      "path": "/journey/screens/hosted-six-friend-booking-confirmed.png",
+      "status": 200,
+      "sourceSha256Matched": true
+    },
+    {
+      "path": "/journey/screens/hosted-studio-reserved-offer.png",
+      "status": 200,
+      "sourceSha256Matched": true
+    },
+    {
+      "path": "/journey/screens/confirmed-sam.png",
+      "status": 200,
+      "sourceSha256Matched": true
+    },
+    {
+      "path": "/journey/screens/sam-waiting-for-jordan.png",
+      "status": 200,
+      "sourceSha256Matched": true
+    },
+    {
+      "path": "/journey/screens/jordan-agreement-and-feasible-plan.png",
+      "status": 200,
+      "sourceSha256Matched": true
+    },
+    {
+      "path": "/journey/screens/fictional-studio-offer-review.png",
+      "status": 200,
+      "sourceSha256Matched": true
+    },
+    {
+      "path": "/journey/screens/alex-hosted-checkout-ready.png",
+      "status": 200,
+      "sourceSha256Matched": true
+    },
+    {
+      "path": "/journey/screens/hosted-ai-collection-question.png",
+      "status": 200,
+      "sourceSha256Matched": true
+    },
+    {
+      "path": "/journey/screens/sam-collection-ready-for-approval.png",
+      "status": 200,
+      "sourceSha256Matched": true
+    },
+    {
+      "path": "protected booking, anonymous",
+      "status": 401,
+      "privateDataReturned": false,
+      "noStore": true
+    },
+    {
+      "path": "/login",
+      "status": 200,
+      "scope": "Working public sign-in page; email delivery not exercised"
+    },
+    {
+      "path": "deferred email-code API",
+      "status": 404
+    },
+    {
+      "action": "ROSTER",
+      "status": 401,
+      "scope": "Anonymous denial; no group action executed"
+    },
+    {
+      "action": "NOMINATE",
+      "status": 401,
+      "scope": "Anonymous denial; no group action executed"
+    },
+    {
+      "path": "/join?invite=example",
+      "status": 200,
+      "coherenceContent": false,
+      "suspenseShellOnly": true
+    },
+    {
+      "path": "/groups/new",
+      "status": 200,
+      "coherenceContent": true,
+      "suspenseShellOnly": false
+    },
+    {
+      "path": "invalid invitation preview",
+      "status": 404,
+      "identityDisclosed": false,
+      "noStore": true
+    },
+    {
+      "path": "invalid invitation preview",
+      "status": 400,
+      "identityDisclosed": false,
+      "noStore": true
+    },
+    {
+      "path": "invitation preview, foreign origin",
+      "status": 403
+    }
+  ],
+  "renderStatus": "Live",
+  "renderDurationSeconds": 78,
+  "renderNodeVersion": "22.22.0",
+  "renderNextVersion": "16.4.3",
+  "browserInvalidInvite": {
+    "observed": true,
+    "signedInSession": true,
+    "unavailableHeading": true,
+    "joinFormPresent": false,
+    "identityDisclosed": false
+  },
+  "protectedHostedHistoryUnchanged": true,
+  "untouchedJudgeWorkspaces": 10,
+  "rollbackExecuted": false,
+  "rollbackOwnerDecision": "Skip live rollback; keep patched release"
+}

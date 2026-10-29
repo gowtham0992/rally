@@ -24,5 +24,5 @@ The older `0073eab` artifact is a historical recovery reference, not a preferred
 security rollback target after this update. An attempted live rehearsal was
 rejected by automatic approval review because production rollback requires
 specific owner authorization. No rollback was executed. Keep patched dependencies
-when rolling forward or restoring the UI. The release report records the final
-deployed artifact and the owner’s decision on the optional rehearsal.
+when rolling forward or restoring the UI. The owner explicitly chose to skip the live rehearsal and keep the patched
+release. The release report records the final deployed artifact.

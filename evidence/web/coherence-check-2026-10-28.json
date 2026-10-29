@@ -65,5 +65,19 @@
   "emailsSent": 0,
   "humanGroupsObserved": 0,
   "studiosObserved": 0,
-  "deployment": "pending separate hosted verification"
+  "deployment": "live; evidence/web/coherence-release-2026-10-28.json",
+  "finalRuntimeCommit": "6fbf33b64dd7bf4801d969d74b8a56913c7fe816",
+  "framework": "16.4.3",
+  "validationLibrary": "4.6.7",
+  "productionDependencyAdvisories": 0,
+  "guardMutationsRerunAfterDependencyUpdate": true,
+  "finalClientGuard": {
+    "focusedTestsPassed": 10,
+    "typecheck": "passed",
+    "productionBuild": "passed",
+    "fullSuiteRepeatedAfterClientOnlyGuard": false,
+    "liveBrowserVerified": true
+  },
+  "temporaryDatabaseDisposed": true,
+  "rollbackOwnerDecision": "Skip live rollback; keep patched release"
 }

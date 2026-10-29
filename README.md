@@ -58,6 +58,8 @@ Verified 2026-10-28. Historical provider and AI runs retain their own dates.
 | Hosted active failure recovery | Unverified | The hosted six-buyer success is separate |
 | Human groups / studios observed | 0 / 0 | Capacity-hold demand remains unvalidated |
 | Free email sign-in | Resend Delivered; owner confirmed sign-in | One external-to-team recipient, same Chrome browser; phones unverified, 27 Oct |
+| Plan interface | One next step, shared plan layout | Controlled browser checks and 29 hosted checks, 28 Oct; human usability unmeasured |
+| Production dependency audit | 0 advisories | Next 16.4.3, Zod 4.6.7; checked 28 Oct |
 <!-- END CURRENT TRUTH -->
 
 [The evidence index](evidence/README.md) leads to the hosted six-buyer result,
