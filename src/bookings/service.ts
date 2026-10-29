@@ -5,6 +5,7 @@ import {z} from 'zod';
 import {transaction} from '../db.ts';
 import {fingerprint,DomainError} from '../payments/types.ts';
 import type {IntakeActor} from '../intake/service.ts';
+import {withdrawalForGroup} from '../intake/withdrawal.ts';
 import {confirmedPlan} from '../planning/persisted.ts';
 import {catalogSchema,type Candidate} from '../planning/domain.ts';
 const uuid=z.uuid(),key=z.string().min(1).max(100);
@@ -53,6 +54,7 @@ export class BookingService {
   if(g.state!=='CLOSED'||g.revision!==p.expectedRevision)throw new DomainError('STALE_PLANNING');
   await this.recovered(c,g.id);
   const plan=await confirmedPlan(c,g.id,g.catalog),candidate=this.selected(plan,p.offeringId,p.slotId);
+  const withdrawal=await withdrawalForGroup(c,g.id);if(withdrawal&&withdrawal.coming!==true&&plan.rows.some(r=>r.id===withdrawal.memberId))throw new DomainError('PARTICIPATION_REQUIRED');
   if(plan.rows.length!==g.target_size)throw new DomainError('INVALID_ROSTER');
   const published=(await c.query('SELECT catalog FROM merchant_catalog_versions WHERE studio_id=$1 AND version_id=$2',[plan.catalog.studioId,plan.catalog.versionId])).rows[0];
   if(!published||fingerprint(catalogSchema.parse(published.catalog))!==fingerprint(plan.catalog))throw new DomainError('UNVERIFIED_CATALOG',422);
@@ -88,6 +90,7 @@ export class BookingService {
    const g=await this.group(c,request.group_id,actor);
    if(g.state!=='MERCHANT_REVIEW'||g.revision!==p.expectedRevision||request.planning_revision!==g.revision||request.state!=='PENDING')throw new DomainError('STALE_PLANNING');
    const plan=await confirmedPlan(c,g.id,g.catalog),candidate=this.selected(plan,request.offering_id,request.slot_id);
+   const withdrawal=await withdrawalForGroup(c,g.id);if(withdrawal&&withdrawal.coming!==true&&plan.rows.some(r=>r.id===withdrawal.memberId))throw new DomainError('PARTICIPATION_REQUIRED');
    if(plan.sourceHash!==request.source_hash||plan.rows.length!==g.target_size)throw new DomainError('STALE_PLANNING');
    // Serialize approval of this studio's exclusive resource; the database exclusion
    // constraint remains the backstop against any other inserting code path.
@@ -302,7 +305,10 @@ export class BookingService {
   const paymentRecords=row.is_merchant?(await this.pool.query(`SELECT p.id,p.kind,m.ordinal FROM payment_operations p JOIN offer_members m ON m.id=p.member_id
    WHERE p.offer_id=$1 AND (p.state IN ('UNKNOWN','PENDING','ACTION_REQUIRED') OR p.kind IN ('VOID','REFUND') AND p.state='FAILED'
     OR EXISTS(SELECT 1 FROM payment_reconciliation_evidence e WHERE e.operation_id=p.id)) ORDER BY m.ordinal,p.created_at,p.id LIMIT 40`,[offerId])).rows.map(p=>({operationId:p.id as string,kind:p.kind as string,memberName:snapshot.roster[p.ordinal].displayName})):[];
+  const withdrawn=row.state==='WITHDRAWN'?await withdrawalForGroup(this.pool,snapshot.groupId):null;
+  const ownWithdrawal=Boolean(withdrawn&&row.is_participant&&snapshot.roster[row.own_ordinal]?.memberId===withdrawn.memberId);
   return {ownPickupNames:row.is_participant?snapshot.collectionArrangements.filter(a=>a.nomineeMemberId===snapshot.roster[row.own_ordinal]?.memberId).map(a=>a.ownerName):[],offerHash:row.offer_hash,booking:row.state,snapshot,cleanup:row.cleanup as string,planningRevision:row.planning_revision as number,
+   withdrawal:withdrawn?.offerId===offerId&&(row.is_organizer||ownWithdrawal)?{displayName:withdrawn.displayName,isYou:ownWithdrawal}:null,
    isParticipant:row.is_participant as boolean,isMerchant:row.is_merchant as boolean,isOrganizer:row.is_organizer as boolean,
    isCurrentRound:Boolean(row.is_latest&&row.planning_state==='OFFER_ISSUED'),
    paymentApprovalProgress:{verified:row.verified_approvals as number,total:snapshot.roster.length},approvalSteps,paymentRecords,cancellationRequested:row.is_participant?row.cancellation_requested as boolean:false,

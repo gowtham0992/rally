@@ -11,5 +11,5 @@ export function NextStepCard({title,children}:{title:string;children:ReactNode})
  return <section className="next-step-card" aria-label="Your next step"><h2 tabIndex={-1}>{title}</h2>{children}</section>;
 }
 export function People({members,children,activeCount}:{activeCount?:number;members:{id:string;name:string;status?:string}[];children?:ReactNode}){
- return <section className="plan-people-row" aria-label="People"><div className="section-heading"><h2>People</h2><span>{activeCount??members.length} {activeCount!==undefined?'coming':members.length===1?'person':'people'}</span></div><ul>{members.map(m=><li key={m.id}><span className="avatar" aria-hidden="true">{m.name.slice(0,1).toUpperCase()}</span><span>{m.name}<small>{m.status}</small></span></li>)}</ul>{children}</section>;
+ return <section className="plan-people-row" aria-label="People"><div className="section-heading"><h2>People</h2><span>{activeCount??members.length} {activeCount!==undefined?'friends':members.length===1?'person':'people'}</span></div><ul>{members.map(m=><li key={m.id}><span className="avatar" aria-hidden="true">{m.name.slice(0,1).toUpperCase()}</span><span>{m.name}<small>{m.status}</small></span></li>)}</ul>{children}</section>;
 }

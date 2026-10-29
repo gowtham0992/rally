@@ -11,8 +11,9 @@ export function contextNextStep(c:Context){
   pickupRequesterName:c.collectionRequests.find(r=>r.role==='NOMINEE'&&!r.revoked&&!r.nomineeAgreed)?.ownerName,
   pickupAnswer:c.collectionRequests.some(r=>r.role==='NOMINEE'&&!r.revoked&&!r.nomineeAgreed),pickupAsk:Boolean(ask),
   pickupWaiting:Boolean(owner&&!owner.revoked&&owner.ownerAgreed&&!owner.nomineeAgreed),
-  ownChoicesNeedReview:Boolean(p&&!ask&&privateFeedback(c.catalog,p,c.targetSize)),
-  memberCount:c.members.filter(m=>!m.excluded).length,readyCount:c.members.filter(m=>!m.excluded&&m.ready).length,
+  ownChoicesNeedReview:Boolean(p&&privateFeedback(c.catalog,{...p,extraRequirement:'NONE'},c.targetSize,false)),
+  draftPending:c.hasUnfinishedDraft,participationNeedsConfirmation:Boolean(c.withdrawal?.isYou&&c.withdrawal.coming!==true),
+  memberCount:c.members.filter(m=>!m.excluded).length,readyCount:c.members.filter(m=>!m.excluded&&m.stepStatus==='READY').length,
   allowedSizes:publishedGroupSizes(c.catalog),candidateState:c.candidate?.state,studioDeclined:Boolean(c.studioDecline),studioReviewNeedsRefresh:c.studioReviewNeedsRefresh,
   offerId:c.offerId,bookingState:c.bookingState});
 }

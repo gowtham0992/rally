@@ -1,0 +1,59 @@
+{
+  "observedAt": "2026-10-29T07:13:58.158Z",
+  "scope": "Actual React components and services against disposable local PostgreSQL; fictional actors and controlled Auth/AI/PayPal. No independent humans, managed login, external email or payment.",
+  "phone": {
+    "width": 375,
+    "height": 812,
+    "measuredScrollWidth": 375
+  },
+  "checks": [
+    "Form is the default; budget is empty and has no placeholder",
+    "Private $72 versus $60 conflict before and after Save; Sam has a step",
+    "Decliner acknowledgement and no default re-ask",
+    "Refresh resumes the unfinished note as next step",
+    "Unsupported need quoted; carried forward without a second AI step",
+    "Participant studio confirmation recorded with explicit unverified disclaimer",
+    "Provider failure has separate copy and explicit retry",
+    "Saving an edit warns collector must agree again",
+    "Former collector sees invalidation; renewed request states why",
+    "All-ready resolves only when pending steps finish",
+    "Four studio confirmations retained; no payment approval clicked",
+    "Offer amount and viewer-local deadline visible on plan",
+    "Withdrawal is discoverable outside terms and names Taylor to organizer",
+    "New planning requires Taylor’s attendance decision; five remains below minimum",
+    "Taylor can explicitly return; earlier offer/payment records remain separate"
+  ],
+  "console": [
+    {
+      "role": "Sam",
+      "applicationErrors": 0,
+      "applicationWarnings": 0,
+      "excludedExtensionWarnings": 30
+    },
+    {
+      "role": "Taylor",
+      "applicationErrors": 0,
+      "applicationWarnings": 0,
+      "excludedExtensionWarnings": 36
+    },
+    {
+      "role": "Riley",
+      "applicationErrors": 0,
+      "applicationWarnings": 0,
+      "excludedExtensionWarnings": 18
+    },
+    {
+      "role": "organizer",
+      "applicationErrors": 0,
+      "applicationWarnings": 0,
+      "excludedExtensionWarnings": 36
+    },
+    {
+      "role": "manual alternative",
+      "applicationErrors": 0,
+      "applicationWarnings": 0,
+      "excludedExtensionWarnings": 6
+    }
+  ],
+  "viewportRestored": true
+}

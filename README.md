@@ -5,11 +5,11 @@
 **A plan that fits everyone. Six holds. One booking.**
 
 Rally helps friends book a private studio session without someone fronting the
-group’s bill. Each friend can describe what works in one private message. AI
-drafts activity and pickup choices, or asks one grounded question when the meaning
-is unclear. Dates and spending limits stay explicit. The friend checks and saves
-the choices, and a deterministic planner checks the group’s fit. Choosing every
-field manually remains available.
+group’s bill. Each friend sets their dates, spending limit and must-haves
+privately. Optional AI drafting can turn a message into activity and pickup
+choices or ask one grounded question. The friend checks and saves the choices;
+a deterministic planner checks the group’s fit. Personal conflicts are explained
+privately to the person who can resolve them.
 
 The studio reserves the exact session and freezes the offer. Each person
 authorizes their own PayPal share directly to the merchant. Rally starts

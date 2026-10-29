@@ -1,5 +1,6 @@
 'use client';
 import Link from 'next/link';
+import ViewerDeadline from '../../components/viewer-deadline';
 import Checkout from './checkout';
 import Changes from './changes';
 import CopyReminder from '../../components/copy-reminder';
@@ -24,20 +25,23 @@ export default function Offer({id,returnState}:{id:string;returnState:'returned'
   {error&&data&&!sessionExpired&&<p className="field-help">These are the last loaded details. Payment and booking actions are paused until this booking can be checked.</p>}
   {loading&&!data?<section className="next-step-card skeleton" aria-busy="true"><p>Opening your booking…</p><div/><div/></section>:data&&candidate&&snapshot?<>
    <NextStepCard title={title}>
+    {data.withdrawal&&<p className="notice" role="status">{data.withdrawal.isYou?'You':data.withdrawal.displayName} withdrew from this offer. Check who’s still coming before making a new plan.</p>}
     {earlier&&<p className="field-help">Your group has moved on. These terms and payment records belong to this earlier booking. <Link href={`/groups/${snapshot.groupId}`}>Open the current plan →</Link></p>}
     {confirmed&&Boolean(data.ownPickupNames?.length)&&<p className="pickup-duty">You’re picking up {data.ownPickupNames.join(' and ')}’s piece{data.ownPickupNames.length>1?'s':''} after firing.</p>}
     <div className="booking-facts"><h3>{candidate.activity}</h3><p>{localDate(candidate.startAt,candidate.timezone)} to {localTime(candidate.endAt,candidate.timezone)} · {candidate.timezone}</p><p className="plan-price">{money(candidate.amountMinor)} <small>per person</small></p>
-     {open&&<p>Approve by {localDate(snapshot.deadline,candidate.timezone)} ({candidate.timezone}).</p>}
+     {open&&<p>Approve by <ViewerDeadline value={snapshot.deadline}/>.</p>}
      {(canApprove||data.isMerchant)&&<><p className="field-help">Pickup: {candidate.collectionDescription}</p><p className="field-help">Cancellation: {displayTerms(candidate.cancellationTerms)}</p><p className="field-help">Personal cancellations aren’t automatically refunded. <a href="#booking-terms">Full terms & timing ↓</a></p>{snapshot.collectionArrangements.map(a=><p className="field-help" key={a.ownerMemberId}>{a.nomineeName} {live?'will pick up':'agreed to pick up'} for {a.ownerName}. {live?'Both have agreed.':'This arrangement belongs to this booking.'}</p>)}</>}
     </div>
     {data.payment&&<Checkout key={data.offerHash} offerId={id} offerHash={data.offerHash} status={data.payment} disabled={paused} returnState={returnState} pauseForSignIn={pauseForSignIn} refresh={refresh}/>}
     {!data.payment&&<p>{confirmed?'Every required payment completed. The group is booked.':open?'Each friend needs to approve their own hold before the deadline. The booking confirms only after every payment completes.':settling?'The separate payments are being checked. A pending payment does not confirm the booking.':'Payment recovery must finish before the group can start again.'}</p>}
+    {open&&data.isParticipant&&<a className="text-button" href="#change-plans">Need to change your plans? →</a>}
     {(open||settling)&&<p className="payment-count" role="status">{data.paymentApprovalProgress.verified} of {data.paymentApprovalProgress.total} have approved{settling?' · Booking confirms after all payments complete.':'.'}</p>}
     {open&&data.isOrganizer&&<div className="organizer-reminder">{reminder}<p className="field-help">Your reminder includes names only for friends who need to approve. Approvals being checked should not be restarted.</p></div>}
     {!live&&<Changes key={`recovery:${data.offerHash}`} id={id} offer={data} disabled={paused} pauseForSignIn={pauseForSignIn} refresh={refresh}/>}
    </NextStepCard>
-   <People members={snapshot.roster.map(m=>({id:m.memberId,name:m.displayName,status:data.approvalSteps?({VERIFIED:'Approved',CHECKING:'Checking with PayPal',NEEDS_APPROVAL:'Needs approval'})[data.approvalSteps.find(s=>s.memberId===m.memberId)?.status??'NEEDS_APPROVAL']:confirmed?'Booked':undefined}))}/>
-   <details className="plan-disclosure" id="booking-terms"><summary>Booking details, terms & timing</summary><dl className="session-details"><div><dt>Pickup</dt><dd>{candidate.collectionDescription}</dd></div><div><dt>Cancellation terms</dt><dd>{displayTerms(candidate.cancellationTerms)}</dd></div></dl><BookingRules/><p className="field-help">These terms belong to this exact booking. Rally doesn’t add a guaranteed personal refund window or cutoff.</p>{snapshot.collectionArrangements.map(a=><p className="field-help" key={a.ownerMemberId}>{a.nomineeName} agreed to pick up for {a.ownerName}.</p>)}{live&&<Changes key={`changes:${data.offerHash}`} id={id} offer={data} disabled={paused} pauseForSignIn={pauseForSignIn} refresh={refresh}/>}</details>
+   <People members={snapshot.roster.map(m=>({id:m.memberId,name:m.displayName,status:confirmed?'Booked':!open&&!settling?'Offer closed':data.approvalSteps?({VERIFIED:'Approved',CHECKING:'Checking with PayPal',NEEDS_APPROVAL:'Needs approval'})[data.approvalSteps.find(s=>s.memberId===m.memberId)?.status??'NEEDS_APPROVAL']:undefined}))}/>
+   {live&&<Changes key={`changes:${data.offerHash}`} id={id} offer={data} disabled={paused} pauseForSignIn={pauseForSignIn} refresh={refresh}/>}
+   <details className="plan-disclosure" id="booking-terms"><summary>Booking details, terms & timing</summary><dl className="session-details"><div><dt>Pickup</dt><dd>{candidate.collectionDescription}</dd></div><div><dt>Cancellation terms</dt><dd>{displayTerms(candidate.cancellationTerms)}</dd></div></dl><BookingRules/><p className="field-help">These terms belong to this exact booking. Rally doesn’t add a guaranteed personal refund window or cutoff.</p>{snapshot.collectionArrangements.map(a=><p className="field-help" key={a.ownerMemberId}>{a.nomineeName} agreed to pick up for {a.ownerName}.</p>)}</details>
    <section className="plan-record-links"><Link className="text-button" href={data.isParticipant?`/groups/${snapshot.groupId}`:'/studio'}>{data.isParticipant?'See your saved plan details':'Back to studio requests'} →</Link><button className="text-button" disabled={loading} onClick={refresh}>{loading?'Checking…':'Refresh this booking'}</button></section>
    {data.isMerchant&&data.paymentRecords.length>0&&<details className="plan-disclosure"><summary>Studio payment records</summary><ul className="studio-payment-records">{data.paymentRecords.map(record=><li key={record.operationId}><Link className="text-button" href={`/m/payments/${record.operationId}`}>{record.memberName} · {({CREATE_ORDER:'Checkout',AUTHORIZE:'Authorization',CAPTURE:'Payment',VOID:'Authorization release',REFUND:'Refund'} as Record<string,string>)[record.kind]} ↗</Link></li>)}</ul></details>}
   </>:null}

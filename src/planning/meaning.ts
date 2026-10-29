@@ -1,7 +1,7 @@
 import {catalogSchema,preferenceSchema,type Preference,type Catalog} from './domain.ts';
 import {interpretationSchema} from './interpretation.ts';
 export type Proposal=ReturnType<typeof interpretationSchema.parse>;
-export type MeaningBound=Partial<Pick<Preference,'technique'|'outcome'|'collection'>> & {cannotAttend?:true;availableSlotIds?:string[]};
+export type MeaningBound=Partial<Pick<Preference,'technique'|'outcome'|'collection'>> & {cannotAttend?:true;availableSlotIds?:string[];studioContact?:{confirmedByMemberId:string;confirmedAt:string}};
 export function respectsMeaning(pref:Preference,bound:MeaningBound){
  return (!bound.technique||pref.technique===bound.technique)&&(!bound.outcome||pref.outcome===bound.outcome)
   &&(!bound.collection||pref.collection===bound.collection)&&(!bound.cannotAttend||pref.availableSlotIds.length===0)

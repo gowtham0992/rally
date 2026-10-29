@@ -1,6 +1,7 @@
 import { readFile,writeFile,mkdir } from 'node:fs/promises';
 import { spawnSync } from 'node:child_process';
 const mutations:{name:string;file:string;from:string;to:string;pattern:string;testFile?:string}[] = [
+  {name:'private conflict replaced by generic group advice',file:'src/planning/private-feedback.ts',from:'return `${cheapest.o.name} costs ${money(cheapest.o.priceMinor)}, over your ${money(p.budgetMinor)} spending limit. Keep your limit or choose another activity. Only you see this conflict.`;',to:"return 'No studio session works with everyone’s saved choices.';",pattern:'private budget conflict names the price and limit',testFile:'test/blocker-readiness.test.ts'},
   {name:'session presentation hides valid dates or activities',file:'app/lib/session-options.ts',from:'return [...groups.values()];',to:'return [...groups.values()].slice(0,2);',pattern:'all six eligible activity',testFile:'test/personal-fit.test.ts'},
   {name:'personal fit ignores the private spending limit',file:'src/planning/domain.ts',from:'p.budgetMinor>=offering.priceMinor',to:'true',pattern:'personal fit respects exact',testFile:'test/personal-fit.test.ts'},
   {name:'personal preview treats a nominee as agreed',file:'app/lib/personal-fit.ts',from:"preference.collection==='UNRESOLVED'||preference.collection==='NOMINEE_LATER'&&!collectionAgreed",to:"preference.collection==='UNRESOLVED'",pattern:'personal possibilities never establish',testFile:'test/personal-fit.test.ts'},

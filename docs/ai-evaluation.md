@@ -1,5 +1,11 @@
 # Rally AI evaluation
 
+The current optional-draft prompt passed the newer five-case hosted check after
+an earlier 2/5 attempt. Both reports are preserved. See
+[the readiness implementation](uncoached-blockers-implementation.md). The
+eight-case checkpoint below and the original saved-note evaluation have distinct
+historical scopes; they are not new tests of this prompt.
+
 The new message-first draft flow has its own eight-case acceptance check,
 separate from the historical saved-note evaluation below. Its final hosted run
 passed 8/8 after a 7/8 attempt exposed missing quoted travel evidence. The strict

@@ -1,0 +1,367 @@
+{
+  "observedAt": "2026-10-29T06:40:49.915Z",
+  "suite": "uncoached",
+  "scope": "Authored fictional first-message cases, one request each; not human usability evidence.",
+  "mode": "hosted message-first draft",
+  "model": "claude-sonnet-4-6",
+  "requests": 5,
+  "maxApprovedRequests": 10,
+  "maxOutputTokensPerRequest": 1400,
+  "qualityPassed": 2,
+  "operationalPassed": 5,
+  "results": [
+    {
+      "id": "conditional-wheel",
+      "passed": false,
+      "operational": true,
+      "expected": "FIELDS",
+      "fields": null,
+      "proposal": {
+        "schemaVersion": 1,
+        "preferenceRevisionId": "cc7bb35b-c8c1-4bc6-b271-e8e38561ea9f",
+        "interpretations": [
+          {
+            "requirementKey": "COLLECTION",
+            "proposedValue": "SELF_LATER",
+            "sourceStart": 2,
+            "sourceEnd": 19,
+            "sourceSpan": "can collect later",
+            "certainty": "explicit"
+          },
+          {
+            "requirementKey": "TECHNIQUE",
+            "proposedValue": "WHEEL",
+            "sourceStart": 21,
+            "sourceEnd": 62,
+            "sourceSpan": "Wheel would be fun if it isn't too pricey",
+            "certainty": "ambiguous"
+          }
+        ],
+        "question": {
+          "templateId": "TECHNIQUE_INTENT",
+          "requirementKey": "TECHNIQUE",
+          "relevantOfferingIds": [
+            "wheel"
+          ],
+          "options": [
+            {
+              "id": "yes_wheel",
+              "value": "WHEEL"
+            },
+            {
+              "id": "any_technique",
+              "value": "ANY"
+            }
+          ]
+        }
+      },
+      "validatedModelProposal": {
+        "schemaVersion": 1,
+        "preferenceRevisionId": "cc7bb35b-c8c1-4bc6-b271-e8e38561ea9f",
+        "interpretations": [
+          {
+            "requirementKey": "COLLECTION",
+            "proposedValue": "SELF_LATER",
+            "sourceStart": 2,
+            "sourceEnd": 19,
+            "sourceSpan": "can collect later",
+            "certainty": "explicit"
+          },
+          {
+            "requirementKey": "TECHNIQUE",
+            "proposedValue": "WHEEL",
+            "sourceStart": 21,
+            "sourceEnd": 62,
+            "sourceSpan": "Wheel would be fun if it isn't too pricey",
+            "certainty": "ambiguous"
+          }
+        ],
+        "question": {
+          "templateId": "TECHNIQUE_INTENT",
+          "requirementKey": "TECHNIQUE",
+          "relevantOfferingIds": [
+            "wheel"
+          ],
+          "options": [
+            {
+              "id": "yes_wheel",
+              "value": "WHEEL"
+            },
+            {
+              "id": "any_technique",
+              "value": "ANY"
+            }
+          ]
+        }
+      },
+      "diagnostic": null,
+      "syntheticModelContent": null
+    },
+    {
+      "id": "optional-handbuilding",
+      "passed": false,
+      "operational": true,
+      "expected": "FIELDS",
+      "fields": null,
+      "proposal": {
+        "schemaVersion": 1,
+        "preferenceRevisionId": "8b840455-8670-4b77-ba84-1127de7cca73",
+        "interpretations": [
+          {
+            "requirementKey": "COLLECTION",
+            "proposedValue": "NOMINEE_LATER",
+            "sourceStart": 0,
+            "sourceEnd": 33,
+            "sourceSpan": "A friend will need to collect it.",
+            "certainty": "explicit"
+          },
+          {
+            "requirementKey": "TECHNIQUE",
+            "proposedValue": "HANDBUILD",
+            "sourceStart": 34,
+            "sourceEnd": 66,
+            "sourceSpan": "Hand building would be nice, but",
+            "certainty": "ambiguous"
+          }
+        ],
+        "question": {
+          "templateId": "TECHNIQUE_INTENT",
+          "requirementKey": "TECHNIQUE",
+          "relevantOfferingIds": [
+            "wheel",
+            "handbuild",
+            "decorate"
+          ],
+          "options": [
+            {
+              "id": "handbuild",
+              "value": "HANDBUILD"
+            },
+            {
+              "id": "any",
+              "value": "ANY"
+            }
+          ]
+        }
+      },
+      "validatedModelProposal": {
+        "schemaVersion": 1,
+        "preferenceRevisionId": "8b840455-8670-4b77-ba84-1127de7cca73",
+        "interpretations": [
+          {
+            "requirementKey": "COLLECTION",
+            "proposedValue": "NOMINEE_LATER",
+            "sourceStart": 0,
+            "sourceEnd": 33,
+            "sourceSpan": "A friend will need to collect it.",
+            "certainty": "explicit"
+          },
+          {
+            "requirementKey": "TECHNIQUE",
+            "proposedValue": "HANDBUILD",
+            "sourceStart": 34,
+            "sourceEnd": 66,
+            "sourceSpan": "Hand building would be nice, but",
+            "certainty": "ambiguous"
+          }
+        ],
+        "question": {
+          "templateId": "TECHNIQUE_INTENT",
+          "requirementKey": "TECHNIQUE",
+          "relevantOfferingIds": [
+            "wheel",
+            "handbuild",
+            "decorate"
+          ],
+          "options": [
+            {
+              "id": "handbuild",
+              "value": "HANDBUILD"
+            },
+            {
+              "id": "any",
+              "value": "ANY"
+            }
+          ]
+        }
+      },
+      "diagnostic": null,
+      "syntheticModelContent": null
+    },
+    {
+      "id": "attend-either-pickup-later",
+      "passed": true,
+      "operational": true,
+      "expected": "FIELDS",
+      "fields": {
+        "collection": "NOMINEE_LATER"
+      },
+      "proposal": {
+        "schemaVersion": 1,
+        "preferenceRevisionId": "fa4da88c-c3aa-40c4-8b40-8b2bf98279a7",
+        "interpretations": [
+          {
+            "requirementKey": "COLLECTION",
+            "proposedValue": "NOMINEE_LATER",
+            "sourceStart": 77,
+            "sourceEnd": 120,
+            "sourceSpan": "Someone else has to collect the fired piece",
+            "certainty": "explicit"
+          }
+        ],
+        "question": null
+      },
+      "validatedModelProposal": {
+        "schemaVersion": 1,
+        "preferenceRevisionId": "fa4da88c-c3aa-40c4-8b40-8b2bf98279a7",
+        "interpretations": [
+          {
+            "requirementKey": "COLLECTION",
+            "proposedValue": "NOMINEE_LATER",
+            "sourceStart": 77,
+            "sourceEnd": 120,
+            "sourceSpan": "Someone else has to collect the fired piece",
+            "certainty": "explicit"
+          }
+        ],
+        "question": null
+      },
+      "diagnostic": null,
+      "syntheticModelContent": null
+    },
+    {
+      "id": "attend-then-leave",
+      "passed": false,
+      "operational": true,
+      "expected": "FIELDS",
+      "fields": {
+        "cannotAttend": true,
+        "collection": "NOMINEE_LATER"
+      },
+      "proposal": {
+        "schemaVersion": 1,
+        "preferenceRevisionId": "3428a55e-cb85-48b6-8c99-e7afacf74aa8",
+        "interpretations": [
+          {
+            "requirementKey": "TRAVEL",
+            "proposedValue": "CANNOT_ATTEND",
+            "sourceStart": 0,
+            "sourceEnd": 29,
+            "sourceSpan": "I'll be there for the session",
+            "certainty": "explicit"
+          },
+          {
+            "requirementKey": "COLLECTION",
+            "proposedValue": "NOMINEE_LATER",
+            "sourceStart": 31,
+            "sourceEnd": 112,
+            "sourceSpan": "I'm leaving town before the pieces are ready, so I need a friend to pick mine up.",
+            "certainty": "explicit"
+          }
+        ],
+        "question": null
+      },
+      "validatedModelProposal": {
+        "schemaVersion": 1,
+        "preferenceRevisionId": "3428a55e-cb85-48b6-8c99-e7afacf74aa8",
+        "interpretations": [
+          {
+            "requirementKey": "TRAVEL",
+            "proposedValue": "CANNOT_ATTEND",
+            "sourceStart": 0,
+            "sourceEnd": 29,
+            "sourceSpan": "I'll be there for the session",
+            "certainty": "explicit"
+          },
+          {
+            "requirementKey": "COLLECTION",
+            "proposedValue": "NOMINEE_LATER",
+            "sourceStart": 31,
+            "sourceEnd": 112,
+            "sourceSpan": "I'm leaving town before the pieces are ready, so I need a friend to pick mine up.",
+            "certainty": "explicit"
+          }
+        ],
+        "question": null
+      },
+      "diagnostic": null,
+      "syntheticModelContent": null
+    },
+    {
+      "id": "unscoped-departure",
+      "passed": true,
+      "operational": true,
+      "expected": "QUESTION",
+      "fields": null,
+      "proposal": {
+        "schemaVersion": 1,
+        "preferenceRevisionId": "35586bcf-4e96-4d3e-a4eb-4bc41c799f5f",
+        "interpretations": [
+          {
+            "requirementKey": "TRAVEL",
+            "proposedValue": "COLLECTION_ONLY",
+            "sourceStart": 0,
+            "sourceEnd": 29,
+            "sourceSpan": "I'm heading out of town soon.",
+            "certainty": "ambiguous"
+          }
+        ],
+        "question": {
+          "templateId": "TRAVEL_MEANING",
+          "requirementKey": "TRAVEL",
+          "relevantOfferingIds": [
+            "wheel",
+            "handbuild",
+            "decorate"
+          ],
+          "options": [
+            {
+              "id": "attendance",
+              "value": "CANNOT_ATTEND"
+            },
+            {
+              "id": "pickup",
+              "value": "COLLECTION_ONLY"
+            }
+          ]
+        }
+      },
+      "validatedModelProposal": {
+        "schemaVersion": 1,
+        "preferenceRevisionId": "35586bcf-4e96-4d3e-a4eb-4bc41c799f5f",
+        "interpretations": [
+          {
+            "requirementKey": "TRAVEL",
+            "proposedValue": "COLLECTION_ONLY",
+            "sourceStart": 0,
+            "sourceEnd": 29,
+            "sourceSpan": "I'm heading out of town soon.",
+            "certainty": "ambiguous"
+          }
+        ],
+        "question": {
+          "templateId": "TRAVEL_MEANING",
+          "requirementKey": "TRAVEL",
+          "relevantOfferingIds": [
+            "wheel",
+            "handbuild",
+            "decorate"
+          ],
+          "options": [
+            {
+              "id": "attendance",
+              "value": "CANNOT_ATTEND"
+            },
+            {
+              "id": "pickup",
+              "value": "COLLECTION_ONLY"
+            }
+          ]
+        }
+      },
+      "diagnostic": null,
+      "syntheticModelContent": null
+    }
+  ],
+  "workerBuild": "b7be893f"
+}

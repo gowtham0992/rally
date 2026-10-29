@@ -1,0 +1,277 @@
+{
+  "observedAt": "2026-10-29T06:52:37.075Z",
+  "suite": "uncoached",
+  "scope": "Authored fictional first-message cases, one request each; not human usability evidence.",
+  "mode": "hosted message-first draft",
+  "model": "claude-sonnet-4-6",
+  "requests": 5,
+  "maxApprovedRequests": 10,
+  "maxOutputTokensPerRequest": 1400,
+  "qualityPassed": 5,
+  "operationalPassed": 5,
+  "results": [
+    {
+      "id": "conditional-wheel",
+      "passed": true,
+      "operational": true,
+      "expected": "FIELDS",
+      "fields": {
+        "collection": "SELF_LATER"
+      },
+      "proposal": {
+        "schemaVersion": 1,
+        "preferenceRevisionId": "16c5eee3-e0ca-4b4b-9650-41daa70da47a",
+        "interpretations": [
+          {
+            "requirementKey": "COLLECTION",
+            "proposedValue": "SELF_LATER",
+            "sourceStart": 2,
+            "sourceEnd": 19,
+            "sourceSpan": "can collect later",
+            "certainty": "explicit"
+          }
+        ],
+        "question": null
+      },
+      "validatedModelProposal": {
+        "schemaVersion": 1,
+        "preferenceRevisionId": "16c5eee3-e0ca-4b4b-9650-41daa70da47a",
+        "interpretations": [
+          {
+            "requirementKey": "COLLECTION",
+            "proposedValue": "SELF_LATER",
+            "sourceStart": 2,
+            "sourceEnd": 19,
+            "sourceSpan": "can collect later",
+            "certainty": "explicit"
+          }
+        ],
+        "question": null
+      },
+      "diagnostic": null,
+      "syntheticModelContent": null
+    },
+    {
+      "id": "optional-handbuilding",
+      "passed": true,
+      "operational": true,
+      "expected": "FIELDS",
+      "fields": {
+        "collection": "NOMINEE_LATER",
+        "technique": "ANY"
+      },
+      "proposal": {
+        "schemaVersion": 1,
+        "preferenceRevisionId": "6da65147-b9ba-4126-9284-b0473eae50eb",
+        "interpretations": [
+          {
+            "requirementKey": "COLLECTION",
+            "proposedValue": "NOMINEE_LATER",
+            "sourceStart": 0,
+            "sourceEnd": 33,
+            "sourceSpan": "A friend will need to collect it.",
+            "certainty": "explicit"
+          },
+          {
+            "requirementKey": "TECHNIQUE",
+            "proposedValue": "ANY",
+            "sourceStart": 34,
+            "sourceEnd": 84,
+            "sourceSpan": "Hand building would be nice, but anything is fine.",
+            "certainty": "explicit"
+          }
+        ],
+        "question": null
+      },
+      "validatedModelProposal": {
+        "schemaVersion": 1,
+        "preferenceRevisionId": "6da65147-b9ba-4126-9284-b0473eae50eb",
+        "interpretations": [
+          {
+            "requirementKey": "COLLECTION",
+            "proposedValue": "NOMINEE_LATER",
+            "sourceStart": 0,
+            "sourceEnd": 33,
+            "sourceSpan": "A friend will need to collect it.",
+            "certainty": "explicit"
+          },
+          {
+            "requirementKey": "TECHNIQUE",
+            "proposedValue": "ANY",
+            "sourceStart": 34,
+            "sourceEnd": 84,
+            "sourceSpan": "Hand building would be nice, but anything is fine.",
+            "certainty": "explicit"
+          }
+        ],
+        "question": null
+      },
+      "diagnostic": null,
+      "syntheticModelContent": null
+    },
+    {
+      "id": "attend-either-pickup-later",
+      "passed": true,
+      "operational": true,
+      "expected": "FIELDS",
+      "fields": {
+        "collection": "NOMINEE_LATER"
+      },
+      "proposal": {
+        "schemaVersion": 1,
+        "preferenceRevisionId": "50db37a1-6372-4751-b431-529e6205efa1",
+        "interpretations": [
+          {
+            "requirementKey": "COLLECTION",
+            "proposedValue": "NOMINEE_LATER",
+            "sourceStart": 77,
+            "sourceEnd": 120,
+            "sourceSpan": "Someone else has to collect the fired piece",
+            "certainty": "explicit"
+          }
+        ],
+        "question": null
+      },
+      "validatedModelProposal": {
+        "schemaVersion": 1,
+        "preferenceRevisionId": "50db37a1-6372-4751-b431-529e6205efa1",
+        "interpretations": [
+          {
+            "requirementKey": "COLLECTION",
+            "proposedValue": "NOMINEE_LATER",
+            "sourceStart": 77,
+            "sourceEnd": 120,
+            "sourceSpan": "Someone else has to collect the fired piece",
+            "certainty": "explicit"
+          }
+        ],
+        "question": null
+      },
+      "diagnostic": null,
+      "syntheticModelContent": null
+    },
+    {
+      "id": "attend-then-leave",
+      "passed": true,
+      "operational": true,
+      "expected": "FIELDS",
+      "fields": {
+        "collection": "NOMINEE_LATER"
+      },
+      "proposal": {
+        "schemaVersion": 1,
+        "preferenceRevisionId": "92c4dd17-6737-4cf9-9356-a9e401e33699",
+        "interpretations": [
+          {
+            "requirementKey": "COLLECTION",
+            "proposedValue": "NOMINEE_LATER",
+            "sourceStart": 80,
+            "sourceEnd": 112,
+            "sourceSpan": "I need a friend to pick mine up.",
+            "certainty": "explicit"
+          }
+        ],
+        "question": null
+      },
+      "validatedModelProposal": {
+        "schemaVersion": 1,
+        "preferenceRevisionId": "92c4dd17-6737-4cf9-9356-a9e401e33699",
+        "interpretations": [
+          {
+            "requirementKey": "COLLECTION",
+            "proposedValue": "NOMINEE_LATER",
+            "sourceStart": 80,
+            "sourceEnd": 112,
+            "sourceSpan": "I need a friend to pick mine up.",
+            "certainty": "explicit"
+          }
+        ],
+        "question": null
+      },
+      "diagnostic": null,
+      "syntheticModelContent": null
+    },
+    {
+      "id": "unscoped-departure",
+      "passed": true,
+      "operational": true,
+      "expected": "QUESTION",
+      "fields": null,
+      "proposal": {
+        "schemaVersion": 1,
+        "preferenceRevisionId": "74407be9-629d-4c2a-989e-658a3b31c6ae",
+        "interpretations": [
+          {
+            "requirementKey": "TRAVEL",
+            "proposedValue": "COLLECTION_ONLY",
+            "sourceStart": 0,
+            "sourceEnd": 29,
+            "sourceSpan": "I'm heading out of town soon.",
+            "certainty": "ambiguous"
+          }
+        ],
+        "question": {
+          "templateId": "TRAVEL_MEANING",
+          "requirementKey": "TRAVEL",
+          "relevantOfferingIds": [
+            "wheel",
+            "handbuild",
+            "decorate"
+          ],
+          "options": [
+            {
+              "id": "attendance",
+              "value": "CANNOT_ATTEND"
+            },
+            {
+              "id": "pickup",
+              "value": "COLLECTION_ONLY"
+            }
+          ]
+        }
+      },
+      "validatedModelProposal": {
+        "schemaVersion": 1,
+        "preferenceRevisionId": "74407be9-629d-4c2a-989e-658a3b31c6ae",
+        "interpretations": [
+          {
+            "requirementKey": "TRAVEL",
+            "proposedValue": "COLLECTION_ONLY",
+            "sourceStart": 0,
+            "sourceEnd": 29,
+            "sourceSpan": "I'm heading out of town soon.",
+            "certainty": "ambiguous"
+          }
+        ],
+        "question": {
+          "templateId": "TRAVEL_MEANING",
+          "requirementKey": "TRAVEL",
+          "relevantOfferingIds": [
+            "wheel",
+            "handbuild",
+            "decorate"
+          ],
+          "options": [
+            {
+              "id": "attendance",
+              "value": "CANNOT_ATTEND"
+            },
+            {
+              "id": "pickup",
+              "value": "COLLECTION_ONLY"
+            }
+          ]
+        }
+      },
+      "diagnostic": null,
+      "syntheticModelContent": null
+    }
+  ],
+  "workerBuild": "fe68b2d4",
+  "sourceSha256": "947ec959e2df6a81bb90a963c9941d9285b8eea87cdd2b6ffe27e6614fb275f2",
+  "approvalUsage": {
+    "limit": 10,
+    "used": 10,
+    "furtherCallsAuthorized": false
+  }
+}

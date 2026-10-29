@@ -1,16 +1,18 @@
 /** Action selection contains no mutations and never decides whether money moved. */
 export type PlanStage=0|1|2|3|4;
-export type NextStepKind='REMOVED'|'DETAILS'|'PICKUP_ANSWER'|'NOTE'|'PICKUP_ASK'|'CHOICES'|'PICKUP_WAIT'|'CLOSE'|'SESSIONS'|'FIND_SESSION'|'REMIND'|'STUDIO_WAIT'|'FRIENDS_WAIT'|'OFFER'|'BOOKED'|'RECOVERY'|'ENDED';
+export type NextStepKind='REMOVED'|'DETAILS'|'DRAFT'|'PARTICIPATION'|'PICKUP_ANSWER'|'NOTE'|'PICKUP_ASK'|'CHOICES'|'PICKUP_WAIT'|'CLOSE'|'SESSIONS'|'FIND_SESSION'|'REMIND'|'STUDIO_WAIT'|'FRIENDS_WAIT'|'OFFER'|'BOOKED'|'RECOVERY'|'ENDED';
 export interface StepFacts {
  state:string;excluded?:boolean;isOrganizer:boolean;ownReady:boolean;noteNeedsReview:boolean;
  pickupAnswer:boolean;pickupRequesterName?:string;pickupAsk:boolean;pickupWaiting:boolean;ownChoicesNeedReview:boolean;
  memberCount:number;readyCount:number;allowedSizes:readonly number[];candidateState?:string|null;
  studioDeclined?:boolean;studioReviewNeedsRefresh?:boolean;offerId?:string|null;bookingState?:string|null;
+ draftPending?:boolean;participationNeedsConfirmation?:boolean;
 }
 export interface NextStep {kind:NextStepKind;title:string;stage:PlanStage}
 export function nextStep(f:StepFacts):NextStep {
- const step=(kind:NextStepKind,title:string,stage:PlanStage=0):NextStep=>({kind,title,stage});
- if(f.excluded)return step('REMOVED','You’re not joining this time');
+ const stage:PlanStage=f.offerId||f.state==='OFFER_ISSUED'?(f.bookingState==='CONFIRMED'?4:3):f.state==='MERCHANT_REVIEW'?2:f.state==='CLOSED'?1:0;
+ const step=(kind:NextStepKind,title:string,_stage:PlanStage=stage):NextStep=>({kind,title,stage});
+ if(f.excluded)return {kind:'REMOVED',title:'You’re not joining this time',stage:0};
  // Issued and historical offers own financial truth; planning blockers must not mask them.
  if(f.offerId||f.state==='OFFER_ISSUED'){
   if(f.bookingState==='CONFIRMED')return step('BOOKED','Your group is booked',4);
@@ -19,11 +21,13 @@ export function nextStep(f:StepFacts):NextStep {
   return step('RECOVERY','Check this booking and your payment',3);
  }
  if(f.state==='ABANDONED')return step('ENDED','This plan has ended');
+ if(f.participationNeedsConfirmation)return step('PARTICIPATION','Still coming?');
+ if(f.draftPending)return step('DRAFT','Finish your message draft');
  if(!f.ownReady)return step('DETAILS','Add what works for you');
  if(f.pickupAnswer)return step('PICKUP_ANSWER',`${f.pickupRequesterName??'A friend'} asked you to pick up their piece`);
+ if(f.ownChoicesNeedReview)return step('CHOICES','Review what works for you');
  if(f.noteNeedsReview)return step('NOTE','Check what your note means');
  if(f.pickupAsk)return step('PICKUP_ASK','Who could pick up your piece?');
- if(f.ownChoicesNeedReview)return step('CHOICES','Review what works for you');
  if(f.pickupWaiting)return step('PICKUP_WAIT','Waiting for your pickup friend');
  if(f.state==='MERCHANT_REVIEW')return step('STUDIO_WAIT','The studio is checking your session',2);
  if(f.state==='COLLECTING'){
@@ -31,6 +35,7 @@ export function nextStep(f:StepFacts):NextStep {
   return f.isOrganizer?step('REMIND','Bring your friends together'):step('FRIENDS_WAIT','Waiting for your friends');
  }
  if(f.state==='CLOSED'){
+  if(f.readyCount<f.memberCount)return f.isOrganizer?step('REMIND','A friend has a step to finish'):step('FRIENDS_WAIT','Waiting for a friend’s next step');
   if(f.candidateState==='CANDIDATE_READY')return f.isOrganizer?step('SESSIONS','Choose your group’s session',1):step('FRIENDS_WAIT','Your organizer is choosing a session',1);
   if(f.candidateState==='INFEASIBLE')return step('CHOICES','Find another option together',1);
   if(f.candidateState==='NEEDS_CLARIFICATION')return f.isOrganizer?step('REMIND','A friend has a step to finish',1):step('FRIENDS_WAIT','Waiting for a friend’s next step',1);

@@ -1,5 +1,9 @@
 # Message-first private choices
 
+The first-screen design below is historical. The form is now the default and
+message drafting is optional. Current blocker handling, model checks and limits
+are documented in [the readiness implementation](uncoached-blockers-implementation.md).
+
 “Say it once” drafts editable activity and pickup choices from a person's own
 message. Dates and spending limits remain explicit form inputs. Nothing becomes
 a saved requirement until the person reviews and saves it.

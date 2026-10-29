@@ -1,0 +1,7 @@
+[
+ {"id":"conditional-wheel","text":"I can collect later. Wheel would be fun if it isn't too pricey.","expect":"FIELDS","required":{"collection":"SELF_LATER"},"allowed":{}},
+ {"id":"optional-handbuilding","text":"A friend will need to collect it. Hand building would be nice, but anything is fine.","expect":"FIELDS","required":{"collection":"NOMINEE_LATER"},"allowed":{"technique":"ANY","outcome":"ANY"}},
+ {"id":"attend-either-pickup-later","text":"I can come to class on either evening, but I'm away for the following month. Someone else has to collect the fired piece.","expect":"FIELDS","required":{"collection":"NOMINEE_LATER"},"allowed":{}},
+ {"id":"attend-then-leave","text":"I'll be there for the session. I'm leaving town before the pieces are ready, so I need a friend to pick mine up.","expect":"FIELDS","required":{"collection":"NOMINEE_LATER"},"allowed":{}},
+ {"id":"unscoped-departure","text":"I'm heading out of town soon.","expect":"QUESTION","template":"TRAVEL_MEANING","requiredOptions":["CANNOT_ATTEND","COLLECTION_ONLY"]}
+]

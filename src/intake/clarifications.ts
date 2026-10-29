@@ -10,13 +10,14 @@ import {preferenceSchema} from '../planning/domain.ts';
 import {answerConsequences,type AnswerConsequence} from '../planning/consequences.ts';
 import {confirmedMeaning,reviewProposal,type Proposal,type MeaningBound} from '../planning/meaning.ts';
 import {IntakeService,IntakeError,type IntakeActor} from './service.ts';
+import {reviewDetails,storedReview,type ReviewDetails} from '../planning/review-details.ts';
 const base={commandId:z.uuid(),groupId:z.uuid(),expectedRevision:z.number().int().nonnegative(),preferenceId:z.uuid()};
-const startSchema=z.strictObject({...base,modelProcessingAgreed:z.literal(true)});
+const startSchema=z.strictObject({...base,modelProcessingAgreed:z.literal(true),retryClarificationId:z.uuid().optional()});
 const answerSchema=z.strictObject({...base,clarificationId:z.uuid(),answerId:z.string().min(1).max(50).nullable(),confirmsAllEssentials:z.literal(true)});
 const structuredSchema=z.strictObject({...base,declaresNoAdditionalMustHaves:z.literal(true)});
 const declineSchema=z.strictObject({...base,clarificationId:z.uuid()});
 type Model=(input:{revisionId:string;text:string;catalog:unknown})=>Promise<Clarification>;
-export type ClarificationView={id:string;status:string;sourcePreferenceId:string;sourceGroupRevision:number;proposal:Proposal|null;questionsRemaining:number;consequences:AnswerConsequence[]};
+export type ClarificationView={id:string;status:string;sourcePreferenceId:string;sourceGroupRevision:number;proposal:Proposal|null;questionsRemaining:number;consequences:AnswerConsequence[];review?:ReviewDetails};
 export class ClarificationService {
  private intake:IntakeService;
  constructor(private pool:pg.Pool,private model:Model=clarify){this.intake=new IntakeService(pool);}
@@ -45,12 +46,12 @@ export class ClarificationService {
    await c.query("UPDATE planning_clarifications SET status='STALE',result=NULL WHERE id=$1",[row.id]);row.status='STALE';row.result=null;
   }
   if(['RESERVED','DISPATCHED'].includes(row.status)){
-   const expired=(await c.query("UPDATE planning_clarifications SET status='REVIEW',result=NULL WHERE id=$1 AND clock_timestamp()>coalesce(started_at,created_at)+interval '45 seconds' RETURNING id",[row.id])).rowCount;
-   if(expired){row.status='REVIEW';row.result=null;}
+   const expired=(await c.query("UPDATE planning_clarifications SET status='REVIEW',result=$2 WHERE id=$1 AND clock_timestamp()>coalesce(started_at,created_at)+interval '45 seconds' RETURNING id",[row.id,JSON.stringify(reviewDetails(null))])).rowCount;
+   if(expired){row.status='REVIEW';row.result=reviewDetails(null);}
   }
   const proposal:Proposal|null=row.status==='READY'?row.result:null;
   const consequences=proposal?answerConsequences(group.catalog,preferenceSchema.parse(member.confirmed),proposal,group.target_size):[];
-  return {id:row.id,status:row.status,sourcePreferenceId:row.source_preference_id,sourceGroupRevision:row.source_group_revision,proposal,questionsRemaining:2-member.ai_questions,consequences};
+  return {id:row.id,status:row.status,sourcePreferenceId:row.source_preference_id,sourceGroupRevision:row.source_group_revision,proposal,questionsRemaining:2-member.ai_questions,consequences,...row.status==='REVIEW'&&row.result?.reviewReason?{review:storedReview(row.result)}:{}};
  });}
  async start(a:IntakeActor,value:unknown){
   const p=startSchema.parse(value);
@@ -61,7 +62,9 @@ export class ClarificationService {
    if(!member.optional_text?.trim())throw new IntakeError('NO_NOTE');
    if(member.optional_text.length>1500)throw new IntakeError('NOTE_TOO_LONG');
    if(member.wording_bound)throw new IntakeError('NOTE_ALREADY_REVIEWED');
-   const prior=(await c.query('SELECT id FROM planning_clarifications WHERE member_id=$1 AND source_preference_id=$2 ORDER BY created_at DESC LIMIT 1',[member.id,p.preferenceId])).rows[0];if(prior)return {id:prior.id};
+   const prior=(await c.query('SELECT id,status,result FROM planning_clarifications WHERE member_id=$1 AND source_preference_id=$2 ORDER BY created_at DESC LIMIT 1',[member.id,p.preferenceId])).rows[0];
+   if(p.retryClarificationId){if(prior?.id!==p.retryClarificationId||prior.status!=='REVIEW'||storedReview(prior.result).reviewReason!=='UNAVAILABLE')throw new IntakeError('STALE_CLARIFICATION');}
+   else if(prior)return {id:prior.id};
    const daily=await dailyAiCalls(c,a.userId);
    if(member.ai_calls>=4||member.ai_questions>=2||daily>=6)throw new IntakeError('CLARIFICATION_LIMIT');
    const id=randomUUID();await c.query('INSERT INTO planning_clarifications(id,member_id,source_preference_id,source_group_revision,status) VALUES($1,$2,$3,$4,\'RESERVED\')',[id,member.id,p.preferenceId,group.revision]);
@@ -83,15 +86,15 @@ export class ClarificationService {
     if(member.private_text_expired||member.current_preference_id!==row.source_preference_id||!['COLLECTING','CLOSED','MERCHANT_REVIEW'].includes(group.state)){
      await c.query("UPDATE planning_clarifications SET status='STALE',result=NULL WHERE id=$1",[row.id]);return;
     }
-    let proposal:Proposal|null=null;
+    let proposal:Proposal|null=null,validated:Proposal|null=null;
     if(result.status==='PROPOSAL')try{
-     proposal=reviewProposal(validateInterpretation(result.proposal,input),preferenceSchema.parse(member.confirmed),group.catalog,group.target_size);
+     validated=validateInterpretation(result.proposal,input);proposal=reviewProposal(validated,preferenceSchema.parse(member.confirmed),group.catalog,group.target_size);
      if(proposal?.question){
       const allowed=(await c.query('UPDATE planning_members SET ai_questions=ai_questions+1 WHERE id=$1 AND ai_questions<2 RETURNING id',[member.id])).rowCount;
       if(!allowed)proposal=null;
      }
     }catch{proposal=null;}
-    await c.query('UPDATE planning_clarifications SET status=$2,result=$3,question_asked=$4 WHERE id=$1',[row.id,proposal?'READY':'REVIEW',proposal?JSON.stringify(proposal):null,Boolean(proposal?.question)]);
+    await c.query('UPDATE planning_clarifications SET status=$2,result=$3,question_asked=$4 WHERE id=$1',[row.id,proposal?'READY':'REVIEW',JSON.stringify(proposal??reviewDetails(validated)),Boolean(proposal?.question)]);
    });
   }
   return this.view(a,p.groupId);
