@@ -9,6 +9,7 @@ import { confirmedPlan } from '../planning/persisted.ts';
 import type {CollectionRequest,GroupMember} from './projections.ts';
 import {publishedGroupSizes} from '../planning/capacity.ts';
 import {assertWorkspaceScope} from '../demo/scope.ts';
+import {confirmedDraft} from './draft-confirmation.ts';
 import {nextStep,type NextStep} from '../planning/next-step.ts';
 import {privateFeedback} from '../planning/private-feedback.ts';
 import {localFields} from '../planning/local-time.ts';
@@ -25,7 +26,8 @@ const uuid=z.uuid(),name=z.string().trim().min(1).max(60);
 const createSchema=z.strictObject({commandId:uuid,targetSize:z.number().int().min(1).max(8).optional(),displayName:name,catalog:catalogSchema});
 const joinSchema=z.strictObject({commandId:uuid,invite:z.string().regex(/^[a-f0-9]{64}$/),displayName:name});
 const saveSchema=z.strictObject({commandId:uuid,groupId:uuid,expectedRevision:z.number().int().nonnegative(),expectedPreferenceId:uuid.nullable(),
- preference:preferenceSchema.omit({memberId:true,revisionId:true}),optionalText:z.string().max(2000).nullable()});
+ preference:preferenceSchema.omit({memberId:true,revisionId:true}),optionalText:z.string().max(2000).nullable(),
+ messageDraft:z.strictObject({id:z.uuid(),answerId:z.string().min(1).max(50).nullable(),confirmsAllEssentials:z.literal(true)}).optional(),declaresNoAdditionalMustHaves:z.literal(true).optional()});
 const closeSchema=z.strictObject({commandId:uuid,groupId:uuid,expectedRevision:z.number().int().nonnegative(),memberIds:z.array(uuid).min(1).max(8)});
 const nominateSchema=z.strictObject({commandId:uuid,groupId:uuid,expectedPreferenceId:uuid,nomineeMemberId:uuid,disclosureAgreed:z.literal(true)});
 const consentCommandSchema=z.strictObject({commandId:uuid,groupId:uuid,expectedRevision:z.number().int().nonnegative(),preferenceId:uuid,action:z.enum(['OWNER_AGREE','NOMINEE_AGREE','REVOKE']),disclosureAgreed:z.boolean()});
@@ -94,8 +96,13 @@ export class IntakeService {
   }
   if(p.preference.nomineeMemberId){const nominee=(await c.query("SELECT id,admitted FROM planning_members n WHERE group_id=$1 AND id=$2 AND NOT coalesce((to_jsonb(n)->>'excluded')::boolean,false)",[g.id,p.preference.nomineeMemberId])).rows[0];if(!nominee||nominee.id===m.id||(g.state!=='COLLECTING'&&!nominee.admitted))throw new IntakeError('INVALID_NOMINEE');}
   const preferenceId=randomUUID(),confirmed={...p.preference,memberId:m.id,revisionId:preferenceId};
-  const wordingBound=p.optionalText===m.optional_text&&m.wording_bound&&respectsMeaning(confirmed,m.wording_bound as MeaningBound)?m.wording_bound:null;
+  let wordingBound=p.optionalText===m.optional_text&&m.wording_bound&&respectsMeaning(confirmed,m.wording_bound as MeaningBound)?m.wording_bound:null;
   if(p.optionalText?.trim())confirmed.extraRequirement=wordingBound?'NONE':'MERCHANT_REVIEW_REQUIRED';
+  if(p.messageDraft&&p.declaresNoAdditionalMustHaves)throw new IntakeError('COMMAND_CONFLICT');
+  if(p.messageDraft){wordingBound=await confirmedDraft(c,{id:p.messageDraft.id,answerId:p.messageDraft.answerId,memberId:m.id,sourcePreferenceId:m.current_preference_id,text:p.optionalText,catalog:g.catalog,preference:preferenceSchema.parse(confirmed)});confirmed.extraRequirement='NONE';}
+  else if(p.declaresNoAdditionalMustHaves&&p.optionalText?.trim()){
+   wordingBound={technique:confirmed.technique,outcome:confirmed.outcome,collection:confirmed.collection,availableSlotIds:confirmed.availableSlotIds};confirmed.extraRequirement='NONE';
+  }
   await c.query('INSERT INTO preference_revisions(id,member_id,confirmed,optional_text,wording_bound) VALUES($1,$2,$3,$4,$5)',[preferenceId,m.id,JSON.stringify(confirmed),p.optionalText,wordingBound]);
   await c.query('UPDATE planning_members SET current_preference_id=$1 WHERE id=$2',[preferenceId,m.id]);
   return {preferenceId,revision:await this.changed(c,g.id,'PREFERENCE_CONFIRMED')};

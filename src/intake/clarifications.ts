@@ -1,3 +1,4 @@
+import {dailyAiCalls} from './ai-allowance.ts';
 import {assertWorkspaceScope} from '../demo/scope.ts';
 import {randomUUID} from 'node:crypto';
 import type pg from 'pg';
@@ -61,7 +62,7 @@ export class ClarificationService {
    if(member.optional_text.length>1500)throw new IntakeError('NOTE_TOO_LONG');
    if(member.wording_bound)throw new IntakeError('NOTE_ALREADY_REVIEWED');
    const prior=(await c.query('SELECT id FROM planning_clarifications WHERE member_id=$1 AND source_preference_id=$2 ORDER BY created_at DESC LIMIT 1',[member.id,p.preferenceId])).rows[0];if(prior)return {id:prior.id};
-   const daily=Number((await c.query(`SELECT count(*) FROM planning_clarifications q JOIN planning_members m ON m.id=q.member_id WHERE m.user_id=$1 AND q.created_at>clock_timestamp()-interval '24 hours'`,[a.userId])).rows[0].count);
+   const daily=await dailyAiCalls(c,a.userId);
    if(member.ai_calls>=4||member.ai_questions>=2||daily>=6)throw new IntakeError('CLARIFICATION_LIMIT');
    const id=randomUUID();await c.query('INSERT INTO planning_clarifications(id,member_id,source_preference_id,source_group_revision,status) VALUES($1,$2,$3,$4,\'RESERVED\')',[id,member.id,p.preferenceId,group.revision]);
    await c.query('UPDATE planning_members SET ai_calls=ai_calls+1 WHERE id=$1',[member.id]);return {id};

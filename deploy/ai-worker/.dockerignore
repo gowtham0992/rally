@@ -1,0 +1,5 @@
+*
+!Dockerfile
+!build/
+!build/worker.mjs
+!build/THIRD_PARTY_LICENSES.txt

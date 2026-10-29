@@ -1,0 +1,22 @@
+spec: blueprint/v1
+name: rally-note-interpreter
+agent:
+  build:
+    context: .
+    dockerfile: Dockerfile
+  interfaces:
+    frontend: true
+    messaging: false
+  healthcheck:
+    path: /health
+  inputs:
+    - name: RALLY_AI_WORKER_TOKEN
+      datatype: string
+      secret: true
+models:
+  default:
+    provider: gateway
+    models: [claude-sonnet-4-6]
+dev:
+  command: node /app/worker.mjs
+  watch: []

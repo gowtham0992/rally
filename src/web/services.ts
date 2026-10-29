@@ -3,6 +3,9 @@ import {database} from '../db.ts';
 import {PaymentEngine} from '../payments/engine.ts';
 import {sandboxProvider} from '../payments/config.ts';
 import {BookingService} from '../bookings/service.ts';
+import {workerClarifier} from '../ai/worker-client.ts';
+import {MessageDraftService} from '../intake/message-drafts.ts';
+import {clarify} from '../ai/clarifier.ts';
 import {ClarificationService} from '../intake/clarifications.ts';
 import {budgetedClarifier} from '../ai/request-budget.ts';
 import {IntakeService} from '../intake/service.ts';
@@ -17,9 +20,11 @@ export function intake(){return new IntakeService(applicationDatabase());}
 
 export function clarifications(){
  const pool=applicationDatabase();
- return new ClarificationService(pool,budgetedClarifier(pool));
+ return new ClarificationService(pool,budgetedClarifier(pool,process.env.RALLY_AI_WORKER_URL?workerClarifier('CLARIFICATION'):clarify));
 }
 
 export function bookings(){return new BookingService(applicationDatabase());}
 
 export function payments(){return new PaymentEngine(applicationDatabase(),sandboxProvider());}
+
+export function messageDrafts(){const pool=applicationDatabase();return new MessageDraftService(pool,budgetedClarifier(pool,process.env.RALLY_AI_WORKER_URL?workerClarifier('DRAFT'):input=>clarify(input,undefined,fetch,undefined,true)));}

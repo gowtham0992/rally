@@ -1,0 +1,139 @@
+{
+  "observedAt": "2026-10-29T04:32:00.186Z",
+  "scope": "Authored fictional first-message cases, one request each; not human usability evidence.",
+  "mode": "message-first draft",
+  "model": "claude-sonnet-4-6",
+  "requests": 3,
+  "maxApprovedRequests": 3,
+  "maxOutputTokensPerRequest": 1400,
+  "qualityPassed": 2,
+  "operationalPassed": 3,
+  "results": [
+    {
+      "id": "named-friend-is-not-consent",
+      "passed": true,
+      "operational": true,
+      "expected": "FIELDS",
+      "fields": {
+        "technique": "HANDBUILD",
+        "outcome": "FORM_OWN_CUP",
+        "collection": "NOMINEE_LATER"
+      },
+      "proposal": {
+        "schemaVersion": 1,
+        "preferenceRevisionId": "6f4d7f59-907b-49b3-97f0-570bbd9b0a71",
+        "interpretations": [
+          {
+            "requirementKey": "TECHNIQUE",
+            "proposedValue": "HANDBUILD",
+            "sourceStart": 7,
+            "sourceEnd": 17,
+            "sourceSpan": "hand-build",
+            "certainty": "explicit"
+          },
+          {
+            "requirementKey": "OUTCOME",
+            "proposedValue": "FORM_OWN_CUP",
+            "sourceStart": 18,
+            "sourceEnd": 23,
+            "sourceSpan": "a cup",
+            "certainty": "explicit"
+          },
+          {
+            "requirementKey": "COLLECTION",
+            "proposedValue": "NOMINEE_LATER",
+            "sourceStart": 25,
+            "sourceEnd": 55,
+            "sourceSpan": "Jordan could pick it up for me",
+            "certainty": "explicit"
+          }
+        ],
+        "question": null
+      },
+      "validatedModelProposal": {
+        "schemaVersion": 1,
+        "preferenceRevisionId": "6f4d7f59-907b-49b3-97f0-570bbd9b0a71",
+        "interpretations": [
+          {
+            "requirementKey": "TECHNIQUE",
+            "proposedValue": "HANDBUILD",
+            "sourceStart": 7,
+            "sourceEnd": 17,
+            "sourceSpan": "hand-build",
+            "certainty": "explicit"
+          },
+          {
+            "requirementKey": "OUTCOME",
+            "proposedValue": "FORM_OWN_CUP",
+            "sourceStart": 18,
+            "sourceEnd": 23,
+            "sourceSpan": "a cup",
+            "certainty": "explicit"
+          },
+          {
+            "requirementKey": "COLLECTION",
+            "proposedValue": "NOMINEE_LATER",
+            "sourceStart": 25,
+            "sourceEnd": 55,
+            "sourceSpan": "Jordan could pick it up for me",
+            "certainty": "explicit"
+          }
+        ],
+        "question": null
+      },
+      "diagnostic": null
+    },
+    {
+      "id": "ambiguous-travel",
+      "passed": false,
+      "operational": true,
+      "expected": "QUESTION",
+      "fields": null,
+      "proposal": null,
+      "validatedModelProposal": null,
+      "diagnostic": {
+        "stage": "VALIDATION"
+      }
+    },
+    {
+      "id": "same-day-piece",
+      "passed": true,
+      "operational": true,
+      "expected": "FIELDS",
+      "fields": {
+        "collection": "SAME_DAY_REQUIRED"
+      },
+      "proposal": {
+        "schemaVersion": 1,
+        "preferenceRevisionId": "213cc0f0-6bfc-456e-a4ec-5bda2bcebfb2",
+        "interpretations": [
+          {
+            "requirementKey": "COLLECTION",
+            "proposedValue": "SAME_DAY_REQUIRED",
+            "sourceStart": 0,
+            "sourceEnd": 51,
+            "sourceSpan": "I need to take my finished piece home the same day.",
+            "certainty": "explicit"
+          }
+        ],
+        "question": null
+      },
+      "validatedModelProposal": {
+        "schemaVersion": 1,
+        "preferenceRevisionId": "213cc0f0-6bfc-456e-a4ec-5bda2bcebfb2",
+        "interpretations": [
+          {
+            "requirementKey": "COLLECTION",
+            "proposedValue": "SAME_DAY_REQUIRED",
+            "sourceStart": 0,
+            "sourceEnd": 51,
+            "sourceSpan": "I need to take my finished piece home the same day.",
+            "certainty": "explicit"
+          }
+        ],
+        "question": null
+      },
+      "diagnostic": null
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "observedAt": "2026-10-29T04:05:04.252Z",
+  "version": "016_message_drafts",
+  "applied": true,
+  "privateTableRls": true,
+  "browserAccess": false,
+  "runtimeAccess": true,
+  "existingCleanupJobPreserved": true,
+  "initialDraftRows": 0,
+  "oldPaymentOrPreferenceRowsUpdated": 0
+}

@@ -6,3 +6,4 @@ evidence/private/
 coverage/
 *.tsbuildinfo
 next-env.d.ts
+/deploy/ai-worker/build/

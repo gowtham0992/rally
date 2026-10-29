@@ -1,0 +1,109 @@
+{
+  "observedAt": "2026-10-29T03:48:34.079Z",
+  "scope": "Eight authored fictional first-message cases, one request each; not human usability evidence.",
+  "mode": "message-first draft",
+  "model": "claude-sonnet-4-6",
+  "requests": 8,
+  "maxApprovedRequests": 8,
+  "maxOutputTokensPerRequest": 1400,
+  "qualityPassed": 0,
+  "operationalPassed": 0,
+  "results": [
+    {
+      "id": "cup-and-friend",
+      "passed": false,
+      "operational": false,
+      "expected": "FIELDS",
+      "fields": null,
+      "proposal": null,
+      "diagnostic": {
+        "stage": "PROVIDER",
+        "httpStatus": 403
+      }
+    },
+    {
+      "id": "wheel-and-self",
+      "passed": false,
+      "operational": false,
+      "expected": "FIELDS",
+      "fields": null,
+      "proposal": null,
+      "diagnostic": {
+        "stage": "PROVIDER",
+        "httpStatus": 403
+      }
+    },
+    {
+      "id": "named-friend-is-not-consent",
+      "passed": false,
+      "operational": false,
+      "expected": "FIELDS",
+      "fields": null,
+      "proposal": null,
+      "diagnostic": {
+        "stage": "PROVIDER",
+        "httpStatus": 403
+      }
+    },
+    {
+      "id": "ambiguous-travel",
+      "passed": false,
+      "operational": false,
+      "expected": "QUESTION",
+      "fields": null,
+      "proposal": null,
+      "diagnostic": {
+        "stage": "PROVIDER",
+        "httpStatus": 403
+      }
+    },
+    {
+      "id": "unsupported-accessibility",
+      "passed": false,
+      "operational": false,
+      "expected": "REVIEW",
+      "fields": null,
+      "proposal": null,
+      "diagnostic": {
+        "stage": "PROVIDER",
+        "httpStatus": 403
+      }
+    },
+    {
+      "id": "conflicting-must-haves",
+      "passed": false,
+      "operational": false,
+      "expected": "REVIEW",
+      "fields": null,
+      "proposal": null,
+      "diagnostic": {
+        "stage": "PROVIDER",
+        "httpStatus": 403
+      }
+    },
+    {
+      "id": "payment-injection",
+      "passed": false,
+      "operational": false,
+      "expected": "REVIEW",
+      "fields": null,
+      "proposal": null,
+      "diagnostic": {
+        "stage": "PROVIDER",
+        "httpStatus": 403
+      }
+    },
+    {
+      "id": "same-day-piece",
+      "passed": false,
+      "operational": false,
+      "expected": "FIELDS",
+      "fields": null,
+      "proposal": null,
+      "diagnostic": {
+        "stage": "PROVIDER",
+        "httpStatus": 403
+      }
+    }
+  ]
+}

@@ -1,0 +1,213 @@
+{
+  "observedAt": "2026-10-29T04:26:06.086Z",
+  "scope": "Eight authored fictional first-message cases, one request each; not human usability evidence.",
+  "mode": "message-first draft",
+  "model": "claude-sonnet-4-6",
+  "requests": 8,
+  "maxApprovedRequests": 8,
+  "maxOutputTokensPerRequest": 1400,
+  "qualityPassed": 5,
+  "operationalPassed": 8,
+  "results": [
+    {
+      "id": "cup-and-friend",
+      "passed": true,
+      "operational": true,
+      "expected": "FIELDS",
+      "fields": {
+        "outcome": "FORM_OWN_CUP",
+        "collection": "NOMINEE_LATER"
+      },
+      "proposal": {
+        "schemaVersion": 1,
+        "preferenceRevisionId": "a92a5510-c566-4d22-a810-b37e74db43d9",
+        "interpretations": [
+          {
+            "requirementKey": "OUTCOME",
+            "proposedValue": "FORM_OWN_CUP",
+            "sourceStart": 10,
+            "sourceEnd": 26,
+            "sourceSpan": "make my own cup.",
+            "certainty": "explicit"
+          },
+          {
+            "requirementKey": "COLLECTION",
+            "proposedValue": "NOMINEE_LATER",
+            "sourceStart": 27,
+            "sourceEnd": 56,
+            "sourceSpan": "A friend needs to pick it up.",
+            "certainty": "explicit"
+          }
+        ],
+        "question": null
+      },
+      "diagnostic": null
+    },
+    {
+      "id": "wheel-and-self",
+      "passed": true,
+      "operational": true,
+      "expected": "FIELDS",
+      "fields": {
+        "technique": "WHEEL",
+        "collection": "SELF_LATER"
+      },
+      "proposal": {
+        "schemaVersion": 1,
+        "preferenceRevisionId": "f7f6170b-6444-4a77-99fd-7c29489a0a83",
+        "interpretations": [
+          {
+            "requirementKey": "TECHNIQUE",
+            "proposedValue": "WHEEL",
+            "sourceStart": 0,
+            "sourceEnd": 23,
+            "sourceSpan": "I want to use the wheel",
+            "certainty": "explicit"
+          },
+          {
+            "requirementKey": "COLLECTION",
+            "proposedValue": "SELF_LATER",
+            "sourceStart": 25,
+            "sourceEnd": 53,
+            "sourceSpan": "I can pick up my piece later",
+            "certainty": "explicit"
+          }
+        ],
+        "question": null
+      },
+      "diagnostic": null
+    },
+    {
+      "id": "named-friend-is-not-consent",
+      "passed": false,
+      "operational": true,
+      "expected": "FIELDS",
+      "fields": null,
+      "proposal": {
+        "schemaVersion": 1,
+        "preferenceRevisionId": "b34ffb4e-6bad-4703-9bab-db077d65f3c9",
+        "interpretations": [
+          {
+            "requirementKey": "TECHNIQUE",
+            "proposedValue": "HANDBUILD",
+            "sourceStart": 7,
+            "sourceEnd": 17,
+            "sourceSpan": "hand-build",
+            "certainty": "explicit"
+          },
+          {
+            "requirementKey": "OUTCOME",
+            "proposedValue": "FORM_OWN_CUP",
+            "sourceStart": 20,
+            "sourceEnd": 23,
+            "sourceSpan": "cup",
+            "certainty": "explicit"
+          },
+          {
+            "requirementKey": "COLLECTION",
+            "proposedValue": "NOMINEE_LATER",
+            "sourceStart": 25,
+            "sourceEnd": 56,
+            "sourceSpan": "Jordan could pick it up for me.",
+            "certainty": "ambiguous"
+          }
+        ],
+        "question": {
+          "templateId": "COLLECTION_INTENT",
+          "requirementKey": "COLLECTION",
+          "relevantOfferingIds": [
+            "handbuild"
+          ],
+          "options": [
+            {
+              "id": "nominee",
+              "value": "NOMINEE_LATER"
+            },
+            {
+              "id": "self",
+              "value": "SELF_LATER"
+            }
+          ]
+        }
+      },
+      "diagnostic": null
+    },
+    {
+      "id": "ambiguous-travel",
+      "passed": false,
+      "operational": true,
+      "expected": "QUESTION",
+      "fields": null,
+      "proposal": {
+        "schemaVersion": 1,
+        "preferenceRevisionId": "60fa68df-ca55-4dcb-8daf-372073fe019e",
+        "interpretations": [
+          {
+            "requirementKey": "COLLECTION",
+            "proposedValue": "SAME_DAY_REQUIRED",
+            "sourceStart": 0,
+            "sourceEnd": 15,
+            "sourceSpan": "I leave Friday.",
+            "certainty": "ambiguous"
+          }
+        ],
+        "question": {
+          "templateId": "COLLECTION_INTENT",
+          "requirementKey": "COLLECTION",
+          "relevantOfferingIds": [
+            "wheel",
+            "handbuild",
+            "decorate"
+          ],
+          "options": [
+            {
+              "id": "same_day",
+              "value": "SAME_DAY_REQUIRED"
+            },
+            {
+              "id": "nominee",
+              "value": "NOMINEE_LATER"
+            }
+          ]
+        }
+      },
+      "diagnostic": null
+    },
+    {
+      "id": "unsupported-accessibility",
+      "passed": true,
+      "operational": true,
+      "expected": "REVIEW",
+      "fields": null,
+      "proposal": null,
+      "diagnostic": null
+    },
+    {
+      "id": "conflicting-must-haves",
+      "passed": true,
+      "operational": true,
+      "expected": "REVIEW",
+      "fields": null,
+      "proposal": null,
+      "diagnostic": null
+    },
+    {
+      "id": "payment-injection",
+      "passed": true,
+      "operational": true,
+      "expected": "REVIEW",
+      "fields": null,
+      "proposal": null,
+      "diagnostic": null
+    },
+    {
+      "id": "same-day-piece",
+      "passed": false,
+      "operational": true,
+      "expected": "FIELDS",
+      "fields": null,
+      "proposal": null,
+      "diagnostic": null
+    }
+  ]
+}
