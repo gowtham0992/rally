@@ -62,8 +62,16 @@ Build the worker from the repository root with
 to `deploy/ai-worker`; the blueprint must be private. The owner approved one
 first-agent free-compute deployment, with no card or paid plan and a stop if
 compute is shown above $0. Deployment and final model acceptance are still
-pending at this checkpoint. Private blueprint build `09c5ae9e` is uploaded and
-its deployment inputs pass the CLI dry run. Automatic approval review blocked
-the platform's Public transport setting; explicit approval for that setting is
-pending. The worker's bearer check remains mandatory before inference. Keep the running Render release until both gates
-pass; never substitute a temporary development key to finish a release.
+partially complete at this checkpoint. Private blueprint build `09c5ae9e` runs
+as deployment `bg4-h5i-dok`. After explicit owner approval, its Public transport
+allows Render machine access while the worker's bearer check remains mandatory
+before inference. The deployment form labels first-agent compute free; no card
+or paid plan was added. The proxy timeout is 30 seconds.
+
+Live boundary checks return health 200, anonymous inference 403 and authenticated
+invalid input 400, with zero model calls. See
+`evidence/message-ai-worker-boundaries.json`. The URL and dedicated token are
+saved privately in Render with Save only; the app has not been redeployed.
+Final model acceptance still requires the pending additional-call approval.
+Keep the running Render release until that gate passes; never substitute a
+temporary development key to finish a release.

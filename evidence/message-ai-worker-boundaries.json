@@ -1,0 +1,25 @@
+{
+  "observedAt": "2026-10-29T04:52:24.542Z",
+  "deployment": "bg4-h5i-dok",
+  "build": "09c5ae9e",
+  "blueprintVisibility": "private",
+  "origin": "https://rally-note-interpreter-34d86266edf9593a.agents.public.astropods.ai",
+  "computeAllowance": "first running agent; deployment form labels free",
+  "proxyTimeoutSeconds": 30,
+  "checks": [
+    {
+      "name": "health",
+      "status": 200
+    },
+    {
+      "name": "anonymous_inference",
+      "status": 403
+    },
+    {
+      "name": "authenticated_invalid_input",
+      "status": 400
+    }
+  ],
+  "modelCalls": 0,
+  "databaseOrPaypalCredentials": false
+}
