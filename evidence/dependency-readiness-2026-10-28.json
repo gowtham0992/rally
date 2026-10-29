@@ -1,0 +1,14 @@
+{
+  "date": "2026-10-28",
+  "previous": {"next": "16.3.8", "zod": "4.6.5"},
+  "patched": {"next": "16.4.3", "zod": "4.6.7"},
+  "productionAdvisoriesAfterUpdate": 0,
+  "testsPassedAfterUpdate": 204,
+  "typecheck": "passed",
+  "productionBuild": "passed",
+  "applicationRuleChanges": false,
+  "liveExploitAttempted": false,
+  "priorExploitationAssessed": false,
+  "liveRollbackExecuted": false,
+  "rollbackReview": "Automatic approval review rejected a rollback to 0073eab because specific production-reversal authorization was missing."
+}
