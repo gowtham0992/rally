@@ -1,5 +1,12 @@
 # Rally AI evaluation
 
+The new message-first draft flow has its own eight-case acceptance check,
+separate from the historical saved-note evaluation below. Its final hosted run
+passed 8/8 after a 7/8 attempt exposed missing quoted travel evidence. The strict
+validator is unchanged. See [message-first verification](message-first-intake.md)
+and `evidence/message-draft-evaluation-1793250016234.json`. This uses authored
+fictional notes and does not establish human usability.
+
 The quality gate is 24 authored synthetic cases, repeated three times. Each of
 the six categories has four cases: clear feasible wording, consequential
 ambiguity, infeasible requirements, missing or changed merchant facts,

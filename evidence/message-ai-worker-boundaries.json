@@ -1,7 +1,8 @@
 {
-  "observedAt": "2026-10-29T04:52:24.542Z",
+  "observedAt": "2026-10-29T05:03:56.175Z",
+  "scope": "Empty health/auth/input-boundary requests only; no inference dispatch",
   "deployment": "bg4-h5i-dok",
-  "build": "09c5ae9e",
+  "build": "6b867042",
   "blueprintVisibility": "private",
   "origin": "https://rally-note-interpreter-34d86266edf9593a.agents.public.astropods.ai",
   "computeAllowance": "first running agent; deployment form labels free",

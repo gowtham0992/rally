@@ -5,10 +5,11 @@
 **A plan that fits everyone. Six holds. One booking.**
 
 Rally helps friends book a private studio session without someone fronting the
-group’s bill. Each friend saves private requirements. When a note is ambiguous,
-AI proposes one grounded question; each answer previews the published sessions
-it would allow. The friend confirms the meaning, and a deterministic planner
-checks the group’s fit.
+group’s bill. Each friend can describe what works in one private message. AI
+drafts activity and pickup choices, or asks one grounded question when the meaning
+is unclear. Dates and spending limits stay explicit. The friend checks and saves
+the choices, and a deterministic planner checks the group’s fit. Choosing every
+field manually remains available.
 
 The studio reserves the exact session and freezes the offer. Each person
 authorizes their own PayPal share directly to the merchant. Rally starts
@@ -51,14 +52,15 @@ Verified 2026-10-28. Historical provider and AI runs retain their own dates.
 | Signed notifications | 12 processed; delivered duplicate unchanged | Hosted 3 Oct; duplicate response body not captured |
 | Failure compensation | Refund + remaining voids; lost-response recovery | Separate local service with 3 real sandbox buyers |
 | AI evaluation | 72/72 final quality assessments; 0 safety failures | 24 authored cases × 3; earlier failures retained, 2 Oct |
-| Local suite | 204 passed; 0 failed | Disposable PostgreSQL; controlled Auth/model/provider, 28 Oct |
+| Message-first AI | 8/8 final hosted checks; travel ambiguity fixed | Eight authored fictional cases, one batch; 7/8 earlier attempt preserved, 28 Oct |
+| Local suite | 217 passed; 0 failed | Disposable PostgreSQL; controlled Auth/model/provider, 28 Oct |
 | Guard mutations | 62/62 caught | Existing checks rerun on 28 Oct |
 | TypeScript / production build | Passed | 28 Oct; Node 25.6.0 locally |
-| Judge capacity | 10 untouched of 12 total workspaces | Read-only checks, 27 Oct; no new identities or leases |
+| Judge capacity | 10 untouched of 12 total workspaces | Read-only checks, 28 Oct; no new identities or leases |
 | Hosted active failure recovery | Unverified | The hosted six-buyer success is separate |
 | Human groups / studios observed | 0 / 0 | Capacity-hold demand remains unvalidated |
 | Free email sign-in | Resend Delivered; owner confirmed sign-in | One external-to-team recipient, same Chrome browser; phones unverified, 27 Oct |
-| Plan interface | One next step, shared plan layout | Controlled browser checks and 29 hosted checks, 28 Oct; human usability unmeasured |
+| Plan interface | One next step, shared plan layout | Controlled browser checks plus 9 public/access checks, 28 Oct; human usability unmeasured |
 | Production dependency audit | 0 advisories | Next 16.4.3, Zod 4.6.7; checked 28 Oct |
 <!-- END CURRENT TRUTH -->
 

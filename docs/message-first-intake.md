@@ -79,5 +79,8 @@ or paid plan was added. The proxy timeout is 30 seconds.
 Live boundary checks return health 200, anonymous inference 403 and authenticated
 invalid input 400, with zero model calls. See
 `evidence/message-ai-worker-boundaries.json`. The URL and dedicated token are
-saved privately in Render. The tested app release is ready for the existing Free
-service. Never substitute a temporary development key to finish a release.
+saved privately in Render. App commit `30a78a4` is live on the existing Free
+service as deployment `dep-dbhd66qfngtc73bbf720`. Nine public readiness and
+anonymous/foreign-origin denial checks pass; protected hosted history is
+unchanged. See `evidence/message-release-verification.json`. Never substitute a
+temporary development key to finish a release.

@@ -1,0 +1,51 @@
+{
+  "observedAt": "2026-10-29T05:02:56.736Z",
+  "origin": "https://rally.gowthamsarveswaran.com",
+  "commit": "30a78a49ca64b2282f77f4604ad4bf815dc1cb71",
+  "renderDeploy": "dep-dbhd66qfngtc73bbf720",
+  "scope": "Public readiness and anonymous/foreign-origin denials only. Zero model calls, identity creation, group changes, emails or payments.",
+  "checks": [
+    {
+      "path": "/api/health",
+      "status": 200
+    },
+    {
+      "path": "/",
+      "status": 200
+    },
+    {
+      "path": "/login",
+      "status": 200
+    },
+    {
+      "path": "/groups/new",
+      "status": 200
+    },
+    {
+      "path": "private draft",
+      "method": "GET",
+      "status": 401,
+      "noStore": true
+    },
+    {
+      "path": "private draft",
+      "method": "POST",
+      "status": 401,
+      "noStore": true
+    },
+    {
+      "path": "private planning command",
+      "foreignOriginDenied": true,
+      "status": 403
+    },
+    {
+      "path": "private planning command",
+      "foreignOriginDenied": true,
+      "status": 403
+    },
+    {
+      "path": "private payment state",
+      "status": 401
+    }
+  ]
+}

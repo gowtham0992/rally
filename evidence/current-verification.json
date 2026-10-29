@@ -1,10 +1,10 @@
 {
   "date": "2026-10-28",
-  "observedAt": "2026-10-29T02:40:09.289312+00:00",
+  "observedAt": "2026-10-29T05:03:17.237Z",
   "truthRows": [
     {
       "claim": "Hosted group booking",
-      "result": "6 buyers \u00b7 6 \u00d7 $48 \u00b7 $288 gross",
+      "result": "6 buyers · 6 × $48 · $288 gross",
       "scope": "Actual hosted PayPal sandbox, 3 Oct"
     },
     {
@@ -20,11 +20,16 @@
     {
       "claim": "AI evaluation",
       "result": "72/72 final quality assessments; 0 safety failures",
-      "scope": "24 authored cases \u00d7 3; earlier failures retained, 2 Oct"
+      "scope": "24 authored cases × 3; earlier failures retained, 2 Oct"
+    },
+    {
+      "claim": "Message-first AI",
+      "result": "8/8 final hosted checks; travel ambiguity fixed",
+      "scope": "Eight authored fictional cases, one batch; 7/8 earlier attempt preserved, 28 Oct"
     },
     {
       "claim": "Local suite",
-      "result": "204 passed; 0 failed",
+      "result": "217 passed; 0 failed",
       "scope": "Disposable PostgreSQL; controlled Auth/model/provider, 28 Oct"
     },
     {
@@ -40,7 +45,7 @@
     {
       "claim": "Judge capacity",
       "result": "10 untouched of 12 total workspaces",
-      "scope": "Read-only checks, 27 Oct; no new identities or leases"
+      "scope": "Read-only checks, 28 Oct; no new identities or leases"
     },
     {
       "claim": "Hosted active failure recovery",
@@ -60,7 +65,7 @@
     {
       "claim": "Plan interface",
       "result": "One next step, shared plan layout",
-      "scope": "Controlled browser checks and 29 hosted checks, 28 Oct; human usability unmeasured"
+      "scope": "Controlled browser checks plus 9 public/access checks, 28 Oct; human usability unmeasured"
     },
     {
       "claim": "Production dependency audit",
@@ -69,22 +74,22 @@
     }
   ],
   "local": {
-    "tests": 204,
-    "passed": 204,
+    "tests": 217,
+    "passed": 217,
     "failed": 0,
     "mutations": 62,
     "mutationsCaught": 62,
     "typecheck": "passed",
     "productionBuild": "passed",
     "node": "25.6.0",
-    "newBehaviorTests": 10
+    "newBehaviorTests": 13
   },
   "browser": {
     "scope": "Actual React StrictMode components with real planning/clarification/booking services and disposable local PostgreSQL. Preauthenticated fictional actors, controlled model/payment responses. Not independent human usability or managed email delivery.",
     "verified": [
       "AI consent and meaning confirmation remain deliberate named actions without duplicate checkboxes",
       "Same-visit pickup request before roster closure; nominee can decline, then a fresh request can be sent to another friend",
-      "Nominee sees public studio facts and arrangement only, never the owner\u2019s travel note",
+      "Nominee sees public studio facts and arrangement only, never the owner’s travel note",
       "Organizer sees generic pending steps and can copy a reminder, with no automatic message",
       "Pickup field has no default; explicit unsure choice explains the blocking consequence",
       "Seven becomes six; five remains blocked at the studio minimum; removed friend sees a notice",
@@ -122,21 +127,20 @@
   "independentComprehensionCheck": "prepared, not run",
   "humanFriendGroupsObserved": 0,
   "studiosObserved": 0,
-  "newModelCalls": 0,
+  "newModelCalls": 16,
   "newPayPalOperations": 0,
   "emailsSent": 0,
   "hosting": {
     "state": "live",
     "origin": "https://rally.gowthamsarveswaran.com",
     "plan": "Free",
-    "commit": "6fbf33b64dd7bf4801d969d74b8a56913c7fe816",
-    "deployId": "dep-dbhb1o88v5cc73fvmtag",
+    "commit": "30a78a49ca64b2282f77f4604ad4bf815dc1cb71",
+    "deployId": "dep-dbhd66qfngtc73bbf720",
     "observedDurationSeconds": 78,
-    "migration": "015_planning_roster",
-    "readOnlyAndAnonymousDenialChecksPassed": 29,
-    "exactScreenshotHashesMatched": 12,
+    "migration": "016_message_drafts",
+    "readOnlyAndAnonymousDenialChecksPassed": 9,
     "protectedHostedHistoryUnchanged": true,
-    "report": "evidence/web/coherence-release-2026-10-28.json",
+    "report": "evidence/message-release-verification.json",
     "nodeVersion": "22.22.0",
     "nextVersion": "16.4.3",
     "rollbackExecuted": false,
@@ -166,7 +170,7 @@
   },
   "newAuthAccounts": 0,
   "newJudgeLeases": 0,
-  "migration": "015_planning_roster",
+  "migration": "016_message_drafts",
   "emailCountScope": "No email was sent by this coherence release; the earlier SMTP test remains in its linked report.",
   "coherence": {
     "status": "live and verified",
@@ -183,5 +187,30 @@
     "next": "16.4.3",
     "zod": "4.6.7",
     "report": "evidence/dependency-readiness-2026-10-28.json"
-  }
+  },
+  "messageFirst": {
+    "status": "live and verified",
+    "report": "docs/message-first-intake.md",
+    "localControlledBrowserChecks": [
+      "clear two-field draft",
+      "one travel question with manual answer",
+      "budget and dates unchanged",
+      "refresh resumes without duplicate dispatch",
+      "unsupported need remains unresolved"
+    ],
+    "liveMatrix": "evidence/message-draft-evaluation-1793250016234.json",
+    "finalQualityPassed": 8,
+    "finalCases": 8,
+    "finalPhaseModelCalls": 16,
+    "approvedFinalPhaseLimit": 16,
+    "featureSuccessfulModelCalls": 27,
+    "rejectedExpiredKeyAttempts": 16,
+    "workerBuild": "6b867042",
+    "workerDeployment": "bg4-h5i-dok",
+    "workerVisibility": "private",
+    "workerInferenceRequiresBearer": true,
+    "workerDatabaseOrPaypalCredentials": false,
+    "humanUsabilityVerified": false
+  },
+  "newModelCallsScope": "Final 16-call approval only; complete message-first feature counts are under messageFirst."
 }
