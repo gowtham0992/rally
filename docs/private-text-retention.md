@@ -2,9 +2,8 @@
 
 Rally deletes raw private notes and model quotations 30 days after a planning
 round ends. Confirmed structured choices, collection agreements, offer terms,
-payment history and command identities remain unchanged. This implements the
-retention requirement in `build-contract.json`; it does not claim to delete
-copies held by an external model provider or provider-managed backups.
+payment history and command identities remain unchanged. This policy does not claim to delete copies held by an external model provider
+or provider-managed backups.
 
 Planning ends when the studio issues the offer (`OFFER_ISSUED`) or the round is
 abandoned. Closing the roster and requesting studio review still allow editing

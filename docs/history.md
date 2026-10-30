@@ -21,21 +21,18 @@ The [documentation index](README.md) links to current behavior and operations.
 machine-readable checks and screenshots. Failed model evaluations remain beside
 their corrective runs; later success does not replace earlier failure.
 
-## Research and design records
+## Product research and operating records
 
-- [Uncoached group-study plan](uncoached-study-2026-10-27.md): prepared protocol;
-  independent group results have not been recorded.
-- [Earlier validation protocol](observed-validation.md): a proposed comparison
-  exercise, not completed research or demand evidence.
-- [Comprehension check](comprehension-check.md): a prepared reader exercise.
-- [October 28 interface review](app-coherence-review-2026-10-28.md).
-- [October 27 usability critique](usability-critique-2026-10-27.md).
-- [October 23 strategic review](strategic-review-2026-10-23.md).
-- [Earlier payment-resolution design](payment-exceptions-plan.md): current
-  operation is described in the [studio guide](studio-setup.md).
+- [Uncoached group-study plan](uncoached-study-2026-10-27.md): a prepared Rally
+  usability protocol; no independent group results have been recorded.
+- [Validation protocol](observed-validation.md): a proposed comparison exercise,
+  not completed research or demand evidence.
+- [Comprehension check](comprehension-check.md): a prepared product-reading exercise.
+- [Payment-resolution design](payment-exceptions-plan.md): current operation is
+  described in the [studio guide](studio-setup.md).
+- [Test-workspace provisioning](judge-provisioning.md): operating and identity
+  boundaries for the existing fictional preview.
+- [Source-publication audit](public-source.md): historical source-security checks.
 
-Earlier demo/evaluation planning and publication audits are retained in
-[demo planning](demo-plan.md), [evidence planning](judging-evidence-plan-2026-10-23.md)
-[test-workspace provisioning](judge-provisioning.md) and
-[source-publication history](public-source.md). They do not authorize
-publication, resource creation, provider spending or contacting anyone.
+These documents do not authorize resource creation, provider spending,
+publication or contacting anyone.

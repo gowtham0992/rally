@@ -5,7 +5,7 @@ PayPal payment. Start with the guide for the job you need to do.
 
 The [public guides](https://rally.gowthamsarveswaran.com/docs) provide a focused
 reading experience. Only curated files in `docs/site/` are published there;
-repository reviews, history and operating instructions are not served by the site.
+operating instructions and private evidence are not served by the site.
 
 ## Use Rally
 
@@ -33,13 +33,13 @@ session is reserved and no live payment is taken.
 | [Private text retention](private-text-retention.md) | Saved-note expiry, draft expiry and preserved financial records. |
 | [Prepared test access](test-access.md) | Isolated fictional workspaces and managed test identities. |
 
-## Verification and history
+## Verification
 
 [Verification](../evidence/README.md) separates actual sandbox operations,
 controlled local tests, authored model evaluations and observations by people.
 It includes limitations and earlier failed checks. Test counts describe the
 recorded release, not proof that a friend group can use the app unassisted.
 
-[Development history](history.md) contains dated release notes, earlier designs
-and research plans. Those records explain past decisions; use the guides above
-for current behavior.
+[Release history](history.md) records Rally's implementation and verification
+checkpoints. Submission drafts and internal review notes are not part of these
+guides.

@@ -7,3 +7,13 @@ coverage/
 *.tsbuildinfo
 next-env.d.ts
 /deploy/ai-worker/build/
+
+# Local assistant instructions and submission preparation
+/AGENTS.md
+/CLAUDE.md
+/.claude/
+/.codex/
+/.devpost-hackathon-state.json
+/devpost-submission.md
+/build-contract.json
+/progress.json
