@@ -32,3 +32,7 @@ test('worker bridge refuses unsafe configuration, oversized responses and provid
  assert.throws(()=>workerClarifier('DRAFT',{url:'https://worker.example',token:'short'}));
  for(const response of [new Response('x'.repeat(24577)),new Response('private provider failure',{status:503})])assert.equal((await workerClarifier('DRAFT',{url:'https://worker.example',token},async()=>response)(input)).status,'NEEDS_REVIEW');
 });
+test('published studio contact is kept out of the existing AI worker protocol',async()=>{
+ let calls=0;const call=workerClarifier('DRAFT',{url:'https://worker.example',token},async(_url,init)=>{calls++;const sent=JSON.parse(String(init?.body));assert.equal(sent.input.catalog.contact,undefined);assert.deepEqual(sent.input,input);return Response.json({status:'PROPOSAL',proposal});});
+ assert.equal((await call({...input,catalog:{...input.catalog,contact:{email:'studio@example.invalid'}}})).status,'PROPOSAL');assert.equal(calls,1);
+});

@@ -1,0 +1,30 @@
+{
+  "date": "2026-10-29",
+  "scope": "Actual React components and services; disposable local PostgreSQL; preauthenticated fictional actors; no external model, managed Auth, email or PayPal calls. Not an independent usability study.",
+  "checks": [
+    "No published contact leaves the need pending and removes the attestation button",
+    "Published local test contact and explicit generic studio-notice consent",
+    "Studio receives generic notice with no identity/need attached; all four confirmations retained",
+    "Withdrawal creates no payment operations and non-paying peer gets a short no-charge explanation",
+    "Withdrawing friend is directed to organizer rather than roster administration"
+  ],
+  "phone": {
+    "width": 375,
+    "height": 812,
+    "scrollWidth": 375,
+    "screens": [
+      "honesty-no-contact-mobile.jpg",
+      "honesty-closed-offer-mobile.jpg"
+    ]
+  },
+  "desktop": {
+    "width": 1280,
+    "height": 720,
+    "screen": "honesty-studio-notice-desktop.jpg"
+  },
+  "applicationConsoleErrorsAndWarnings": 0,
+  "externalModelCalls": 0,
+  "emails": 0,
+  "paypalOperations": 0,
+  "hostedChanges": 0
+}

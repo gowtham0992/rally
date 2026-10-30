@@ -299,7 +299,7 @@ export class PaymentEngine {
     if(canAuthorize&&create?.state==='SUCCEEDED'&&create.approval_url){
       try{const url=new URL(create.approval_url);if(url.origin==='https://www.sandbox.paypal.com'&&!url.username&&!url.password&&url.searchParams.get('token')===row.order_id)approvalUrl=url.toString();}catch{/* Invalid persisted links are never browser destinations. */}
     }
-    return {booking:row.state,payment,amountMinor:row.amount_minor,currency:row.currency,cleanup:row.cleanup,approvalUrl,
+    return {booking:row.state,payment,hasPaymentActivity:ops.length>0,amountMinor:row.amount_minor,currency:row.currency,cleanup:row.cleanup,approvalUrl,
       paymentApprovalProgress:{verified:row.verified_approvals,total:row.approval_total},accepted,canAccept:active&&!accepted,canAuthorize,preparingOrder:active&&accepted&&!row.order_id&&!needsAction,
       payerApprovalRequired:auth?.state==='FAILED'&&auth.safe_code==='PAYER_APPROVAL_REQUIRED'};
   }

@@ -5,7 +5,7 @@ import {z} from 'zod';
 import {transaction} from '../db.ts';
 import {fingerprint,DomainError} from '../payments/types.ts';
 import type {IntakeActor} from '../intake/service.ts';
-import {withdrawalForGroup} from '../intake/withdrawal.ts';
+import {withdrawalForGroup,participationForGroup} from '../intake/withdrawal.ts';
 import {confirmedPlan} from '../planning/persisted.ts';
 import {catalogSchema,type Candidate} from '../planning/domain.ts';
 const uuid=z.uuid(),key=z.string().min(1).max(100);
@@ -54,7 +54,7 @@ export class BookingService {
   if(g.state!=='CLOSED'||g.revision!==p.expectedRevision)throw new DomainError('STALE_PLANNING');
   await this.recovered(c,g.id);
   const plan=await confirmedPlan(c,g.id,g.catalog),candidate=this.selected(plan,p.offeringId,p.slotId);
-  const withdrawal=await withdrawalForGroup(c,g.id);if(withdrawal&&withdrawal.coming!==true&&plan.rows.some(r=>r.id===withdrawal.memberId))throw new DomainError('PARTICIPATION_REQUIRED');
+  const withdrawal=await withdrawalForGroup(c,g.id),optedOut=(await participationForGroup(c,g.id)).filter(w=>w.coming===false);if(optedOut.some(w=>plan.rows.some(r=>r.id===w.memberId))||withdrawal&&withdrawal.coming!==true&&plan.rows.some(r=>r.id===withdrawal.memberId))throw new DomainError('PARTICIPATION_REQUIRED');
   if(plan.rows.length!==g.target_size)throw new DomainError('INVALID_ROSTER');
   const published=(await c.query('SELECT catalog FROM merchant_catalog_versions WHERE studio_id=$1 AND version_id=$2',[plan.catalog.studioId,plan.catalog.versionId])).rows[0];
   if(!published||fingerprint(catalogSchema.parse(published.catalog))!==fingerprint(plan.catalog))throw new DomainError('UNVERIFIED_CATALOG',422);
@@ -90,7 +90,7 @@ export class BookingService {
    const g=await this.group(c,request.group_id,actor);
    if(g.state!=='MERCHANT_REVIEW'||g.revision!==p.expectedRevision||request.planning_revision!==g.revision||request.state!=='PENDING')throw new DomainError('STALE_PLANNING');
    const plan=await confirmedPlan(c,g.id,g.catalog),candidate=this.selected(plan,request.offering_id,request.slot_id);
-   const withdrawal=await withdrawalForGroup(c,g.id);if(withdrawal&&withdrawal.coming!==true&&plan.rows.some(r=>r.id===withdrawal.memberId))throw new DomainError('PARTICIPATION_REQUIRED');
+   const withdrawal=await withdrawalForGroup(c,g.id),optedOut=(await participationForGroup(c,g.id)).filter(w=>w.coming===false);if(optedOut.some(w=>plan.rows.some(r=>r.id===w.memberId))||withdrawal&&withdrawal.coming!==true&&plan.rows.some(r=>r.id===withdrawal.memberId))throw new DomainError('PARTICIPATION_REQUIRED');
    if(plan.sourceHash!==request.source_hash||plan.rows.length!==g.target_size)throw new DomainError('STALE_PLANNING');
    // Serialize approval of this studio's exclusive resource; the database exclusion
    // constraint remains the backstop against any other inserting code path.
@@ -275,7 +275,7 @@ export class BookingService {
    if(g.state!=='MERCHANT_REVIEW'||g.revision!==request.planning_revision)return {requestId,state:'STALE' as const};
    const plan=await confirmedPlan(c,g.id,g.catalog);if(plan.sourceHash!==request.source_hash)return {requestId,state:'STALE' as const};
    const candidate=this.selected(plan,request.offering_id,request.slot_id);
-   return {requestId,state:'PENDING' as const,revision:g.revision,candidate,
+   return {requestId,state:'PENDING' as const,revision:g.revision,candidate,personalArrangements:plan.personalArrangements,
     reservation:{occupiedStart:new Date(Date.parse(candidate.startAt)-request.setup_minutes*60000).toISOString(),occupiedEnd:new Date(Date.parse(candidate.endAt)+request.cleanup_minutes*60000).toISOString(),setupMinutes:request.setup_minutes as number,cleanupMinutes:request.cleanup_minutes as number},roster:plan.rows.map(r=>({memberId:r.id,displayName:r.display_name})),
     collectionArrangements:plan.preferences.filter(pref=>pref.collection==='NOMINEE_LATER').map(pref=>({ownerName:plan.rows.find(r=>r.id===pref.memberId)!.display_name,nomineeName:plan.rows.find(r=>r.id===pref.nomineeMemberId)!.display_name}))};
   });
@@ -307,7 +307,7 @@ export class BookingService {
     OR EXISTS(SELECT 1 FROM payment_reconciliation_evidence e WHERE e.operation_id=p.id)) ORDER BY m.ordinal,p.created_at,p.id LIMIT 40`,[offerId])).rows.map(p=>({operationId:p.id as string,kind:p.kind as string,memberName:snapshot.roster[p.ordinal].displayName})):[];
   const withdrawn=row.state==='WITHDRAWN'?await withdrawalForGroup(this.pool,snapshot.groupId):null;
   const ownWithdrawal=Boolean(withdrawn&&row.is_participant&&snapshot.roster[row.own_ordinal]?.memberId===withdrawn.memberId);
-  return {ownPickupNames:row.is_participant?snapshot.collectionArrangements.filter(a=>a.nomineeMemberId===snapshot.roster[row.own_ordinal]?.memberId).map(a=>a.ownerName):[],offerHash:row.offer_hash,booking:row.state,snapshot,cleanup:row.cleanup as string,planningRevision:row.planning_revision as number,
+  return {ownPickupNames:row.is_participant?snapshot.collectionArrangements.filter(a=>a.nomineeMemberId===snapshot.roster[row.own_ordinal]?.memberId).map(a=>a.ownerName):[],offerHash:row.offer_hash,booking:row.state,snapshot:{...snapshot,collectionArrangements:row.is_merchant?snapshot.collectionArrangements:row.is_participant?snapshot.collectionArrangements.filter(a=>a.ownerMemberId===snapshot.roster[row.own_ordinal]?.memberId||a.nomineeMemberId===snapshot.roster[row.own_ordinal]?.memberId):[]},cleanup:row.cleanup as string,planningRevision:row.planning_revision as number,
    withdrawal:withdrawn?.offerId===offerId&&(row.is_organizer||ownWithdrawal)?{displayName:withdrawn.displayName,isYou:ownWithdrawal}:null,
    isParticipant:row.is_participant as boolean,isMerchant:row.is_merchant as boolean,isOrganizer:row.is_organizer as boolean,
    isCurrentRound:Boolean(row.is_latest&&row.planning_state==='OFFER_ISSUED'),

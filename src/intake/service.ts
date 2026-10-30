@@ -13,7 +13,8 @@ import {confirmedDraft} from './draft-confirmation.ts';
 import {nextStep,type NextStep} from '../planning/next-step.ts';
 import {privateFeedback} from '../planning/private-feedback.ts';
 import {localFields} from '../planning/local-time.ts';
-import {withdrawalForGroup} from './withdrawal.ts';
+import {withdrawalForGroup,participationForGroup} from './withdrawal.ts';
+import {planningPreference,studioContactAgreed} from '../planning/studio-contact.ts';
 import {storedReview} from '../planning/review-details.ts';
 
 // Only server-authenticated identity may construct this input. Request bodies must
@@ -22,14 +23,14 @@ export interface IntakeActor {userId:string;emailVerified:boolean;demoWorkspaceI
 export type CollectionNextStep='ASK_COLLECTOR'|'REVIEW_REQUEST'|'CHOOSE_COLLECTOR';
 export interface RequestedSession {activity:string;startAt:string;timezone:string;amountMinor:number}
 export interface StudioDecline {reason:string;catalogVersionId:string;offeringId:string;slotId:string;activity:string;startAt:string;timezone:string}
-export interface PlanSummary {nextStep?:NextStep;groupId:string;studioName:string;state:string;isOrganizer:boolean;targetSize:number;readyCount:number;ownReady:boolean;excluded?:boolean;ownNoteNeedsReview:boolean;studioDeclined:boolean;studioReviewNeedsRefresh:boolean;noSharedSession:boolean;collectionNextStep:CollectionNextStep|null;deadline:string|null;amountMinor:number|null;activity:string|null;startAt:string|null;timezone:string|null;bookingState:string|null;bookingCleanup:string|null;offerId:string|null;previousOfferId:string|null;members:{displayName:string;isYou:boolean}[]}
+export interface PlanSummary {nextStep?:NextStep;groupId:string;studioName:string;state:string;isOrganizer:boolean;targetSize:number;readyCount:number;ownReady:boolean;excluded?:boolean;ownNoteNeedsReview:boolean;studioDeclined:boolean;studioReviewNeedsRefresh:boolean;noSharedSession:boolean;collectionNextStep:CollectionNextStep|null;deadline:string|null;amountMinor:number|null;activity:string|null;startAt:string|null;timezone:string|null;bookingState:string|null;bookingCleanup:string|null;noPaymentActivity?:boolean;offerId:string|null;previousOfferId:string|null;members:{displayName:string;isYou:boolean}[]}
 export class IntakeError extends Error {constructor(public code:string){super(code);}}
 const uuid=z.uuid(),name=z.string().trim().min(1).max(60);
 const createSchema=z.strictObject({commandId:uuid,targetSize:z.number().int().min(1).max(8).optional(),displayName:name,catalog:catalogSchema});
 const joinSchema=z.strictObject({commandId:uuid,invite:z.string().regex(/^[a-f0-9]{64}$/),displayName:name});
 const saveSchema=z.strictObject({commandId:uuid,groupId:uuid,expectedRevision:z.number().int().nonnegative(),expectedPreferenceId:uuid.nullable(),
  preference:preferenceSchema.omit({memberId:true,revisionId:true}),optionalText:z.string().max(2000).nullable(),
- messageDraft:z.strictObject({id:z.uuid(),answerId:z.string().min(1).max(50).nullable(),confirmsAllEssentials:z.literal(true)}).optional(),declaresNoAdditionalMustHaves:z.literal(true).optional(),studioContactConfirmed:z.literal(true).optional()});
+ messageDraft:z.strictObject({id:z.uuid(),answerId:z.string().min(1).max(50).nullable(),confirmsAllEssentials:z.literal(true)}).optional(),declaresNoAdditionalMustHaves:z.literal(true).optional(),studioContactConfirmed:z.literal(true).optional(),studioNoticeAgreed:z.literal(true).optional()});
 const participationSchema=z.strictObject({commandId:uuid,groupId:uuid,expectedRevision:z.number().int().nonnegative(),offerId:uuid,coming:z.boolean()});
 const closeSchema=z.strictObject({commandId:uuid,groupId:uuid,expectedRevision:z.number().int().nonnegative(),memberIds:z.array(uuid).min(1).max(8)});
 const nominateSchema=z.strictObject({commandId:uuid,groupId:uuid,expectedPreferenceId:uuid,nomineeMemberId:uuid,disclosureAgreed:z.literal(true)});
@@ -101,6 +102,7 @@ export class IntakeService {
   const preferenceId=randomUUID(),confirmed={...p.preference,memberId:m.id,revisionId:preferenceId};
   let wordingBound=p.optionalText===m.optional_text&&m.wording_bound&&!m.wording_bound.studioContact&&respectsMeaning(confirmed,m.wording_bound as MeaningBound)?m.wording_bound:null;
   if(p.optionalText?.trim())confirmed.extraRequirement=wordingBound?'NONE':'MERCHANT_REVIEW_REQUIRED';
+  if(p.studioNoticeAgreed&&!p.studioContactConfirmed)throw new IntakeError('COMMAND_CONFLICT');
   if([p.messageDraft,p.declaresNoAdditionalMustHaves,p.studioContactConfirmed].filter(Boolean).length>1)throw new IntakeError('COMMAND_CONFLICT');
   if(p.messageDraft){wordingBound=await confirmedDraft(c,{id:p.messageDraft.id,answerId:p.messageDraft.answerId,memberId:m.id,sourcePreferenceId:m.current_preference_id,text:p.optionalText,catalog:g.catalog,preference:preferenceSchema.parse(confirmed)});confirmed.extraRequirement='NONE';}
   else if(p.declaresNoAdditionalMustHaves&&p.optionalText?.trim()){
@@ -108,10 +110,12 @@ export class IntakeService {
   }
   else if(p.studioContactConfirmed){
    if(!p.optionalText?.trim())throw new IntakeError('NO_NOTE');
+   if(!catalog.contact?.email)throw new IntakeError('STUDIO_CONTACT_UNAVAILABLE');
+   if(!p.studioNoticeAgreed)throw new IntakeError('STUDIO_NOTICE_REQUIRED');
    if(p.optionalText!==m.optional_text)throw new IntakeError('STALE_PREFERENCE');
    if(m.wording_bound&&!respectsMeaning(confirmed,m.wording_bound as MeaningBound))throw new IntakeError('DRAFT_CHOICES_CHANGED');
    wordingBound={technique:confirmed.technique,outcome:confirmed.outcome,collection:confirmed.collection,availableSlotIds:confirmed.availableSlotIds,
-    studioContact:{confirmedByMemberId:m.id,confirmedAt:new Date().toISOString()}};confirmed.extraRequirement='NONE';
+    studioContact:{confirmedByMemberId:m.id,confirmedAt:new Date().toISOString(),noticeAgreed:true,contactEmail:catalog.contact.email}};confirmed.extraRequirement='NONE';
   }
   await c.query('INSERT INTO preference_revisions(id,member_id,confirmed,optional_text,wording_bound) VALUES($1,$2,$3,$4,$5)',[preferenceId,m.id,JSON.stringify(confirmed),p.optionalText,wordingBound]);
   await c.query('UPDATE planning_members SET current_preference_id=$1 WHERE id=$2',[preferenceId,m.id]);
@@ -139,8 +143,9 @@ export class IntakeService {
   // Names and readiness are public within the group; only this authenticated
   // participant's confirmed fields/text enter this private response.
   const members=own.excluded?[{id:own.id,displayName:own.display_name,admitted:false,ready:false,excluded:true,stepStatus:'NOT_COMING' as const}]:await this.memberProgress(c,groupId,g.state==='COLLECTING',g.organizer_id===actor.userId&&['CLOSED','MERCHANT_REVIEW'].includes(g.state));
-  const issued=g.state==='OFFER_ISSUED'?(await c.query("SELECT r.approved_offer_id,o.state AS booking_state,o.cleanup,s.snapshot->'candidate'->>'amountMinor' AS amount,s.snapshot->>'deadline' AS deadline FROM merchant_requests r JOIN offers o ON o.id=r.approved_offer_id JOIN offer_snapshots s ON s.offer_id=o.id WHERE r.group_id=$1 AND r.state='APPROVED' ORDER BY r.planning_revision DESC LIMIT 1",[groupId])).rows[0]:null;
-  const withdrawal=await withdrawalForGroup(c,groupId),ownWithdrawal=withdrawal?.memberId===own.id;
+  const issued=g.state==='OFFER_ISSUED'?(await c.query("SELECT r.approved_offer_id,o.state AS booking_state,o.cleanup,s.snapshot->'candidate'->>'amountMinor' AS amount,s.snapshot->>'deadline' AS deadline,NOT EXISTS(SELECT 1 FROM payment_operations op JOIN offer_members om ON om.id=op.member_id WHERE op.offer_id=o.id AND om.user_id=$2) AS no_payment_activity FROM merchant_requests r JOIN offers o ON o.id=r.approved_offer_id JOIN offer_snapshots s ON s.offer_id=o.id WHERE r.group_id=$1 AND r.state='APPROVED' ORDER BY r.planning_revision DESC LIMIT 1",[groupId,actor.userId])).rows[0]:null;
+  const latestWithdrawal=await withdrawalForGroup(c,groupId),ownOptOut=(await participationForGroup(c,groupId)).find(w=>w.memberId===own.id&&w.coming===false),withdrawal=own.excluded&&ownOptOut?ownOptOut:latestWithdrawal,ownWithdrawal=withdrawal?.memberId===own.id;
+  const ownPreference=own.confirmed?planningPreference(own.confirmed,own.wording_bound,catalogSchema.parse(g.catalog)):null;
   const hasDraftTable=(await c.query("SELECT to_regclass('intake_message_drafts') IS NOT NULL AS present")).rows[0].present;
   const draft=hasDraftTable&&!own.excluded?(await c.query("SELECT id FROM intake_message_drafts WHERE member_id=$1 AND source_preference_id IS NOT DISTINCT FROM $2 AND expires_at>clock_timestamp() AND status IN ('RESERVED','DISPATCHED','READY','REVIEW') ORDER BY created_at DESC,id DESC LIMIT 1",[own.id,own.confirmed?.revisionId??null])).rows[0]:null;
   const savedReview=!own.excluded&&own.confirmed?.extraRequirement==='MERCHANT_REVIEW_REQUIRED'?(await c.query("SELECT result->>'noteReviewReason' AS reason FROM intake_commands WHERE actor_id=$1 AND result->>'preferenceId'=$2 AND result->>'noteReviewReason' IN ('UNSUPPORTED','CONFLICT','UNAVAILABLE') LIMIT 1",[actor.userId,own.confirmed.revisionId])).rows[0]?.reason??null:null;
@@ -148,17 +153,17 @@ export class IntakeService {
   const hadReview=g.state==='CLOSED'&&(await c.query("SELECT 1 FROM planning_events WHERE group_id=$1 AND kind IN ('MERCHANT_REVIEW_REQUESTED','STUDIO_DECLINED') LIMIT 1",[groupId])).rowCount;
   const answer=(hadReview||g.state==='MERCHANT_REVIEW')?(await this.studioAnswers(c,[groupId]))[0]:null;
   return {groupId,revision:g.revision,state:g.state,targetSize:g.target_size,isOrganizer:g.organizer_id===actor.userId,excluded:Boolean(own.excluded),
-   memberId:own.id,displayName:own.display_name,preference:!own.excluded&&own.confirmed?preferenceSchema.parse(own.confirmed):null,optionalText:own.excluded?null:own.optional_text??null,wordingReviewed:!own.excluded&&Boolean(own.wording_bound),wordingBound:own.excluded?null:(own.wording_bound??null) as MeaningBound|null,privateTextExpired:Boolean(own.private_text_expired),
+   memberId:own.id,displayName:own.display_name,preference:!own.excluded&&own.confirmed?ownPreference:null,optionalText:own.excluded?null:own.optional_text??null,wordingReviewed:!own.excluded&&Boolean(own.wording_bound)&&ownPreference?.extraRequirement!=='MERCHANT_REVIEW_REQUIRED',wordingBound:own.excluded?null:(own.wording_bound??null) as MeaningBound|null,privateTextExpired:Boolean(own.private_text_expired),
    catalog:catalogSchema.parse(g.catalog),members,candidate:own.excluded?null:g.candidate,studioReviewPending:!own.excluded&&g.state==='MERCHANT_REVIEW',requestedSession:!own.excluded&&g.state==='MERCHANT_REVIEW'?answer?.session??null:null,
-   hasUnfinishedDraft:Boolean(draft),studioContactConfirmedByYou:!own.excluded&&Boolean(own.wording_bound?.studioContact),
+   hasUnfinishedDraft:Boolean(draft),studioContactConfirmedByYou:!own.excluded&&Boolean(ownPreference&&studioContactAgreed(ownPreference,own.wording_bound,catalogSchema.parse(g.catalog))),
    noteReviewReason:savedReview as 'UNSUPPORTED'|'CONFLICT'|'UNAVAILABLE'|null,
    withdrawal:withdrawal&&(ownWithdrawal||g.organizer_id===actor.userId)?{offerId:withdrawal.offerId,displayName:withdrawal.displayName,isYou:ownWithdrawal,coming:withdrawal.coming}:null,
-   offerSummary:!own.excluded&&issued?{amountMinor:Number(issued.amount),deadline:issued.deadline as string,cleanup:issued.cleanup as string}:null,
+   offerSummary:!own.excluded&&issued?{amountMinor:Number(issued.amount),deadline:issued.deadline as string,cleanup:issued.cleanup as string,noPaymentActivity:issued.no_payment_activity as boolean}:null,
    previousOfferId:own.excluded?ownEarlierOffer:(await this.previousOffers(c,[groupId]))[0]?.offerId??null,offerId:own.excluded?null:issued?.approved_offer_id??null,bookingState:own.excluded?null:issued?.booking_state??null,studioDecline:own.excluded?null:answer?.decline??null,studioReviewNeedsRefresh:!own.excluded&&g.state==='CLOSED'&&answer?.state==='PENDING',collectionRequests:own.excluded?[]:await this.collectionProjection(c,actor,groupId),
    organizerInvite:g.organizer_id===actor.userId?(await c.query("SELECT result->>'invite' AS invite FROM intake_commands WHERE actor_id=$1 AND result->>'groupId'=$2 AND result ? 'invite' LIMIT 1",[actor.userId,groupId])).rows[0]?.invite??null:null};
  });}
  private async memberProgress(c:pg.PoolClient,groupId:string,collecting:boolean,includeExcluded=false):Promise<GroupMember[]>{
-  const rows=(await c.query(`SELECT m.id,m.display_name,m.admitted,m.current_preference_id,p.confirmed,
+  const rows=(await c.query(`SELECT m.id,m.display_name,m.admitted,m.current_preference_id,p.confirmed,p.wording_bound,
    coalesce((to_jsonb(m)->>'excluded')::boolean,false) AS excluded,
    g.catalog,g.target_size,
    EXISTS(SELECT 1 FROM collection_consents cs JOIN planning_members n ON n.id=cs.nominee_member_id
@@ -172,14 +177,14 @@ export class IntakeService {
   const withdrawal=await withdrawalForGroup(c,groupId);
   const hasDraftTable=(await c.query("SELECT to_regclass('intake_message_drafts') IS NOT NULL AS present")).rows[0].present;
   const drafts=new Set(hasDraftTable?(await c.query("SELECT d.member_id FROM intake_message_drafts d JOIN planning_members m ON m.id=d.member_id WHERE m.group_id=$1 AND d.source_preference_id IS NOT DISTINCT FROM m.current_preference_id AND d.expires_at>clock_timestamp() AND d.status IN ('RESERVED','DISPATCHED','READY','REVIEW')",[groupId])).rows.map(r=>r.member_id):[]);
-  return rows.map(r=>{const p=r.confirmed?preferenceSchema.parse(r.confirmed):null;
+  return rows.map(r=>{const p=r.confirmed?planningPreference(r.confirmed,r.wording_bound,catalogSchema.parse(r.catalog)):null;
    const pending=p&&(Boolean(privateFeedback(catalogSchema.parse(r.catalog),p,r.target_size))||p.extraRequirement!=='NONE'||p.collection==='UNRESOLVED'||p.unresolvedKeys.some(k=>k!=='COLLECTION')||p.collection==='NOMINEE_LATER'&&!r.asked||p.unresolvedKeys.includes('COLLECTION')&&p.collection!=='NOMINEE_LATER')||withdrawal&&withdrawal.memberId===r.id&&withdrawal.coming!==true||drafts.has(r.id);
    return {id:r.id,displayName:r.display_name,admitted:r.admitted,ready:Boolean(p),excluded:r.excluded,stepStatus:r.excluded?'NOT_COMING':!p?'DETAILS_NEEDED':pending||r.request_waiting?'ACTION_NEEDED':'READY'};
   });
  }
  async confirmParticipation(actor:IntakeActor,value:unknown){const p=participationSchema.parse(value);return this.recordCommand(actor,p.commandId,{kind:'PARTICIPATION',...p},async c=>{
   const g=await this.group(c,p.groupId,actor);if(!['COLLECTING','CLOSED'].includes(g.state))throw new IntakeError('PLANNING_LOCKED');if(g.revision!==p.expectedRevision)throw new IntakeError('STALE_REVISION');
-  const member=(await c.query('SELECT id FROM planning_members WHERE group_id=$1 AND user_id=$2',[g.id,actor.userId])).rows[0],withdrawal=await withdrawalForGroup(c,g.id);
+  const member=(await c.query('SELECT id FROM planning_members WHERE group_id=$1 AND user_id=$2',[g.id,actor.userId])).rows[0],latest=await withdrawalForGroup(c,g.id),prior=(await participationForGroup(c,g.id)).find(w=>w.memberId===member?.id&&w.coming===false&&w.offerId===p.offerId),withdrawal=prior??latest;
   if(!member||!withdrawal||withdrawal.memberId!==member.id||withdrawal.offerId!==p.offerId)throw new IntakeError('NOT_FOUND');
   if(!p.coming&&g.organizer_id===actor.userId)throw new IntakeError('ORGANIZER_REQUIRED');
   if(p.coming&&Number((await c.query('SELECT count(*) FROM planning_members WHERE group_id=$1 AND NOT excluded',[g.id])).rows[0].count)>=8&&(await c.query('SELECT excluded FROM planning_members WHERE id=$1',[member.id])).rows[0].excluded)throw new IntakeError('GROUP_FULL');
@@ -208,7 +213,7 @@ export class IntakeService {
  });}
  async updateRoster(actor:IntakeActor,value:unknown){const p=closeSchema.parse(value);return this.recordCommand(actor,p.commandId,{kind:'UPDATE_ROSTER',...p},async c=>{
   const g=await this.group(c,p.groupId,actor);if(g.organizer_id!==actor.userId)throw new IntakeError('NOT_FOUND');if(!['COLLECTING','CLOSED','MERCHANT_REVIEW'].includes(g.state))throw new IntakeError('PLANNING_LOCKED');if(g.revision!==p.expectedRevision)throw new IntakeError('STALE_REVISION');
-  const withdrawal=await withdrawalForGroup(c,g.id);if(withdrawal?.coming===false&&p.memberIds.includes(withdrawal.memberId))throw new IntakeError('PARTICIPATION_REQUIRED');
+  const optedOut=(await participationForGroup(c,g.id)).filter(w=>w.coming===false);if(optedOut.some(w=>p.memberIds.includes(w.memberId)))throw new IntakeError('PARTICIPATION_REQUIRED');
   if(g.state!=='COLLECTING'&&(await c.query("SELECT 1 FROM offers o JOIN offer_snapshots os ON os.offer_id=o.id WHERE os.group_id=$1 AND (o.state NOT IN ('EXPIRED','WITHDRAWN','SUPERSEDED','ABORTED','CANCELED') OR o.cleanup<>'COMPLETE') LIMIT 1",[g.id])).rowCount)throw new IntakeError('PAYMENT_RECOVERY_REQUIRED');
   const members=(await c.query('SELECT id,user_id,coalesce((to_jsonb(m)->>\'excluded\')::boolean,false) AS excluded FROM planning_members m WHERE group_id=$1',[g.id])).rows;
   if(new Set(p.memberIds).size!==p.memberIds.length||p.memberIds.some(id=>!members.some(m=>m.id===id))||!members.some(m=>m.user_id===actor.userId&&p.memberIds.includes(m.id)))throw new IntakeError('INVALID_ROSTER');
@@ -242,7 +247,7 @@ export class IntakeService {
    const rows=(await c.query(`SELECT g.id AS "groupId",g.catalog->>'studioName' AS "studioName",g.state,
     coalesce((to_jsonb(own)->>'excluded')::boolean,false) AS excluded,g.organizer_id=$1 AS "isOrganizer",g.target_size AS "targetSize",own.current_preference_id IS NOT NULL AS "ownReady",
     coalesce(g.state='CLOSED' AND g.candidate->>'state'='INFEASIBLE',false) AS "noSharedSession",
-    g.catalog AS _catalog,own.id AS _member_id,own_p.confirmed AS _preference,g.candidate->>'state' AS _candidate_state,
+    g.catalog AS _catalog,own.id AS _member_id,own_p.confirmed AS _preference,own_p.wording_bound AS _bound,g.candidate->>'state' AS _candidate_state,
     coalesce(g.state IN ('COLLECTING','CLOSED','MERCHANT_REVIEW') AND NOT coalesce((to_jsonb(own_p)->>'private_text_expires_at')::timestamptz<=clock_timestamp(),false) AND own_p.optional_text IS NOT NULL AND own_p.confirmed->>'extraRequirement'='MERCHANT_REVIEW_REQUIRED',false) AS "ownNoteNeedsReview",
     g.state='CLOSED' AND EXISTS(SELECT 1 FROM planning_events e WHERE e.group_id=g.id AND e.kind='STUDIO_DECLINED') AS "studioDeclined",
     g.state='CLOSED' AND EXISTS(SELECT 1 FROM planning_events e WHERE e.group_id=g.id AND e.kind='MERCHANT_REVIEW_REQUESTED') AS "studioReviewNeedsRefresh",roster."readyCount",roster.members
@@ -254,17 +259,17 @@ export class IntakeService {
     WHERE own.user_id=$1 AND (g.state='COLLECTING' OR own.admitted OR coalesce((to_jsonb(own)->>'excluded')::boolean,false))
     AND (to_jsonb(g)->>'demo_workspace_id') IS NOT DISTINCT FROM $2::text
     AND ($3::timestamptz IS NULL OR (g.created_at,g.id)<($3::timestamptz,$4::uuid))
-    ORDER BY g.created_at DESC,g.id DESC LIMIT 21`,[actor.userId,actor.demoWorkspaceId??null,before?.createdAt??null,before?.id??null])).rows as (PlanSummary&{_catalog:unknown;_preference:unknown;_candidate_state:string|null;_member_id:string})[];
+    ORDER BY g.created_at DESC,g.id DESC LIMIT 21`,[actor.userId,actor.demoWorkspaceId??null,before?.createdAt??null,before?.id??null])).rows as (PlanSummary&{_catalog:unknown;_preference:unknown;_candidate_state:string|null;_member_id:string;_bound:MeaningBound|null})[];
    const plans=rows.slice(0,20).map(row=>({...row,collectionNextStep:null as CollectionNextStep|null,deadline:null as string|null,amountMinor:null as number|null,activity:null as string|null,startAt:null as string|null,timezone:null as string|null,bookingState:null as string|null,bookingCleanup:null as string|null,offerId:null as string|null,previousOfferId:null as string|null}));
    const previous=await this.previousOffers(c,plans.map(p=>p.groupId));
    for(const plan of plans)plan.previousOfferId=previous.find(p=>p.groupId===plan.groupId)?.offerId??null;
    const issued=plans.filter(p=>p.state==='OFFER_ISSUED').map(p=>p.groupId);
    if(issued.length){
     const bookings=(await c.query(`SELECT DISTINCT ON (r.group_id) r.group_id,o.id,o.state,o.cleanup,
-     os.snapshot->'candidate'->>'activity' AS activity,os.snapshot->'candidate'->>'startAt' AS start_at,os.snapshot->'candidate'->>'timezone' AS timezone,os.snapshot->'candidate'->>'amountMinor' AS amount,os.snapshot->>'deadline' AS deadline
+     os.snapshot->'candidate'->>'activity' AS activity,os.snapshot->'candidate'->>'startAt' AS start_at,os.snapshot->'candidate'->>'timezone' AS timezone,os.snapshot->'candidate'->>'amountMinor' AS amount,os.snapshot->>'deadline' AS deadline,NOT EXISTS(SELECT 1 FROM payment_operations op JOIN offer_members om ON om.id=op.member_id WHERE op.offer_id=o.id AND om.user_id=$2) AS no_payment_activity
      FROM merchant_requests r JOIN offers o ON o.id=r.approved_offer_id JOIN offer_snapshots os ON os.offer_id=o.id
-     WHERE r.group_id=ANY($1::uuid[]) AND r.state='APPROVED' ORDER BY r.group_id,r.planning_revision DESC`,[issued])).rows;
-    for(const plan of plans){const booking=bookings.find(b=>b.group_id===plan.groupId);if(booking)Object.assign(plan,{activity:booking.activity,startAt:booking.start_at,timezone:booking.timezone,deadline:booking.deadline,amountMinor:Number(booking.amount),bookingState:booking.state,bookingCleanup:booking.cleanup,offerId:booking.id});}
+     WHERE r.group_id=ANY($1::uuid[]) AND r.state='APPROVED' ORDER BY r.group_id,r.planning_revision DESC`,[issued,actor.userId])).rows;
+    for(const plan of plans){const booking=bookings.find(b=>b.group_id===plan.groupId);if(booking)Object.assign(plan,{activity:booking.activity,startAt:booking.start_at,timezone:booking.timezone,deadline:booking.deadline,amountMinor:Number(booking.amount),bookingState:booking.state,bookingCleanup:booking.cleanup,offerId:booking.id,noPaymentActivity:booking.no_payment_activity});}
    }
    const requestsByGroup=new Map<string,CollectionRequest[]>();
    const editable=plans.filter(p=>['COLLECTING','CLOSED','MERCHANT_REVIEW'].includes(p.state)).map(p=>p.groupId);
@@ -282,8 +287,9 @@ export class IntakeService {
    const reviewed=plans.filter(p=>p.studioDeclined||p.studioReviewNeedsRefresh||p.state==='MERCHANT_REVIEW').map(p=>p.groupId);
    if(reviewed.length){const answers=await this.studioAnswers(c,reviewed);for(const plan of plans){const answer=answers.find(a=>a.groupId===plan.groupId);plan.studioDeclined=Boolean(answer?.decline);plan.studioReviewNeedsRefresh=plan.state==='CLOSED'&&answer?.state==='PENDING';if(plan.state==='MERCHANT_REVIEW'&&answer?.session)Object.assign(plan,{activity:answer.session.activity,startAt:answer.session.startAt,timezone:answer.session.timezone});}}
    for(const plan of plans){
-    const cat=catalogSchema.parse(plan._catalog),pref=plan._preference?preferenceSchema.parse(plan._preference):null,requests=requestsByGroup.get(plan.groupId)??[];
+    const cat=catalogSchema.parse(plan._catalog),pref=plan._preference?planningPreference(plan._preference,plan._bound,cat):null,requests=requestsByGroup.get(plan.groupId)??[];
     const progress=await this.memberProgress(c,plan.groupId,plan.state==='COLLECTING'),withdrawal=await withdrawalForGroup(c,plan.groupId);
+    plan.ownNoteNeedsReview=plan.ownNoteNeedsReview||Boolean(plan._bound?.studioContact&&pref?.extraRequirement==='MERCHANT_REVIEW_REQUIRED');
     plan.readyCount=progress.filter(m=>!m.excluded&&m.stepStatus==='READY').length;
     const draftsPresent=(await c.query("SELECT to_regclass('intake_message_drafts') IS NOT NULL AS present")).rows[0].present;
     const draftPending=draftsPresent&&!plan.excluded&&Boolean((await c.query("SELECT 1 FROM intake_message_drafts WHERE member_id=$1 AND source_preference_id IS NOT DISTINCT FROM $2 AND expires_at>clock_timestamp() AND status IN ('RESERVED','DISPATCHED','READY','REVIEW') LIMIT 1",[plan._member_id,pref?.revisionId??null])).rowCount);
@@ -291,9 +297,9 @@ export class IntakeService {
     plan.nextStep=nextStep({state:plan.state,excluded:plan.excluded,isOrganizer:plan.isOrganizer,ownReady:plan.ownReady,noteNeedsReview:plan.ownNoteNeedsReview,
      pickupRequesterName:requests.find(r=>r.role==='NOMINEE'&&!r.revoked&&!r.nomineeAgreed)?.ownerName,pickupAnswer:requests.some(r=>r.role==='NOMINEE'&&!r.revoked&&!r.nomineeAgreed),pickupAsk:Boolean(ask),pickupWaiting:Boolean(owner&&!owner.revoked&&owner.ownerAgreed&&!owner.nomineeAgreed),
      ownChoicesNeedReview:Boolean(pref&&privateFeedback(cat,{...pref,extraRequirement:'NONE'},plan.targetSize,false)),draftPending,participationNeedsConfirmation:Boolean(withdrawal&&withdrawal.memberId===plan._member_id&&withdrawal.coming!==true),memberCount:plan.members.length,readyCount:plan.readyCount,allowedSizes:publishedGroupSizes(cat),
-     candidateState:plan._candidate_state,studioDeclined:plan.studioDeclined,studioReviewNeedsRefresh:plan.studioReviewNeedsRefresh,offerId:plan.offerId,bookingState:plan.bookingState});
+     candidateState:plan._candidate_state,studioDeclined:plan.studioDeclined,studioReviewNeedsRefresh:plan.studioReviewNeedsRefresh,offerId:plan.offerId,bookingState:plan.bookingState,noPaymentActivity:plan.noPaymentActivity});
    }
-   return {plans:plans.map(({_catalog,_preference,_candidate_state,_member_id,...p})=>{return p.excluded?{...p,members:p.members.filter(m=>m.isYou),readyCount:0,ownReady:false,ownNoteNeedsReview:false,collectionNextStep:null,activity:null,startAt:null,timezone:null,deadline:null,amountMinor:null,bookingState:null,bookingCleanup:null,offerId:null,previousOfferId:null}:p;}),nextCursor:rows.length>20?plans.at(-1)!.groupId:null};
+   return {plans:plans.map(({_catalog,_preference,_candidate_state,_member_id,_bound,...p})=>{return p.excluded?{...p,members:p.members.filter(m=>m.isYou),readyCount:0,ownReady:false,ownNoteNeedsReview:false,collectionNextStep:null,activity:null,startAt:null,timezone:null,deadline:null,amountMinor:null,bookingState:null,bookingCleanup:null,offerId:null,previousOfferId:null}:p;}),nextCursor:rows.length>20?plans.at(-1)!.groupId:null};
   });
  }
  private async previousOffers(c:pg.PoolClient,groupIds:string[]):Promise<{groupId:string;offerId:string}[]>{

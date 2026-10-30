@@ -15,5 +15,5 @@ export function contextNextStep(c:Context){
   draftPending:c.hasUnfinishedDraft,participationNeedsConfirmation:Boolean(c.withdrawal?.isYou&&c.withdrawal.coming!==true),
   memberCount:c.members.filter(m=>!m.excluded).length,readyCount:c.members.filter(m=>!m.excluded&&m.stepStatus==='READY').length,
   allowedSizes:publishedGroupSizes(c.catalog),candidateState:c.candidate?.state,studioDeclined:Boolean(c.studioDecline),studioReviewNeedsRefresh:c.studioReviewNeedsRefresh,
-  offerId:c.offerId,bookingState:c.bookingState});
+  offerId:c.offerId,bookingState:c.bookingState,noPaymentActivity:c.offerSummary?.noPaymentActivity});
 }

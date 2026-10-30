@@ -6,7 +6,7 @@ export interface StepFacts {
  pickupAnswer:boolean;pickupRequesterName?:string;pickupAsk:boolean;pickupWaiting:boolean;ownChoicesNeedReview:boolean;
  memberCount:number;readyCount:number;allowedSizes:readonly number[];candidateState?:string|null;
  studioDeclined?:boolean;studioReviewNeedsRefresh?:boolean;offerId?:string|null;bookingState?:string|null;
- draftPending?:boolean;participationNeedsConfirmation?:boolean;
+ noPaymentActivity?:boolean;draftPending?:boolean;participationNeedsConfirmation?:boolean;
 }
 export interface NextStep {kind:NextStepKind;title:string;stage:PlanStage}
 export function nextStep(f:StepFacts):NextStep {
@@ -18,7 +18,7 @@ export function nextStep(f:StepFacts):NextStep {
   if(f.bookingState==='CONFIRMED')return step('BOOKED','Your group is booked',4);
   if(f.bookingState==='OPEN')return step('OFFER','Review your share',3);
   if(f.bookingState==='SETTLING')return step('OFFER','Your payments are being checked',3);
-  return step('RECOVERY','Check this booking and your payment',3);
+  return step('RECOVERY',f.noPaymentActivity===true?'Offer closed · nothing charged':'Check this booking and your payment',3);
  }
  if(f.state==='ABANDONED')return step('ENDED','This plan has ended');
  if(f.participationNeedsConfirmation)return step('PARTICIPATION','Still coming?');

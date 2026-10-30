@@ -2,6 +2,36 @@
   "mode": "local_database_and_simulated_provider",
   "results": [
     {
+      "mutation": "legacy studio assertion treated as new disclosure consent",
+      "baselinePassed": true,
+      "caught": true,
+      "exitCode": 1
+    },
+    {
+      "mutation": "opt-out forgotten after a later offer",
+      "baselinePassed": true,
+      "caught": true,
+      "exitCode": 1
+    },
+    {
+      "mutation": "offer pickup arrangements shared with uninvolved peers",
+      "baselinePassed": true,
+      "caught": true,
+      "exitCode": 1
+    },
+    {
+      "mutation": "studio notice disclosure accepted without consent",
+      "baselinePassed": true,
+      "caught": true,
+      "exitCode": 1
+    },
+    {
+      "mutation": "payment activity hidden behind nothing-charged copy",
+      "baselinePassed": true,
+      "caught": true,
+      "exitCode": 1
+    },
+    {
       "mutation": "private conflict replaced by generic group advice",
       "baselinePassed": true,
       "caught": true,

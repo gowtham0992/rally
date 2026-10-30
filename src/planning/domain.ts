@@ -17,6 +17,7 @@ export const consentSchema=z.strictObject({
 });
 export const catalogSchema=z.strictObject({
   versionId:key,studioId:key,studioName:z.string().min(1).max(100),timezone:key,synthetic:z.boolean(),
+  contact:z.strictObject({email:z.email().max(254)}).optional(),
   slots:z.array(z.strictObject({id:key,startAt:z.iso.datetime()})).max(20),
   offerings:z.array(z.strictObject({id:key,name:z.string().min(1).max(100),verified:z.boolean(),
     technique:technique.exclude(['ANY']),outcome:outcome.exclude(['ANY']),

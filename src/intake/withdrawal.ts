@@ -1,6 +1,18 @@
 import type pg from 'pg';
 import {fingerprint} from '../payments/types.ts';
 export type Withdrawal={offerId:string;memberId:string;displayName:string;coming:boolean|null};
+// A person's own attendance choice outlives later offers and organizer edits.
+// Scope by both membership/actor and the originating offer's group. Revision,
+// rather than application timestamps, orders successive choices.
+export async function participationForGroup(c:pg.Pool|pg.PoolClient,groupId:string):Promise<Withdrawal[]>{
+ if(!(await c.query("SELECT to_regclass('offer_snapshots') IS NOT NULL AS present")).rows[0].present)return [];
+ const rows=(await c.query(`SELECT DISTINCT ON (m.id) m.id,m.display_name,r.result
+  FROM intake_commands r JOIN planning_members m ON m.group_id=$1 AND m.user_id=r.actor_id AND m.id::text=r.result->>'memberId'
+  JOIN offer_snapshots s ON s.group_id=m.group_id AND s.offer_id::text=r.result->>'offerId'
+  WHERE r.result->>'kind'='PARTICIPATION_CONFIRMED' AND jsonb_typeof(r.result->'coming')='boolean'
+  ORDER BY m.id,(r.result->>'revision')::integer DESC,r.id DESC`,[groupId])).rows;
+ return rows.map(r=>({offerId:r.result.offerId,memberId:r.id,displayName:r.display_name,coming:r.result.coming}));
+}
 // The immutable command fingerprint binds the actor to this exact withdrawal.
 // A WITHDRAWN offer alone never establishes who withdrew. This also supports
 // existing offers without changing payment records or the payment engine.
