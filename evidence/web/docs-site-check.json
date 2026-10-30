@@ -1,0 +1,54 @@
+{
+  "date": "2026-10-29",
+  "scope": "Actual local production Next.js build, disabled Auth/model/payment providers; no human usability study.",
+  "publishedGuides": 7,
+  "staticPublishedPages": 8,
+  "httpChecks": 19,
+  "privateDocumentExposed": false,
+  "docBuildTraces": 3,
+  "privateFilesInDocBuildTraces": 0,
+  "focusedPrivacyTests": 2,
+  "focusedPrivacyMutationsCaught": 2,
+  "fullLocalSuite": {
+    "passed": 232,
+    "failed": 0
+  },
+  "typecheck": "passed",
+  "productionBuild": "passed",
+  "productionDependencyAdvisories": 0,
+  "viewports": [
+    {
+      "width": 375,
+      "height": 812,
+      "scrollWidth": 375
+    },
+    {
+      "width": 768,
+      "height": 1024,
+      "scrollWidth": 768
+    },
+    {
+      "width": 1280,
+      "height": 720,
+      "scrollWidth": 1280
+    }
+  ],
+  "observed": [
+    "Desktop sidebar and current guide",
+    "Phone guide menu and keyboard toggle",
+    "Navigation resets the phone menu",
+    "Payments and privacy tables without page overflow",
+    "Previous/next guide links",
+    "Branded unknown-guide view with actual 404 status"
+  ],
+  "screens": [
+    "docs-site-overview-desktop.jpg",
+    "docs-site-overview-mobile.jpg",
+    "docs-site-payments-mobile.jpg"
+  ],
+  "observedApplicationConsoleErrorsAndWarnings": 0,
+  "minimumMeasuredTextContrast": 4.98,
+  "newModelCalls": 0,
+  "emails": 0,
+  "paypalOperations": 0
+}

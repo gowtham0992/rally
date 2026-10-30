@@ -1,8 +1,10 @@
 'use client';
 import {useEffect,useState} from 'react';
+import {usePathname} from 'next/navigation';
 import {apiFetch,documentSession,type DocumentSession} from '../lib/api-fetch';
 import {demoRoles} from '../../src/demo/roles';
-export function DemoToolbar(){
+export function DemoToolbar(){const path=usePathname();return path==='/docs'||path?.startsWith('/docs/')?null:<SessionToolbar/>;}
+function SessionToolbar(){
  const [demo,setDemo]=useState<DocumentSession['demo']>(null),[busy,setBusy]=useState(false),[error,setError]=useState(''),[changed,setChanged]=useState(false);
  useEffect(()=>{let active=true;documentSession().then(s=>{if(active)setDemo(s.demo??null);}).catch(e=>{if(active&&['VIEWER_CHANGED','DEMO_SESSION_EXPIRED','DEMO_SESSION_REQUIRED'].includes(e.code))setChanged(true);});return()=>{active=false;};},[]);
  async function change(role:string){if(busy||role===demo?.role)return;setBusy(true);setError('');try{const r=await apiFetch('/api/demo/role',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({role})}),p=await r.json();if(!r.ok)throw new Error('Could not switch friends. Your current view is still here.');location.assign(p.next);}catch(e){setError(e instanceof Error?e.message:'Could not switch friends.');}finally{setBusy(false);}}

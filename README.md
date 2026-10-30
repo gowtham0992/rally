@@ -7,7 +7,7 @@ without one person covering the group's bill. Dates, spending limits and
 must-haves stay private. Each friend approves their own share through PayPal.
 
 [Open Rally](https://rally.gowthamsarveswaran.com) ·
-[Documentation](docs/README.md) ·
+[Guides](https://rally.gowthamsarveswaran.com/docs) ·
 [Developer setup](docs/development.md) ·
 [Verification](evidence/README.md)
 

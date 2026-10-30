@@ -145,3 +145,18 @@ node --import tsx scripts/sync-verification-docs.ts --check
 Keep credentials, environment files, browser sessions and raw observations out
 of Git. The [deployment guide](deployment.md) covers the hosted environment;
 local setup does not provision or modify hosted resources.
+
+## Maintain the public guides
+
+The `/docs` site reads only the seven entries in `src/docs/catalog.ts`, each
+from `docs/site/`. Known pages are generated at build time. Unknown routes
+return the docs not-found view before reading any file. There is no arbitrary
+Markdown, repository or raw-file endpoint.
+
+Keep public text separate from internal reviews, deployment notes and private
+evidence. The renderer ignores raw HTML and embeds and allows links only to
+named public app routes. New routes require an explicit manifest change and
+privacy review. Preview desktop, tablet and phone layouts through the existing
+Next.js app. Focused checks run with
+`node --import tsx --test test/public-docs.test.ts`; they require no credentials
+or external services.

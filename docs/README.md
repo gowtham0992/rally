@@ -3,6 +3,10 @@
 Rally coordinates a group plan, a studio's exact offer and each friend's own
 PayPal payment. Start with the guide for the job you need to do.
 
+The [public guides](https://rally.gowthamsarveswaran.com/docs) provide a focused
+reading experience. Only curated files in `docs/site/` are published there;
+repository reviews, history and operating instructions are not served by the site.
+
 ## Use Rally
 
 | Guide | What it covers |

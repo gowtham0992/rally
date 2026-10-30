@@ -1,0 +1,1 @@
+export default function DocsNotFound(){return <section className="docs-missing"><p className="eyebrow">Rally guides</p><h1>This guide isn’t here.</h1><p>Choose a guide from the menu, or start with the overview.</p><a className="button" href="/docs">Back to the guides <span aria-hidden="true">→</span></a></section>;}
