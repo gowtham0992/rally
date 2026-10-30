@@ -1,6 +1,6 @@
 {
   "date": "2026-10-29",
-  "observedAt": "2026-10-30T03:42:14.558Z",
+  "observedAt": "2026-10-30T04:50:21.503Z",
   "truthRows": [
     {
       "claim": "Hosted group booking",
@@ -29,13 +29,13 @@
     },
     {
       "claim": "Local suite",
-      "result": "230 passed; 0 failed",
-      "scope": "Disposable PostgreSQL 17; controlled Auth/model/provider, 29 Oct"
+      "result": "232 passed; 0 failed",
+      "scope": "Disposable PostgreSQL 17 in UTC; controlled providers; includes two public-docs boundary tests, 29 Oct"
     },
     {
       "claim": "Guard mutations",
       "result": "68/68 caught",
-      "scope": "Payment, privacy and consent guards plus durable opt-outs and legacy disclosure, 29 Oct"
+      "scope": "68/68 from the correction release, unchanged by docs; two additional docs boundary mutations caught separately, 29 Oct"
     },
     {
       "claim": "TypeScript / production build",
@@ -70,19 +70,24 @@
     {
       "claim": "Production dependency audit",
       "result": "0 advisories",
-      "scope": "Next 16.4.3, Zod 4.6.7; checked 28 Oct"
+      "scope": "Production dependencies including react-markdown 10.1.0 and remark-gfm 4.0.1; checked 29 Oct"
+    },
+    {
+      "claim": "Public guides",
+      "result": "7 guides; 19 guide/path checks passed",
+      "scope": "Live public routes only; no internal document or private-file exposure, 29 Oct"
     }
   ],
   "local": {
-    "tests": 230,
-    "passed": 230,
+    "tests": 232,
+    "passed": 232,
     "failed": 0,
     "mutations": 68,
     "mutationsCaught": 68,
     "typecheck": "passed",
     "productionBuild": "passed",
     "node": "25.6.0",
-    "newBehaviorTests": 6
+    "newBehaviorTests": 2
   },
   "browser": {
     "scope": "Actual React/components/services against disposable PostgreSQL, fictional Auth and controlled providers; no external model/email/PayPal calls or independent humans.",
@@ -115,7 +120,7 @@
     "authAccountsCreatedThisSlice": 0,
     "leasesClaimedThisSlice": 0,
     "scope": "Read-only hosted counts; original prepared groups retained.",
-    "observedAt": "2026-10-30T03:42:13.120Z"
+    "observedAt": "2026-10-30T04:50:15.393Z"
   },
   "protectedHostedHistoryUnchanged": true,
   "freshManagedAuthBrowserRehearsal": "not performed in this slice",
@@ -129,13 +134,13 @@
     "state": "live",
     "origin": "https://rally.gowthamsarveswaran.com",
     "plan": "Free",
-    "commit": "a9f254016d4bee5aa58c284bac2506c95fae00b1",
-    "deployId": "dep-dbi13a4s728c73c1cgig",
-    "observedDurationSeconds": 92,
+    "commit": "02d02a5a24640d2e98e25cad24fa4d27dfc9c545",
+    "deployId": "dep-dbi233rbc2fs739ssvd0",
+    "observedDurationSeconds": 82,
     "migration": "016_message_drafts",
-    "readOnlyAndAnonymousDenialChecksPassed": 12,
+    "readOnlyAndAnonymousDenialChecksPassed": 4,
     "protectedHostedHistoryUnchanged": true,
-    "report": "evidence/honesty-release-verification.json",
+    "report": "evidence/docs-site-release-verification.json",
     "nodeVersion": "22.22.0",
     "nextVersion": "16.4.3",
     "rollbackExecuted": false,
@@ -176,7 +181,7 @@
   "newAuthAccounts": 0,
   "newJudgeLeases": 0,
   "migration": "016_message_drafts",
-  "emailCountScope": "No emails in this correction release; earlier SMTP test retains its original scope.",
+  "emailCountScope": "No email was sent by the public documentation release; earlier SMTP evidence retains its original scope.",
   "coherence": {
     "status": "live and verified",
     "report": "evidence/web/coherence-check-2026-10-28.json",
@@ -191,7 +196,9 @@
     "productionAdvisories": 0,
     "next": "16.4.3",
     "zod": "4.6.7",
-    "report": "evidence/dependency-readiness-2026-10-28.json"
+    "report": "evidence/docs-site-dependency-audit.json",
+    "markdown": "10.1.0",
+    "gfm": "4.0.1"
   },
   "messageFirst": {
     "status": "Historical first-screen design superseded; drafting is now optional",
@@ -217,7 +224,7 @@
     "workerDatabaseOrPaypalCredentials": false,
     "humanUsabilityVerified": false
   },
-  "newModelCallsScope": "This correction pass: no model calls. Previous readiness run retains its own ten-call scope.",
+  "newModelCallsScope": "Public documentation release: no model calls. Earlier authored evaluations retain their original scopes.",
   "uncoachedBlockers": {
     "status": "live and verified",
     "report": "docs/uncoached-blockers-implementation.md",
@@ -245,5 +252,23 @@
     "migration": false,
     "newModelCalls": 0,
     "humanUsabilityVerified": false
+  },
+  "docsSite": {
+    "status": "live",
+    "origin": "https://rally.gowthamsarveswaran.com/docs",
+    "report": "evidence/web/docs-site-check.json",
+    "releaseReport": "evidence/docs-site-release-verification.json",
+    "publishedGuides": 7,
+    "staticPublishedPages": 8,
+    "publicationSource": "Explicit src/docs/catalog.ts entries and docs/site only",
+    "boundaryTests": 2,
+    "boundaryMutationsCaught": 2,
+    "privateFilesExposed": false,
+    "repositoryVisibility": "PRIVATE",
+    "paidPlanAdded": false,
+    "databaseMigration": false,
+    "newModelCalls": 0,
+    "emails": 0,
+    "paypalOperations": 0
   }
 }

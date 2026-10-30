@@ -1,0 +1,107 @@
+{
+  "commit": "02d02a5a24640d2e98e25cad24fa4d27dfc9c545",
+  "renderDeploy": "dep-dbi233rbc2fs739ssvd0",
+  "applicationChecks": [
+    {
+      "scope": "readiness",
+      "status": 200
+    },
+    {
+      "scope": "anonymous private data denial",
+      "status": 401
+    },
+    {
+      "scope": "anonymous private data denial",
+      "status": 401
+    },
+    {
+      "scope": "foreign-origin mutation denial",
+      "status": 403
+    }
+  ],
+  "observedAt": "2026-10-30T04:50:21.503Z",
+  "scope": "Actual hosted public HTTP, no signed-in mutations",
+  "checks": [
+    {
+      "path": "/docs",
+      "status": 200
+    },
+    {
+      "path": "/docs/getting-started",
+      "status": 200
+    },
+    {
+      "path": "/docs/group-booking",
+      "status": 200
+    },
+    {
+      "path": "/docs/payments",
+      "status": 200
+    },
+    {
+      "path": "/docs/privacy",
+      "status": 200
+    },
+    {
+      "path": "/docs/ai",
+      "status": 200
+    },
+    {
+      "path": "/docs/architecture",
+      "status": 200
+    },
+    {
+      "path": "/docs/verification",
+      "status": 200
+    },
+    {
+      "path": "unpublished/path attempt",
+      "status": 404
+    },
+    {
+      "path": "unpublished/path attempt",
+      "status": 404
+    },
+    {
+      "path": "unpublished/path attempt",
+      "status": 404
+    },
+    {
+      "path": "unpublished/path attempt",
+      "status": 404
+    },
+    {
+      "path": "unpublished/path attempt",
+      "status": 404
+    },
+    {
+      "path": "unpublished/path attempt",
+      "status": 404
+    },
+    {
+      "path": "unpublished/path attempt",
+      "status": 404
+    },
+    {
+      "path": "unpublished/path attempt",
+      "status": 404
+    },
+    {
+      "path": "unpublished/path attempt",
+      "status": 404
+    },
+    {
+      "path": "published guide with ignored file parameter",
+      "status": 200
+    },
+    {
+      "path": "published guide with ignored file parameter",
+      "status": 200
+    }
+  ],
+  "publishedGuides": 7,
+  "privateDocumentExposed": false,
+  "externalModelCalls": 0,
+  "paypalOperations": 0,
+  "emails": 0
+}

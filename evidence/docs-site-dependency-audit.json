@@ -1,0 +1,10 @@
+{
+  "observedAt": "2026-10-30T04:49:25.276Z",
+  "command": "npm audit --omit=dev",
+  "productionAdvisories": 0,
+  "newDependencies": {
+    "react-markdown": "10.1.0",
+    "remark-gfm": "4.0.1"
+  },
+  "existingPackageVersionsChanged": 0
+}
