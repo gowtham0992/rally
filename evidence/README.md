@@ -33,14 +33,14 @@ Verified 2026-10-29. Historical provider and AI runs retain their own dates.
 | Failure compensation | Refund + remaining voids; lost-response recovery | Separate local service with 3 real sandbox buyers |
 | AI evaluation | 72/72 final quality assessments; 0 safety failures | 24 authored cases × 3; earlier failures retained, 2 Oct |
 | Optional draft AI | 5/5 final hosted checks; earlier 2/5 retained | Five new authored fictional cases; 10 approved calls total, 29 Oct |
-| Local suite | 224 passed; 0 failed | Disposable PostgreSQL; controlled Auth/model/provider, 29 Oct |
-| Guard mutations | 63/63 caught | Existing protections plus private conflict explanation, 29 Oct |
+| Local suite | 230 passed; 0 failed | Disposable PostgreSQL 17; controlled Auth/model/provider, 29 Oct |
+| Guard mutations | 68/68 caught | Payment, privacy and consent guards plus durable opt-outs and legacy disclosure, 29 Oct |
 | TypeScript / production build | Passed | 29 Oct; Node 25.6.0 locally |
 | Judge capacity | 9 untouched of 12 total workspaces | Read-only checks, 29 Oct; no new identities or leases |
 | Hosted active failure recovery | Unverified | The hosted six-buyer success is separate |
 | Human groups / studios observed | 0 / 0 | Capacity-hold demand remains unvalidated |
 | Free email sign-in | Resend Delivered; owner confirmed sign-in | One external-to-team recipient, same Chrome browser; phones unverified, 27 Oct |
-| Plan interface | Form first; private blockers and explicit friend decisions | Controlled phone flows plus 12 public/access checks, 29 Oct; human usability unmeasured |
+| Plan interface | Scoped consent; persistent opt-outs; clear closed offers | Controlled components/services and phone screens; 12 public/access checks, 29 Oct; human usability unmeasured |
 | Production dependency audit | 0 advisories | Next 16.4.3, Zod 4.6.7; checked 28 Oct |
 <!-- END CURRENT TRUTH -->
 

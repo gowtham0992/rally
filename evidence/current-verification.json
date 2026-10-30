@@ -1,6 +1,6 @@
 {
   "date": "2026-10-29",
-  "observedAt": "2026-10-29T07:43:15.347Z",
+  "observedAt": "2026-10-30T03:42:14.558Z",
   "truthRows": [
     {
       "claim": "Hosted group booking",
@@ -29,13 +29,13 @@
     },
     {
       "claim": "Local suite",
-      "result": "224 passed; 0 failed",
-      "scope": "Disposable PostgreSQL; controlled Auth/model/provider, 29 Oct"
+      "result": "230 passed; 0 failed",
+      "scope": "Disposable PostgreSQL 17; controlled Auth/model/provider, 29 Oct"
     },
     {
       "claim": "Guard mutations",
-      "result": "63/63 caught",
-      "scope": "Existing protections plus private conflict explanation, 29 Oct"
+      "result": "68/68 caught",
+      "scope": "Payment, privacy and consent guards plus durable opt-outs and legacy disclosure, 29 Oct"
     },
     {
       "claim": "TypeScript / production build",
@@ -64,8 +64,8 @@
     },
     {
       "claim": "Plan interface",
-      "result": "Form first; private blockers and explicit friend decisions",
-      "scope": "Controlled phone flows plus 12 public/access checks, 29 Oct; human usability unmeasured"
+      "result": "Scoped consent; persistent opt-outs; clear closed offers",
+      "scope": "Controlled components/services and phone screens; 12 public/access checks, 29 Oct; human usability unmeasured"
     },
     {
       "claim": "Production dependency audit",
@@ -74,48 +74,39 @@
     }
   ],
   "local": {
-    "tests": 224,
-    "passed": 224,
+    "tests": 230,
+    "passed": 230,
     "failed": 0,
-    "mutations": 63,
-    "mutationsCaught": 63,
+    "mutations": 68,
+    "mutationsCaught": 68,
     "typecheck": "passed",
     "productionBuild": "passed",
     "node": "25.6.0",
-    "newBehaviorTests": 7
+    "newBehaviorTests": 6
   },
   "browser": {
-    "scope": "Actual React components and services against disposable local PostgreSQL; fictional actors and controlled Auth/AI/PayPal. No independent humans, managed login, external email or payment.",
+    "scope": "Actual React/components/services against disposable PostgreSQL, fictional Auth and controlled providers; no external model/email/PayPal calls or independent humans.",
     "verified": [
-      "Form is the default; budget is empty and has no placeholder",
-      "Private $72 versus $60 conflict before and after Save; Sam has a step",
-      "Decliner acknowledgement and no default re-ask",
-      "Refresh resumes the unfinished note as next step",
-      "Unsupported need quoted; carried forward without a second AI step",
-      "Participant studio confirmation recorded with explicit unverified disclaimer",
-      "Provider failure has separate copy and explicit retry",
-      "Saving an edit warns collector must agree again",
-      "Former collector sees invalidation; renewed request states why",
-      "All-ready resolves only when pending steps finish",
-      "Four studio confirmations retained; no payment approval clicked",
-      "Offer amount and viewer-local deadline visible on plan",
-      "Withdrawal is discoverable outside terms and names Taylor to organizer",
-      "New planning requires Taylor’s attendance decision; five remains below minimum",
-      "Taylor can explicitly return; earlier offer/payment records remain separate"
+      "No published contact leaves the need pending and removes the attestation button",
+      "Published local test contact and explicit generic studio-notice consent",
+      "Studio receives generic notice with no identity/need attached; all four confirmations retained",
+      "Withdrawal creates no payment operations and non-paying peer gets a short no-charge explanation",
+      "Withdrawing friend is directed to organizer rather than roster administration"
     ],
     "phoneWidth": 375,
     "phoneScrollWidth": 375,
     "applicationConsoleErrorsAndWarnings": 0,
-    "consoleExclusions": "Browser-extension warnings excluded.",
+    "consoleExclusions": "None observed in the local in-app browser check.",
     "viewportChecks": [
       {
         "width": 375,
         "height": 812,
         "scrollWidth": 375,
-        "report": "evidence/web/blockers-browser-check.json"
+        "report": "evidence/web/honesty-browser-check.json"
       }
     ],
-    "currentReport": "evidence/web/blockers-browser-check.json"
+    "currentReport": "evidence/web/honesty-browser-check.json",
+    "previousReport": "evidence/web/blockers-browser-check.json"
   },
   "capacity": {
     "observedDate": "2026-10-29",
@@ -124,27 +115,27 @@
     "authAccountsCreatedThisSlice": 0,
     "leasesClaimedThisSlice": 0,
     "scope": "Read-only hosted counts; original prepared groups retained.",
-    "observedAt": "2026-10-29T07:43:15.347Z"
+    "observedAt": "2026-10-30T03:42:13.120Z"
   },
   "protectedHostedHistoryUnchanged": true,
   "freshManagedAuthBrowserRehearsal": "not performed in this slice",
   "independentComprehensionCheck": "prepared, not run",
   "humanFriendGroupsObserved": 0,
   "studiosObserved": 0,
-  "newModelCalls": 10,
+  "newModelCalls": 0,
   "newPayPalOperations": 0,
   "emailsSent": 0,
   "hosting": {
     "state": "live",
     "origin": "https://rally.gowthamsarveswaran.com",
     "plan": "Free",
-    "commit": "9de452a8d8ac6c89aec63a2c4faa2aac844332bf",
-    "deployId": "dep-dbhfgc942hec73cb1tog",
-    "observedDurationSeconds": 79,
+    "commit": "a9f254016d4bee5aa58c284bac2506c95fae00b1",
+    "deployId": "dep-dbi13a4s728c73c1cgig",
+    "observedDurationSeconds": 92,
     "migration": "016_message_drafts",
     "readOnlyAndAnonymousDenialChecksPassed": 12,
     "protectedHostedHistoryUnchanged": true,
-    "report": "evidence/blockers-release-verification.json",
+    "report": "evidence/honesty-release-verification.json",
     "nodeVersion": "22.22.0",
     "nextVersion": "16.4.3",
     "rollbackExecuted": false,
@@ -175,7 +166,7 @@
   "newAuthAccounts": 0,
   "newJudgeLeases": 0,
   "migration": "016_message_drafts",
-  "emailCountScope": "No email was sent by this coherence release; the earlier SMTP test remains in its linked report.",
+  "emailCountScope": "No emails in this correction release; earlier SMTP test retains its original scope.",
   "coherence": {
     "status": "live and verified",
     "report": "evidence/web/coherence-check-2026-10-28.json",
@@ -216,7 +207,7 @@
     "workerDatabaseOrPaypalCredentials": false,
     "humanUsabilityVerified": false
   },
-  "newModelCallsScope": "This readiness release: first five-case batch plus one five-case corrective run. Earlier approvals remain exhausted.",
+  "newModelCallsScope": "This correction pass: no model calls. Previous readiness run retains its own ten-call scope.",
   "uncoachedBlockers": {
     "status": "live and verified",
     "report": "docs/uncoached-blockers-implementation.md",
@@ -231,6 +222,18 @@
     "databaseMigration": false,
     "studioContactAssertion": "participant-only; unverified by Rally",
     "paymentEngineChanged": false,
+    "humanUsabilityVerified": false
+  },
+  "honestyFixes": {
+    "status": "live and verified",
+    "report": "docs/honesty-fixes-2026-10-29.md",
+    "studioContact": "Published contact and explicit generic-notice consent required; current hosted fictional catalog has no contact and cannot attest unsupported needs",
+    "pickupPrivacy": "Owner, nominee and studio only; full frozen snapshot stays on server",
+    "optOut": "Persists across later rounds until the same member returns",
+    "closedOfferCertainty": "No operations only; all payment activity retains full status",
+    "paymentEngine": "Read-only payment-activity projection only; mutation/state machine unchanged",
+    "migration": false,
+    "newModelCalls": 0,
     "humanUsabilityVerified": false
   }
 }

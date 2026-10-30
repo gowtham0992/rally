@@ -62,4 +62,9 @@ private, existing Free hosting is retained, and no model allowance was consumed.
 Demo video, Devpost work and submission remain deferred. The next product
 evidence is the actual phone handoff and independent friends using Rally.
 
-Release status will be recorded after the existing Free deployment is verified.
+Runtime commit a9f2540 is live on the existing Render Free service
+as deployment dep-dbi13a4s728c73c1cgig. All twelve public readiness and access-denial
+checks pass in evidence/honesty-release-verification.json. Read-only hosted
+fingerprints match before and after deployment, and nine untouched workspaces
+remain. No hosted preferences, consent or financial records were rewritten.
+The owner’s decision to skip a live rollback rehearsal remains in force.
