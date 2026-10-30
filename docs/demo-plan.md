@@ -1,5 +1,9 @@
 # Rally demo plan
 
+> Historical record. This document describes its original checkpoint or proposed
+> study, not current product instructions. Start with the [documentation](README.md)
+> or [development history](history.md) for context.
+
 Rally's demo should make one promise memorable: **six friends, one booking,
 nobody fronts the whole bill.** Show a complete pottery booking that respects
 each friend's private requirements, then show what Rally does when a payment

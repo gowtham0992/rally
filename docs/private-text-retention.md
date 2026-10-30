@@ -14,6 +14,14 @@ an existing deadline; newly saved preferences receive a deadline when their
 round ends. The owner can configure 1–365 days before future rounds close.
 Policy changes do not reset stored deadlines.
 
+## Unconfirmed message drafts
+
+Message drafts have a separate thirty-minute expiry from creation, including
+work that never became a saved preference. Cleanup clears their private text and
+model result, while retaining command/source identities and quota metadata.
+A late response cannot restore expired content. Draft expiry does not erase
+saved preferences, pickup consent or financial records.
+
 ## Copies and preserved records
 
 - `preference_revisions.optional_text`: cleared across every expired revision,

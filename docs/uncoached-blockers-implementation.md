@@ -1,5 +1,9 @@
 # Private blockers and clear next steps
 
+> Historical record. This document describes its original checkpoint or proposed
+> study, not current product instructions. Start with the [documentation](README.md)
+> or [development history](history.md) for context.
+
 The form is now the default. Optional message drafting remains available, but a
 draft cannot hide a person's own conflict behind generic advice to the group.
 This implements the next slice from `uncoached-readiness-review-2026-10-28.md`.

@@ -1,5 +1,9 @@
 # Message-first private choices
 
+> Historical record. This document describes its original checkpoint or proposed
+> study, not current product instructions. Start with the [documentation](README.md)
+> or [development history](history.md) for context.
+
 The first-screen design below is historical. The form is now the default and
 message drafting is optional. Current blocker handling, model checks and limits
 are documented in [the readiness implementation](uncoached-blockers-implementation.md).

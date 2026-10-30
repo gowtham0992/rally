@@ -1,5 +1,9 @@
 # Rally usability critique — October 27, 2026
 
+> Historical record. This document describes its original checkpoint or proposed
+> study, not current product instructions. Start with the [documentation](README.md)
+> or [development history](history.md) for context.
+
 Internal analysis for the owner. Nothing was changed, deployed, published or sent. No judge workspace was claimed, no model or PayPal call was made, and no person was contacted.
 
 **What this is based on.** The current source at `19de8cc` (the live release is `4ac7304`; the later commit only records evidence). The public home, `/demo` and recorded-journey pages, read at phone width today. The October 23 renders of the current clarification and group-fit components in `evidence/web/`. I did not run the authenticated flow live or stand up a local fixture; screen behavior below comes from reading the components and services, and every such claim names the file. **Zero real people have used Rally**, so every statement about what people will do is a hypothesis unless it is a code fact.

@@ -1,5 +1,9 @@
 # Usability changes — October 27, 2026
 
+> Historical record. This document describes its original checkpoint or proposed
+> study, not current product instructions. Start with the [documentation](README.md)
+> or [development history](history.md) for context.
+
 The owner authorized the five usability changes with the privacy, capacity and
 payment corrections. Video and submission remain owner-controlled later work.
 

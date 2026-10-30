@@ -1,5 +1,9 @@
 # Repository and release policy
 
+> Historical record. This document describes its original checkpoint or proposed
+> study, not current product instructions. Start with the [documentation](README.md)
+> or [development history](history.md) for context.
+
 [gowtham0992/rally](https://github.com/gowtham0992/rally) is Rally's sole working
 repository. Keep it private until the owner is ready to submit. Development,
 source code, assets, migrations, tests, setup instructions and the MIT license

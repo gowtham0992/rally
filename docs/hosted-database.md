@@ -46,7 +46,7 @@ The actual connection audit in `evidence/hosted-database.json` proves verified
 TLS **from Rally to the session pooler**. Supabase reports its internal
 pooler-to-database connection as non-TLS; the audit does not claim encryption on
 that provider-managed hop. The audit also verified a rolled-back synthetic write,
-ten applied migrations, denied browser schema privileges, and an HTTP 406 when
+the ten migrations present at that historical checkpoint, denied browser schema privileges, and an HTTP 406 when
 a browser key requested the private schema through REST. It is not proof of
 application deployment, multi-account login, or a hosted payment journey.
 
@@ -56,9 +56,18 @@ Sources: [custom roles](https://supabase.com/blog/postgres-roles-and-privileges)
 [public root certificate](https://supabase-downloads.s3-ap-southeast-1.amazonaws.com/prod/ssl/prod-ca-2021.crt),
 [node-postgres SSL](https://node-postgres.com/features/ssl).
 
-Migration 012 adds [private-note expiry](private-text-retention.md). The latest
-retention audit verified all twelve migrations, certificate-verified restricted
+Migration 012 adds [private-note expiry](private-text-retention.md). That dated
+retention audit verified the twelve migrations present for its release, certificate-verified restricted
 access, denied browser execution and denied runtime policy changes. Native SQL
 Cron removed an isolated fictional test note and quotation while preserving
 existing payment, consent and confirmed-choice digests. See
 [retention evidence](../evidence/web/private-text-retention.json).
+
+## Current schema
+
+The authoritative ordered migration list is `src/migrations.ts`; the current
+application includes sixteen migrations through `016_message_drafts`. Earlier
+audit files retain their original migration counts. Optional contact data and
+studio confirmation consent use validated catalog/preference JSON rather than a
+new SQL migration. Current release and protected-history checks are recorded in
+[verification](../evidence/README.md).

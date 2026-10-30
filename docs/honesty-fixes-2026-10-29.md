@@ -1,5 +1,9 @@
 # Consent, opt-out and closed-offer corrections
 
+> Historical record. This document describes its original checkpoint or proposed
+> study, not current product instructions. Start with the [documentation](README.md)
+> or [development history](history.md) for context.
+
 This is the bounded correction pass following Fable's October 29 review. It
 adds no AI feature, notification system, payment operation or submission work.
 

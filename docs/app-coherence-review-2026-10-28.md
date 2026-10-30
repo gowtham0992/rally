@@ -1,5 +1,9 @@
 # Does Rally feel like an app? — October 28, 2026
 
+> Historical record. This document describes its original checkpoint or proposed
+> study, not current product instructions. Start with the [documentation](README.md)
+> or [development history](history.md) for context.
+
 Review and proposal only. Nothing was implemented, deployed, sent or claimed. No credentials, environment files or private evidence were read.
 
 **What this is based on**

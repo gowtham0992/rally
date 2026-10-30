@@ -1,140 +1,73 @@
-# Rally
+<p><img src="public/brand/rally-logo-v1.png" alt="Rally" width="160"></p>
 
-[See the recorded six-friend booking](https://rally.gowthamsarveswaran.com/journey/index.html) · [Try live planning](https://rally.gowthamsarveswaran.com/demo) · [Inspect the evidence](evidence/README.md)
+# Book together. Pay your own share.
 
-**A plan that fits everyone. Six holds. One booking.**
+Rally helps friends find a studio session that works for everyone and book it
+without one person covering the group's bill. Dates, spending limits and
+must-haves stay private. Each friend approves their own share through PayPal.
 
-Rally helps friends book a private studio session without someone fronting the
-group’s bill. Each friend sets their dates, spending limit and must-haves
-privately. Optional AI drafting can turn a message into activity and pickup
-choices or ask one grounded question. The friend checks and saves the choices;
-a deterministic planner checks the group’s fit. Personal conflicts are explained
-privately to the person who can resolve them.
+[Open Rally](https://rally.gowthamsarveswaran.com) ·
+[Documentation](docs/README.md) ·
+[Developer setup](docs/development.md) ·
+[Verification](evidence/README.md)
 
-The studio reserves the exact session and freezes the offer. Each person
-authorizes their own PayPal share directly to the merchant. Rally starts
-collecting only after every authorization qualifies, and confirms the booking
-only after every capture is verified. The hosted six-friend run completed
-**six separate $48 sandbox payments: $288 gross**.
+## How it works
 
-## The question changes the plan
+1. **Bring your friends.** Start a plan and share its invite in your group chat.
+2. **Find a session that fits.** Everyone adds their availability, private
+   spending limit and requirements. Rally checks the studio's published options.
+3. **Agree on pickup.** If someone needs a friend to pick up their piece after
+   firing, both people explicitly agree to the arrangement.
+4. **Get the studio's offer.** The studio reviews the session, roster, price and
+   terms, reserves the time and opens a two-hour approval window.
+5. **Approve your own share.** PayPal authorizes each person's payment. Rally
+   starts collecting after all required authorizations qualify and confirms
+   the booking after every payment completes.
 
-“I leave Friday.” Does that prevent attending, or just collecting the fired
-piece? The first answer can leave no session; the second can allow Thursday’s
-$48 hand-build session if a friend explicitly agrees to collect. The preview
-uses the same confirmed-meaning transition and catalog filters as the saved
-plan. It does not read peer preferences, invent consent or reserve a session.
+Each person's next step appears at the top of their plan. A private conflict,
+like a required $72 wheel session above a $60 spending limit, is explained to
+that person. Friends see that a step remains, not the private answer behind it.
 
-Unlike collecting money into an organizer’s pool, each person’s share goes to
-the merchant through its own authorization and capture. Nobody backstops another
-friend’s share. These are separate payments: if settlement fails, completed
-captures require refunds and remaining authorizations require voids. Uncertain
-results remain visible until verified; they never count as a confirmed booking.
+## AI helps clarify what a friend means
 
-## Choose how far to try it
+An optional AI draft can turn a message into activity and pickup choices, or
+ask one question when the meaning matters. “I leave Friday” could mean someone
+cannot attend, or that they need help picking up their fired piece. The person
+reviews the proposed meaning before saving it; a pickup friend must still agree.
 
-1. **Recorded journey — no code or account.** [Twelve actual hosted screens](public/journey/index.html), dated October 3, with settlement and webhook reports. Fictional group, fictional studio, PayPal sandbox. Screens show the interface at that date.
-2. **Live planning — private access code.** [/demo](https://rally.gowthamsarveswaran.com/demo) lets you add Alex’s and Sam’s details, clarify a note, agree collection and obtain a studio offer. Stop there; PayPal sign-in is optional for this layer.
-3. **Live checkout — six distinct sandbox buyers.** Continue from the offer and approve each person’s share. The server verifies the expected payer and order; returning from PayPal is not proof of approval.
+Rally uses Astropods for model inference. The AI receives the consenting person's
+submitted message and public studio facts. It cannot choose a spending limit,
+volunteer another friend, reserve a session or approve a payment. The form
+remains available throughout. [AI behavior and evaluation](docs/ai-evaluation.md).
 
-The Free preview may take about a minute to wake. Live entry claims an isolated,
-non-recycled workspace; return using the same browser session. Newly claimed
-judge sessions end December 16 at 00:00 UTC. [Capacity and provisioning](docs/judge-provisioning.md).
+## Separate payments, one booking decision
 
-## Verified scope
+Each payment goes directly to the studio, without an organizer's payment pool.
+These are separate transactions. If settlement fails partway through, Rally
+starts refunds for completed charges and releases remaining holds. Uncertain
+outcomes stay visible until verified; they do not count as a confirmed booking.
 
-<!-- BEGIN CURRENT TRUTH -->
-Verified 2026-10-29. Historical provider and AI runs retain their own dates.
+[Payment and privacy details](docs/payments-and-privacy.md) explain approvals,
+pickup visibility, withdrawals and recovery.
 
-| Claim | Result | Scope |
-| --- | --- | --- |
-| Hosted group booking | 6 buyers · 6 × $48 · $288 gross | Actual hosted PayPal sandbox, 3 Oct |
-| Signed notifications | 12 processed; delivered duplicate unchanged | Hosted 3 Oct; duplicate response body not captured |
-| Failure compensation | Refund + remaining voids; lost-response recovery | Separate local service with 3 real sandbox buyers |
-| AI evaluation | 72/72 final quality assessments; 0 safety failures | 24 authored cases × 3; earlier failures retained, 2 Oct |
-| Optional draft AI | 5/5 final hosted checks; earlier 2/5 retained | Five new authored fictional cases; 10 approved calls total, 29 Oct |
-| Local suite | 230 passed; 0 failed | Disposable PostgreSQL 17; controlled Auth/model/provider, 29 Oct |
-| Guard mutations | 68/68 caught | Payment, privacy and consent guards plus durable opt-outs and legacy disclosure, 29 Oct |
-| TypeScript / production build | Passed | 29 Oct; Node 25.6.0 locally |
-| Judge capacity | 9 untouched of 12 total workspaces | Read-only checks, 29 Oct; no new identities or leases |
-| Hosted active failure recovery | Unverified | The hosted six-buyer success is separate |
-| Human groups / studios observed | 0 / 0 | Capacity-hold demand remains unvalidated |
-| Free email sign-in | Resend Delivered; owner confirmed sign-in | One external-to-team recipient, same Chrome browser; phones unverified, 27 Oct |
-| Plan interface | Scoped consent; persistent opt-outs; clear closed offers | Controlled components/services and phone screens; 12 public/access checks, 29 Oct; human usability unmeasured |
-| Production dependency audit | 0 advisories | Next 16.4.3, Zod 4.6.7; checked 28 Oct |
-<!-- END CURRENT TRUTH -->
+## Try it or run it locally
 
-[The evidence index](evidence/README.md) leads to the hosted six-buyer result,
-signed webhooks, separate three-buyer compensation proof, AI evaluation and
-dated local checks. Historical counts in archived reports describe those
-revisions. Validation gaps are stated once in
-[What remains untested](evidence/README.md#what-remains-untested).
+The [hosted app](https://rally.gowthamsarveswaran.com) uses email-link sign-in.
+The current release is a **PayPal sandbox application with a fictional pottery
+studio**; it does not sell real sessions or take live payments. Its Free host
+can take about a minute to wake.
 
-## Test without external accounts
+- [Use Rally](docs/product-guide.md): invitations, private choices, studio offers
+  and payment status.
+- [Run the automated checks](docs/development.md#test-without-external-accounts):
+  local PostgreSQL and controlled providers; no external accounts required.
+- [Run the application](docs/development.md#run-the-app): Supabase Auth,
+  sandbox PayPal and optional AI configuration.
+- [Inspect recorded results](evidence/README.md): hosted sandbox settlement,
+  recovery checks, model evaluations and current verification limits.
 
-Use Node.js 22+, npm, Docker and OpenSSL. No `.env`, Supabase project, AI key or
-PayPal account is needed for the suite. The test provider, model and Auth
-responses are controlled fixtures. Each database test creates and removes its
-own schema; it does not truncate application tables.
+The core uses Next.js, React, TypeScript and PostgreSQL. Supabase supplies Auth
+and hosted storage; the preview runs on Render. See the
+[architecture](docs/architecture.md) and [operations guide](docs/deployment.md).
 
-```sh
-npm ci
-docker run --detach --name rally-test-postgres --publish 127.0.0.1:55439:5432 \
-  --env POSTGRES_USER=rally --env POSTGRES_PASSWORD=rally_local_only \
-  --env POSTGRES_DB=rally postgres:17-alpine
-TEST_DATABASE_URL=postgresql://rally:rally_local_only@127.0.0.1:55439/rally npm test
-npm run typecheck
-npm run build
-```
-
-If this test container exists, start it with `docker start rally-test-postgres`.
-The database needs schema creation privileges. Use these credentials only for
-the local test container. Optional deliberate guard checks, run **after** the
-suite and without concurrent source edits:
-
-```sh
-TEST_DATABASE_URL=postgresql://rally:rally_local_only@127.0.0.1:55439/rally npm run test:mutations
-```
-
-The October 27 verification used Node 25.6.0. The declared minimum Node version
-has not been independently tested.
-
-## Run the app
-
-The app uses the existing Supabase Auth project for PKCE email-link login.
-The hosted project uses Resend Free custom SMTP from the verified
-`mail.rally.gowthamsarveswaran.com` subdomain. Email confirmation and the
-same-browser magic-link flow remain enabled. Delivery verification is recorded
-in [the SMTP setup notes](docs/free-smtp-2026-10-27.md). The prepared judge path
-uses separate managed identities. Copy
-`.env.example` to `.env.local` without overwriting an existing configuration.
-Set a local application database, `APP_ORIGIN=http://localhost:3000`, the
-Supabase URL/client-safe publishable key and a stable private rate-limit key.
-Allow exactly `http://localhost:3000/auth/callback` in Auth. Keep secrets in
-ignored configuration, never in source or chat.
-
-```sh
-node --env-file=.env.local --import tsx scripts/migrate.ts
-npm run dev
-npm run worker
-```
-
-Run the worker in another terminal. The app is at `http://localhost:3000`.
-Configure only PayPal **sandbox** credentials for checkout. The adapter has a
-fixed sandbox origin; AI has no payment authority. [Studio setup](docs/studio-setup.md),
-[sandbox success/recovery report](evidence/paypal-sandbox/index.html),
-[AI protocol](docs/ai-evaluation.md), [private-text retention](docs/private-text-retention.md).
-
-## Implementation
-
-- **Private by actor:** the organizer sees names/readiness and shared candidates, never peer budgets or notes. AI receives only a consenting owner’s note and public studio facts.
-- **Exact offers:** studio approval reserves buffered resource capacity and freezes roster, catalog, price and cancellation terms. Preference edits invalidate a draft; issued offers cannot be rewritten.
-- **Verified payments:** expected payer checks, stable request IDs, durable operation leases, provider reconciliation, compensation and signed webhook deduplication. A failed fifth capture cannot produce a confirmed booking.
-- **One Free deployment:** Next.js on the existing Render Free service; PostgreSQL/Auth and private scheduled settlement on the existing Supabase Free project. [Deployment](docs/deployment.md), [database](docs/hosted-database.md), [webhooks](docs/paypal-webhooks.md).
-
-The sole repository is `gowtham0992/rally`, under the [MIT license](LICENSE).
-It remains private until the owner chooses to publish. Video and Devpost
-submission are owner-controlled final-week work.
-
-[October 27 usability changes](docs/usability-implementation-2026-10-27.md) ·
-[Corrected uncoached study](docs/uncoached-study-2026-10-27.md).
+Licensed under [MIT](LICENSE).

@@ -1,5 +1,9 @@
 # Observe whether Rally helps a group agree
 
+> Historical record. This document describes its original checkpoint or proposed
+> study, not current product instructions. Start with the [documentation](README.md)
+> or [development history](history.md) for context.
+
 No human or studio results have been collected. This is a prepared protocol,
 not evidence of demand. Obtain the owner's approval for named recipients and
 the exact invitation before contacting anyone. Use consenting adults, fictional

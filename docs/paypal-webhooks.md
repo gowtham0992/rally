@@ -21,7 +21,7 @@ is logged or returned to the browser.
 
 ## Configure the deployed sandbox app
 
-1. Deploy this route to the already approved free preview. Verify HTTPS
+1. Deploy this route to the existing Free preview. Verify HTTPS
    `/api/health` is ready and an unsigned webhook POST returns 403.
 2. With the sandbox app credentials in ignored `.env.local`, run:
 

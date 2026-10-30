@@ -1,5 +1,9 @@
 # Rally strategic review — October 23, 2026
 
+> Historical record. This document describes its original checkpoint or proposed
+> study, not current product instructions. Start with the [documentation](README.md)
+> or [development history](history.md) for context.
+
 Internal review for the owner. It restructures Rally for the PayPal AI Hackathon (submissions close November 12, 2026, 12:00 Pacific; judging December 1–15). It authorizes nothing: no publication, Devpost edit, payment, outreach or deployment happened as part of writing it.
 
 Everything below was checked today against the repository, the live preview, the public Devpost page, the official rules page and the primary sources named inline. Where a statement is a judgment rather than an observation it says so.

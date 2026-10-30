@@ -1,169 +1,110 @@
-# Rally sandbox hosting
+# Operate the hosted sandbox
 
-Use `https://rally.gowthamsarveswaran.com` with **one Render Free web service**
-and the existing free Supabase project. The participant authorized this domain
-and subsequently declined paying or adding a card. No paid worker, AWS service,
-workspace upgrade, or new payment method is part of this deployment.
+Rally runs at [rally.gowthamsarveswaran.com](https://rally.gowthamsarveswaran.com)
+on the existing Render Free web service. Supabase supplies Auth and PostgreSQL;
+a separate Astropods worker handles optional interpretation. Cloudflare supplies
+the custom-domain DNS. Keep the existing Free configuration and private secrets
+separate from source.
 
-GitHub Pages supports the domain but serves static files. Rally's private APIs,
-managed sessions and server-side payment secrets require a server. Moving only
-the interface to Pages would not deploy the working product.
+## Service configuration
 
-## Free execution model
+[`render.yaml`](../render.yaml) declares the web service, build/start commands,
+trusted HTTPS origin, readiness path and private environment variables.
+Automatic code deployment is off. Blueprint configuration synchronization is
+separate: review configuration changes for cost or permission effects before
+applying them.
 
-`render.yaml` declares the Free web plan, exact custom domain and HTTPS
-`APP_ORIGIN`. Supabase Cron invokes `/api/internal/settlement` once per minute
-while offers or recovery work exist. No request is sent solely to keep Render
-awake. Supabase retains all durable payment state; the same payment engine
-handles operation identity, dispatch leases, verified outcomes and recovery.
-The normal local `npm run worker` remains available.
+Use the restricted hosted `DATABASE_URL`, client-safe Supabase publishable key,
+sandbox PayPal configuration, quota key, settlement trigger key and AI worker
+URL/token. Never place Supabase management credentials, database owner access
+or Astropods administrative credentials in the web runtime. The AI worker has
+no database or PayPal credentials. [Database setup](hosted-database.md).
 
-The scheduled endpoint requires `RALLY_SETTLEMENT_MODE=scheduled` and a private
-64-hex `RALLY_SETTLEMENT_TRIGGER_KEY`. It accepts the key only as a Bearer header,
-not a URL parameter. A database advisory lock prevents overlapping scheduled
-runs across processes. Each run checks up to 100 candidate offers, dispatches
-at most 16 operations and stops starting steps after its 20-second budget.
-An in-flight provider call is awaited; 20 seconds is not a hard response-time
-claim. A killed process leaves durable dispatch evidence for reconciliation.
-Separate invocations may add minutes to settlement; confirmation still requires
-all verified captures before the existing reservation deadline.
+The Free web service can sleep and needs time to wake. State survives restarts
+in PostgreSQL. A successful readiness response does not establish that a group
+can finish a payment window; test those transitions separately.
 
-The offline `scripts/configure-settlement-schedule.ts` command first verifies
-the live authenticated endpoint, then installs `deploy/settlement-schedule.sql`.
-It uses the existing private provisioning token. The trigger key is stored in
-Supabase Vault, outside the runtime role's privileges. The SQL refuses browser or runtime access to decrypted secrets. The private
-Cron function uses the synchronous `http` extension with strict TLS and a
-120-second timeout, keeping authorization headers out of a shared request
-queue. Cron runs the fixed function as its owner; clients cannot choose an
-offer, price, payer or HTTP destination. One Cron connection waits during the
-request; payment state changes happen in the separate bounded web runner. Do not activate it before verifying the deployed endpoint.
+## Settlement and maintenance
 
-## Verified account and limits
+The hosted app uses `RALLY_SETTLEMENT_MODE=scheduled`. A private Supabase Cron
+function calls `/api/internal/settlement` once per minute while offers or recovery
+work exist. It makes no request solely to keep the web service awake.
 
-- Cloudflare Free manages the domain. The observed eight records include the
-  portfolio, Kin and email; there is no `rally` or wildcard record.
-- Render Hobby has no card and one verified Free web service. Its $50 hackathon credit expires
-  September 30, 2027. The earlier two-$7-service Blueprint was blocked by a
-  card requirement and temporary $1 authorization. That plan is superseded.
-- Render Free supports custom domains and managed TLS. Idle services sleep
-  after 15 minutes and may take about a minute to wake. Restarts are possible.
-  One service fits the 750 included monthly instance hours. Included build and
-  bandwidth allowances still apply; with no payment method, exceeding them
-  suspends services or builds instead of charging a card.
-- Rally Supabase is on Free. Vault, `pg_cron` and the synchronous `http`
-  extension are installed; one private every-minute Cron job is active.
-  `pg_net` setup failed closed because its queue had PUBLIC grants owned by
-  the provider. Those setup/diagnostic transactions rolled back; no queue
-  extension or secret was left by the failed attempts.
+The endpoint accepts the private 64-hex `RALLY_SETTLEMENT_TRIGGER_KEY` only in a
+Bearer header. The key is stored in Supabase Vault, outside browser/runtime
+access. The fixed SQL function uses certificate-verified synchronous HTTP;
+clients cannot choose its destination, offer, payer or price.
 
-Historical October 2 local proof: 151 tests passed, including seven scheduled-processing tests
-and seven offline judge-preparation tests with simulated provider/Auth accounts.
-Actual production-build HTTP checks rejected anonymous, wrong-key, query-key
-and wrong-method requests; the valid request returned IDLE with zero operations.
-Actual hosted proof now includes seven managed judge browser roles, both HTTPS
-health endpoints, preserved local/Auth redirects, successful idle Cron receipts
-and one database-to-preview authenticated HTTPS request returning IDLE.
-`evidence/hosted-settlement-schedule.json` records zero payment operations and
-no browser/runtime ability to invoke the private function or read Vault.
-Cold wake and active provider recovery remain unverified on the hosted runner.
+A database advisory lock prevents overlapping runners. Each invocation checks
+up to 100 candidate offers, dispatches at most 16 operations and stops starting
+steps after its 20-second budget. It still awaits an in-flight provider call;
+20 seconds is not a guaranteed response time. A stopped process leaves durable
+operation state for reconciliation.
 
-Current local verification is recorded in [the evidence index](../evidence/README.md).
-The recorded journey at `/journey/index.html` is static and requires no Auth or
-workspace. It does not remove the Free service’s first-request wake time.
+The offline `scripts/configure-settlement-schedule.ts` verifies the live endpoint
+before installing [`deploy/settlement-schedule.sql`](../deploy/settlement-schedule.sql).
+It requires the private provisioning configuration and explicit enablement.
+Do not rerun initial setup or rotate the trigger key as routine release work.
+A separate native SQL job maintains [private-text retention](private-text-retention.md).
 
-## Release order
+## Release a change
 
-1. Verify isolated managed judge sessions, privacy and the complete browser
-   journey before opening judge access. Prepared fixture identities are not
-   observed human consent or merchant feedback.
-2. Preserve the hosted additive schema and restricted runtime/TLS audit. The
-   runtime receives the hosted DATABASE_URL, never a provisioning/Admin key.
-3. Deploy the reviewed free Blueprint, with automatic code deploys off. Supply
-   saved sandbox PayPal, restricted database, Astropods and quota/trigger secrets
-   through Render's private environment settings. Keep local origin unchanged.
-4. Obtain Render's actual assigned `onrender.com` hostname. Add one Cloudflare
-   CNAME named `rally`, targeting that hostname, **DNS only**, TTL Auto. Do not
-   guess `rally.onrender.com`, or change apex/www/email/nameservers/global SSL.
-5. Verify Render custom-domain ownership and valid TLS. Check `/api/health`
-   and the authenticated scheduled endpoint at the custom domain.
-6. Load the ignored `.env.schedule` and provisioning configuration, with the
-   exact HTTPS APP_ORIGIN and `ENABLE_HOSTED_SETTLEMENT_SCHEDULE=true`, to run
-   `node --import tsx scripts/configure-settlement-schedule.ts`. Never commit
-   substituted SQL or supply the provisioning token to Render.
-7. The matching Supabase callback/site URL is configured, with existing and
-   localhost redirects preserved. The offline `configure-hosted-auth.ts` command
-   requires explicit enablement and verified HTTPS readiness, and sends no email.
-   Sandbox webhook registration is complete and its actual trusted ID is stored
-   in Render privately. Forged-signature denial has been verified on hosting;
-   twelve genuine signed authorization/capture notifications were received and processed in the hosted six-friend journey. See [webhook setup](paypal-webhooks.md).
-   Verify PayPal return/cancel URLs.
-8. Prove actual Cron invocation, cold wake, overlapping/restarted processing,
-   sandbox capture/refund recovery, and monitoring of unresolved results. Run
-   the complete custom-domain judge journey before using it in instructions.
+1. Verify the relevant local behavior, typecheck and production build. For
+   payment/privacy changes, run the integration suite and guard checks against
+   a disposable database. [Development](development.md).
+2. Review source and history for secrets. Keep all private environment files,
+   credentials, checkpoints and browser state outside Git.
+3. If a schema change is required, apply its additive migration through the
+   owner procedure before deploying dependent code. Preserve compatibility
+   with existing immutable records and unresolved financial work.
+4. Deploy the reviewed commit to the existing Free service. Confirm the actual
+   deployed source in Render; `/api/health` reports readiness, not a commit ID.
+5. Check public readiness, authentication and foreign-origin denials. Verify
+   scheduled processing and inspect unresolved operations without exposing
+   raw provider responses or participant notes.
+6. Record the deployed commit, verification scope and any remaining limitations
+   in the [verification record](../evidence/current-verification.json).
 
-## Undo and usage
+Do not change DNS, Auth allowlists, SMTP, model infrastructure or paid plans as
+an incidental part of an application release. A documentation-only commit does
+not require a runtime redeploy.
 
-Stop new checkout before web rollback. Keep scheduled processing or an alternate
-worker running until all outstanding provider operations are reconciled. Preserve
-all payment history and additive schema; never use a populated down migration
-as rollback. A DNS change does not compensate a payment. Keep the private trigger
-key stable during rollback to a compatible build. A compatible cached-artifact rollback and restoration passed on October 3; in-flight recovery and cold-wake drills remain pending. Review free-tier usage during releases; do not add a card or upgrade.
+## Domain, Auth and webhooks
 
-Render warns that future Blueprint file changes sync automatically and may
-change costs. `autoDeployTrigger: off` controls code deploys, not configuration
-sync. Review every subsequent `render.yaml` change.
+The existing `rally` DNS-only CNAME targets the actual Render-assigned hostname,
+`rally-mx1y.onrender.com`. Preserve unrelated DNS records and mail configuration.
+Use Render's verified custom-domain TLS and the exact HTTPS `APP_ORIGIN`.
 
-Sources: [Render Free](https://render.com/docs/free),
-[Cloudflare DNS setup](https://render.com/docs/configure-cloudflare-dns),
+Supabase Auth keeps the deployed callback and local development callback
+allowlists. Email sign-in uses the existing Resend SMTP setup and PKCE; changing
+SMTP does not remove the same-browser requirement.
+[Email configuration](free-smtp-2026-10-27.md).
+
+PayPal return/cancel destinations use the trusted application origin. The
+registered sandbox webhook ID belongs in private runtime settings.
+[Webhook setup and verification](paypal-webhooks.md).
+
+## Recovery and rollback
+
+A compatible application rollback preserves the database schema, immutable offer
+and payment records, stable provider operation IDs and scheduled reconciliation.
+Stop new checkout before a rollback that could affect financial processing, and
+keep a compatible runner available until all outstanding operations are checked.
+A DNS change does not compensate a payment.
+
+Never use a populated down migration as production rollback. Do not restore a
+build that removes consent, privacy, quota or opt-out protections merely because
+it can read the schema. Fix forward if the older artifact would weaken those
+invariants. Do not reset a failed payment or create a new provider operation to
+hide an uncertain result.
+
+Compatible rollback/restoration exercises exist in the dated release evidence.
+The latest correction release did not perform another live rollback. Hosted
+partial-failure recovery remains a separate unverified scenario; the recorded
+hosted success and local-service recovery runs have different scopes.
+
+See [current verification](../evidence/README.md) and
+[development history](history.md) for dated results. Provider references:
+[Render hosting](https://render.com/docs),
 [Supabase Cron](https://supabase.com/docs/guides/cron),
-[GitHub Pages](https://docs.github.com/en/pages/getting-started-with-github-pages/what-is-github-pages).
-
-Current preview: [Rally](https://rally.gowthamsarveswaran.com). Render assigned
-`rally-mx1y.onrender.com`; Cloudflare has one additional DNS-only CNAME for
-`rally`, with the eight previous records preserved. Build `6eccc29` is live with studio payment resolution, private-note expiry and append-only studio reports. The earlier retention release was `43215f7`. That retention release’s rollback to `6696eef` and restoration preserved the twelve-migration schema, native cleanup and existing financial/consent history.
-Judge access is gated by the private code in ignored `.env.demo`; the original
-browser workspace and one fresh fixed-end verification workspace are leased.
-Three hosted workspaces remain untouched.
-The actual six-buyer journey is confirmed: $288 gross, six distinct buyers, one capture per order and all twelve genuine notifications processed. This is fictional PayPal sandbox evidence; actual customer feedback remains unverified. See [settlement evidence](../evidence/web/hosted-six-friend-settlement.json) and [initial rollout/rollback evidence](../evidence/web/hosted-rollout-rollback.json). The subsequent [payment-resolution release](../evidence/web/payment-resolution-release.json) verified studio ownership and participant denial and preserved the booking through rollback/restoration. PayPal Developer confirms [genuine resend delivery and duplicate handling](../evidence/web/hosted-webhook-retransmission.json); no JSON duplicate-response body was captured.
-
-The official judging period runs December 1–15. At activation, four untouched, unclaimed
-workspaces now have January 14/15 studio dates via appended catalog versions and
-fresh fixture groups. Their old groups, preferences and catalogs are retained;
-the leased browser-verification workspace is unchanged. See
-[preparation evidence](../evidence/judging-workspace-preparation.json).
-The approved `RALLY_DEMO_ACCESS_END=2026-12-16T00:00:00Z` policy is saved in
-Render and its environment-only deployment is live on Free. New judge leases
-use this fixed end. The existing leased workspace retains its 24-hour duration;
-no lease is automatically extended or recycled. Hosted health returned 200 with
-`ready: true` at activation with all 35 identities and four available workspaces.
-A subsequent separate HTTPS client claimed one fresh lease and verified the
-December 16 expiry, stable entry retry, all seven roles, stale-viewer denial,
-cross-workspace denial and lease-only Auth restoration. All earlier financial
-and intake tables, other workspaces and the original lease stayed unchanged.
-Three unused workspaces remain. This proves deployed HTTP behavior; a fresh
-browser entry for this lease was not recorded. See
-[activation evidence](../evidence/judge-access-window-activation.json),
-[fresh lease evidence](../evidence/web/hosted-judge-window.json) and
-[judge preparation](judge-provisioning.md).
-
-Synchronous transport reference: [pgsql-http](https://github.com/pramsey/pgsql-http).
-
-Private note maintenance now also runs as a second native SQL Cron job. It
-makes no HTTP requests and does not keep Render awake. An isolated fictional
-hosted test note and quotation were removed; the original six-friend booking,
-all six captures, confirmed choices and unexpired notes stayed unchanged across
-forward deployment, rollback and restoration. See
-[retention release evidence](../evidence/web/private-text-retention.json) and
-[policy/setup](private-text-retention.md). The runtime can assign deadlines but
-cannot change policy; a fictional closure probe was fully rolled back.
-
-The studio-report release added migration 013 without changing existing financial
-rows. Forward `99bb9af`, cached rollback `43215f7` and fresh-build restoration
-`6eccc29` all passed HTTPS readiness and protected-history checks. Render
-reported 80s, 21.7s and 83s deployment durations respectively; these exclude
-queue time. The final revision corrects two UI messages. The studio could read
-its completed sandbox payment record; a participant was denied. No report form
-is available for a completed operation. The report table stays during runtime
-rollback, with SELECT/INSERT-only runtime access and no browser schema access.
-No hosted report was written and no operation was in flight for this exercise.
-See [studio-report evidence](../evidence/web/payment-evidence.json).
+[Cloudflare DNS for Render](https://render.com/docs/configure-cloudflare-dns).

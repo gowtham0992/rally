@@ -1,5 +1,9 @@
 # Offline judge preparation
 
+> Provisioning history. Counts and setup receipts below belong to their original
+> checkpoints. See [prepared test access](test-access.md) for current usage and
+> the [verification record](../evidence/current-verification.json) for dated capacity.
+
 Five workspaces and 35 managed fictional Auth identities have been provisioned
 in Rally's existing Supabase **Free** project with the participant's explicit
 approval. The same identities back local and hosted isolated fixtures; no extra

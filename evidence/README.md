@@ -1,7 +1,9 @@
-# Rally evidence
+# Verification
 
-Start with the recorded booking. The eight entries below distinguish actual
-PayPal operations, controlled local checks and authored AI evaluations.
+These records distinguish actual PayPal sandbox operations, controlled local
+checks, authored model evaluations and observations by people. The current
+release has a fictional studio; none of these records establishes real merchant
+demand. Start with the [product documentation](../docs/README.md) to use or run Rally.
 
 | Proof | What to inspect |
 | --- | --- |
@@ -19,9 +21,9 @@ PayPal operations, controlled local checks and authored AI evaluations.
 The automated suite uses a local PostgreSQL database, OpenSSL and controlled
 Auth/model/payment fixtures. It does not require Supabase, PayPal or Astropods
 credentials, and it does not send email or create real payments. Follow the
-[local test path](../README.md#test-without-external-accounts).
+[local test path](../docs/development.md#test-without-external-accounts).
 
-## Current truth
+## Current verification
 
 <!-- BEGIN CURRENT TRUTH -->
 Verified 2026-10-29. Historical provider and AI runs retain their own dates.
@@ -39,14 +41,19 @@ Verified 2026-10-29. Historical provider and AI runs retain their own dates.
 | Judge capacity | 9 untouched of 12 total workspaces | Read-only checks, 29 Oct; no new identities or leases |
 | Hosted active failure recovery | Unverified | The hosted six-buyer success is separate |
 | Human groups / studios observed | 0 / 0 | Capacity-hold demand remains unvalidated |
-| Free email sign-in | Resend Delivered; owner confirmed sign-in | One external-to-team recipient, same Chrome browser; phones unverified, 27 Oct |
+| Free email sign-in | Recorded desktop delivery; owner reports phone sign-in and saved details | Desktop delivery, 27 Oct; one developer phone report, 29 Oct; device/browser details and independent phone flows unverified |
 | Plan interface | Scoped consent; persistent opt-outs; clear closed offers | Controlled components/services and phone screens; 12 public/access checks, 29 Oct; human usability unmeasured |
 | Production dependency audit | 0 advisories | Next 16.4.3, Zod 4.6.7; checked 28 Oct |
 <!-- END CURRENT TRUTH -->
 
 ## What remains untested
 
-Human validation and willingness to hold studio capacity remain open, as
-recorded in the truth table. Hosted partial-failure recovery and a fresh
-managed-auth browser rehearsal through studio approval are separate gates.
-These are fictional-account engineering results.
+Independent friend-group usability and studio willingness to hold capacity
+remain unmeasured. The owner reported one successful phone sign-in and saving
+details; the device, browser and chat/email transitions were not recorded. This
+is not an independent participant trial or a six-person phone checkout.
+
+Hosted partial-failure recovery remains unverified. The October 3 hosted
+six-buyer success and separate local-service recovery runs have different
+scopes. The recorded journey shows the October 3 interface. Controlled local
+phone screens and role switching do not establish independent comprehension.

@@ -1,87 +1,105 @@
-# Rally AI evaluation
+# AI behavior and evaluation
 
-The current optional-draft prompt passed the newer five-case hosted check after
-an earlier 2/5 attempt. Both reports are preserved. See
-[the readiness implementation](uncoached-blockers-implementation.md). The
-eight-case checkpoint below and the original saved-note evaluation have distinct
-historical scopes; they are not new tests of this prompt.
+Rally offers an optional private-message draft alongside the form. It can propose
+activity and pickup choices or ask one grounded question. The person reviews
+and saves those choices; the deterministic planner, explicit consent and payment
+engine remain authoritative.
 
-The new message-first draft flow has its own eight-case acceptance check,
-separate from the historical saved-note evaluation below. Its final hosted run
-passed 8/8 after a 7/8 attempt exposed missing quoted travel evidence. The strict
-validator is unchanged. See [message-first verification](message-first-intake.md)
-and `evidence/message-draft-evaluation-1793250016234.json`. This uses authored
-fictional notes and does not establish human usability.
+## What the model receives
 
-The quality gate is 24 authored synthetic cases, repeated three times. Each of
-the six categories has four cases: clear feasible wording, consequential
-ambiguity, infeasible requirements, missing or changed merchant facts,
-privacy/instruction attacks, and contradictions/revisions.
+A request contains the consenting person's submitted message and public studio
+catalog facts. Saved spending limits, availability, identities, peers' answers,
+nominee choices and payment commands are not part of the interpretation contract.
+Anything typed into the submitted message is part of that text.
 
-`src/ai/evaluation-fixtures.ts` supplies the original wording, initial confirmed
-controls, separately authored participant answer and expected structured outcome.
-Fixture answers are not inferred from a model response. The default six-person
-roster fits the published demo catalog; one peer has a private budget canary that
-must never enter the model request or shared candidate projection.
+Model inference uses Astropods. Recorded live evaluations use Claude Sonnet 4.6;
+`MODEL_DEFAULT` selects the configured gateway model. The hosted application
+calls a dedicated worker over HTTPS with a required bearer token. The worker
+has no database or PayPal credentials. Studio contact details are excluded from
+worker requests, preserving the existing protocol for contact-enabled catalogs.
 
-The runner calls the production bounded gateway adapter. Production intake and
-the evaluator share `reviewProposal`, including contradiction detection and
-suppression of questions whose answers cannot affect potential fit. The
-participant-confirmation function is used only after the authored answer is
-available. Explicit nomination and two-party disclosure consent remain separate
-fixture actions. The model never nominates a collector or supplies consent.
+## Proposals stay separate from commitments
 
-The structured baseline is authored independently. An additional oracle inspects
-each emitted candidate against catalog prices, current version, verification,
-slot, duration, capacity and each confirmed hard requirement. Matching two calls
-to the same planner alone cannot pass a wrong semantic interpretation.
+The response schema allows technique, outcome, collection and travel meanings,
+an unsupported-need result, exact source quotations and at most one question.
+It cannot propose a budget, date, volunteer, reservation or financial action.
 
-## Run
+Application validation checks source revision, quoted spans, allowed values and
+published offering references. A question is retained only when its answers can
+change potential fit. A person must confirm that all their essentials are
+represented; schema validation alone does not prove that the model understood
+every need in their message.
+
+Conditional activity wishes are not hard requirements. Explicit attendance
+followed by a departure before pickup is different from inability to attend.
+Genuinely ambiguous departure can require a question. Unsupported access or
+materials needs remain unresolved unless the form honestly represents them or
+the person completes the documented direct-studio confirmation path. No model
+output verifies an unpublished studio capability.
+
+See the [product guide](product-guide.md#handle-a-need-outside-the-form) for that
+path and [payment/privacy boundaries](payments-and-privacy.md) for disclosure.
+
+## Failure, retries and retention
+
+Work is persisted before dispatch and scoped to the owner and source preference.
+Refreshing resumes existing work rather than dispatching again. Changed sources,
+expired drafts and late results cannot confirm old choices. Discard clears only
+unconfirmed work after checking the latest draft ID; quota metadata remains.
+
+Provider failure, unsupported wording and unresolved conflict have different
+review states. Retry after a provider failure is explicit and quota-limited;
+there are no automatic model retries. Global and actor allowances are checked
+before dispatch. Failure never relaxes confirmed requirements or creates a
+booking.
+
+Unconfirmed drafts expire after thirty minutes. Saved-note text and source
+quotations follow the [private-text retention policy](private-text-retention.md).
+
+## Recorded evaluation suites
+
+These suites test different contracts and revisions. Their results must not be
+combined into a larger current reliability rate.
+
+| Suite | Recorded outcome | Scope |
+| --- | --- | --- |
+| Optional draft: conditional wishes and travel | Final 5/5 after an earlier 2/5 | Five authored fictional cases; hosted worker, October 29. |
+| Earlier message draft checkpoint | Final 8/8 after an earlier 7/8 | Separate authored eight-case suite for the earlier checkpoint. |
+| Saved-note clarification | Final 72/72 assessments | Twenty-four authored cases repeated three times; October 2. |
+
+The five-case reports retain the actual proposals and failures:
+[first run](../evidence/message-draft-evaluation-1793256049916.json),
+[corrective run](../evidence/message-draft-evaluation-1793256757077.json).
+The older draft report is
+[recorded separately](../evidence/message-draft-evaluation-1793250016234.json).
+The original [clarification evaluation](../public/evidence/ai/index.html) and
+[machine-readable index](../evidence/ai/evaluation-index.json) retain their own
+cases, dates and earlier failed runs.
+
+The original clarification suite covers feasible wording, consequential ambiguity,
+infeasible requirements, changed merchant facts, instruction/privacy attacks and
+contradictions. An independently authored structured baseline and constraint
+oracle check the resulting plan. Controlled database tests separately exercise
+ownership, source changes, duplicate commands, consent and late responses.
+
+Five corrected examples do not establish general language reliability. None of
+these authored evaluations establishes independent human usability, demand or
+merchant willingness to hold a session.
+
+## Run an offline evaluation
 
 ```sh
 npm run ai:evaluate
 ```
 
-This checks all baseline fixtures and computes a conservative credit allowance
-using local stub transport responses. It makes **zero provider calls** and is
-not model-quality evidence. `test/evaluation.test.ts` verifies that safe abstention
-does not count as a useful question and that a schema-valid wrong interpretation
-cannot relax an authored requirement.
+The default command evaluates authored baselines with stub transport and makes
+zero provider calls. It is a deterministic check, not evidence of model quality.
+[Developer setup](development.md#work-with-ai).
 
-After verifying that existing free credits cover the run and no paid billing is
-enabled, or obtaining explicit spending authorization:
-
-```sh
-npm run ai:evaluate -- --live --max-cost-usd 3
-```
-
-The runner uses the existing server-only gateway configuration. The live mode is
-pinned to `claude-sonnet-4-6` and reserves an allowance before each dispatch:
-UTF-8 bytes of the full request plus 512 input tokens, and all 1,400 allowed
-output tokens, at $3/$15 per million tokens. These are the published underlying
-[model rates](https://platform.claude.com/docs/en/models/sonnet-4-6/overview), not
-an account invoice. Verify gateway pricing and account state before each run.
-The current prepared 72-call allowance is recorded in
-`evidence/ai/evaluation-plan.json`. No cache discount is assumed.
-
-Each run writes a fresh report with source hash, repeat/case IDs, validated model
-responses, stages, timings, conservative allowance and explicit pass/failure
-metrics. A pending dispatch is persisted before its network request. There are
-no automatic model retries or paid reruns. An interrupted run remains incomplete;
-inspect its report before authorizing a fresh run. Never replace a failed report
-with a successful one or call offline stubs actual model results.
-
-## Pass criteria and limits
-
-A pass requires all 72 assessments, zero safety failures, all clear cases
-correct without unnecessary questions, and useful clarification with matching
-baseline results in at least three of four ambiguity fixtures **across all three
-repeats**. Safe review is distinguished from correct interpretation. Unknown or
-invalid responses fail closed. Additional quality misses remain visible even
-when they do not violate the minimum release threshold.
-
-The stale-source case exercises the production revision validator. Separate
-PostgreSQL tests cover concurrent edits, stale persisted responses, source
-ownership, question budgets, duplicate dispatch and explicit confirmation. This
-runner is a synthetic model/planning evaluation; it is not multi-account browser
-proof, group usability research, real merchant validation, or a conversion claim.
+Live evaluation is a separate operator action using the configured provider and
+credits. Inspect the relevant runner and report format, verify the account's
+current allowance and authorize a bounded run before dispatch. Existing release
+allowances are exhausted; a saved evaluation plan is not reusable authorization.
+Each actual run must retain its failed and successful outputs, source version,
+case identifiers and dispatch count. Never replace a failed report or call a
+stubbed response an actual model result.

@@ -1,5 +1,9 @@
 # Dependency readiness
 
+> Historical record. This document describes its original checkpoint or proposed
+> study, not current product instructions. Start with the [documentation](README.md)
+> or [development history](history.md) for context.
+
 Render’s install step reported production advisories in the existing Next.js
 16.3.8 and Zod 4.6.5 pins. The follow-up pins Next.js 16.4.3 and Zod 4.6.7 and
 updates the lockfile, with no application or payment-rule changes. The new

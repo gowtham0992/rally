@@ -1,5 +1,9 @@
 Rally should make one outcome immediately clear: friends find a studio session that fits their private requirements, review one fixed merchant offer, and each approve their own payment. The next improvement should reduce the effort needed to understand and verify that outcome.
 
+> Historical record. This document describes its original checkpoint or proposed
+> study, not current product instructions. Start with the [documentation](README.md)
+> or [development history](history.md) for context.
+
 This is the October 23, 2026 product and evidence plan derived from the [34-winner study](../../research/winner-study-rally-2026-10-23.md). It is an internal recommendation, not a Devpost submission, a demo script, or a claim that Rally will win. The owner continues to control submission and publication.
 
 PayPal evaluates implementation, design, impact, innovation, and presentation equally. [Official rules](https://paypalaihackathon.devpost.com/rules). Winning entries across the comparison events often make each claim traceable to something a reviewer can inspect. The implication is to improve the path from claim to proof before expanding scope.

@@ -1,5 +1,9 @@
 # Studio payment resolution
 
+> Historical record. This document describes its original checkpoint or proposed
+> study, not current product instructions. Start with the [documentation](README.md)
+> or [development history](history.md) for context.
+
 A studio must be able to find unresolved payment work, see the amount whose outcome still needs verification, and request a check of the existing provider operation. The implemented `/m/exceptions` page and `/api/studio/exceptions` API provide this view; the booking list links cases needing studio attention. Local production-build verification is recorded in `evidence/web/payment-resolution.json`. The existing Free preview now serves the page; studio ownership and participant denial passed through the hosted browser. The compatible rollback/restoration preserved the successful booking. Manual evidence capture is implemented; hosted financial failure scenarios remain a separate gate.
 
 ## Boundaries

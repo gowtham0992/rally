@@ -1,5 +1,9 @@
 # One plan, one next step
 
+> Historical record. This document describes its original checkpoint or proposed
+> study, not current product instructions. Start with the [documentation](README.md)
+> or [development history](history.md) for context.
+
 Rally now puts the viewer’s immediate action above the people list and saved
 details. The plan and booking share a layout, title and five-stage progress
 strip. Waiting screens can have no primary button; a closed session never

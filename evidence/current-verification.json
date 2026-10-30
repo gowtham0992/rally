@@ -59,8 +59,8 @@
     },
     {
       "claim": "Free email sign-in",
-      "result": "Resend Delivered; owner confirmed sign-in",
-      "scope": "One external-to-team recipient, same Chrome browser; phones unverified, 27 Oct"
+      "result": "Recorded desktop delivery; owner reports phone sign-in and saved details",
+      "scope": "Desktop delivery, 27 Oct; one developer phone report, 29 Oct; device/browser details and independent phone flows unverified"
     },
     {
       "claim": "Plan interface",
@@ -161,7 +161,17 @@
     "authEmailLimitPerHour": 30,
     "deliveryReport": "evidence/smtp-delivery-2026-10-27.json",
     "sameBrowserSigninConfirmedByOwner": true,
-    "phoneAndChatAppFlowVerified": false
+    "phoneAndChatAppFlowVerified": false,
+    "ownerPhoneSigninReported": true,
+    "ownerPhoneDetailsSavedReported": true,
+    "ownerPhoneReport": {
+      "date": "2026-10-29",
+      "source": "Owner report in project conversation",
+      "result": "Signed in on a phone and saved details",
+      "deviceAndBrowserRecorded": false,
+      "independentParticipant": false,
+      "fullGroupCheckoutObserved": false
+    }
   },
   "newAuthAccounts": 0,
   "newJudgeLeases": 0,

@@ -1,5 +1,9 @@
 # Strategic review implementation
 
+> Historical record. This document describes its original checkpoint or proposed
+> study, not current product instructions. Start with the [documentation](README.md)
+> or [development history](history.md) for context.
+
 The owner authorized implementing the October 23 review, excluding final-week
 demo video and submission work. Product direction: a plan that fits everyone,
 separate PayPal holds, one verified group booking.

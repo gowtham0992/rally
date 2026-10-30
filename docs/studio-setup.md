@@ -1,4 +1,4 @@
-# Demo studio setup
+# Studio setup
 
 The studio interface is `/studio`. It is protected by the managed session and
 an owner assignment in `merchant_studios`; knowing a URL never grants approval
@@ -31,9 +31,41 @@ Four unchecked attestations are required. One idempotent approval freezes the
 offer and roster, reserves the buffered interval, and opens the two-hour payment
 approval window. Changes before issuance invalidate the old request.
 
-This is a synthetic studio setup, not validation by a real merchant. The observed
-local UI fixture uses the same managed account for organizer and test operator,
-with other participants and collection agreements seeded through trusted service
-actors. Separate operator/participant browser access and actual merchant feedback
-remain required. Checkout and merchant cancellation are being integrated;
-opening an offer alone does not book a session or move PayPal money.
+The current catalog is a fictional pottery studio with PayPal sandbox payments.
+Checkout, studio cancellation and payment-resolution views are implemented.
+Opening an offer alone does not book the session or complete a payment. The
+[verification index](../evidence/README.md) distinguishes recorded sandbox
+results from independent friend or merchant observations.
+
+## Publish contact details for personal arrangements
+
+The catalog accepts an optional `contact.email` field. Publish only a monitored
+contact that belongs to the study operator or studio, with that operator's
+authorization. It must be a genuine route for answering a participant's needs;
+never add a placeholder to make a blocked plan appear ready. The current hosted
+fictional catalog has no contact.
+
+Catalog versions are immutable. A contact change belongs in a new published
+version, and the application/planning catalog must match that version before a
+new request can be accepted. Do not patch an existing catalog, preference or
+issued financial snapshot. The setup command refuses a mismatched published
+version rather than silently replacing it. Merchant onboarding and publication
+are operator tasks, not permissions granted by signing into the participant UI.
+
+A person who actually checks their needs directly can explicitly consent to a
+generic studio notice. The studio sees that a guest reports personal
+arrangements, without a name or private note attached to the notice, and its
+existing delivery confirmation includes those arrangements. This remains a
+participant assertion, not a verified capability. With no published contact,
+that confirmation path stays unavailable and unsupported needs remain pending.
+
+## Investigate payment outcomes
+
+Studio bookings link to `/m/exceptions` when a payment needs attention. The
+operator can request a check of an existing eligible operation or append a
+bounded transaction/support reference. Neither action declares success, creates
+a replacement charge or overrides the settlement engine. Refunds and released
+holds remain unresolved until the provider confirms them.
+
+See [payments and privacy](payments-and-privacy.md), [architecture](architecture.md)
+and [webhook setup](paypal-webhooks.md).
