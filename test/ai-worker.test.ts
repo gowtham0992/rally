@@ -36,3 +36,19 @@ test('published studio contact is kept out of the existing AI worker protocol',a
  let calls=0;const call=workerClarifier('DRAFT',{url:'https://worker.example',token},async(_url,init)=>{calls++;const sent=JSON.parse(String(init?.body));assert.equal(sent.input.catalog.contact,undefined);assert.deepEqual(sent.input,input);return Response.json({status:'PROPOSAL',proposal});});
  assert.equal((await call({...input,catalog:{...input.catalog,contact:{email:'studio@example.invalid'}}})).status,'PROPOSAL');assert.equal(calls,1);
 });
+test('worker logs bounded failure metadata without note, credentials or provider bodies',async()=>{
+ const logs:string[]=[];
+ const model:typeof clarify=async(...args)=>{
+  assert.equal(args[4],true);
+  args[3]?.({stage:'PROVIDER',httpStatus:503,note:input.text,credential:token,response:'private provider body'} as any);
+  return {status:'NEEDS_REVIEW'};
+ };
+ const server=createAiWorker({token,model,log:line=>logs.push(line)});
+ await new Promise<void>(resolve=>server.listen(0,'127.0.0.1',resolve));const address=server.address();if(!address||typeof address==='string')throw Error('LOCAL_SERVER');
+ try{
+  const r=await fetch(`http://127.0.0.1:${address.port}/interpret`,{method:'POST',headers:{Authorization:'Bearer '+token,'Content-Type':'application/json'},body:JSON.stringify({purpose:'DRAFT',input})});
+  assert.deepEqual(await r.json(),{status:'NEEDS_REVIEW'});
+  assert.deepEqual(logs.map(line=>JSON.parse(line)),[{event:'ai_inference_unavailable',stage:'PROVIDER',httpStatus:503}]);
+  assert.equal(logs.join('').includes(input.text),false);assert.equal(logs.join('').includes(token),false);assert.equal(logs.join('').includes('private provider body'),false);
+ }finally{await new Promise<void>(resolve=>server.close(()=>resolve()));}
+});

@@ -36,9 +36,15 @@ function groundedJSON(content:string,text:string){
   if(item.sourceStart<item.sourceEnd&&item.sourceEnd<=text.length&&text.slice(item.sourceStart,item.sourceEnd)===item.sourceSpan)continue;
   // Character arithmetic belongs to code. Rebind only a unique literal quote
   // from the supplied text; absent or ambiguous evidence still fails closed.
-  const start=text.indexOf(item.sourceSpan);
-  if(start<0||text.indexOf(item.sourceSpan,start+1)>=0)throw new Error('UNSUPPORTED_EVIDENCE');
-  item.sourceStart=start;item.sourceEnd=start+item.sourceSpan.length;
+  let source=text,quote=item.sourceSpan,start=source.indexOf(quote);
+  if(start<0){
+   // Models can reproduce a typographic apostrophe as a straight one. This
+   // one-code-unit substitution preserves every word and offset. Accept only
+   // a unique match, then restore the participant's exact original wording.
+   source=text.replace(/[‘’]/g,"'");quote=quote.replace(/[‘’]/g,"'");start=source.indexOf(quote);
+  }
+  if(start<0||source.indexOf(quote,start+1)>=0)throw new Error('UNSUPPORTED_EVIDENCE');
+  item.sourceStart=start;item.sourceEnd=start+quote.length;item.sourceSpan=text.slice(start,item.sourceEnd);
  }
  return parsed;
 }

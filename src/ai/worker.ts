@@ -3,9 +3,20 @@ import {createHash,timingSafeEqual} from 'node:crypto';
 import {z} from 'zod';
 import {clarify,gatewayConfig} from './clarifier.ts';
 import {interpretationInput} from '../planning/interpretation.ts';
-export function createAiWorker(options:{token:string;model?:typeof clarify}){
+const failureMetadata=z.object({
+ stage:z.enum(['INPUT','CONFIGURATION','NETWORK','PROVIDER','RESPONSE','VALIDATION','WORKER_REQUEST','MODEL_RESULT']),
+ httpStatus:z.number().int().min(100).max(599).optional(),
+ validation:z.enum(['JSON','SCHEMA','EVIDENCE','QUESTION','OTHER']).optional()
+});
+export function createAiWorker(options:{token:string;model?:typeof clarify;log?:(line:string)=>void}){
  if(!/^[a-f0-9]{64}$/.test(options.token))throw Error('WORKER_TOKEN_REQUIRED');
  const expected=createHash('sha256').update(`Bearer ${options.token}`).digest();let active=0;
+ const diagnostic=(event:unknown)=>{
+  // Strip every field except bounded error categories. Never log inputs,
+  // credentials, exception strings or raw provider/model responses.
+  const parsed=failureMetadata.safeParse(event);
+  try{(options.log??console.warn)(JSON.stringify({event:'ai_inference_unavailable',...(parsed.success?parsed.data:{stage:'UNKNOWN'})}));}catch{}
+ };
  return createServer(async(req,res)=>{
   const json=(status:number,value:unknown)=>{res.writeHead(status,{'Content-Type':'application/json','Cache-Control':'no-store','X-Content-Type-Options':'nosniff'});res.end(JSON.stringify(value));};
   if(req.method==='GET'&&req.url==='/health'){json(200,{ready:true});return;}
@@ -22,9 +33,11 @@ export function createAiWorker(options:{token:string;model?:typeof clarify}){
    // Validate again at the service boundary. No user budgets, selections,
    // identity, peers, tools or payment commands are accepted by this contract.
    interpretationInput(payload.input);
-   const result=await (options.model??clarify)(payload.input,undefined,fetch,undefined,payload.purpose==='DRAFT');
+   let diagnosed=false;
+   const result=await (options.model??clarify)(payload.input,undefined,fetch,event=>{diagnosed=true;diagnostic(event);},payload.purpose==='DRAFT');
+   if(result.status==='NEEDS_REVIEW'&&!diagnosed)diagnostic({stage:'MODEL_RESULT'});
    json(200,result);
-  }catch{json(400,{error:'INTERPRETATION_UNAVAILABLE'});}
+  }catch{diagnostic({stage:'WORKER_REQUEST'});json(400,{error:'INTERPRETATION_UNAVAILABLE'});}
   finally{active--;}
  });
 }

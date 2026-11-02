@@ -30,6 +30,11 @@ change potential fit. A person must confirm that all their essentials are
 represented; schema validation alone does not prove that the model understood
 every need in their message.
 
+A quoted span can be rebound to a unique source occurrence when the model's
+character offsets are wrong. Straight and typographic apostrophes may also
+match, but every word must remain identical and the stored quotation is restored
+from the person's exact original text. Missing or ambiguous matches stay rejected.
+
 Conditional activity wishes are not hard requirements. Explicit attendance
 followed by a departure before pickup is different from inability to attend.
 Genuinely ambiguous departure can require a question. Unsupported access or
@@ -52,6 +57,11 @@ review states. Retry after a provider failure is explicit and quota-limited;
 there are no automatic model retries. Global and actor allowances are checked
 before dispatch. Failure never relaxes confirmed requirements or creates a
 booking.
+
+The inference worker logs bounded failure categories, HTTP status codes and
+validation categories. It never logs submitted wording, saved choices,
+credentials, raw provider responses or model output. These operator diagnostics
+do not change the generic failure response or authorize an automatic retry.
 
 Unconfirmed drafts expire after thirty minutes. Saved-note text and source
 quotations follow the [private-text retention policy](private-text-retention.md).

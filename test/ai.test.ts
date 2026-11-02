@@ -26,3 +26,18 @@ test('model character counts are grounded in a unique literal quote; repeated or
  if(result.status==='PROPOSAL')assert.equal(result.proposal.interpretations[0].sourceEnd,text.length);
  assert.deepEqual(await clarify({revisionId,text:text+' '+text,catalog},config,transport),{status:'NEEDS_REVIEW'});
 });
+
+test('typographic apostrophes rebind only to one exact source quote without changing words',async()=>{
+ const revisionId=randomUUID();
+ const response=(quote:string):typeof fetch=>async()=>Response.json({choices:[{finish_reason:'stop',message:{content:JSON.stringify({schemaVersion:1,preferenceRevisionId:revisionId,interpretations:[{requirementKey:'TRAVEL',proposedValue:'COLLECTION_ONLY',sourceStart:0,sourceEnd:quote.length,sourceSpan:quote,certainty:'ambiguous'}],question:{templateId:'TRAVEL_MEANING',requirementKey:'TRAVEL',relevantOfferingIds:['handbuild'],options:[{id:'attend',value:'CANNOT_ATTEND'},{id:'pickup',value:'COLLECTION_ONLY'}]}})}}]});
+ for(const [text,quote] of [['I’m heading out of town soon.',"I'm heading out of town soon."],["I'm heading out of town soon.",'I’m heading out of town soon.']]){
+  const result=await clarify({revisionId,text,catalog},config,response(quote),undefined,true);
+  assert.equal(result.status,'PROPOSAL');
+  if(result.status==='PROPOSAL'){assert.equal(result.proposal.interpretations[0].sourceSpan,text);assert.equal(result.proposal.interpretations[0].sourceEnd,text.length);}
+ }
+ for(const [text,quote] of [
+  ['I’m heading out of town soon.',"I'm staying in town soon."],
+  ['I’m heading out of town soon. I’m heading out of town soon.',"I'm heading out of town soon."],
+  ["I’m heading out of town soon. I'm heading out of town soon.",'I‘m heading out of town soon.']
+ ])assert.deepEqual(await clarify({revisionId,text,catalog},config,response(quote),undefined,true),{status:'NEEDS_REVIEW'});
+});
