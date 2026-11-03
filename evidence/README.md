@@ -23,7 +23,27 @@ Auth/model/payment fixtures. It does not require Supabase, PayPal or Astropods
 credentials, and it does not send email or create real payments. Follow the
 [local test path](../docs/development.md#test-without-external-accounts).
 
-## Current verification
+## Repository verification
+
+The [2 November source verification](repository-readiness-2026-11-02.json)
+installed the lockfile in a clean tracked-source checkout without private
+environment files. All **234 tests passed**, as did typechecking, the production
+build and the standalone AI-worker build. All sixteen migrations applied to
+disposable PostgreSQL 17 and passed an idempotent rerun. Eleven local production
+HTTP checks and four worker authentication/input checks passed with fixture-only
+configuration. The production dependency audit found zero advisories.
+
+Source and history secret scans found no credentials. On-device OCR of 130
+unique current and historical images found no recognized secrets or nonexample
+email addresses; OCR is not a guarantee that every pixel was interpreted.
+Raw logs remain private. These source checks made no live model calls, payments,
+emails or hosted changes and do not replace the dated provider evidence below.
+
+The [2:45 demo](https://youtu.be/5PE5RJzngpA) records the newer interface and a
+separate six-buyer sandbox booking. The October journey and provider reports
+above preserve their original dates and scopes.
+
+## Recorded release verification
 
 <!-- BEGIN CURRENT TRUTH -->
 Verified 2026-10-29. Historical provider and AI runs retain their own dates.

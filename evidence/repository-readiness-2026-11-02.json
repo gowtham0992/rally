@@ -1,0 +1,69 @@
+{
+  "date": "2026-11-02",
+  "scope": "Repository completeness and reproducibility. A tracked-source export plus the repository-only changes was installed and built without private environment files. Public page/denial checks used a disposable local database and fixture-only Auth configuration. This is not a hosted deployment, provider evaluation or independent usability study.",
+  "baseCommit": "1b28f10a4922b1ab553aadb62ce8c60b6d1d9588",
+  "packageLockSha256": "eba5e1a72b6576c3db009b32fe916ad0c88ee8e647ac454c38df8c79f351dd2e",
+  "environment": {
+    "node": "25.6.0",
+    "postgresql": "17.9",
+    "databaseTimezone": "UTC",
+    "minimumNodeVersionIndependentlyRetested": false
+  },
+  "implementation": {
+    "applicationSource": true,
+    "aiWorkerSource": true,
+    "assets": true,
+    "orderedMigrations": 16,
+    "controlledTestsAndFixtures": true,
+    "deploymentTemplates": true,
+    "lockedDependencies": true,
+    "privateEnvironmentFilesRequiredForBuild": false
+  },
+  "verification": {
+    "cleanNpmCi": "passed",
+    "tests": {
+      "passed": 234,
+      "failed": 0,
+      "skipped": 0,
+      "providerMode": "controlled fixtures"
+    },
+    "typecheck": "passed",
+    "productionBuild": "passed",
+    "aiWorkerBuild": "passed",
+    "migrationFirstRun": "passed",
+    "migrationIdempotentRerun": "passed",
+    "localProductionHttpChecks": 11,
+    "aiWorkerBoundaryChecks": 4,
+    "productionDependencyAdvisories": 0,
+    "relativeRepositoryLinksChecked": 170
+  },
+  "sourceHygiene": {
+    "gitleaksVersion": "8.30.1",
+    "historyFindings": 0,
+    "trackedSourceFindings": 0,
+    "configuredValuesChecked": 11,
+    "historyBlobsChecked": 1226,
+    "configuredValueMatches": 0,
+    "uniqueHistoricalAndCurrentImagesOcrChecked": 130,
+    "imageOcrSecretFindings": 0,
+    "imageOcrNonexampleEmailFindings": 0,
+    "ocrLimit": "On-device text recognition can miss stylized, obscured or low-resolution text. It is not a guarantee that every pixel was interpreted."
+  },
+  "operationalEffects": {
+    "hostedDeployments": 0,
+    "databaseMigrationsOnHostedData": 0,
+    "modelCalls": 0,
+    "payPalOperations": 0,
+    "emails": 0,
+    "authAccountsCreated": 0,
+    "judgeWorkspacesClaimed": 0,
+    "paidPlansAdded": 0,
+    "repositoryVisibilityChanged": false
+  },
+  "limits": [
+    "The full guard-mutation suite was not rerun; payment and privacy implementation was unchanged.",
+    "No new live PayPal, Supabase sign-in or Astropods inference checks were performed. Existing dated records and the recorded demo retain their own scopes.",
+    "Hosted partial-failure recovery and independent friend-group usability remain outside this verification."
+  ],
+  "video": "https://youtu.be/5PE5RJzngpA"
+}

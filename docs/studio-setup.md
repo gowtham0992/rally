@@ -37,6 +37,19 @@ Opening an offer alone does not book the session or complete a payment. The
 [verification index](../evidence/README.md) distinguishes recorded sandbox
 results from independent friend or merchant observations.
 
+## Dates in a fresh local installation
+
+`fixtures/studio.json` is a versioned fictional example with fixed November
+2026 slots. For a new local database used after those dates, choose future UTC
+`slots[].startAt` values and a new `versionId` before the first studio setup.
+Keep slot IDs and offering references consistent. The application and setup
+script both read this file; restart or rebuild the application after changing it.
+
+This is preparation for a fresh installation, not a migration of an existing
+booking. Never change an already published version or its issued offers. The
+hosted judge workspaces have their own immutable future catalog, independent
+of the default source fixture. Existing evaluations retain the original dates.
+
 ## Publish contact details for personal arrangements
 
 The catalog accepts an optional `contact.email` field. Publish only a monitored

@@ -5,6 +5,8 @@ evidence/private/
 .next/
 coverage/
 *.tsbuildinfo
+.DS_Store
+npm-debug.log*
 next-env.d.ts
 /deploy/ai-worker/build/
 

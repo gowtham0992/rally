@@ -60,9 +60,10 @@ the suite, without concurrent source edits or builds:
 TEST_DATABASE_URL=postgresql://rally:rally_local_only@127.0.0.1:55439/rally npm run test:mutations
 ```
 
-The [verification record](../evidence/current-verification.json) gives the latest
-recorded counts and dates. Local tests do not establish actual provider behavior
-or independent human usability.
+The [repository verification](../evidence/repository-readiness-2026-11-02.json)
+records the clean-checkout checks. The [hosted release record](../evidence/current-verification.json)
+retains its own dated provider and deployment scopes. Local tests do not establish
+actual provider behavior or independent human usability.
 
 ## Run the app
 
@@ -121,6 +122,12 @@ The form works without AI configuration. A missing or failed model check leaves
 review unresolved; it never waives a requirement or creates a booking. Supply
 worker configuration only when you intend to exercise the optional model path.
 Temporary development gateway credentials are not production worker credentials.
+The [AI worker setup](ai-worker.md) documents the included standalone build,
+gateway variables and application connection. Build it from the repository root:
+
+```sh
+npm run ai:build
+```
 
 ```sh
 npm run ai:evaluate

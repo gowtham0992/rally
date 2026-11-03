@@ -29,6 +29,7 @@ session is reserved and no live payment is taken.
 | [Email delivery](free-smtp-2026-10-27.md) | Current SMTP setup and its dated delivery verification. |
 | [PayPal webhooks](paypal-webhooks.md) | Signature verification, subscription setup and reconciliation. |
 | [AI behavior and evaluation](ai-evaluation.md) | Optional drafting, confirmation boundaries and evaluation scopes. |
+| [AI worker setup](ai-worker.md) | Build the included worker, configure model access and connect it to the application. |
 | [Request limits](request-limits.md) | Shared quotas, failure behavior and operational checks. |
 | [Private text retention](private-text-retention.md) | Saved-note expiry, draft expiry and preserved financial records. |
 | [Prepared test access](test-access.md) | Isolated fictional workspaces and managed test identities. |

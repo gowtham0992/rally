@@ -16,6 +16,7 @@
     "sandbox:verify": "node --env-file-if-exists=.env.local --import tsx scripts/verify-sandbox.ts",
     "dev": "next dev --hostname 127.0.0.1",
     "build": "next build",
+    "ai:build": "node --import tsx scripts/build-ai-worker.ts",
     "start": "next start",
     "ai:evaluate": "node --env-file-if-exists=.env.local --import tsx scripts/evaluate-ai.ts"
   },
@@ -36,6 +37,7 @@
     "@types/pg": "^8.15.0",
     "@types/react": "19.3.0",
     "@types/react-dom": "19.3.0",
+    "esbuild": "0.28.2",
     "tsx": "4.23.15",
     "typescript": "7.0.2"
   }
