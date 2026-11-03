@@ -55,7 +55,7 @@ Verified 2026-10-29. Historical provider and AI runs retain their own dates.
 | Failure compensation | Refund + remaining voids; lost-response recovery | Separate local service with 3 real sandbox buyers |
 | AI evaluation | 72/72 final quality assessments; 0 safety failures | 24 authored cases × 3; earlier failures retained, 2 Oct |
 | Optional draft AI | 5/5 final hosted checks; earlier 2/5 retained | Five new authored fictional cases; 10 approved calls total, 29 Oct |
-| Local suite | 232 passed; 0 failed | Disposable PostgreSQL 17 in UTC; controlled providers; includes two public-docs boundary tests, 29 Oct |
+| Historical suite · 29 Oct release | 232 passed; 0 failed | Historical checkpoint: disposable PostgreSQL 17 in UTC; controlled providers. See the 2 Nov source record for 234 passing tests. |
 | Guard mutations | 68/68 caught | 68/68 from the correction release, unchanged by docs; two additional docs boundary mutations caught separately, 29 Oct |
 | TypeScript / production build | Passed | 29 Oct; Node 25.6.0 locally |
 | Judge capacity | 9 untouched of 12 total workspaces | Read-only checks, 29 Oct; no new identities or leases |

@@ -45,7 +45,8 @@ remains available throughout. [AI behavior and evaluation](docs/ai-evaluation.md
 
 ## Separate payments, one booking decision
 
-Each payment goes directly to the studio, without an organizer's payment pool.
+Each payment goes to the studio's PayPal merchant account: a single configured
+sandbox merchant in this demo. The organizer does not collect a pooled balance.
 These are separate transactions. If settlement fails partway through, Rally
 starts refunds for completed charges and releases remaining holds. Uncertain
 outcomes stay visible until verified; they do not count as a confirmed booking.
@@ -58,7 +59,8 @@ pickup visibility, withdrawals and recovery.
 PayPal's **Orders API v2** creates each friend's checkout with `AUTHORIZE` intent.
 The **Payments API v2** supplies captures, refunds, voids and resource checks.
 Signed **PayPal Webhooks** support reconciliation; a browser return alone never
-establishes payment success. The studio receives separate payments directly.
+establishes payment success. This demo uses one configured sandbox merchant
+account for the studio, receiving each payment separately.
 
 The web application uses **Next.js, React and TypeScript**, with **PostgreSQL and
 Supabase Auth**, and runs on **Render**. Optional AI inference runs in a separate

@@ -4,7 +4,7 @@
   "truthRows": [
     {
       "claim": "Hosted group booking",
-      "result": "6 buyers · 6 × $48 · $288 gross",
+      "result": "6 buyers \u00b7 6 \u00d7 $48 \u00b7 $288 gross",
       "scope": "Actual hosted PayPal sandbox, 3 Oct"
     },
     {
@@ -20,7 +20,7 @@
     {
       "claim": "AI evaluation",
       "result": "72/72 final quality assessments; 0 safety failures",
-      "scope": "24 authored cases × 3; earlier failures retained, 2 Oct"
+      "scope": "24 authored cases \u00d7 3; earlier failures retained, 2 Oct"
     },
     {
       "claim": "Optional draft AI",
@@ -28,9 +28,9 @@
       "scope": "Five new authored fictional cases; 10 approved calls total, 29 Oct"
     },
     {
-      "claim": "Local suite",
+      "claim": "Historical suite \u00b7 29 Oct release",
       "result": "232 passed; 0 failed",
-      "scope": "Disposable PostgreSQL 17 in UTC; controlled providers; includes two public-docs boundary tests, 29 Oct"
+      "scope": "Historical checkpoint: disposable PostgreSQL 17 in UTC; controlled providers. See the 2 Nov source record for 234 passing tests."
     },
     {
       "claim": "Guard mutations",
@@ -270,5 +270,7 @@
     "newModelCalls": 0,
     "emails": 0,
     "paypalOperations": 0
-  }
+  },
+  "recordScope": "Historical 29 October hosted release checkpoint. Latest source verification is recorded separately.",
+  "newerSourceVerification": "evidence/repository-readiness-2026-11-02.json"
 }

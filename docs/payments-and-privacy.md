@@ -1,8 +1,9 @@
 # Payments and privacy
 
 Rally keeps a person's private planning answers separate from the shared booking
-and from their payment records. Each payment goes directly to the studio through
-PayPal; the organizer does not collect a group balance.
+and from their payment records. Each payment goes to the studio's PayPal merchant
+account: a single configured sandbox merchant in this demo. The organizer does
+not collect a group balance.
 
 ## A hold is different from a completed charge
 
