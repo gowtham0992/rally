@@ -12,6 +12,7 @@ operating instructions and private evidence are not served by the site.
 | Guide | What it covers |
 | --- | --- |
 | [Product guide](product-guide.md) | Create a plan, join friends, handle pickup and review an offer. |
+| [Private studio questions](studio-questions.md) | Ask about an unsupported need, optionally draft a question with AI, and review the studio's reply. |
 | [Payments and privacy](payments-and-privacy.md) | Who sees what, authorization versus charge, withdrawals and recovery. |
 | [Studio setup](studio-setup.md) | Assign the studio operator, publish the catalog and review requests. |
 

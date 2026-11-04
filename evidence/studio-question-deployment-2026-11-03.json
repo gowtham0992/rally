@@ -1,0 +1,38 @@
+{
+  "observedAt": "2026-11-04T03:31:14.084Z",
+  "scope": "Dated activation receipt for the AI implementation. Later documentation-only revisions do not change this implementation checkpoint.",
+  "applicationImplementationCommit": "adb3711d93460c5326ca67ccd1c4f61ceb97f9ec",
+  "applicationStatus": "live",
+  "hostingPlan": "free",
+  "studioQuestionDraftEnabled": true,
+  "workerBuild": "0b8610d5",
+  "workerStatus": "ready",
+  "workerProtocol": 1,
+  "blueprintVisibility": "private",
+  "actualDeployedInference": {
+    "observedAt": "2026-11-04T03:22:33.357Z",
+    "fictionalCase": "step-free",
+    "calls": 1,
+    "httpStatus": 200,
+    "result": "QUESTION_DRAFT",
+    "question": "Can you accommodate this requirement for this session: “I need step-free access to the work area.”?",
+    "passed": true,
+    "maxOutputTokens": 600
+  },
+  "publicAndAccessDenialChecks": {
+    "passed": 12,
+    "total": 12,
+    "scope": "Signed-out health/docs, authentication and foreign-origin denials, and private-file 404s."
+  },
+  "localVerification": {
+    "tests": 254,
+    "guardMutations": 78
+  },
+  "noNewHostedServices": true,
+  "noPaidPlanAdded": true,
+  "paymentOrPlanningCodeChangedInAIFix": false,
+  "limitations": [
+    "Authored cases, including a prompt-guidance example; not a held-out reliability estimate or independent friend-group observation.",
+    "Signed-out production access checks and one deployed-worker inference; no new hosted authenticated friend-group walkthrough."
+  ]
+}

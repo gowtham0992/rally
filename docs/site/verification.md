@@ -54,7 +54,11 @@ A corrective six-case run produced usable drafts for all three straightforward
 needs, preserved the complete conditional need, and explicitly declined the two
 unrelated/hostile cases. The evaluator now rejects parser/provider failures as
 correct abstentions. These authored cases are not a general reliability rate.
-The manual private exchange remains available without an AI call.
+After that correction, one fictional request through the deployed worker
+produced a valid draft, and the hosted preview enabled the optional helper.
+Twelve public health/access checks passed. Those checks did not exercise a new
+hosted authenticated group flow. The manual private exchange remains available
+without an AI call.
 
 The [earlier clarification report](/evidence/ai/index.html) includes its authored
 cases and evaluation method. A corrected fixture set is not proof of general

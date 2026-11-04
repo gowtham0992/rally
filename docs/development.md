@@ -61,7 +61,7 @@ TEST_DATABASE_URL=postgresql://rally:rally_local_only@127.0.0.1:55439/rally npm 
 ```
 
 The [repository verification](../evidence/repository-readiness-2026-11-02.json)
-records the clean-checkout checks. The [hosted release record](../evidence/current-verification.json)
+records the clean-checkout checks. The [historical release record](../evidence/current-verification.json)
 retains its own dated provider and deployment scopes. Local tests do not establish
 actual provider behavior or independent human usability.
 
@@ -83,6 +83,8 @@ The example database uses port 55432; change it if your local instance uses
 | `PAYPAL_WEBHOOK_ID` | Exact registered sandbox webhook subscription ID. |
 | `RALLY_AI_WORKER_URL`, `RALLY_AI_WORKER_TOKEN` | Optional HTTPS inference worker and its dedicated private bearer token. |
 | `ASTRO_GATEWAY_URL`, `ASTRO_GATEWAY_API_KEY`, `MODEL_DEFAULT` | Development inference fallback when no worker URL is configured. |
+| `RALLY_STUDIO_QUESTIONS_ENABLED` | Defaults on; set `false` to pause new studio questions while preserving existing answers and planning restrictions. |
+| `RALLY_STUDIO_QUESTION_AI_ENABLED` | Defaults off; opt into question drafting only after verifying a compatible worker or configured development gateway. |
 | `RALLY_SETTLEMENT_MODE` | `worker` locally; the hosted preview uses scheduled processing. |
 
 Keep `RALLY_DEMO_ENABLED=false` for ordinary local use. Prepared fictional test
@@ -137,6 +139,19 @@ The default evaluator checks authored baselines with stub transport and makes no
 provider calls. Live evaluation is separate, uses credits and needs a bounded
 allowance. Do not assume a previous release's allowance permits another run.
 See [AI behavior and evaluation](ai-evaluation.md).
+
+Studio-question drafting uses a separate evaluator. Its default mode is a dry
+run and makes no provider request:
+
+```sh
+node --import tsx scripts/evaluate-studio-questions.ts
+```
+
+The [studio-question guide](studio-questions.md) covers migration 017, operator
+configuration and release order. A hosted worker reports `questionDraftVersion: 1`
+on `/health` when it supports the contract. Health alone does not prove useful
+inference. Keep the manual path available and verify consent, privacy and literal
+evidence before enabling the optional draft.
 
 ## Maintain the documentation
 

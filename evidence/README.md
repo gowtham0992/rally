@@ -13,7 +13,7 @@ demand. Start with the [product documentation](../docs/README.md) to use or run 
 | 4. [Hosted forged-signature denial](hosted-webhook-signature-denial.json) | A forged notification was rejected using a real PayPal public certificate, without changing payment records. |
 | 5. [Three-buyer recovery report](paypal-sandbox/index.html) | Separate local-service runs with real PayPal sandbox operations: $144 success, partial failure refunded $48 and voided the remaining holds, and a lost capture response recovered after restart without another capture. This is not hosted failure-recovery proof. |
 | 6. [Actual-model evaluation](../public/evidence/ai/index.html) | 24 authored cases × 3 repeats; final 72/72 quality assessments, zero safety failures, independent structured baseline and constraint oracle. Two earlier failed runs remain accessible. [Machine-readable index](ai/evaluation-index.json). |
-| 7. [Current verification record](current-verification.json) | Dated suite, build, privacy, browser and capacity checks for the current implementation. Historical test counts belong to their original revisions. |
+| 7. [Historical verification record · 29 October](current-verification.json) | Dated suite, build, privacy, browser and capacity checks for that checkpoint. Later release checks appear below. |
 | 8. [Release archive](releases/README.md) | Earlier per-release checks, screenshots and their exact test boundaries. They support the implementation history; they do not represent human usability observations. |
 
 ## Run the checks without external accounts
@@ -38,6 +38,12 @@ passed. These are authored regression cases, not a held-out or independent
 usability study. The parser-only failed run and initial failed run remain recorded.
 The local suite passed **254 tests**, **78/78 mutation guards**, typecheck, app
 build and worker bundle. No payment or intake-consent logic changed in this fix.
+
+The [activation receipt](studio-question-deployment-2026-11-03.json) records the
+enabled hosted preview, one real fictional request through the deployed worker,
+and **12/12 public/access-denial checks**. The six-case evaluation and that single
+worker request have separate scopes. No new authenticated hosted group flow,
+independent people, emails or PayPal operations were exercised.
 
 ## Private studio-question release · 3 November
 
@@ -80,7 +86,7 @@ The [2:45 demo](https://youtu.be/5PE5RJzngpA) records the newer interface and a
 separate six-buyer sandbox booking. The October journey and provider reports
 above preserve their original dates and scopes.
 
-## Recorded release verification
+## Historical release verification
 
 <!-- BEGIN CURRENT TRUTH -->
 Verified 2026-10-29. Historical provider and AI runs retain their own dates.

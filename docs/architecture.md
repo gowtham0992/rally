@@ -52,12 +52,32 @@ opt-outs persist across subsequent offers until the same member returns. The
 studio-contact marker records a participant assertion and explicit notice
 consent; it is not a verified merchant capability.
 
+`src/intake/studio-questions.ts` provides a separate owner-to-studio exchange for
+needs the form cannot represent. Sharing requires explicit consent; the studio
+receives the selected session and question, without the original note or private
+form answers. The friend reads the exact reply and explicitly confirms whether
+it covers every essential need. No model interprets the reply.
+
+An accepted answer binds the studio, catalog version, offering, slot and new
+preference revision. The authoritative planner filters candidates to those
+sessions. Editing details or expiry requires fresh review. The studio sees the
+accepted exchange during its normal review; unrelated friends and the organizer
+do not receive it. [Studio questions](studio-questions.md).
+
 ## Bounded AI inference
 
 `src/intake/message-drafts.ts` persists optional work before dispatch, checks
 ownership and quotas, and fences stale results. The interpreter returns a closed
 schema with grounded text spans and at most one question. The person must review
 and save the choices.
+
+The worker's `QUESTION` purpose has a separate strict evidence contract. It
+selects a literal unsupported need for an editable question, not a studio
+capability claim. A complete JSON code fence is treated as transport formatting;
+prose, extra fields and invented evidence remain rejected. The application checks
+known roster names, obvious contact details and financial wording, and requires
+separate sharing consent. Question drafting shares existing AI quotas and cannot
+clear a need, send a question or create a commitment on its own.
 
 The production worker has a dedicated bearer token and no database or PayPal
 credentials. It cannot write preferences, nominate a collector or authorize any
@@ -98,7 +118,7 @@ mark a payment or booking successful. Provider checks remain authoritative.
 
 Supabase hosts Auth and the private PostgreSQL schema. The application uses a
 restricted database role with certificate-verified TLS. Additive SQL migrations
-are listed in `src/migrations.ts`; the current schema includes migration 016.
+are listed in `src/migrations.ts`; the current schema includes migration 017.
 Private raw text has bounded retention while confirmed choices and financial
 history remain available for reconciliation.
 

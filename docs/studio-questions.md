@@ -36,8 +36,8 @@ Other friends and the organizer do not receive the exchange or its reason.
 
 ## Optional AI help
 
-The manual exchange is always available when the studio is configured. Optional
-AI help selects a literal need from your saved note and puts a question in an
+The hosted preview enables optional AI question drafting. The manual exchange
+remains available when the studio is configured. AI help selects a literal need from your saved note and puts a question in an
 editable box. It does not send the question or resolve the need. You separately
 review and consent before sharing with the studio.
 
@@ -94,6 +94,11 @@ This hides new-question entry and rejects new asks and drafts; owners and studio
 can still finish existing exchanges, and accepted session restrictions remain
 in force. This pause path is tested locally. The down migration refuses to remove
 populated history. Do not use it as a production rollback.
+
+The [dated deployment receipt](../evidence/studio-question-deployment-2026-11-03.json)
+records the enabled preview, one real deployed-worker inference and the scope of
+production checks. It does not establish a hosted authenticated group walkthrough
+or independent usability.
 
 The worker adds a `QUESTION` purpose behind the existing bearer-token check.
 Release the compatible worker before enabling the new optional drafting path in

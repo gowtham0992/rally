@@ -52,7 +52,11 @@ PORT=8081 node --env-file=.env.ai-worker.local deploy/ai-worker/build/worker.mjs
 
 `GET /health` is public and makes no model call. `POST /interpret` requires the
 service token in a Bearer header before input parsing or model dispatch. A health
-response establishes process readiness, not model availability. Anonymous
+response establishes process readiness, not model availability.
+`questionDraftVersion: 1` identifies support for the studio-question contract.
+The application opt-in flag is `RALLY_STUDIO_QUESTION_AI_ENABLED`; fresh
+installations default off. The hosted preview enables it after the
+[recorded inference check](../evidence/studio-question-deployment-2026-11-03.json). Anonymous
 inference receives 403; authenticated malformed input receives 400. The
 automated worker tests cover these boundaries using controlled model responses.
 

@@ -21,6 +21,19 @@ model result, while retaining command/source identities and quota metadata.
 A late response cannot restore expired content. Draft expiry does not erase
 saved preferences, pickup consent or financial records.
 
+## Studio questions and replies
+
+Sent questions and studio replies expire within 30 days of sending, or sooner
+when the source note already has an earlier deadline. Their clock starts at
+sending, not planning closure. Optional question drafts expire after 30 minutes.
+Expired wording is hidden before cleanup, and the same existing bounded cleanup
+job removes it. No new scheduler or external request is introduced.
+
+Question/source identities, sharing and acceptance metadata remain. An expired
+answer cannot satisfy a new plan; the owner is asked to review their needs even
+if the earlier note text has already been removed. Existing offers and financial
+records remain unchanged. [Studio-question behavior](studio-questions.md).
+
 ## Copies and preserved records
 
 - `preference_revisions.optional_text`: cleared across every expired revision,
@@ -29,6 +42,10 @@ saved preferences, pickup consent or financial records.
   including its exact `sourceSpan` quotations. Active requests become stale;
   answered/declined status and references remain.
 - `wording_bound`: only confirmed typed facts, never raw wording; preserved.
+- `studio_questions.question` and `.reply`: cleared on expiry; session/source
+  references and acceptance metadata remain.
+- `studio_question_drafts.result`: cleared on its 30-minute expiry; the source,
+  status and quota metadata remain.
 - `intake_commands`: result IDs, revision numbers, invite token, or booleans;
   request bodies are represented by a fingerprint, not persisted raw payloads.
 - Planning and payment events carry metadata, not private notes. Cleanup adds

@@ -5,6 +5,12 @@ activity and pickup choices or ask one grounded question. The person reviews
 and saves those choices; the deterministic planner, explicit consent and payment
 engine remain authoritative.
 
+For needs outside the form, a separate optional helper drafts a private question
+to the studio. It selects a literal need from the saved note for the person to
+edit; it does not verify the studio's capabilities. The person separately
+consents to share the question, then reviews the studio's exact answer.
+[Studio-question flow and safeguards](studio-questions.md).
+
 ## What the model receives
 
 A request contains the consenting person's submitted message and public studio
@@ -48,6 +54,17 @@ path and [payment/privacy boundaries](payments-and-privacy.md) for disclosure.
 
 ## Failure, retries and retention
 
+The `QUESTION` response contract is separate from the activity/pickup vocabulary.
+It contains the source revision and one exact quoted span. Complete JSON code
+fences are accepted as formatting; arbitrary surrounding prose, unknown fields,
+stale revisions and invented evidence are rejected. Known roster names, obvious
+contact details and financial wording are checked by the application before a
+question is offered for review. This is not a guarantee of anonymous free text.
+
+Diagnostics distinguish an explicit model review from provider, response,
+JSON/schema and evidence failures. An evaluator must not score an unavailable
+parser or provider as a correct model abstention.
+
 Work is persisted before dispatch and scoped to the owner and source preference.
 Refreshing resumes existing work rather than dispatching again. Changed sources,
 expired drafts and late results cannot confirm old choices. Discard clears only
@@ -77,6 +94,7 @@ combined into a larger current reliability rate.
 | Optional draft: conditional wishes and travel | Final 5/5 after an earlier 2/5 | Five authored fictional cases; hosted worker, October 29. |
 | Earlier message draft checkpoint | Final 8/8 after an earlier 7/8 | Separate authored eight-case suite for the earlier checkpoint. |
 | Saved-note clarification | Final 72/72 assessments | Twenty-four authored cases repeated three times; October 2. |
+| Studio-question drafting | Corrective 6/6; initial and parser-only failures retained | Six authored regression cases, including an example used in prompt guidance; November 3. Not held out. |
 
 The five-case reports retain the actual proposals and failures:
 [first run](../evidence/message-draft-evaluation-1793256049916.json),
@@ -86,6 +104,15 @@ The older draft report is
 The original [clarification evaluation](../public/evidence/ai/index.html) and
 [machine-readable index](../evidence/ai/evaluation-index.json) retain their own
 cases, dates and earlier failed runs.
+
+The [studio-question diagnosis](../evidence/studio-question-fix-2026-11-03.json)
+records the JSON-fence parser defect, prompt ambiguity and evaluator correction.
+Its [corrective run](../evidence/studio-question-evaluation-1793761616523.json)
+produced three straightforward drafts, preserved the complete conditional need,
+and explicitly reviewed the unrelated and hostile cases. The
+[deployment receipt](../evidence/studio-question-deployment-2026-11-03.json)
+separately records one real inference through the deployed worker and signed-out
+production checks. None of these is a hosted authenticated group trial.
 
 The original clarification suite covers feasible wording, consequential ambiguity,
 infeasible requirements, changed merchant facts, instruction/privacy attacks and
