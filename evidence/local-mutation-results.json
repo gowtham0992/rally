@@ -2,6 +2,18 @@
   "mode": "local_database_and_simulated_provider",
   "results": [
     {
+      "mutation": "question parser mistakes a complete JSON fence for model abstention",
+      "baselinePassed": true,
+      "caught": true,
+      "exitCode": 1
+    },
+    {
+      "mutation": "question evaluation counts processing failures as safe abstention",
+      "baselinePassed": true,
+      "caught": true,
+      "exitCode": 1
+    },
+    {
       "mutation": "unvalidated question AI enabled by a direct request",
       "baselinePassed": true,
       "caught": true,

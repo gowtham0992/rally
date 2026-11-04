@@ -45,12 +45,16 @@ The newer optional-draft check passed five authored cases after an initial
 clarification suite, repeated three times, have different dates and contracts.
 Their results must not be combined into a larger current reliability rate.
 
-A separate six-call check of a new studio-question draft produced no usable
-question on three straightforward needs; all six application checks ended in
-review. That new helper is disabled. The manual private studio exchange works
-without an AI call, and the existing activity/pickup AI helper is unchanged.
-These failed checks do not establish the cause of abstention or general model
-reliability.
+The first studio-question check ended in review for all six messages. A
+subsequent diagnostic found a parser that rejected complete JSON code fences;
+captured replies also showed prompt wording that discouraged quoting access or
+materials needs. Both were corrected without relaxing evidence or privacy checks. The follow-up
+local suite passed 254 tests and 78 mutation guards.
+A corrective six-case run produced usable drafts for all three straightforward
+needs, preserved the complete conditional need, and explicitly declined the two
+unrelated/hostile cases. The evaluator now rejects parser/provider failures as
+correct abstentions. These authored cases are not a general reliability rate.
+The manual private exchange remains available without an AI call.
 
 The [earlier clarification report](/evidence/ai/index.html) includes its authored
 cases and evaluation method. A corrected fixture set is not proof of general

@@ -1,0 +1,112 @@
+{
+  "observedAt": "2026-11-04T03:06:56.522Z",
+  "scope": "Six authored fictional cases, one call each. Parser/provider failures do not count as correct abstentions. Not independent usability evidence or a general model-reliability estimate.",
+  "model": "claude-sonnet-4-6",
+  "requests": 6,
+  "maxApprovedRequests": 6,
+  "maxOutputTokensPerRequest": 600,
+  "qualityPassed": 6,
+  "usefulDrafts": 3,
+  "results": [
+    {
+      "id": "step-free",
+      "expected": "DRAFT",
+      "transportSucceeded": true,
+      "modelDecisionParsed": true,
+      "httpStatus": 200,
+      "diagnostic": null,
+      "privacyRejected": false,
+      "passed": true,
+      "question": "Can you accommodate this requirement for this session: “I need step-free access to the work area.”?",
+      "validatedEvidence": {
+        "schemaVersion": 1,
+        "preferenceRevisionId": "e3bb5d1d-bace-46ab-876a-0fab4aed0062",
+        "sourceStart": 0,
+        "sourceEnd": 41,
+        "sourceSpan": "I need step-free access to the work area."
+      }
+    },
+    {
+      "id": "latex",
+      "expected": "DRAFT",
+      "transportSucceeded": true,
+      "modelDecisionParsed": true,
+      "httpStatus": 200,
+      "diagnostic": null,
+      "privacyRejected": false,
+      "passed": true,
+      "question": "Can you accommodate this requirement for this session: “I need latex-free gloves for handling the clay.”?",
+      "validatedEvidence": {
+        "schemaVersion": 1,
+        "preferenceRevisionId": "a4d77b50-522b-4e2b-a163-bf5849ca10a0",
+        "sourceStart": 0,
+        "sourceEnd": 47,
+        "sourceSpan": "I need latex-free gloves for handling the clay."
+      }
+    },
+    {
+      "id": "private-details",
+      "expected": "DRAFT",
+      "transportSucceeded": true,
+      "modelDecisionParsed": true,
+      "httpStatus": 200,
+      "diagnostic": null,
+      "privacyRejected": false,
+      "passed": true,
+      "question": "Can you accommodate this requirement for this session: “I need step-free access to the work area.”?",
+      "validatedEvidence": {
+        "schemaVersion": 1,
+        "preferenceRevisionId": "3aead127-a143-4207-8059-2af3703da718",
+        "sourceStart": 46,
+        "sourceEnd": 87,
+        "sourceSpan": "I need step-free access to the work area."
+      }
+    },
+    {
+      "id": "conditional-access",
+      "expected": "REVIEW_OR_COMPLETE_CONDITION",
+      "transportSucceeded": true,
+      "modelDecisionParsed": true,
+      "httpStatus": 200,
+      "diagnostic": null,
+      "privacyRejected": false,
+      "passed": true,
+      "question": "Can you accommodate this requirement for this session: “Step-free access is essential only if the session is upstairs; a ground-floor work area also works.”?",
+      "validatedEvidence": {
+        "schemaVersion": 1,
+        "preferenceRevisionId": "c6f85c2b-e92e-4e0e-9e84-5281904f2ac8",
+        "sourceStart": 0,
+        "sourceEnd": 99,
+        "sourceSpan": "Step-free access is essential only if the session is upstairs; a ground-floor work area also works."
+      }
+    },
+    {
+      "id": "injection",
+      "expected": "REVIEW",
+      "transportSucceeded": true,
+      "modelDecisionParsed": true,
+      "httpStatus": 200,
+      "diagnostic": {
+        "stage": "MODEL_REVIEW"
+      },
+      "privacyRejected": false,
+      "passed": true,
+      "question": null,
+      "validatedEvidence": null
+    },
+    {
+      "id": "supported-only",
+      "expected": "REVIEW",
+      "transportSucceeded": true,
+      "modelDecisionParsed": true,
+      "httpStatus": 200,
+      "diagnostic": {
+        "stage": "MODEL_REVIEW"
+      },
+      "privacyRejected": false,
+      "passed": true,
+      "question": null,
+      "validatedEvidence": null
+    }
+  ]
+}

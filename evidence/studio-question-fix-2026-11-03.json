@@ -1,0 +1,54 @@
+{
+  "observedAt": "2026-11-04T03:14:17.719592+00:00",
+  "sourceParent": "3d1fc06",
+  "diagnosis": [
+    {
+      "cause": "Complete JSON fences were passed directly to JSON.parse.",
+      "observed": "The diagnostic returned HTTP 200, finish_reason stop and 65 output tokens; the same captured response changed from NEEDS_REVIEW to QUESTION_DRAFT when replayed through the fix without a new model call."
+    },
+    {
+      "cause": "The capability warning was interpreted as forbidding quotation of access and materials requests.",
+      "observed": "Captured parser-only verification replies explicitly declined quoting these needs. The prompt now distinguishes a guest request from a studio capability claim."
+    },
+    {
+      "cause": "Evaluation counted parser/provider failures as safe abstentions.",
+      "fix": "Only a parsed explicit model review counts as a correct review decision; infrastructure/validation failures fail assessment."
+    }
+  ],
+  "validation": {
+    "localTestsPassed": 254,
+    "localTestsFailed": 0,
+    "guardMutationsCaught": 78,
+    "guardMutationsTotal": 78,
+    "typecheck": "passed",
+    "productionBuild": "passed",
+    "workerBundle": "passed",
+    "secretsInWorkerBundle": 0,
+    "correctiveActualModelCasesPassed": 6,
+    "correctiveActualModelCases": 6,
+    "straightforwardUsefulDrafts": 3,
+    "completeConditionalNeedPreserved": true,
+    "unrelatedAndHostileCasesExplicitlyReviewed": true,
+    "outputTokenCap": 600
+  },
+  "modelRecords": {
+    "initial": "studio-question-evaluation-1793758872372.json",
+    "parserOnly": "studio-question-evaluation-1793761423653.json",
+    "corrective": "studio-question-evaluation-1793761616523.json"
+  },
+  "protections": {
+    "literalEvidenceAndStrictSchemaUnchanged": true,
+    "privacyFilteringUnchanged": true,
+    "modelAndStudioSharingConsentsUnchanged": true,
+    "ownerAndStudioScopeUnchanged": true,
+    "sessionBindingAndExpiryUnchanged": true,
+    "paymentEngineUnchanged": true,
+    "newHostedResources": 0
+  },
+  "releaseGate": "Keep the application opt-in gate off until the compatible worker and reserved final inference check pass. The manual relay remains available.",
+  "limits": [
+    "Six authored cases are not a general reliability rate or independent human usability evidence.",
+    "The mixed-note example is included in prompt guidance; these are regression cases, not a held-out evaluation.",
+    "The initial model responses were not retained; the diagnosed fence failure is a later reproduced cause, not proof of the exact content of all original six responses."
+  ]
+}

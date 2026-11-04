@@ -34,18 +34,28 @@ The exchange does not reserve a session, create an offer, approve a hold or move
 money. Existing PayPal approvals and payment verification remain separate.
 Other friends and the organizer do not receive the exchange or its reason.
 
-## Question-draft implementation and release status
+## Optional AI help
 
-The manual exchange is the available path. The optional question-draft helper
-is **disabled by default**. In its first six actual model checks, all six calls
-returned review; none of the three straightforward needs produced a usable
-question. The three safety cases abstained. This is not evidence that the helper
-is useful or ready to enable. [Recorded cases](../evidence/studio-question-evaluation-1793758872372.json).
+The manual exchange is always available when the studio is configured. Optional
+AI help selects a literal need from your saved note and puts a question in an
+editable box. It does not send the question or resolve the need. You separately
+review and consent before sharing with the studio.
 
-Do not set `RALLY_STUDIO_QUESTION_AI_ENABLED=true` until fresh, explicitly approved
-checks establish useful behavior without weakening privacy or grounding guards.
-The service rejects draft requests before reserving quota when disabled. This
-setting does not affect Rally's existing activity/pickup AI helper.
+The initial six checks all ended in review. A diagnostic reproduced a valid
+JSON answer inside a code fence, which the new parser incorrectly rejected.
+The parser now accepts a complete JSON transport fence while rejecting prose,
+extra fields and invented evidence. The prompt also distinguishes quoting a
+guest's access/materials request from promising a studio capability. The
+[corrective check](../evidence/studio-question-evaluation-1793761616523.json)
+passed the six authored cases, including explicit review of unrelated and hostile
+messages. This is not a general model reliability rate or independent usability
+study. Earlier failed checks remain recorded.
+
+Question drafting is off by default in a fresh installation. Set
+`RALLY_STUDIO_QUESTION_AI_ENABLED=true` only after deploying the compatible worker
+and verifying the guarded request path. The service rejects draft requests before
+reserving model quota when disabled. This setting does not affect Rally's existing
+activity/pickup AI helper.
 
 The implemented, gated path explicitly sends a saved note to Astropods AI.
 The entire note and public studio facts are sent; saved spending-limit and
@@ -88,7 +98,9 @@ populated history. Do not use it as a production rollback.
 The worker adds a `QUESTION` purpose behind the existing bearer-token check.
 Release the compatible worker before enabling the new optional drafting path in
 the web application. The manual relay needs no worker deployment. An older or
-unavailable worker fails closed to manual entry; keep question drafting disabled.
+unavailable worker fails closed to manual entry. `/health` reports
+`questionDraftVersion: 1` when the worker supports the question contract; health
+alone does not establish actual model availability.
 
 `test/studio-questions.test.ts` exercises the relay, privacy boundaries,
 session binding, explicit acceptance, retries, staleness, quotas and retention

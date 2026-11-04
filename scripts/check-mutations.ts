@@ -1,6 +1,8 @@
 import { readFile,writeFile,mkdir } from 'node:fs/promises';
 import { spawnSync } from 'node:child_process';
 const mutations:{name:string;file:string;from:string;to:string;pattern:string;testFile?:string}[] = [
+  {name:'question parser mistakes a complete JSON fence for model abstention',file:'src/ai/studio-question.ts',from:'JSON.parse(fenced?fenced[1]:content)',to:'JSON.parse(content)',pattern:'question drafts accept a complete JSON fence',testFile:'test/studio-question-ai.test.ts'},
+  {name:'question evaluation counts processing failures as safe abstention',file:'src/ai/studio-question-evaluation.ts',from:"test.expected!=='DRAFT'&&result.diagnostic?.stage==='MODEL_REVIEW'",to:"test.expected!=='DRAFT'",pattern:'diagnostics distinguish an explicit model review',testFile:'test/studio-question-ai.test.ts'},
   {name:'unvalidated question AI enabled by a direct request',file:'src/intake/studio-questions.ts',from:'if(!this.aiDraftEnabled)',to:'if(false)',pattern:'new AI drafting is off by default',testFile:'test/studio-questions.test.ts'},
   {name:'studio question answer exposed to another studio owner',file:'src/intake/studio-questions.ts',from:'JOIN merchant_studios s ON s.studio_id=q.studio_id WHERE q.id=$1 AND s.owner_user_id=$2',to:'JOIN merchant_studios s ON s.studio_id=q.studio_id WHERE q.id=$1 AND $2::uuid IS NOT NULL',pattern:'studio questions enforce member ownership',testFile:'test/studio-questions.test.ts'},
   {name:'studio question cursor accepts a foreign owner',file:'src/intake/studio-questions.ts',from:'WHERE q.id=$1 AND s.owner_user_id=$2 AND g.demo_workspace_id',to:'WHERE q.id=$1 AND $2::uuid IS NOT NULL AND g.demo_workspace_id',pattern:'studio questions enforce member ownership',testFile:'test/studio-questions.test.ts'},

@@ -35,7 +35,10 @@ cannot verify unpublished studio capabilities.
 You can send a separate question inside Rally about a specific published
 session that fits your form choices. Review exactly what you share: your name,
 original note and private form answers are not attached, but details typed into
-the question may identify you. Sending requires explicit consent and no AI call.
+the question may identify you. Sending requires explicit consent. Manual entry needs no AI call. If you choose
+AI help, a separate disclosure explains that your entire saved note goes to
+Astropods with public studio options. You still review and separately consent
+before the studio receives the drafted question.
 
 The studio replies in its own words. Read every condition. Only after a positive
 answer and your explicit confirmation that it covers every essential need in

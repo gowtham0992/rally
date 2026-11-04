@@ -5,7 +5,7 @@ import {clarify,gatewayConfig} from './clarifier.ts';
 import {interpretationInput} from '../planning/interpretation.ts';
 import {draftStudioQuestion} from './studio-question.ts';
 const failureMetadata=z.object({
- stage:z.enum(['INPUT','CONFIGURATION','NETWORK','PROVIDER','RESPONSE','VALIDATION','WORKER_REQUEST','MODEL_RESULT']),
+ stage:z.enum(['INPUT','CONFIGURATION','NETWORK','PROVIDER','RESPONSE','VALIDATION','MODEL_REVIEW','WORKER_REQUEST','MODEL_RESULT']),
  httpStatus:z.number().int().min(100).max(599).optional(),
  validation:z.enum(['JSON','SCHEMA','EVIDENCE','QUESTION','OTHER']).optional()
 });
@@ -20,7 +20,7 @@ export function createAiWorker(options:{token:string;model?:typeof clarify;quest
  };
  return createServer(async(req,res)=>{
   const json=(status:number,value:unknown)=>{res.writeHead(status,{'Content-Type':'application/json','Cache-Control':'no-store','X-Content-Type-Options':'nosniff'});res.end(JSON.stringify(value));};
-  if(req.method==='GET'&&req.url==='/health'){json(200,{ready:true});return;}
+  if(req.method==='GET'&&req.url==='/health'){json(200,{ready:true,questionDraftVersion:1});return;}
   const credential=req.headers.authorization??'';
   if(credential.length>256||!timingSafeEqual(createHash('sha256').update(credential).digest(),expected)){json(403,{error:'FORBIDDEN'});return;}
   if(req.method!=='POST'||req.url!=='/interpret'){json(404,{error:'NOT_FOUND'});return;}
@@ -35,8 +35,9 @@ export function createAiWorker(options:{token:string;model?:typeof clarify;quest
    // identity, peers, tools or payment commands are accepted by this contract.
    interpretationInput(payload.input);
    if(payload.purpose==='QUESTION'){
-    const result=await (options.questionModel??draftStudioQuestion)(payload.input as Parameters<typeof draftStudioQuestion>[0]);
-    if(result.status==='NEEDS_REVIEW')diagnostic({stage:'MODEL_RESULT'});json(200,result);return;
+    let diagnosed=false;
+    const result=await (options.questionModel??draftStudioQuestion)(payload.input as Parameters<typeof draftStudioQuestion>[0],undefined,fetch,event=>{diagnosed=true;diagnostic(event);});
+    if(result.status==='NEEDS_REVIEW'&&!diagnosed)diagnostic({stage:'MODEL_RESULT'});json(200,result);return;
    }
    let diagnosed=false;
    const result=await (options.model??clarify)(payload.input,undefined,fetch,event=>{diagnosed=true;diagnostic(event);},payload.purpose==='DRAFT');

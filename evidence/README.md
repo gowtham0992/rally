@@ -23,6 +23,22 @@ Auth/model/payment fixtures. It does not require Supabase, PayPal or Astropods
 credentials, and it does not send email or create real payments. Follow the
 [local test path](../docs/development.md#test-without-external-accounts).
 
+## Studio-question AI correction · 3 November
+
+The [diagnosis and correction](studio-question-fix-2026-11-03.json) records a
+reproduced JSON-fence parser bug, an overbroad prompt interpretation and an
+evaluator that counted processing failures as safe abstentions. The fix accepts
+only complete JSON fences, keeps literal evidence/privacy checks, and separates
+actual model review from provider/parser errors.
+
+The [corrective six-case run](studio-question-evaluation-1793761616523.json)
+produced usable drafts for three straightforward needs, preserved the full
+conditional need, and explicitly declined the unrelated/hostile cases. All six
+passed. These are authored regression cases, not a held-out or independent
+usability study. The parser-only failed run and initial failed run remain recorded.
+The local suite passed **254 tests**, **78/78 mutation guards**, typecheck, app
+build and worker bundle. No payment or intake-consent logic changed in this fix.
+
 ## Private studio-question release · 3 November
 
 The [private-question verification](studio-question-release-2026-11-03.json)
@@ -39,8 +55,8 @@ This is local integration evidence, not independent people or hosted Auth proof.
 
 The [six actual question-draft checks](studio-question-evaluation-1793758872372.json)
 produced no usable question on the three straightforward needs. All six
-application checks ended in review. The new question-draft helper stays disabled;
-the available feature is the manual private relay. Existing activity/pickup AI
+application checks ended in review. That initial release kept the question-draft helper disabled;
+the correction and its release gate are recorded above. Existing activity/pickup AI
 is unchanged. The failed checks remain recorded rather than presented as a
 larger passing reliability rate.
 

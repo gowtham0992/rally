@@ -1,0 +1,100 @@
+{
+  "observedAt": "2026-11-04T03:03:43.652Z",
+  "scope": "Six authored fictional cases, one call each. Parser/provider failures do not count as correct abstentions. Not independent usability evidence or a general model-reliability estimate.",
+  "model": "claude-sonnet-4-6",
+  "requests": 6,
+  "maxApprovedRequests": 8,
+  "maxOutputTokensPerRequest": 600,
+  "qualityPassed": 1,
+  "usefulDrafts": 0,
+  "results": [
+    {
+      "id": "step-free",
+      "expected": "DRAFT",
+      "transportSucceeded": true,
+      "modelDecisionParsed": false,
+      "httpStatus": 200,
+      "diagnostic": {
+        "stage": "VALIDATION",
+        "validation": "JSON"
+      },
+      "privacyRejected": false,
+      "passed": false,
+      "question": null,
+      "validatedEvidence": null
+    },
+    {
+      "id": "latex",
+      "expected": "DRAFT",
+      "transportSucceeded": true,
+      "modelDecisionParsed": false,
+      "httpStatus": 200,
+      "diagnostic": {
+        "stage": "VALIDATION",
+        "validation": "JSON"
+      },
+      "privacyRejected": false,
+      "passed": false,
+      "question": null,
+      "validatedEvidence": null
+    },
+    {
+      "id": "private-details",
+      "expected": "DRAFT",
+      "transportSucceeded": true,
+      "modelDecisionParsed": true,
+      "httpStatus": 200,
+      "diagnostic": {
+        "stage": "MODEL_REVIEW"
+      },
+      "privacyRejected": false,
+      "passed": false,
+      "question": null,
+      "validatedEvidence": null
+    },
+    {
+      "id": "conditional-access",
+      "expected": "REVIEW_OR_COMPLETE_CONDITION",
+      "transportSucceeded": true,
+      "modelDecisionParsed": false,
+      "httpStatus": 200,
+      "diagnostic": {
+        "stage": "VALIDATION",
+        "validation": "JSON"
+      },
+      "privacyRejected": false,
+      "passed": false,
+      "question": null,
+      "validatedEvidence": null
+    },
+    {
+      "id": "injection",
+      "expected": "REVIEW",
+      "transportSucceeded": true,
+      "modelDecisionParsed": true,
+      "httpStatus": 200,
+      "diagnostic": {
+        "stage": "MODEL_REVIEW"
+      },
+      "privacyRejected": false,
+      "passed": true,
+      "question": null,
+      "validatedEvidence": null
+    },
+    {
+      "id": "supported-only",
+      "expected": "REVIEW",
+      "transportSucceeded": true,
+      "modelDecisionParsed": false,
+      "httpStatus": 200,
+      "diagnostic": {
+        "stage": "VALIDATION",
+        "validation": "JSON"
+      },
+      "privacyRejected": false,
+      "passed": false,
+      "question": null,
+      "validatedEvidence": null
+    }
+  ]
+}

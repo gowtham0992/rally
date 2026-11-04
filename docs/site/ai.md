@@ -25,8 +25,11 @@ the model understood every essential need in a message; your review matters.
 
 AI cannot verify access, materials or other studio capabilities. For an
 essential need the form cannot cover, you can ask the studio privately about a
-specific session. Write the question yourself, review what it shares, and
-explicitly agree to send it. Your original private note is not attached.
+specific session. Write the question yourself, or explicitly ask AI to draft it
+from your saved note. The helper quotes a need for the studio to answer; it does
+not promise access, materials or safety. Review and edit the question, then
+separately agree to send it. Your original private note is not attached to the
+studio question.
 
 The studio answers in its own words. You read any conditions and decide whether
 the answer covers every essential need in your note for that exact session.
@@ -41,10 +44,11 @@ submitted text and public studio facts, without peers' answers or saved private
 budget and availability fields. Studio contact details are excluded.
 
 Activity and pickup drafts use a fixed vocabulary, exact source quotations and
-at most one clarification. A private studio question is written by you and
-separately shared with the studio; this does not require an AI call. Neither a
-grounded AI draft nor a private exchange guarantees a correct interpretation
-or anonymous free text. Review every word before confirming or sharing it.
+at most one clarification. Studio-question drafts select a literal need from
+your note and reject known roster names, obvious contact details and financial
+wording. Neither a grounded AI draft nor a private exchange guarantees a correct
+interpretation or anonymous free text. Review every word before confirming or
+sharing it. Manual question entry remains available without an AI call.
 
 AI cannot supply money, dates, a nominee's agreement, a reservation or a payment
 command. A deterministic planner checks confirmed choices and session-bound

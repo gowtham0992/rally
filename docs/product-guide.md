@@ -58,8 +58,9 @@ Keep any essential access, allergy or other unsupported need in your note.
 Rally cannot verify capabilities the studio has not published.
 
 For a published session that fits your form choices, you can privately ask the
-studio inside Rally. Write the question yourself, review the text and explicitly
-consent to send it. This does not require an AI call.
+studio inside Rally. Write the question yourself or explicitly request an AI
+draft from your saved note. Review the quoted need and edit the question, then
+separately consent to send it. Manual entry remains available without AI.
 Your name, note and private form answers are not attached; avoid identifying
 details in the question itself.
 
