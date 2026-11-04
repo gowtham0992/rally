@@ -23,6 +23,20 @@ Auth/model/payment fixtures. It does not require Supabase, PayPal or Astropods
 credentials, and it does not send email or create real payments. Follow the
 [local test path](../docs/development.md#test-without-external-accounts).
 
+## Studio reply outcomes · 3 November
+
+The [minimal reply correction](studio-reply-outcomes-2026-11-03.json) removes the
+unusable new “Needs discussion” outcome from both the studio form and server
+validation. Historical discussion replies stay readable and unresolved. New
+questions explicitly say the studio sees them only when it next opens Rally;
+there is no offline notification. Manual and AI-drafted questions share the same
+application privacy checks.
+
+The full suite passed **256 tests under Node 22.23.4**, **79/79 mutation guards**,
+typecheck and a production build with disposable PostgreSQL 18. No migration,
+model call, email, account, hosted workspace claim or PayPal operation was needed.
+This is a minimal correction, not independent usability evidence.
+
 ## Studio-question AI correction · 3 November
 
 The [diagnosis and correction](studio-question-fix-2026-11-03.json) records a

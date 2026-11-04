@@ -1,0 +1,45 @@
+{
+  "observedAt": "2026-11-04T04:15:08.487057+00:00",
+  "scope": "Minimal studio-reply outcome correction; not a claim that every usability finding is resolved.",
+  "behavior": {
+    "newReplies": "CAN_ACCOMMODATE or CANNOT_ACCOMMODATE only",
+    "legacyDiscussionReplies": "Readable and unresolved; no rewrite of historical data.",
+    "offlineNotifications": "None; the friend is told the studio sees a question only when it next opens Rally.",
+    "aiClaim": "Application privacy checks apply to both manual and AI-drafted questions; no anonymity guarantee."
+  },
+  "verification": {
+    "runtime": "Node 22.23.4",
+    "database": "Disposable PostgreSQL 18 in UTC",
+    "testsPassed": 256,
+    "testsFailed": 0,
+    "guardMutationsCaught": 79,
+    "guardMutationsTotal": 79,
+    "typecheck": "passed",
+    "productionBuild": "passed",
+    "regression": "Unsupported discussion reply was accepted before the fix; the rejection test then passed.",
+    "legacyReplyReadAndNoAcceptance": "passed"
+  },
+  "protections": {
+    "paymentEngineChanged": false,
+    "planningFiltersChanged": false,
+    "privacyFiltersChanged": false,
+    "storedAnswersOrConsentsRewritten": false,
+    "newMigrationRequired": false,
+    "newModelCalls": 0,
+    "hostedWorkspacesClaimed": 0,
+    "accountsCreated": 0,
+    "emailsSent": 0,
+    "paypalOperations": 0,
+    "newPaidPlans": 0
+  },
+  "packaging": {
+    "privateJudgeHandoff": "Optional step added before the original Sam flow, preserving all other content.",
+    "devpost": "Factual paragraph prepared outside source control for the owner to paste. No Devpost edit performed.",
+    "video": "unchanged"
+  },
+  "limits": [
+    "No new hosted authenticated relay walkthrough or independent friend/studio observation.",
+    "The studio still receives no offline question notification.",
+    "This patch does not add threaded follow-up or change the existing question-per-revision rule."
+  ]
+}

@@ -24,7 +24,8 @@ Your original note and private form answers are not attached.
 
 The studio replies in its own words. Read every condition and continue only if
 the answer covers every essential need in your note for that exact session.
-Negative answers and requests for discussion stay unresolved. An answer does
+A reply that does not confirm the need leaves it unresolved. The studio sees
+questions only when it next opens Rally; no notification is sent. An answer does
 not reserve a place or approve a payment. [Privacy and consent](/docs/privacy)
 explains who can see the exchange.
 

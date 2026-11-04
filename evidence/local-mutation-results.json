@@ -2,6 +2,12 @@
   "mode": "local_database_and_simulated_provider",
   "results": [
     {
+      "mutation": "new studio replies reintroduce an unsupported discussion outcome",
+      "baselinePassed": true,
+      "caught": true,
+      "exitCode": 1
+    },
+    {
       "mutation": "question parser mistakes a complete JSON fence for model abstention",
       "baselinePassed": true,
       "caught": true,

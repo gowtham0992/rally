@@ -11,13 +11,19 @@ The studio must have a published catalog and an operator account in Rally.
    attached. Remove names, contact details, spending limits and unrelated needs
    from the question itself. Free text can still identify you; review it carefully.
 4. Explicitly agree to share that exact question and session with the studio.
-5. Return to your plan to read the studio's exact reply. Rally sends no email
-   notification. The studio answers in its Guest questions section.
+5. The studio sees the question only when it next opens Rally; no notification
+   is sent. Return to your plan to read its exact reply. The studio answers in
+   its Guest questions section.
 6. If the studio confirms it can accommodate the need, read every condition.
    Continue only after confirming the reply covers every essential need in your
    saved note for that exact session.
 
-A negative answer or a request for discussion leaves the need unresolved. Rally
+The studio can confirm the need for the exact session or say it cannot confirm
+it, with an explanation. A negative answer leaves the need unresolved. New
+replies do not offer “Needs discussion”: Rally has no in-app follow-up thread.
+Older discussion replies stay readable and unresolved. To ask a fresh question,
+review and save your details first; this creates a new preference revision.
+No earlier answer or consent is silently reused. Rally
 does not classify a conditional reply as a simple yes or verify access, medical
 safety, materials or other studio capabilities. The studio supplies its answer;
 the friend decides whether it covers their needs.

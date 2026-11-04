@@ -53,10 +53,23 @@ test('relay requires fresh consent and rejects identity, private amounts and uns
  for(const question of ['Riley needs step-free access.','Can Jordan help?','My limit is $60. Can you help?','Email me at me@example.invalid.','Call 555-123-4567.'])await assert.rejects(ask(x,{question}),/QUESTION_PRIVACY/);
  await assert.rejects(ask(x,{booking:'CONFIRMED'}));await assert.rejects(ask(x,{offeringId:'invented'}),/NO_VALID_CANDIDATE/);
 });
+test('new studio replies cannot offer discussion without an in-app continuation',async()=>{
+ const x=await setup(),q=await ask(x);
+ await assert.rejects(answer(x,q.id,'NEEDS_DISCUSSION','We need to discuss access.'),e=>e instanceof Error&&e.name==='ZodError');
+ const own=await questions.own(x.actors[3],x.group.groupId);assert.equal(own.question?.decision,null);assert.equal(own.question?.reply,null);
+ assert.equal((await intake.participantContext(x.actors[3],x.group.groupId)).preference!.extraRequirement,'MERCHANT_REVIEW_REQUIRED');
+});
 test('answers remain verbatim and negative or conditional replies cannot clear a need',async()=>{
- const x=await setup(),q=await ask(x);await answer(x,q.id,'NEEDS_DISCUSSION','Yes, but only on Fridays; Thursday cannot be accommodated.');
+ const x=await setup(),q=await ask(x);await answer(x,q.id,'CANNOT_ACCOMMODATE','Yes, but only on Fridays; Thursday cannot be accommodated.');
  assert.equal((await questions.own(x.actors[3],x.group.groupId)).question?.reply,'Yes, but only on Fridays; Thursday cannot be accommodated.');await assert.rejects(accept(x,q.id),/QUESTION_UNRESOLVED/);
  assert.equal((await intake.participantContext(x.actors[3],x.group.groupId)).preference!.extraRequirement,'MERCHANT_REVIEW_REQUIRED');await assert.rejects(answer(x,q.id),/STALE_QUESTION/);
+});
+test('historical discussion replies stay readable and unresolved without rewriting consent or history',async()=>{
+ const x=await setup(),q=await ask(x),reply='We need to discuss access before confirming.';
+ await pool.query("UPDATE studio_questions SET decision='NEEDS_DISCUSSION',reply=$2,answered_at=clock_timestamp() WHERE id=$1",[q.id,reply]);
+ const own=await questions.own(x.actors[3],x.group.groupId);assert.equal(own.question?.decision,'NEEDS_DISCUSSION');assert.equal(own.question?.reply,reply);await assert.rejects(accept(x,q.id),/QUESTION_UNRESOLVED/);
+ assert.equal((await intake.participantContext(x.actors[3],x.group.groupId)).preference!.extraRequirement,'MERCHANT_REVIEW_REQUIRED');
+ await assert.rejects(answer(x,q.id),/STALE_QUESTION/);
 });
 test('concurrent asks and retried decisions have one effect and cannot replace a sent question',async()=>{
  const x=await setup(),c=await intake.participantContext(x.actors[3],x.group.groupId),p={commandId:randomUUID(),groupId:c.groupId,sourcePreferenceId:c.preference!.revisionId,offeringId:'handbuild',slotId:'thu-evening',question:'Can you provide step-free access?',disclosureAgreed:true};

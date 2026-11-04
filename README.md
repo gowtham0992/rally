@@ -46,8 +46,9 @@ remains available throughout. [AI behavior and evaluation](docs/ai-evaluation.md
 For an essential need the form cannot cover, a friend can privately ask the
 studio about a specific session. The friend writes a question, reviews exactly
 what it shares and explicitly consents to send it. Optional AI help drafts a
-question from a quoted need, leaving unrelated names and financial details out
-for the friend to review. The
+question from a quoted need. Rally applies the same checks for known names,
+contact details and financial wording to both manual and AI-drafted questions;
+these checks do not guarantee anonymity. The friend reviews what to share. The
 studio replies in its own words, and the friend reviews any conditions before
 continuing. Answers apply only to that exact session. AI does not verify studio
 capabilities or decide whether an answer is sufficient.

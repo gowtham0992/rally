@@ -33,7 +33,8 @@ studio question.
 
 The studio answers in its own words. You read any conditions and decide whether
 the answer covers every essential need in your note for that exact session.
-Negative answers and requests for discussion stay unresolved. AI does not
+An unconfirmed reply leaves the need unresolved. Older discussion replies have
+no in-app follow-up thread. AI does not
 interpret the reply, reserve a place or approve a payment.
 [Privacy and personal needs](/docs/privacy) explains the sharing boundaries.
 
@@ -44,9 +45,9 @@ submitted text and public studio facts, without peers' answers or saved private
 budget and availability fields. Studio contact details are excluded.
 
 Activity and pickup drafts use a fixed vocabulary, exact source quotations and
-at most one clarification. Studio-question drafts select a literal need from
-your note and reject known roster names, obvious contact details and financial
-wording. Neither a grounded AI draft nor a private exchange guarantees a correct
+at most one clarification. AI selects a literal need for a studio-question draft. Rally then checks the
+question for known roster names, obvious contact details and financial wording;
+the same checks apply to manual questions. Neither a grounded AI draft nor a private exchange guarantees a correct
 interpretation or anonymous free text. Review every word before confirming or
 sharing it. Manual question entry remains available without an AI call.
 

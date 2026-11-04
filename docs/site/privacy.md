@@ -42,8 +42,9 @@ before the studio receives the drafted question.
 
 The studio replies in its own words. Read every condition. Only after a positive
 answer and your explicit confirmation that it covers every essential need in
-your saved note can that exact session enter group planning. Negative replies
-and requests for discussion remain unresolved. The studio reviews the accepted
+your saved note can that exact session enter group planning. A reply that does not confirm the need remains unresolved. Older discussion
+replies have no in-app follow-up thread; review and save your details to ask a
+fresh question. The studio reviews the accepted
 arrangement again before issuing an offer. Rally does not verify capabilities
 or use AI to interpret the reply. Changing saved details requires fresh review.
 

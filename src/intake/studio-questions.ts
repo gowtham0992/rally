@@ -10,7 +10,9 @@ import {dailyAiCalls} from './ai-allowance.ts';
 import {draftStudioQuestion,validateQuestionEvidence,questionFromEvidence,type QuestionInput,type QuestionDraft} from '../ai/studio-question.ts';
 const uuid=z.uuid(),key=z.string().min(1).max(100),command=z.strictObject({commandId:uuid,groupId:uuid,sourcePreferenceId:uuid});
 const askSchema=command.extend({offeringId:key,slotId:key,question:z.string().trim().min(5).max(600),disclosureAgreed:z.literal(true)});
-const answerSchema=z.strictObject({commandId:uuid,questionId:uuid,decision:z.enum(['CAN_ACCOMMODATE','CANNOT_ACCOMMODATE','NEEDS_DISCUSSION']),reply:z.string().trim().min(1).max(1000),sessionConfirmed:z.literal(true)});
+// Historical discussion replies remain readable, but new replies must give a
+// usable yes/no decision until an in-app follow-up channel exists.
+const answerSchema=z.strictObject({commandId:uuid,questionId:uuid,decision:z.enum(['CAN_ACCOMMODATE','CANNOT_ACCOMMODATE']),reply:z.string().trim().min(1).max(1000),sessionConfirmed:z.literal(true)});
 const acceptSchema=command.extend({questionId:uuid,confirmsAllEssentials:z.literal(true),replyReviewed:z.literal(true)});
 const draftSchema=command.extend({offeringId:key,slotId:key,modelProcessingAgreed:z.literal(true)});
 export type StudioQuestion={id:string;question:string;decision:'CAN_ACCOMMODATE'|'CANNOT_ACCOMMODATE'|'NEEDS_DISCUSSION'|null;reply:string|null;accepted:boolean;activity:string;startAt:string;timezone:string;offeringId:string;slotId:string};

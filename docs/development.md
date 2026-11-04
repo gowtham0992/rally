@@ -9,9 +9,10 @@ separate from the hosted application.
 
 ## Requirements
 
-- Node.js 22 or later and npm. The recorded local suite used Node 25.6.0; the
-  hosted runtime is pinned in `render.yaml`. The minimum version has not been
-  independently exercised by the recorded local suite.
+- Node.js 22 or later and npm. Earlier records used Node 25.6.0; the minimal
+  studio-reply correction passed the full suite under Node 22.23.4. The hosted
+  runtime is pinned in `render.yaml`. Other minor versions are not independently
+  covered by that run.
 - PostgreSQL 17 for local integration tests, with schema-creation privileges.
   Docker is one way to provide it; an existing disposable instance also works.
 - OpenSSL for signature fixtures.

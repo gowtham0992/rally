@@ -1,6 +1,7 @@
 import { readFile,writeFile,mkdir } from 'node:fs/promises';
 import { spawnSync } from 'node:child_process';
 const mutations:{name:string;file:string;from:string;to:string;pattern:string;testFile?:string}[] = [
+  {name:'new studio replies reintroduce an unsupported discussion outcome',file:'src/intake/studio-questions.ts',from:"decision:z.enum(['CAN_ACCOMMODATE','CANNOT_ACCOMMODATE'])",to:"decision:z.enum(['CAN_ACCOMMODATE','CANNOT_ACCOMMODATE','NEEDS_DISCUSSION'])",pattern:'new studio replies cannot offer discussion',testFile:'test/studio-questions.test.ts'},
   {name:'question parser mistakes a complete JSON fence for model abstention',file:'src/ai/studio-question.ts',from:'JSON.parse(fenced?fenced[1]:content)',to:'JSON.parse(content)',pattern:'question drafts accept a complete JSON fence',testFile:'test/studio-question-ai.test.ts'},
   {name:'question evaluation counts processing failures as safe abstention',file:'src/ai/studio-question-evaluation.ts',from:"test.expected!=='DRAFT'&&result.diagnostic?.stage==='MODEL_REVIEW'",to:"test.expected!=='DRAFT'",pattern:'diagnostics distinguish an explicit model review',testFile:'test/studio-question-ai.test.ts'},
   {name:'unvalidated question AI enabled by a direct request',file:'src/intake/studio-questions.ts',from:'if(!this.aiDraftEnabled)',to:'if(false)',pattern:'new AI drafting is off by default',testFile:'test/studio-questions.test.ts'},
