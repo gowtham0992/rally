@@ -57,16 +57,28 @@ approves changed details.
 Keep any essential access, allergy or other unsupported need in your note.
 Rally cannot verify capabilities the studio has not published.
 
-When the catalog includes a studio contact, the note-review panel provides it.
+For a published session that fits your form choices, you can privately ask the
+studio inside Rally. Write the question yourself, review the text and explicitly
+consent to send it. This does not require an AI call.
+Your name, note and private form answers are not attached; avoid identifying
+details in the question itself.
+
+Return here for the studio's reply. Read every condition. A positive answer does
+not clear the need until you explicitly confirm it covers every essential need
+in your note for the exact session shown. A different day needs a fresh exchange.
+Negative or discussion answers stay unresolved. The studio sees accepted
+arrangements during booking review. [Studio questions](studio-questions.md).
+
+When the catalog includes an external studio contact, the note-review panel also provides it.
 After you actually confirm every need directly, you can record your confirmation
 and consent to a generic notice for the studio. The notice does not attach your
 name or note, and Rally labels the arrangements as unverified. The studio must
 include them in its review. Editing your saved details requires fresh review.
 
-If no contact is published, Rally cannot record a direct confirmation and your
-need remains unresolved. The current hosted fictional studio has no published
-contact. Do not remove an essential need or claim the form covers it merely to
-continue.
+An external confirmation requires a published contact; an in-app question needs
+a configured studio operator and published catalog. If neither route is available,
+or the studio cannot accommodate the need, it remains unresolved. Do not remove
+an essential need or claim the form covers it merely to continue.
 
 ## Review the studio's offer
 

@@ -1,7 +1,7 @@
 import {z} from 'zod';
 import {interpretationInput,interpretationSchema,validateInterpretation} from '../planning/interpretation.ts';
 export type Clarification = {status:'PROPOSAL';proposal:ReturnType<typeof validateInterpretation>} | {status:'NEEDS_REVIEW'};
-type GatewayConfig={url:string;key:string;model:string};
+export type GatewayConfig={url:string;key:string;model:string};
 const contract=`Return only a JSON object with this exact shape:
 {"schemaVersion":1,"preferenceRevisionId":"the supplied UUID","interpretations":[{"requirementKey":"COLLECTION","proposedValue":"SELF_LATER","sourceStart":0,"sourceEnd":18,"sourceSpan":"exact quoted text","certainty":"explicit"}],"question":null}.
 Allowed keys and values: TECHNIQUE=[ANY,WHEEL,HANDBUILD,DECORATE]; OUTCOME=[ANY,FORM_OWN_CUP,DECORATE_EXISTING]; COLLECTION=[SAME_DAY_REQUIRED,SELF_LATER,NOMINEE_LATER]; TRAVEL=[CANNOT_ATTEND,COLLECTION_ONLY,OTHER]; EXTRA=[MERCHANT_REVIEW_REQUIRED]. Cite exact JavaScript UTF-16 substring offsets, with an exclusive end. Never invent evidence. Up to 8 interpretations.
@@ -48,7 +48,7 @@ function groundedJSON(content:string,text:string){
  }
  return parsed;
 }
-async function boundedBody(response:Response){
+export async function boundedBody(response:Response){
  const reader=response.body?.getReader();if(!reader)throw new Error('EMPTY_RESPONSE');
  let length=0;const chunks:Uint8Array[]=[];
  try {while(true){const {done,value}=await reader.read();if(done)break;length+=value.byteLength;if(length>24576)throw new Error('RESPONSE_TOO_LARGE');chunks.push(value);}}

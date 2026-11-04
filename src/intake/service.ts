@@ -16,6 +16,7 @@ import {localFields} from '../planning/local-time.ts';
 import {withdrawalForGroup,participationForGroup} from './withdrawal.ts';
 import {planningPreference,studioContactAgreed} from '../planning/studio-contact.ts';
 import {storedReview} from '../planning/review-details.ts';
+import {studioQuestionStates} from './studio-question-state.ts';
 
 // Only server-authenticated identity may construct this input. Request bodies must
 // never supply actorId/verified. Managed Auth route binding remains a separate gate.
@@ -100,7 +101,7 @@ export class IntakeService {
   }
   if(p.preference.nomineeMemberId){const nominee=(await c.query("SELECT id,admitted FROM planning_members n WHERE group_id=$1 AND id=$2 AND NOT coalesce((to_jsonb(n)->>'excluded')::boolean,false)",[g.id,p.preference.nomineeMemberId])).rows[0];if(!nominee||nominee.id===m.id||(g.state!=='COLLECTING'&&!nominee.admitted))throw new IntakeError('INVALID_NOMINEE');}
   const preferenceId=randomUUID(),confirmed={...p.preference,memberId:m.id,revisionId:preferenceId};
-  let wordingBound=p.optionalText===m.optional_text&&m.wording_bound&&!m.wording_bound.studioContact&&respectsMeaning(confirmed,m.wording_bound as MeaningBound)?m.wording_bound:null;
+  let wordingBound=p.optionalText===m.optional_text&&m.wording_bound&&!m.wording_bound.studioContact&&!m.wording_bound.studioQuestion&&respectsMeaning(confirmed,m.wording_bound as MeaningBound)?m.wording_bound:null;
   if(p.optionalText?.trim())confirmed.extraRequirement=wordingBound?'NONE':'MERCHANT_REVIEW_REQUIRED';
   if(p.studioNoticeAgreed&&!p.studioContactConfirmed)throw new IntakeError('COMMAND_CONFLICT');
   if([p.messageDraft,p.declaresNoAdditionalMustHaves,p.studioContactConfirmed].filter(Boolean).length>1)throw new IntakeError('COMMAND_CONFLICT');
@@ -156,7 +157,7 @@ export class IntakeService {
    memberId:own.id,displayName:own.display_name,preference:!own.excluded&&own.confirmed?ownPreference:null,optionalText:own.excluded?null:own.optional_text??null,wordingReviewed:!own.excluded&&Boolean(own.wording_bound)&&ownPreference?.extraRequirement!=='MERCHANT_REVIEW_REQUIRED',wordingBound:own.excluded?null:(own.wording_bound??null) as MeaningBound|null,privateTextExpired:Boolean(own.private_text_expired),
    catalog:catalogSchema.parse(g.catalog),members,candidate:own.excluded?null:g.candidate,studioReviewPending:!own.excluded&&g.state==='MERCHANT_REVIEW',requestedSession:!own.excluded&&g.state==='MERCHANT_REVIEW'?answer?.session??null:null,
    hasUnfinishedDraft:Boolean(draft),studioContactConfirmedByYou:!own.excluded&&Boolean(ownPreference&&studioContactAgreed(ownPreference,own.wording_bound,catalogSchema.parse(g.catalog))),
-   noteReviewReason:savedReview as 'UNSUPPORTED'|'CONFLICT'|'UNAVAILABLE'|null,
+   noteReviewReason:savedReview as 'UNSUPPORTED'|'CONFLICT'|'UNAVAILABLE'|null,studioQuestionState:own.excluded?null:(await studioQuestionStates(c,[own.id])).get(own.id)??null,
    withdrawal:withdrawal&&(ownWithdrawal||g.organizer_id===actor.userId)?{offerId:withdrawal.offerId,displayName:withdrawal.displayName,isYou:ownWithdrawal,coming:withdrawal.coming}:null,
    offerSummary:!own.excluded&&issued?{amountMinor:Number(issued.amount),deadline:issued.deadline as string,cleanup:issued.cleanup as string,noPaymentActivity:issued.no_payment_activity as boolean}:null,
    previousOfferId:own.excluded?ownEarlierOffer:(await this.previousOffers(c,[groupId]))[0]?.offerId??null,offerId:own.excluded?null:issued?.approved_offer_id??null,bookingState:own.excluded?null:issued?.booking_state??null,studioDecline:own.excluded?null:answer?.decline??null,studioReviewNeedsRefresh:!own.excluded&&g.state==='CLOSED'&&answer?.state==='PENDING',collectionRequests:own.excluded?[]:await this.collectionProjection(c,actor,groupId),
@@ -286,15 +287,16 @@ export class IntakeService {
    }
    const reviewed=plans.filter(p=>p.studioDeclined||p.studioReviewNeedsRefresh||p.state==='MERCHANT_REVIEW').map(p=>p.groupId);
    if(reviewed.length){const answers=await this.studioAnswers(c,reviewed);for(const plan of plans){const answer=answers.find(a=>a.groupId===plan.groupId);plan.studioDeclined=Boolean(answer?.decline);plan.studioReviewNeedsRefresh=plan.state==='CLOSED'&&answer?.state==='PENDING';if(plan.state==='MERCHANT_REVIEW'&&answer?.session)Object.assign(plan,{activity:answer.session.activity,startAt:answer.session.startAt,timezone:answer.session.timezone});}}
+   const questionStates=await studioQuestionStates(c,plans.filter(p=>!p.excluded).map(p=>p._member_id));
    for(const plan of plans){
     const cat=catalogSchema.parse(plan._catalog),pref=plan._preference?planningPreference(plan._preference,plan._bound,cat):null,requests=requestsByGroup.get(plan.groupId)??[];
     const progress=await this.memberProgress(c,plan.groupId,plan.state==='COLLECTING'),withdrawal=await withdrawalForGroup(c,plan.groupId);
-    plan.ownNoteNeedsReview=plan.ownNoteNeedsReview||Boolean(plan._bound?.studioContact&&pref?.extraRequirement==='MERCHANT_REVIEW_REQUIRED');
+    plan.ownNoteNeedsReview=plan.ownNoteNeedsReview||Boolean((plan._bound?.studioContact||plan._bound?.studioQuestion)&&pref?.extraRequirement==='MERCHANT_REVIEW_REQUIRED');
     plan.readyCount=progress.filter(m=>!m.excluded&&m.stepStatus==='READY').length;
     const draftsPresent=(await c.query("SELECT to_regclass('intake_message_drafts') IS NOT NULL AS present")).rows[0].present;
     const draftPending=draftsPresent&&!plan.excluded&&Boolean((await c.query("SELECT 1 FROM intake_message_drafts WHERE member_id=$1 AND source_preference_id IS NOT DISTINCT FROM $2 AND expires_at>clock_timestamp() AND status IN ('RESERVED','DISPATCHED','READY','REVIEW') LIMIT 1",[plan._member_id,pref?.revisionId??null])).rowCount);
     const owner=requests.find(r=>r.role==='OWNER'),ask=pref?.collection==='NOMINEE_LATER'&&(!owner||owner.revoked||!owner.ownerAgreed);
-    plan.nextStep=nextStep({state:plan.state,excluded:plan.excluded,isOrganizer:plan.isOrganizer,ownReady:plan.ownReady,noteNeedsReview:plan.ownNoteNeedsReview,
+    plan.nextStep=nextStep({state:plan.state,excluded:plan.excluded,isOrganizer:plan.isOrganizer,ownReady:plan.ownReady,noteNeedsReview:plan.ownNoteNeedsReview,studioQuestionState:questionStates.get(plan._member_id),
      pickupRequesterName:requests.find(r=>r.role==='NOMINEE'&&!r.revoked&&!r.nomineeAgreed)?.ownerName,pickupAnswer:requests.some(r=>r.role==='NOMINEE'&&!r.revoked&&!r.nomineeAgreed),pickupAsk:Boolean(ask),pickupWaiting:Boolean(owner&&!owner.revoked&&owner.ownerAgreed&&!owner.nomineeAgreed),
      ownChoicesNeedReview:Boolean(pref&&privateFeedback(cat,{...pref,extraRequirement:'NONE'},plan.targetSize,false)),draftPending,participationNeedsConfirmation:Boolean(withdrawal&&withdrawal.memberId===plan._member_id&&withdrawal.coming!==true),memberCount:plan.members.length,readyCount:plan.readyCount,allowedSizes:publishedGroupSizes(cat),
      candidateState:plan._candidate_state,studioDeclined:plan.studioDeclined,studioReviewNeedsRefresh:plan.studioReviewNeedsRefresh,offerId:plan.offerId,bookingState:plan.bookingState,noPaymentActivity:plan.noPaymentActivity});

@@ -80,8 +80,13 @@ credits. Source reproduction does not require provisioning a hosted agent;
 deployment and actual inference depend on the operator's account and allowance.
 Check those separately before dispatching any model evaluation.
 
-The worker accepts only the closed interpretation contract and returns a
-proposal or review result. Its diagnostic logs contain bounded failure
+The worker accepts `DRAFT` and `CLARIFICATION` purposes for the closed
+interpretation contract, and `QUESTION` for a bounded quote used in an editable
+studio question. All three require the same bearer token. Question inference is
+limited to 600 output tokens, quotes the submitted note and cannot answer the
+question, verify a studio capability or send anything to the studio. It returns
+an evidence draft or review result; the application revalidates the quote and
+checks known names, contact and financial text before presenting the draft. Its diagnostic logs contain bounded failure
 categories rather than user messages, credentials or raw model responses.
 [AI behavior and evaluation](ai-evaluation.md) describes source grounding,
 confirmation, privacy and evaluation limits.

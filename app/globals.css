@@ -65,3 +65,12 @@
 .message-first>p{font-size:14px;line-height:1.6}.message-first>label{margin-top:20px}.message-first .field-help{font-size:12px}.message-first textarea{min-height:124px}.message-first fieldset{margin-top:24px}.message-first legend{line-height:1.5}.message-summary{margin:0 0 24px}.message-summary summary{min-height:44px;cursor:pointer;font-size:13px;font-weight:550}.message-summary summary span{font-size:11px;color:var(--muted);font-weight:400;margin-left:8px}.message-summary>.text-button{font-size:12px}.draft-evidence{list-style:none;padding:0;margin:12px 0}.draft-evidence li{padding:12px 0;border-top:1px solid var(--line);font-size:13px;line-height:1.5;overflow-wrap:anywhere}.draft-evidence q{color:var(--muted)}.message-summary .confirm{margin-top:16px}
 
 .footer-links{display:flex;gap:24px;flex-wrap:wrap}
+
+/* Private questions use the same quiet sections and explicit consent as planning. */
+.studio-question,.guest-question{margin:24px 0;padding:24px 0;border-top:1px solid var(--line);min-width:0}
+.studio-question h3,.guest-question h3{font-size:20px;line-height:1.3;margin:0 0 12px}
+.studio-question textarea,.guest-question textarea{width:100%;resize:vertical;min-height:96px}
+.studio-question select,.guest-question select{width:100%;max-width:100%}
+.studio-question .choice,.guest-question .choice{font-size:13px;align-items:flex-start}
+.studio-question .button,.guest-question .button{justify-content:center}
+.question-ai{margin:20px 0}.question-ai summary{min-height:44px;cursor:pointer;color:var(--green);font-size:13px}

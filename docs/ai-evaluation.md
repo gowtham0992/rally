@@ -39,7 +39,8 @@ Conditional activity wishes are not hard requirements. Explicit attendance
 followed by a departure before pickup is different from inability to attend.
 Genuinely ambiguous departure can require a question. Unsupported access or
 materials needs remain unresolved unless the form honestly represents them or
-the person completes the documented direct-studio confirmation path. No model
+the person reviews and accepts a suitable studio answer for an exact session,
+or completes the documented external-contact confirmation path. No model
 output verifies an unpublished studio capability.
 
 See the [product guide](product-guide.md#handle-a-need-outside-the-form) for that

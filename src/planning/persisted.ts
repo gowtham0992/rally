@@ -1,7 +1,7 @@
 import type {PoolClient} from 'pg';
 import {catalogSchema,preferenceSchema,planGroup,type Consent} from './domain.ts';
 import {fingerprint} from '../payments/types.ts';
-import {planningPreference,studioContactAgreed} from './studio-contact.ts';
+import {planningPreference,studioContactAgreed,studioQuestionAgreed} from './studio-contact.ts';
 // Caller must hold the planning-group lock for writes/revalidation. None of these
 // private rows may be serialized to a participant or merchant response.
 export async function confirmedPlan(client:PoolClient,groupId:string,catalogValue:unknown){
@@ -16,9 +16,14 @@ export async function confirmedPlan(client:PoolClient,groupId:string,catalogValu
   WHERE m.group_id=$1 AND m.admitted ORDER BY cs.preference_id`,[groupId])).rows;
  const consents:Consent[]=consentRows.map(r=>({ownerMemberId:r.owner_member_id,nomineeMemberId:r.nominee_member_id,preferenceRevisionId:r.preference_id,
   ownerAgreed:r.owner_agreed,nomineeAgreed:r.nominee_agreed,disclosureAgreed:r.disclosure_agreed,revoked:r.revoked}));
- const result=planGroup(catalog,preferences,consents);
+ let result=planGroup(catalog,preferences,consents);
+ const scopes=rows.filter((r,i)=>studioQuestionAgreed(preferences[i],r.wording_bound,catalog)).map(r=>r.wording_bound.studioQuestion);
+ if(result.state==='CANDIDATE_READY'&&scopes.length){
+  const candidates=result.candidates.filter(c=>scopes.every(q=>c.offeringId===q.offeringId&&c.slotId===q.slotId));
+  result=candidates.length?{state:'CANDIDATE_READY',candidates}:{state:'INFEASIBLE',message:'No studio option meets this group’s requirements.'};
+ }
  // IDs and consent states bind source revisions. Budget values/text are excluded
  // from both this digest and the immutable public offer snapshot.
  const sourceHash=fingerprint({catalog,roster:rows.map(r=>({id:r.id,userId:r.user_id,displayName:r.display_name,preferenceId:r.preference_id})),consents});
- return {catalog,rows,preferences,consents,result,sourceHash,personalArrangements:preferences.some((p,i)=>studioContactAgreed(p,rows[i].wording_bound,catalog))};
+ return {catalog,rows,preferences,consents,result,sourceHash,personalArrangements:preferences.some((p,i)=>studioContactAgreed(p,rows[i].wording_bound,catalog)),studioQuestionIds:scopes.map(q=>q.questionId as string)};
 }

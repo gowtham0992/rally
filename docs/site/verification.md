@@ -32,12 +32,25 @@ payment providers. It does not establish real email delivery, actual provider
 behavior or independent human comprehension. A passing health check proves
 availability at that moment, not completion of a payment window.
 
+The November 3 private studio-question implementation passed 250 local tests,
+76 guard mutations and typecheck/build checks. Its local database was PostgreSQL
+18. A browser rehearsal used the actual components and simulated identity/model
+boundaries at desktop and phone width. That exercise did not use hosted Auth,
+claim a judge workspace or observe independent friends.
+
 ## Model evaluations retain their failures
 
 The newer optional-draft check passed five authored cases after an initial
 2-of-5 run. The earlier eight-case draft checkpoint and the original 24-case
 clarification suite, repeated three times, have different dates and contracts.
 Their results must not be combined into a larger current reliability rate.
+
+A separate six-call check of a new studio-question draft produced no usable
+question on three straightforward needs; all six application checks ended in
+review. That new helper is disabled. The manual private studio exchange works
+without an AI call, and the existing activity/pickup AI helper is unchanged.
+These failed checks do not establish the cause of abstention or general model
+reliability.
 
 The [earlier clarification report](/evidence/ai/index.html) includes its authored
 cases and evaluation method. A corrected fixture set is not proof of general

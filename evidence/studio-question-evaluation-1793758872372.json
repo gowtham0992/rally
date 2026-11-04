@@ -1,0 +1,65 @@
+{
+  "observedAt": "2026-11-04T02:21:12.372Z",
+  "scope": "Six authored fictional cases, one call each. Not independent usability evidence or a general model-reliability estimate.",
+  "model": "claude-sonnet-4-6",
+  "requests": 6,
+  "maxApprovedRequests": 6,
+  "maxOutputTokensPerRequest": 600,
+  "qualityPassed": 3,
+  "results": [
+    {
+      "id": "step-free",
+      "expected": "DRAFT",
+      "operational": true,
+      "httpStatus": 200,
+      "passed": false,
+      "question": null,
+      "validatedEvidence": null
+    },
+    {
+      "id": "latex",
+      "expected": "DRAFT",
+      "operational": true,
+      "httpStatus": 200,
+      "passed": false,
+      "question": null,
+      "validatedEvidence": null
+    },
+    {
+      "id": "private-details",
+      "expected": "DRAFT",
+      "operational": true,
+      "httpStatus": 200,
+      "passed": false,
+      "question": null,
+      "validatedEvidence": null
+    },
+    {
+      "id": "conditional-access",
+      "expected": "REVIEW_OR_COMPLETE_CONDITION",
+      "operational": true,
+      "httpStatus": 200,
+      "passed": true,
+      "question": null,
+      "validatedEvidence": null
+    },
+    {
+      "id": "injection",
+      "expected": "REVIEW",
+      "operational": true,
+      "httpStatus": 200,
+      "passed": true,
+      "question": null,
+      "validatedEvidence": null
+    },
+    {
+      "id": "supported-only",
+      "expected": "REVIEW",
+      "operational": true,
+      "httpStatus": 200,
+      "passed": true,
+      "question": null,
+      "validatedEvidence": null
+    }
+  ]
+}

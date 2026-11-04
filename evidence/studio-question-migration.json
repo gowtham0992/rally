@@ -1,0 +1,13 @@
+{
+  "observedAt": "2026-11-04T02:38:23.121Z",
+  "version": "017_studio_questions",
+  "databaseVersion": "17.11",
+  "applied": true,
+  "privateTableRls": true,
+  "browserAccess": false,
+  "runtimeAccess": true,
+  "existingCleanupJobPreserved": true,
+  "initialQuestionRows": 0,
+  "initialDraftRows": 0,
+  "oldPaymentOrPreferenceRowsUpdated": 0
+}

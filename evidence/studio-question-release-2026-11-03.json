@@ -1,0 +1,47 @@
+{
+  "observedAt": "2026-11-04T02:40:21.001118+00:00",
+  "release": "Private studio questions; manual relay first",
+  "localVerification": {
+    "testsPassed": 250,
+    "testsFailed": 0,
+    "guardMutationsCaught": 76,
+    "guardMutationsTotal": 76,
+    "typecheck": "passed",
+    "productionBuild": "passed",
+    "aiWorkerBundle": "passed",
+    "database": "Disposable PostgreSQL 18, UTC",
+    "schemaUpDownUp": "passed on empty isolated schema; populated down refused",
+    "browser": "Actual friend and studio components with disposable PostgreSQL, simulated identities/AI, desktop and 375x812 phone viewport; not hosted Auth or independent people"
+  },
+  "behavior": {
+    "explicitSharingAndAcceptance": true,
+    "onlyOwnerAndConfiguredStudioReadExchange": true,
+    "exactStudioCatalogOfferingSlotAndPreferenceBinding": true,
+    "editsRequireFreshReview": true,
+    "expiredTextHiddenAndPurged": true,
+    "newQuestionsCanBePausedWithoutRemovingPlanningGuards": true,
+    "paymentEngineChanged": false
+  },
+  "newQuestionAI": {
+    "enabledByDefault": false,
+    "approvedCalls": 6,
+    "actualCalls": 6,
+    "maxOutputTokensPerCall": 600,
+    "usefulDraftsOnThreeStraightforwardNeeds": 0,
+    "allApplicationChecksEndedInReview": true,
+    "report": "studio-question-evaluation-1793758872372.json",
+    "conclusion": "Keep new question drafting disabled. Manual entry remains available; existing activity/pickup AI unchanged. Raw provider responses were not retained, so the cause of abstention was not diagnosed."
+  },
+  "sourceAudit": {
+    "gitleaksFindings": 0,
+    "configuredSecretValueMatches": 0,
+    "privateEnvironmentFilesExcluded": true
+  },
+  "scopeLimits": [
+    "No new hosted workspaces or Auth accounts claimed or created.",
+    "No new emails or PayPal operations.",
+    "Local browser rehearsal used simulated identity/model boundaries, not an independent friend group.",
+    "Hosted authenticated relay use was not exercised; signed-out production checks are separate.",
+    "Do not restore a pre-relay planner after session-bound answers have been accepted. Keep guards and pause new questions or fix forward."
+  ]
+}

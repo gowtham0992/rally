@@ -70,7 +70,12 @@ generic studio notice. The studio sees that a guest reports personal
 arrangements, without a name or private note attached to the notice, and its
 existing delivery confirmation includes those arrangements. This remains a
 participant assertion, not a verified capability. With no published contact,
-that confirmation path stays unavailable and unsupported needs remain pending.
+that external confirmation path stays unavailable. Guests can instead ask a
+private in-app question when a studio operator and published catalog are
+configured. Answer Guest questions in `/studio`, stating any conditions for the
+exact session. The guest must review and accept a positive reply; accepted
+arrangements appear again during the normal studio review.
+[Studio questions](studio-questions.md).
 
 ## Investigate payment outcomes
 

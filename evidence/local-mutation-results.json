@@ -2,6 +2,54 @@
   "mode": "local_database_and_simulated_provider",
   "results": [
     {
+      "mutation": "unvalidated question AI enabled by a direct request",
+      "baselinePassed": true,
+      "caught": true,
+      "exitCode": 1
+    },
+    {
+      "mutation": "studio question answer exposed to another studio owner",
+      "baselinePassed": true,
+      "caught": true,
+      "exitCode": 1
+    },
+    {
+      "mutation": "studio question cursor accepts a foreign owner",
+      "baselinePassed": true,
+      "caught": true,
+      "exitCode": 1
+    },
+    {
+      "mutation": "studio question sent without sharing consent",
+      "baselinePassed": true,
+      "caught": true,
+      "exitCode": 1
+    },
+    {
+      "mutation": "studio question leaks a roster name",
+      "baselinePassed": true,
+      "caught": true,
+      "exitCode": 1
+    },
+    {
+      "mutation": "studio answer reused for a different session",
+      "baselinePassed": true,
+      "caught": true,
+      "exitCode": 1
+    },
+    {
+      "mutation": "studio answer accepts an edited preference",
+      "baselinePassed": true,
+      "caught": true,
+      "exitCode": 1
+    },
+    {
+      "mutation": "expired studio arrangement still makes friend ready",
+      "baselinePassed": true,
+      "caught": true,
+      "exitCode": 1
+    },
+    {
       "mutation": "legacy studio assertion treated as new disclosure consent",
       "baselinePassed": true,
       "caught": true,

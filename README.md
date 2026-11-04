@@ -43,6 +43,14 @@ the consenting person's submitted message and public studio facts. It cannot cho
 volunteer another friend, reserve a session or approve a payment. The form
 remains available throughout. [AI behavior and evaluation](docs/ai-evaluation.md).
 
+For an essential need the form cannot cover, a friend can privately ask the
+studio about a specific session. The friend writes a question, reviews exactly
+what it shares and explicitly consents to send it. The
+studio replies in its own words, and the friend reviews any conditions before
+continuing. Answers apply only to that exact session. AI does not verify studio
+capabilities or decide whether an answer is sufficient.
+[Private studio questions](docs/studio-questions.md).
+
 ## Separate payments, one booking decision
 
 Each payment goes to the studio's PayPal merchant account: a single configured

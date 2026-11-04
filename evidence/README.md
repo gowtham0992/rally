@@ -23,6 +23,27 @@ Auth/model/payment fixtures. It does not require Supabase, PayPal or Astropods
 credentials, and it does not send email or create real payments. Follow the
 [local test path](../docs/development.md#test-without-external-accounts).
 
+## Private studio-question release · 3 November
+
+The [private-question verification](studio-question-release-2026-11-03.json)
+records **250 passing local tests**, **76/76 caught mutation guards**, passing
+typecheck and both builds. Its database was disposable PostgreSQL **18** in UTC;
+this is separate from the PostgreSQL 17 source audit below. Empty migration
+up/down/up passed; removing populated question history was refused.
+
+The actual friend and studio components were rehearsed at desktop and phone
+width with local PostgreSQL and simulated identity/model boundaries. A friend
+sent a question, read the studio's exact reply and explicitly accepted its
+conditions; the organizer then saw everyone ready without seeing the exchange.
+This is local integration evidence, not independent people or hosted Auth proof.
+
+The [six actual question-draft checks](studio-question-evaluation-1793758872372.json)
+produced no usable question on the three straightforward needs. All six
+application checks ended in review. The new question-draft helper stays disabled;
+the available feature is the manual private relay. Existing activity/pickup AI
+is unchanged. The failed checks remain recorded rather than presented as a
+larger passing reliability rate.
+
 ## Repository verification
 
 The [2 November source verification](repository-readiness-2026-11-02.json)
