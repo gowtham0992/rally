@@ -23,6 +23,22 @@ Auth/model/payment fixtures. It does not require Supabase, PayPal or Astropods
 credentials, and it does not send email or create real payments. Follow the
 [local test path](../docs/development.md#test-without-external-accounts).
 
+## Studio-question recovery follow-up · 4 November
+
+The [three-issue correction](studio-question-recovery-2026-11-04.json) records
+**274 passing local tests** and **93/93 caught mutation guards**. Three new
+regressions failed against the preceding release: ordinary accessibility wording
+was rejected, a studio request errored after answer expiry, and fresh command IDs
+duplicated a pending draft. All three now pass, alongside identity, consent,
+expiry, quota and payment guards.
+
+The actual question and studio-request components were checked at 375×812 using
+disposable PostgreSQL and a simulated model. An actual browser reload retained
+one model dispatch and one quota unit, then recovered the original result. This
+is controlled local evidence, not a hosted authenticated or independent-user
+trial. No new external model calls, emails, accounts or PayPal operations were
+needed. The existing worker contract and deployment remain unchanged.
+
 ## Four studio-question corrections · 3 November
 
 The [four-issue verification](studio-question-four-fixes-2026-11-03.json)

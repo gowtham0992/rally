@@ -2,6 +2,36 @@
   "mode": "local_database_and_simulated_provider",
   "results": [
     {
+      "mutation": "ordinary accessibility subjects regress to a narrow subject list",
+      "baselinePassed": true,
+      "caught": true,
+      "exitCode": 1
+    },
+    {
+      "mutation": "studio expiry returns an error instead of a stale request",
+      "baselinePassed": true,
+      "caught": true,
+      "exitCode": 1
+    },
+    {
+      "mutation": "fresh command IDs duplicate an in-flight question draft",
+      "baselinePassed": true,
+      "caught": true,
+      "exitCode": 1
+    },
+    {
+      "mutation": "an old reserved replay reaches model dispatch before retirement",
+      "baselinePassed": true,
+      "caught": true,
+      "exitCode": 1
+    },
+    {
+      "mutation": "privacy error echoes arbitrary metadata",
+      "baselinePassed": true,
+      "caught": true,
+      "exitCode": 1
+    },
+    {
       "mutation": "owner loses the private studio-session mismatch hint",
       "baselinePassed": true,
       "caught": true,

@@ -65,7 +65,9 @@ from a model result that needs your review: “AI drafting is unavailable” mea
 the service or response could not be used; “This draft needs your review” means
 no usable question was proposed. Your note and typed question stay available
 for manual entry. An interrupted request can stop appearing as pending without
-starting another model call. Retrying is explicit and quota-limited, with no
+starting another model call. Reloading and checking a pending draft for the
+same saved details and session reuses that attempt, without another quota unit.
+Retrying is explicit and quota-limited, with no
 automatic model retries. A changed preference, expired draft or late response
 cannot confirm an older version of your choices.
 

@@ -19,13 +19,26 @@ const draftSchema=command.extend({offeringId:key,slotId:key,modelProcessingAgree
 export type StudioQuestion={id:string;question:string;decision:'CAN_ACCOMMODATE'|'CANNOT_ACCOMMODATE'|'NEEDS_DISCUSSION'|null;reply:string|null;accepted:boolean;activity:string;startAt:string;timezone:string;offeringId:string;slotId:string};
 function ordinaryModalUse(text:string,start:number,end:number,word:string){
  if(!['will','may','can'].includes(word))return false;
- // Only recognizable grammatical uses are exempt. Person references such as
- // “Can Will help?”, “May will join” and “Will: I need…” remain blocked.
- const subject='(?:i|we|you|they|it|there|(?:this|that)(?:\\s+(?:session|studio|room|space|workshop|entrance|work area))?|the\\s+(?:session|studio|room|space|workshop|entrance|work area))';
- const verb='(?:be|have|need|use|include|provide|allow|offer|work|bring|wear|sit|stand|arrive|leave|contain|help|get|ask|accommodate|make|fit|keep|confirm|check|explain|access|collect|pick)\\b';
- const before=text.slice(0,start),after=text.slice(end);
- if(/(?:^|[.!?]\s*)[“"‘'(]*\s*$/u.test(before)&&new RegExp('^\\s+'+subject+'\\s+'+verb,'u').test(after))return true;
- return word!=='can'&&new RegExp('(?:^|[.!?]\\s*)'+subject+'\\s+$','u').test(before)&&new RegExp('^\\s+'+verb,'u').test(after);
+ // Recognize common auxiliary grammar with bounded subjects and bare verbs.
+ // Every other
+ // roster-name token is still checked separately, including names in subjects.
+ const token="[\\p{L}]+(?:[-’'][\\p{L}]+)*",pronoun='(?:i|we|you|they|he|she|it|there|this|that|these|those|someone|anyone|somebody|anybody|everyone|everybody)';
+ const determiner='(?:the|a|an|my|our|your|their|his|her|this|that|these|those|any|some|each|every)';
+ const nounPhrase=determiner+'\\s+'+token+'(?:\\s+'+token+'){0,6}';
+ const barePhrase='(?:seating|access|equipment|assistance|lighting|ventilation|gloves|clay|materials|space|step-free access)(?:\\s+'+token+'){0,5}';
+ const subject='(?:'+pronoun+'|'+nounPhrase+'|'+barePhrase+')';
+ const verb='(?:be|have|need|use|include|provide|allow|offer|work|bring|wear|sit|stand|arrive|leave|contain|help|get|ask|accommodate|make|fit|keep|confirm|check|explain|access|collect|pick|attend|assist|seat|come|join|enter|participate|accompany|stay|wait|reach|move|turn|transfer|handle|hold|avoid|choose|support|change|open|close|see|hear|request|receive|require|cost|take|give|remove|supply|accept|carry|walk|communicate|reserve|wash|clean|fire|glaze|paint|touch|try|learn|do)\\b';
+ const predicate='(?:only\\s+|not\\s+|also\\s+|still\\s+|please\\s+|safely\\s+|possibly\\s+|just\\s+)*'+verb;
+ const before=text.slice(0,start),after=text.slice(end),boundary='(?:^|[.!?;,:]\\s*|\\b(?:if|whether|that|because|and|but)\\s+)';
+ if(/(?:^|[.!?;]\s*)[“"‘'(]*\s*$/u.test(before)&&new RegExp('^\\s+'+subject+'\\s+'+predicate,'u').test(after))return true;
+ if(new RegExp(boundary+subject+'\\s+$','u').test(before)&&new RegExp('^\\s+'+predicate,'u').test(after))return true;
+ // A question tag is also an auxiliary, not a person being addressed.
+ return /,\s*$/u.test(before)&&new RegExp('^\\s+'+pronoun+'\\s*\\?','u').test(after);
+}
+async function retireInterruptedDrafts(c:pg.PoolClient,memberId:string){
+ // The same retirement rule applies to a replay and a fresh command after a
+ // reload. Terminal status also fences out a late model result.
+ await c.query("UPDATE studio_question_drafts SET status='REVIEW',result=$2 WHERE member_id=$1 AND status IN ('RESERVED','DISPATCHED') AND created_at<clock_timestamp()-interval '45 seconds' AND expires_at>clock_timestamp()",[memberId,JSON.stringify({reviewReason:'UNAVAILABLE'})]);
 }
 // Check identity references, not a blanket whitelist of names that are also
 // English modals. Ambiguous uses and obvious contact/financial text fail closed.
@@ -33,7 +46,11 @@ export function checkQuestionPrivacy(text:string,names:string[]){
  const normalized=text.normalize('NFKC').toLocaleLowerCase();
  if(/[@$€£¥]|https?:|www\.|\b(?:usd|dollars?|budget|spending limit)\b|\d[\d\s().+-]{5,}\d|[\u0000-\u001f\u007f]/iu.test(normalized))throw new IntakeError('QUESTION_PRIVACY');
  const words=new Set(names.flatMap(name=>name.normalize('NFKC').toLocaleLowerCase().split(/[^\p{L}\p{N}]+/u).filter(s=>s.length>=2)));
- for(const match of normalized.matchAll(/[\p{L}\p{N}]+/gu))if(words.has(match[0])&&!ordinaryModalUse(normalized,match.index!,match.index!+match[0].length,match[0]))throw new IntakeError('QUESTION_PRIVACY');
+ for(const match of normalized.matchAll(/[\p{L}\p{N}]+/gu))if(words.has(match[0])&&!ordinaryModalUse(normalized,match.index!,match.index!+match[0].length,match[0])){
+  const error=new IntakeError('QUESTION_PRIVACY');
+  if(['will','may','can'].includes(match[0]))Object.assign(error,{matchedWord:match[0]});
+  throw error;
+ }
 }
 export class StudioQuestionService{
  private intake:IntakeService;
@@ -115,12 +132,18 @@ export class StudioQuestionService{
    if(pref.extraRequirement!=='MERCHANT_REVIEW_REQUIRED')throw new IntakeError('NOTE_ALREADY_REVIEWED');
    if(!matchingSessions(catalog,[pref],group.target_size).some(s=>s.offeringId===p.offeringId&&s.slotId===p.slotId))throw new IntakeError('NO_VALID_CANDIDATE');
    if((await c.query('SELECT 1 FROM studio_questions WHERE member_id=$1 AND source_preference_id=$2',[member.id,p.sourcePreferenceId])).rowCount)throw new IntakeError('QUESTION_PENDING');
+   await retireInterruptedDrafts(c,member.id);
+   // User/group locks above serialize reservations across tabs and command IDs.
+   // Reuse only the same member, saved revision and exact selected session.
+   const pending=(await c.query("SELECT id FROM studio_question_drafts WHERE member_id=$1 AND source_preference_id=$2 AND offering_id=$3 AND slot_id=$4 AND status IN ('RESERVED','DISPATCHED') AND expires_at>clock_timestamp() ORDER BY created_at,id LIMIT 1",[member.id,p.sourcePreferenceId,p.offeringId,p.slotId])).rows[0];
+   if(pending)return {id:pending.id as string};
    if(member.ai_calls>=4||await dailyAiCalls(c,a.userId)>=6)throw new IntakeError('CLARIFICATION_LIMIT');
    const id=randomUUID();await c.query("INSERT INTO studio_question_drafts(id,member_id,source_preference_id,offering_id,slot_id,status) VALUES($1,$2,$3,$4,$5,'RESERVED')",[id,member.id,p.sourcePreferenceId,p.offeringId,p.slotId]);
    await c.query('UPDATE planning_members SET ai_calls=ai_calls+1 WHERE id=$1',[member.id]);return {id};
   });
   const input=await transaction(this.pool,async c=>{
-   const {group,member}=await this.owned(c,a,p.groupId);const row=(await c.query('SELECT *,expires_at>clock_timestamp() AS fresh FROM studio_question_drafts WHERE id=$1 AND member_id=$2 FOR UPDATE',[reserved.id,member.id])).rows[0];
+   const {group,member}=await this.owned(c,a,p.groupId);await retireInterruptedDrafts(c,member.id);
+   const row=(await c.query('SELECT *,expires_at>clock_timestamp() AS fresh FROM studio_question_drafts WHERE id=$1 AND member_id=$2 FOR UPDATE',[reserved.id,member.id])).rows[0];
    if(!row||row.status!=='RESERVED')return null;
    if(!row.fresh||member.current_preference_id!==row.source_preference_id||!member.optional_text||member.private_text_expires_at&&new Date(member.private_text_expires_at).getTime()<=Date.now()||!['COLLECTING','CLOSED','MERCHANT_REVIEW'].includes(group.state)){await c.query("UPDATE studio_question_drafts SET status='STALE' WHERE id=$1",[row.id]);return null;}
    await c.query("UPDATE studio_question_drafts SET status='DISPATCHED' WHERE id=$1",[row.id]);
@@ -138,7 +161,7 @@ export class StudioQuestionService{
   return transaction(this.pool,async c=>{const {member}=await this.owned(c,a,p.groupId);
    // A terminated request is unavailable, not a semantic model refusal. This
    // retires the old attempt without redispatch or renewed quota.
-   await c.query("UPDATE studio_question_drafts SET status='REVIEW',result=$2 WHERE id=$1 AND member_id=$3 AND status IN ('RESERVED','DISPATCHED') AND created_at<clock_timestamp()-interval '45 seconds' AND expires_at>clock_timestamp()",[reserved.id,JSON.stringify({reviewReason:'UNAVAILABLE'}),member.id]);
+   await retireInterruptedDrafts(c,member.id);
    const row=(await c.query('SELECT status,result,source_preference_id,expires_at>clock_timestamp() AS fresh FROM studio_question_drafts WHERE id=$1 AND member_id=$2',[reserved.id,member.id])).rows[0],status=row?.fresh&&member.current_preference_id===row.source_preference_id?row.status as string:'STALE';
    return {id:reserved.id,status,question:status==='READY'?row.result?.question as string:null,reviewReason:status==='REVIEW'?(row.result?.reviewReason==='REVIEW'?'REVIEW' as const:'UNAVAILABLE' as const):null};
   });

@@ -274,7 +274,9 @@ export class BookingService {
    if(request.state==='APPROVED')return {requestId,state:'APPROVED' as const,offerId:request.approved_offer_id};
    if(g.state!=='MERCHANT_REVIEW'||g.revision!==request.planning_revision)return {requestId,state:'STALE' as const};
    const plan=await confirmedPlan(c,g.id,g.catalog);if(plan.sourceHash!==request.source_hash)return {requestId,state:'STALE' as const};
-   const candidate=this.selected(plan,request.offering_id,request.slot_id);
+   if(plan.result.state!=='CANDIDATE_READY')return {requestId,state:'STALE' as const};
+   const candidate=plan.result.candidates.find(c=>c.offeringId===request.offering_id&&c.slotId===request.slot_id);
+   if(!candidate)return {requestId,state:'STALE' as const};
    const guestArrangements=plan.studioQuestionIds.length?(await c.query('SELECT question,reply FROM studio_questions WHERE id=ANY($1::uuid[]) AND studio_id=$2 AND expires_at>clock_timestamp() AND question IS NOT NULL AND reply IS NOT NULL ORDER BY id',[plan.studioQuestionIds,candidate.studioId])).rows.map(q=>({question:q.question as string,reply:q.reply as string})):[];
    return {requestId,state:'PENDING' as const,revision:g.revision,candidate,personalArrangements:plan.personalArrangements,guestArrangements,
     reservation:{occupiedStart:new Date(Date.parse(candidate.startAt)-request.setup_minutes*60000).toISOString(),occupiedEnd:new Date(Date.parse(candidate.endAt)+request.cleanup_minutes*60000).toISOString(),setupMinutes:request.setup_minutes as number,cleanupMinutes:request.cleanup_minutes as number},roster:plan.rows.map(r=>({memberId:r.id,displayName:r.display_name})),

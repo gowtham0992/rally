@@ -32,6 +32,12 @@ export function errorResponse(error:unknown){
  }
  if(error instanceof z.ZodError)return Response.json({error:'INVALID_REQUEST'},{status:400,headers:{'Cache-Control':'no-store'}});
  const code=error instanceof Error&&'code' in error?String(error.code):'';
+ // Only three fixed modal tokens can cross this boundary, never raw input,
+ // arbitrary error metadata or a roster identity.
+ if(code==='QUESTION_PRIVACY'){
+  const word=error instanceof Error&&'matchedWord' in error?error.matchedWord:null;
+  return Response.json({error:code,...typeof word==='string'&&['will','may','can'].includes(word)?{matchedWord:word}:{}},{status:422,headers:{'Cache-Control':'no-store'}});
+ }
  const allowed=['STUDIO_CONTACT_UNAVAILABLE','STUDIO_NOTICE_REQUIRED','ORGANIZER_REQUIRED','PARTICIPATION_REQUIRED','STALE_DRAFT','DRAFT_NEEDS_REVIEW','DRAFT_CHOICES_CHANGED','NOT_FOUND','STALE_REVISION','COMMAND_CONFLICT','PLANNING_LOCKED','ROSTER_CLOSED','INVALID_ROSTER','GROUP_FULL','UNKNOWN_SLOT','UNKNOWN_FINISH_DATE','INVALID_NOMINEE','VERIFIED_IDENTITY_REQUIRED','COLLECTION_REVIEW_REQUIRED','OWNER_CONSENT_REQUIRED','DISCLOSURE_REQUIRED','CONSENT_REVOKED','STALE_PREFERENCE','NO_COLLECTION_ARRANGEMENT','NO_NOTE','NOTE_TOO_LONG','NOTE_ALREADY_REVIEWED','CLARIFICATION_LIMIT','STALE_CLARIFICATION','INVALID_ANSWER','STALE_PLANNING','NO_VALID_CANDIDATE','UNVERIFIED_CATALOG','SESSION_TOO_SOON','RESERVATION_CONFLICT','OFFER_CLOSED','STALE_OFFER','STALE_ACCEPTANCE','ORDER_NOT_READY','CANCELLATION_REVIEW_REQUIRED','NOT_A_MEMBER','OFFER_NOT_FOUND','PAYMENT_CHECK_UNAVAILABLE'];
  if([...allowed,'QUESTION_UNAVAILABLE','QUESTION_AI_UNAVAILABLE','QUESTION_PRIVACY','QUESTION_PENDING','QUESTION_LIMIT','QUESTION_UNRESOLVED','STALE_QUESTION','PAYMENT_RECOVERY_REQUIRED','PAYMENT_EVIDENCE_STALE','PAYMENT_EVIDENCE_UNAVAILABLE','PAYMENT_EVIDENCE_LIMIT'].includes(code))return Response.json({error:code},{status:['NOT_FOUND','OFFER_NOT_FOUND'].includes(code)?404:code==='NOT_A_MEMBER'?403:['NO_VALID_CANDIDATE','UNVERIFIED_CATALOG','SESSION_TOO_SOON','QUESTION_PRIVACY'].includes(code)?422:409,headers:{'Cache-Control':'no-store'}});
  // No raw database/provider error, payload or credential crosses the HTTP boundary.

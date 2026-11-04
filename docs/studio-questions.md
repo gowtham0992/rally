@@ -78,14 +78,21 @@ rejects known roster-name references, obvious contact details and financial word
 places a question in an editable text box. This is not a guarantee of anonymity
 or correct interpretation. Ordinary grammatical uses of “will”, “may” and “can”
 are allowed in recognized question or sentence patterns, even when a friend has
-that name; actual name references remain blocked. This is not a blanket name
-exception. Review every word before consenting to send it.
+that name. This includes questions about a carer or service dog, compound studio
+subjects and mid-sentence modals. Actual name references remain blocked. This is not a blanket name
+exception or a general language parser. If one of those words is still ambiguous,
+the error names the word so you can rephrase while keeping the essential need.
+Review every word before consenting to send it.
 
 An unavailable service or invalid response is labelled “AI drafting is
 unavailable”. An explicit model review result instead asks you to write the
 question yourself. Both preserve the note and any typed question. An interrupted
 request stops appearing as pending after 45 seconds when checked again, without
-starting another model call. The same request cannot be silently retried.
+starting another model call. While a draft is in progress, another tab or a reloaded page reuses the attempt
+for the same person, saved details and selected session. It spends no second
+quota unit or model call. Use “Check draft status” to retrieve its result.
+An interrupted attempt is retired before an old reserved command can dispatch;
+a later explicit new attempt remains subject to the existing quotas.
 
 Model failure leaves the manual question available. No model interprets the
 studio's reply. Drafts share the existing member, daily and global AI limits,
@@ -105,7 +112,9 @@ A question or answer can expire before the note itself. Rally shows an explicit
 expiry notice and requires fresh saved details and a new studio review; an old
 acceptance cannot make the friend ready. Database expiry is authoritative even
 if a retained acceptance marker has a later timestamp. This affects planning;
-issued offers retain their existing payment and recovery actions.
+issued offers retain their existing payment and recovery actions. If expiry
+happens while the studio is reviewing a request, the studio sees a stale request
+asking for a fresh plan. It cannot approve that stale session.
 
 ## Implementation and verification
 

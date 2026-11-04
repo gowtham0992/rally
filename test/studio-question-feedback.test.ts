@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {createElement} from 'react';
 import {renderToStaticMarkup} from 'react-dom/server';
 import Notice from '../app/components/studio-question-notice.tsx';
-import {questionDraftFeedback} from '../app/lib/studio-question-feedback.ts';
+import {questionDraftFeedback,questionPrivacyFeedback} from '../app/lib/studio-question-feedback.ts';
 import {nextStep,type StepFacts} from '../src/planning/next-step.ts';
 test('an expired answer has an explicit visible notice independently of saved-note content',()=>{
  const html=renderToStaticMarkup(createElement(Notice,{expiry:'ANSWER_EXPIRED'}));assert.match(html,/studio answer has expired/);assert.match(html,/role="status"/);assert.match(html,/Review and save your details/);assert.ok(!html.includes('<details'));
@@ -20,4 +20,11 @@ test('unavailable, manual review, stale and pending drafts have distinct actiona
 test('private planning notices cannot replace authoritative issued-offer payment or recovery actions',()=>{
  const facts:StepFacts={state:'OFFER_ISSUED',offerId:'fixture',isOrganizer:false,ownReady:true,noteNeedsReview:true,pickupAnswer:false,pickupAsk:false,pickupWaiting:false,ownChoicesNeedReview:false,memberCount:6,readyCount:6,allowedSizes:[6],studioQuestionConflict:true,studioQuestionExpiry:'ANSWER_EXPIRED'};
  for(const [booking,expected]of [['OPEN','OFFER'],['SETTLING','OFFER'],['CONFIRMED','BOOKED'],['WITHDRAWN','RECOVERY']])assert.equal(nextStep({...facts,bookingState:booking}).kind,expected);
+});
+
+test('ambiguous modal rejections identify only a fixed word without echoing arbitrary error data',async()=>{
+ const {checkQuestionPrivacy}=await import('../src/intake/studio-questions.ts'),{errorResponse}=await import('../src/web/security.ts'),{IntakeError}=await import('../src/intake/service.ts');
+ for(const word of ['Will','May','Can']){let caught:unknown;try{checkQuestionPrivacy(word+': I need access.',[word]);}catch(e){caught=e;}
+ const response=errorResponse(caught);assert.equal(response.status,422);assert.deepEqual(await response.json(),{error:'QUESTION_PRIVACY',matchedWord:word.toLowerCase()});assert.match(questionPrivacyFeedback(word.toLowerCase()),new RegExp(word));assert.match(questionPrivacyFeedback(word.toLowerCase()),/keep your essential need/);}
+ const error=Object.assign(new IntakeError('QUESTION_PRIVACY'),{matchedWord:'private raw input'});assert.deepEqual(await errorResponse(error).json(),{error:'QUESTION_PRIVACY'});assert.ok(!questionPrivacyFeedback('private raw input').includes('private raw input'));
 });

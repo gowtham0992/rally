@@ -47,6 +47,14 @@ the actual components with local PostgreSQL and simulated identity/model
 boundaries. The packaged Node 22 worker also passed seven controlled HTTPS gateway and
 authentication checks. No new real model calls were used for this correction.
 
+The November 4 follow-up passed **274 local tests** and **93/93 mutation
+guards**. It widens ordinary modal grammar while retaining name checks, shows
+expired studio-review requests as stale, and prevents a page reload from
+dispatching a second in-flight draft for the same saved details and session.
+The phone-width rehearsal used the actual question and studio-request components
+with disposable PostgreSQL and a controlled model, including an actual browser
+reload. It made no external model calls or hosted workspace changes.
+
 ## Model evaluations retain their failures
 
 The newer optional-draft check passed five authored cases after an initial
