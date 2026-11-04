@@ -66,7 +66,9 @@ JSON/schema and evidence failures. An evaluator must not score an unavailable
 parser or provider as a correct model abstention.
 
 Work is persisted before dispatch and scoped to the owner and source preference.
-Refreshing resumes existing work rather than dispatching again. Changed sources,
+Activity/pickup drafts resume persisted work after a refresh. A pending
+studio-question draft is reused across command IDs for the same owner, saved revision
+and selected session, without a second model call or quota unit. Changed sources,
 expired drafts and late results cannot confirm old choices. Discard clears only
 unconfirmed work after checking the latest draft ID; quota metadata remains.
 
@@ -135,9 +137,8 @@ zero provider calls. It is a deterministic check, not evidence of model quality.
 [Developer setup](development.md#work-with-ai).
 
 Live evaluation is a separate operator action using the configured provider and
-credits. Inspect the relevant runner and report format, verify the account's
-current allowance and authorize a bounded run before dispatch. Existing release
-allowances are exhausted; a saved evaluation plan is not reusable authorization.
-Each actual run must retain its failed and successful outputs, source version,
+credits. Inspect the relevant runner and report format, confirm the provider
+account and quotas, and set a bounded case count before dispatch. Each actual
+run must retain its failed and successful outputs, source version,
 case identifiers and dispatch count. Never replace a failed report or call a
 stubbed response an actual model result.

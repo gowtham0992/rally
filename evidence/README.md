@@ -1,20 +1,30 @@
 # Verification
 
-These records distinguish actual PayPal sandbox operations, controlled local
-checks, authored model evaluations and observations by people. The current
-release has a fictional studio; none of these records establishes real merchant
-demand. Start with the [product documentation](../docs/README.md) to use or run Rally.
+The [4 November application checkpoint](studio-question-recovery-2026-11-04.json)
+records **274 passing local tests**, **93/93 caught mutation guards**, typecheck,
+production build and worker build. These checks use disposable PostgreSQL and
+controlled providers. They do not establish real studio demand or independent
+friend-group usability.
 
-| Proof | What to inspect |
-| --- | --- |
-| 1. [Recorded six-friend journey](../public/journey/index.html) | Twelve reviewed screenshots of the actual October 3 hosted flow, with captions and provenance. [Hosted reader](https://rally.gowthamsarveswaran.com/journey/index.html) requires no code or account. |
-| 2. [Six-buyer settlement](web/hosted-six-friend-settlement.json) | Six distinct sandbox buyers, six $48 captures, $288 gross, all authorizations before capture and all captures before confirmation. Provider GETs independently checked each resource. |
-| 3. [Delivered duplicate webhook](web/hosted-webhook-retransmission.json) | Twelve genuine signed notifications processed; the actual delivered resend received HTTP 200 and left the original receipt and financial state unchanged. The duplicate JSON response body was not captured. |
-| 4. [Hosted forged-signature denial](hosted-webhook-signature-denial.json) | A forged notification was rejected using a real PayPal public certificate, without changing payment records. |
-| 5. [Three-buyer recovery report](paypal-sandbox/index.html) | Separate local-service runs with real PayPal sandbox operations: $144 success, partial failure refunded $48 and voided the remaining holds, and a lost capture response recovered after restart without another capture. This is not hosted failure-recovery proof. |
-| 6. [Actual-model evaluation](../public/evidence/ai/index.html) | 24 authored cases × 3 repeats; final 72/72 quality assessments, zero safety failures, independent structured baseline and constraint oracle. Two earlier failed runs remain accessible. [Machine-readable index](ai/evaluation-index.json). |
-| 7. [Historical verification record · 29 October](current-verification.json) | Dated suite, build, privacy, browser and capacity checks for that checkpoint. Later release checks appear below. |
-| 8. [Release archive](releases/README.md) | Earlier per-release checks, screenshots and their exact test boundaries. They support the implementation history; they do not represent human usability observations. |
+Start with the [2:45 video](https://youtu.be/5PE5RJzngpA), recorded on 1 November,
+for the newer interface and a separate six-buyer sandbox booking. Then use the
+records below to inspect the implementation and its verification boundaries.
+[Product documentation](../docs/README.md) explains how to use or run Rally.
+
+| Evidence | Recorded result | Scope |
+| --- | --- | --- |
+| [4 November release checks](studio-question-recovery-2026-11-04.json) | 274 tests, 93 mutation guards, builds and an actual browser-reload check. | Local PostgreSQL 18; controlled identities and providers. |
+| [Six-buyer settlement](web/hosted-six-friend-settlement.json) | Six separate $48 captures, $288 gross; authorizations before collection and captures before confirmation. | Actual hosted PayPal sandbox, 3 October; provider GETs checked the resources. |
+| [Studio-question AI](studio-question-evaluation-1793761616523.json) | Corrective six-case run; initial and parser-only failures remain recorded below. | Authored regression cases, 3 November; one prompt-guidance example, not held out. |
+| [Three-buyer recovery](paypal-sandbox/index.html) | Partial-failure refund and remaining voids; recovery after a lost capture response. | Separate local service with actual sandbox buyers; hosted active failure recovery unverified. |
+| [Delivered duplicate webhook](web/hosted-webhook-retransmission.json) | Twelve signed notifications processed; an actual resend left financial state unchanged. | Hosted 3 October run; duplicate response body not captured. |
+| [Forged-signature denial](hosted-webhook-signature-denial.json) | Forged notification rejected without changing payment records. | Hosted receiver with a real PayPal public certificate. |
+| [Earlier clarification evaluation](../public/evidence/ai/index.html) | 24 authored cases × 3 repeats; final 72/72 assessments, earlier failures retained. | Different October contract; not a current general reliability rate. [Source index](ai/evaluation-index.json). |
+| [Earlier hosted journey](../public/journey/index.html) | Twelve actual October screenshots with captions and provenance. | Earlier interface; [hosted reader](https://rally.gowthamsarveswaran.com/journey/index.html). |
+
+The [29 October verification record](current-verification.json) and
+[release archive](releases/README.md) retain dated earlier checkpoints. Counts
+and screenshots describe their original releases.
 
 ## Run the checks without external accounts
 

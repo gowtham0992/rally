@@ -1,95 +1,80 @@
-Rally's records separate actual PayPal sandbox operations, controlled local
-checks, authored model evaluations and observations by people. They do not all
-prove the same thing.
+The 4 November application checkpoint passed **274 local tests** and **93/93
+mutation guards**, plus typecheck, production-build and AI-worker-build checks.
+The records below distinguish implementation checks, actual PayPal sandbox
+operations, authored model evaluations and observations by people.
 
-## A recorded six-friend booking
+## Current implementation checks
 
-The October 3 hosted run completed six distinct sandbox payments of **$48 each,
-$288 gross**. All required authorizations preceded collection, and all captures
-were verified before booking confirmation. Twelve signed provider notifications
-were processed. A delivered duplicate left the recorded financial state unchanged.
+The latest suite ran on Node 22.23.4 and disposable PostgreSQL 18 in UTC, with
+controlled identity, model and payment providers. It covers privacy, explicit
+consent, exact session binding, expiry, payment verification and recovery.
 
-The [recorded booking](/journey/index.html) shows the actual interface from that
-date. It is historical evidence, not a recording of today's screens or a group
-of independent customers.
+A phone-width rehearsal at 375×812 used the actual question and studio-request
+components. Ordinary accessibility questions were sent unchanged, identifying
+wording stayed blocked, and an expired studio request displayed a stale notice.
+An actual browser reload during a controlled draft reused one attempt and one
+quota unit, then recovered its original result with sharing consent unticked.
 
-## Recovery has a separate scope
+These are local integration checks. They did not use hosted sign-in, call a real
+model or payment provider, or observe independent friends. Public health and
+access-denial checks establish availability and access boundaries at that moment;
+they do not establish a completed group booking.
+
+## Recorded PayPal sandbox payments
+
+The 2:45 video was recorded on 1 November and shows a separate six-buyer sandbox
+booking in the newer interface. It is linked from the repository README and
+prepared demo entry.
+
+The more detailed 3 October hosted record contains **six distinct sandbox
+buyers, six $48 captures and $288 gross**. All required authorizations preceded
+collection, and all captures were verified before booking confirmation. Twelve
+signed provider notifications were processed. A delivered duplicate left the
+recorded financial state unchanged.
+
+The [recorded journey](/journey/index.html) preserves the actual October
+interface, captions and provenance. Those fictional identities are not a group
+of independent customers. Its provider records and the November video retain
+separate dates and scopes.
+
+## Recovery checks have a separate scope
 
 Separate local-service runs used three real PayPal sandbox buyers to exercise
 partial-failure refunds and remaining voids, plus recovery from a lost capture
 response. Those results are distinct from the hosted six-person success.
 Hosted active partial-failure recovery remains unverified.
 
-## Automated checks
+## Model checks retain earlier failures
 
-The October 29 correction release recorded 230 passing local tests, 68 caught
-guard mutations, a passing typecheck/build and twelve live public/access-denial
-checks. Controlled integration tests cover consent, privacy, stale commands,
-operation identity, reconciliation and opt-out persistence.
+The 3 November studio-question correction passed six authored regression cases:
+three straightforward needs produced usable drafts, a conditional need retained
+its complete alternative, and unrelated or hostile messages received explicit
+review results. One example also appeared in prompt guidance; this was not a
+held-out evaluation.
 
-The local suite uses real isolated PostgreSQL with controlled Auth, model and
-payment providers. It does not establish real email delivery, actual provider
-behavior or independent human comprehension. A passing health check proves
-availability at that moment, not completion of a payment window.
+The initial six checks and a parser-only attempt remain recorded. The parser
+had rejected complete JSON code fences, and the prompt had discouraged quoting
+access or materials needs. The corrective run fixed both issues and stopped
+counting processing failures as successful model abstention. One subsequent
+fictional request through the deployed worker produced a valid question draft.
+That inference is separate from the later controlled worker-protocol checks.
 
-The November 3 private studio-question implementation passed 250 local tests,
-76 guard mutations and typecheck/build checks. Its local database was PostgreSQL
-18. A browser rehearsal used the actual components and simulated identity/model
-boundaries at desktop and phone width. That exercise did not use hosted Auth,
-claim a judge workspace or observe independent friends.
+Earlier results cover different contracts: five optional-message cases passed
+after an initial 2-of-5 run; a separate eight-case draft checkpoint retained its
+earlier failure; and the original clarification suite repeated 24 authored cases
+three times. These results must not be combined into a current reliability rate.
+The [clarification report](/evidence/ai/index.html) preserves its cases, method
+and earlier failed runs.
 
-The subsequent four-issue correction passed **268 local tests** and **88/88
-mutation guards**, with typecheck, application build and worker bundle checks.
-It covers private session-conflict guidance, explicit question/answer expiry,
-grammatical modal words versus actual name references, and separate unavailable
-and review outcomes through the worker and saved draft. Phone-width checks used
-the actual components with local PostgreSQL and simulated identity/model
-boundaries. The packaged Node 22 worker also passed seven controlled HTTPS gateway and
-authentication checks. No new real model calls were used for this correction.
+## What remains unmeasured
 
-The November 4 follow-up passed **274 local tests** and **93/93 mutation
-guards**. It widens ordinary modal grammar while retaining name checks, shows
-expired studio-review requests as stale, and prevents a page reload from
-dispatching a second in-flight draft for the same saved details and session.
-The phone-width rehearsal used the actual question and studio-request components
-with disposable PostgreSQL and a controlled model, including an actual browser
-reload. It made no external model calls or hosted workspace changes.
+No independently observed friend-group trials or real studio observations have
+been recorded. Studio willingness to hold capacity, use of the optional AI
+helper and uncoached group usability remain unmeasured.
 
-## Model evaluations retain their failures
-
-The newer optional-draft check passed five authored cases after an initial
-2-of-5 run. The earlier eight-case draft checkpoint and the original 24-case
-clarification suite, repeated three times, have different dates and contracts.
-Their results must not be combined into a larger current reliability rate.
-
-The first studio-question check ended in review for all six messages. A
-subsequent diagnostic found a parser that rejected complete JSON code fences;
-captured replies also showed prompt wording that discouraged quoting access or
-materials needs. Both were corrected without relaxing evidence or privacy checks. The follow-up
-local suite passed 254 tests and 78 mutation guards.
-A corrective six-case run produced usable drafts for all three straightforward
-needs, preserved the complete conditional need, and explicitly declined the two
-unrelated/hostile cases. The evaluator now rejects parser/provider failures as
-correct abstentions. These authored cases are not a general reliability rate.
-After that correction, one fictional request through the deployed worker
-produced a valid draft, and the hosted preview enabled the optional helper.
-Twelve public health/access checks passed. Those checks did not exercise a new
-hosted authenticated group flow. The manual private exchange remains available
-without an AI call.
-
-The [earlier clarification report](/evidence/ai/index.html) includes its authored
-cases and evaluation method. A corrected fixture set is not proof of general
-language reliability or user benefit.
-
-## What remains open
-
-There are no independently observed friend-group trials or real studio
-observations in the recorded results. Studio willingness to hold capacity and
-uncoached group usability remain unmeasured.
-
-The owner reported successfully signing in and saving details on a phone. Device,
-browser and chat/email transitions were not recorded. That is one owner report,
-not an independent trial or a six-person phone checkout.
+The owner reported successfully signing in and saving details on a phone. The
+device, browser and chat/email transitions were not recorded. That report does
+not establish a six-person phone checkout or independent-user comprehension.
 
 The current release uses a fictional studio and PayPal sandbox. It does not take
 live payments, reserve actual studio capacity or establish production readiness.

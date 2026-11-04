@@ -30,10 +30,6 @@ Personal buyer account for each participant. Opening an offer does not complete
 a payment. Never use real payment accounts, share credentials in source or call
 simulated outcomes actual PayPal results.
 
-For reviews, agree on a bounded workspace, actions and any external calls before
-starting. Record which role changed which fictional record. An existing test
-session is not reusable permission for more model calls, emails or payments.
-
 ## Operate prepared access
 
 The entry requires the configured demo gate, stable private session key and
@@ -42,8 +38,7 @@ existing leases are not silently extended or recycled. Exhausted capacity must
 be handled explicitly rather than overwriting old offers or financial history.
 
 The [current verification record](../evidence/current-verification.json) contains
-the latest recorded capacity check and its date. Counts are observations, not
-promises of current availability.
+a dated capacity checkpoint. Available workspaces can change after that check.
 
 [Provisioning history](judge-provisioning.md) records the scripts, identity
 boundaries and earlier setup checks. Creating more persistent identities or

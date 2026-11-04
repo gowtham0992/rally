@@ -9,6 +9,9 @@ The [documentation index](README.md) links to current behavior and operations.
 
 | Record | Change |
 | --- | --- |
+| [November 4: studio-question recovery](../evidence/studio-question-recovery-2026-11-04.json) | Ordinary modal wording, stale studio requests and cross-reload draft deduplication; 274 tests and 93 mutation guards. |
+| [November 3: private studio exchange](studio-questions.md) | Session-bound questions and replies, explicit sharing and owner acceptance. [Four-issue checkpoint](../evidence/studio-question-four-fixes-2026-11-03.json). |
+| [November 3: question-draft AI correction](../evidence/studio-question-fix-2026-11-03.json) | Strict JSON-fence parsing, prompt clarification and evaluator correction; failed and corrective model runs retained. |
 | [October 29: consent and opt-outs](honesty-fixes-2026-10-29.md) | Persistent attendance choices, pickup visibility, studio-contact consent and accurate closed-offer/payment language. |
 | [October 29: private blockers](uncoached-blockers-implementation.md) | Form-first entry, personal conflicts, pickup receipts and withdrawal decisions. |
 | [October 28: shared plan interface](app-coherence-implementation-2026-10-28.md) | One next step and a shared plan shell. |

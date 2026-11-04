@@ -42,6 +42,5 @@ controlled local tests, authored model evaluations and observations by people.
 It includes limitations and earlier failed checks. Test counts describe the
 recorded release, not proof that a friend group can use the app unassisted.
 
-[Release history](history.md) records Rally's implementation and verification
-checkpoints. Submission drafts and internal review notes are not part of these
-guides.
+[Release history](history.md) records Rally’s dated implementation and
+verification checkpoints.
