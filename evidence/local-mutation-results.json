@@ -2,6 +2,60 @@
   "mode": "local_database_and_simulated_provider",
   "results": [
     {
+      "mutation": "owner loses the private studio-session mismatch hint",
+      "baselinePassed": true,
+      "caught": true,
+      "exitCode": 1
+    },
+    {
+      "mutation": "question expiry is hidden while the note remains",
+      "baselinePassed": true,
+      "caught": true,
+      "exitCode": 1
+    },
+    {
+      "mutation": "ordinary modal words are blocked as roster names",
+      "baselinePassed": true,
+      "caught": true,
+      "exitCode": 1
+    },
+    {
+      "mutation": "actual roster-name references bypass privacy checks",
+      "baselinePassed": true,
+      "caught": true,
+      "exitCode": 1
+    },
+    {
+      "mutation": "AI review intent is mislabeled as unavailable",
+      "baselinePassed": true,
+      "caught": true,
+      "exitCode": 1
+    },
+    {
+      "mutation": "worker bridge drops an explicit review category",
+      "baselinePassed": true,
+      "caught": true,
+      "exitCode": 1
+    },
+    {
+      "mutation": "a saved marker revives a database-expired studio answer",
+      "baselinePassed": true,
+      "caught": true,
+      "exitCode": 1
+    },
+    {
+      "mutation": "planning notices replace issued-offer financial actions",
+      "baselinePassed": true,
+      "caught": true,
+      "exitCode": 1
+    },
+    {
+      "mutation": "an interrupted AI request remains pending forever",
+      "baselinePassed": true,
+      "caught": true,
+      "exitCode": 1
+    },
+    {
       "mutation": "new studio replies reintroduce an unsupported discussion outcome",
       "baselinePassed": true,
       "caught": true,

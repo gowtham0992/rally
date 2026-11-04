@@ -53,7 +53,10 @@ PORT=8081 node --env-file=.env.ai-worker.local deploy/ai-worker/build/worker.mjs
 `GET /health` is public and makes no model call. `POST /interpret` requires the
 service token in a Bearer header before input parsing or model dispatch. A health
 response establishes process readiness, not model availability.
-`questionDraftVersion: 1` identifies support for the studio-question contract.
+`questionDraftVersion: 2` identifies support for the studio-question contract
+with distinct `UNAVAILABLE` and `REVIEW` failure categories. Version 1 did not
+distinguish those outcomes. A legacy response without a category fails safely
+to unavailable; unknown fields and categories remain rejected.
 The application opt-in flag is `RALLY_STUDIO_QUESTION_AI_ENABLED`; fresh
 installations default off. The hosted preview enables it after the
 [recorded inference check](../evidence/studio-question-deployment-2026-11-03.json). Anonymous

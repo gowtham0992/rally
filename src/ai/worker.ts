@@ -20,7 +20,7 @@ export function createAiWorker(options:{token:string;model?:typeof clarify;quest
  };
  return createServer(async(req,res)=>{
   const json=(status:number,value:unknown)=>{res.writeHead(status,{'Content-Type':'application/json','Cache-Control':'no-store','X-Content-Type-Options':'nosniff'});res.end(JSON.stringify(value));};
-  if(req.method==='GET'&&req.url==='/health'){json(200,{ready:true,questionDraftVersion:1});return;}
+  if(req.method==='GET'&&req.url==='/health'){json(200,{ready:true,questionDraftVersion:2});return;}
   const credential=req.headers.authorization??'';
   if(credential.length>256||!timingSafeEqual(createHash('sha256').update(credential).digest(),expected)){json(403,{error:'FORBIDDEN'});return;}
   if(req.method!=='POST'||req.url!=='/interpret'){json(404,{error:'NOT_FOUND'});return;}

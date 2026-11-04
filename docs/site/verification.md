@@ -38,6 +38,15 @@ The November 3 private studio-question implementation passed 250 local tests,
 boundaries at desktop and phone width. That exercise did not use hosted Auth,
 claim a judge workspace or observe independent friends.
 
+The subsequent four-issue correction passed **268 local tests** and **88/88
+mutation guards**, with typecheck, application build and worker bundle checks.
+It covers private session-conflict guidance, explicit question/answer expiry,
+grammatical modal words versus actual name references, and separate unavailable
+and review outcomes through the worker and saved draft. Phone-width checks used
+the actual components with local PostgreSQL and simulated identity/model
+boundaries. The packaged Node 22 worker also passed seven controlled HTTPS gateway and
+authentication checks. No new real model calls were used for this correction.
+
 ## Model evaluations retain their failures
 
 The newer optional-draft check passed five authored cases after an initial

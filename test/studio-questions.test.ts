@@ -5,7 +5,7 @@ import {readFile} from 'node:fs/promises';
 import {database,localDatabaseUrl} from '../src/db.ts';
 import {migrationVersions} from '../src/migrations.ts';
 import {IntakeService,type IntakeActor} from '../src/intake/service.ts';
-import {StudioQuestionService} from '../src/intake/studio-questions.ts';
+import {StudioQuestionService,checkQuestionPrivacy} from '../src/intake/studio-questions.ts';
 import {BookingService} from '../src/bookings/service.ts';
 import {contextNextStep} from '../app/lib/next-step.ts';
 import {studioQuestionAgreed} from '../src/planning/studio-contact.ts';
@@ -27,6 +27,58 @@ async function setup(noteText=note){const id=randomUUID(),catalog={...fixture,st
 async function ask(x:Awaited<ReturnType<typeof setup>>,extra={}){const c=await intake.participantContext(x.actors[3],x.group.groupId);return questions.ask(x.actors[3],{commandId:randomUUID(),groupId:c.groupId,sourcePreferenceId:c.preference!.revisionId,offeringId:'handbuild',slotId:'thu-evening',question:'Can you provide step-free access to the work area?',disclosureAgreed:true,...extra});}
 async function answer(x:Awaited<ReturnType<typeof setup>>,id:string,decision='CAN_ACCOMMODATE',reply='The work area has step-free access for this session.'){return questions.answer(x.merchant,{commandId:randomUUID(),questionId:id,decision,reply,sessionConfirmed:true});}
 async function accept(x:Awaited<ReturnType<typeof setup>>,id:string){const c=await intake.participantContext(x.actors[3],x.group.groupId);return questions.accept(x.actors[3],{commandId:randomUUID(),groupId:c.groupId,sourcePreferenceId:c.preference!.revisionId,questionId:id,confirmsAllEssentials:true,replyReviewed:true});}
+test('a binding-only mismatch is explained privately to its owner and never relaxes the accepted session',async()=>{
+ const x=await setup(),q=await ask(x);await answer(x,q.id);await accept(x,q.id);
+ let c=await intake.participantContext(x.actors[0],x.group.groupId);const {memberId,revisionId,...p}=c.preference!;
+ await intake.save(x.actors[0],{commandId:randomUUID(),groupId:c.groupId,expectedRevision:c.revision,expectedPreferenceId:revisionId,preference:{...p,availableSlotIds:['fri-evening']},optionalText:null});
+ c=await intake.participantContext(x.actors[0],c.groupId);await intake.closeRoster(x.actors[0],{commandId:randomUUID(),groupId:c.groupId,expectedRevision:c.revision,memberIds:x.ids});
+ assert.equal((await intake.plan(x.actors[0],c.groupId)).result.state,'INFEASIBLE');
+ const own=await intake.participantContext(x.actors[3],c.groupId);assert.equal(own.studioQuestionConflict,true);assert.equal(contextNextStep(own).kind,'NOTE');assert.match(contextNextStep(own).title,/studio answer/);assert.equal((await intake.plans(x.actors[3])).plans[0].nextStep?.title,contextNextStep(own).title);
+ const peer=await intake.participantContext(x.actors[0],c.groupId);assert.equal(peer.studioQuestionConflict,false);assert.ok(!JSON.stringify(peer).includes('step-free'));assert.ok(!JSON.stringify(peer).includes(q.id));
+ await assert.rejects(bookings.request(x.actors[0],{commandId:randomUUID(),groupId:c.groupId,expectedRevision:peer.revision,offeringId:'handbuild',slotId:'fri-evening'}),/NO_VALID_CANDIDATE/);
+ const current=await intake.participantContext(x.actors[0],c.groupId),{memberId:otherId,revisionId:otherRevision,...other}=current.preference!;
+ await intake.save(x.actors[0],{commandId:randomUUID(),groupId:c.groupId,expectedRevision:current.revision,expectedPreferenceId:otherRevision,preference:{...other,availableSlotIds:[]},optionalText:null});
+ await intake.plan(x.actors[0],c.groupId);assert.equal((await intake.participantContext(x.actors[3],c.groupId)).studioQuestionConflict,false,'An underlying form mismatch must not be blamed on a studio answer.');
+});
+test('question-only expiry is explicit while the saved note remains, and fresh details are required',async()=>{
+ const x=await setup(),q=await ask(x);await answer(x,q.id);await accept(x,q.id);
+ await pool.query('ALTER TABLE studio_questions DISABLE TRIGGER studio_question_identity');await pool.query("UPDATE studio_questions SET created_at=clock_timestamp()-interval '31 days',expires_at=clock_timestamp()-interval '1 day' WHERE id=$1",[q.id]);await pool.query('ALTER TABLE studio_questions ENABLE TRIGGER studio_question_identity');
+ await pool.query("UPDATE preference_revisions SET wording_bound=jsonb_set(wording_bound,'{studioQuestion,expiresAt}',to_jsonb((clock_timestamp()-interval '1 day')::text)) WHERE member_id=$1 AND wording_bound ? 'studioQuestion'",[x.ids[3]]);
+ const own=await intake.participantContext(x.actors[3],x.group.groupId),view=await questions.own(x.actors[3],x.group.groupId);assert.equal(own.optionalText,note);assert.equal(own.privateTextExpired,false);assert.equal(own.studioQuestionExpiry,'ANSWER_EXPIRED');assert.match(contextNextStep(own).title,/expired/);assert.equal((await intake.plans(x.actors[3])).plans[0].nextStep?.title,contextNextStep(own).title);assert.equal(view.question,null);assert.equal(view.expiry,'ANSWER_EXPIRED');assert.equal(view.available,false);assert.ok(!JSON.stringify(view).includes('The work area has step-free'));
+ const {memberId,revisionId,...p}=own.preference!;await intake.save(x.actors[3],{commandId:randomUUID(),groupId:own.groupId,expectedRevision:own.revision,expectedPreferenceId:revisionId,preference:p,optionalText:note});assert.equal((await questions.own(x.actors[3],own.groupId)).expiry,null);assert.ok((await ask(x)).id);
+});
+test('database expiry cannot be revived by a still-future saved marker, and pending expiry needs fresh details',async()=>{
+ for(const accepted of [false,true]){const x=await setup(),q=await ask(x);if(accepted){await answer(x,q.id);await accept(x,q.id);}
+ await pool.query('ALTER TABLE studio_questions DISABLE TRIGGER studio_question_identity');await pool.query("UPDATE studio_questions SET created_at=clock_timestamp()-interval '31 days',expires_at=clock_timestamp()-interval '1 day' WHERE id=$1",[q.id]);await pool.query('ALTER TABLE studio_questions ENABLE TRIGGER studio_question_identity');
+ const own=await intake.participantContext(x.actors[3],x.group.groupId);assert.equal(own.studioQuestionExpiry,accepted?'ANSWER_EXPIRED':'QUESTION_EXPIRED');assert.equal(own.optionalText,note);assert.equal(own.preference!.extraRequirement,'MERCHANT_REVIEW_REQUIRED');assert.equal(own.members.find(m=>m.id===x.ids[3])!.stepStatus,'ACTION_NEEDED');assert.equal(contextNextStep(own).kind,'NOTE');assert.equal((await questions.own(x.actors[3],own.groupId)).available,false);assert.equal((await intake.participantContext(x.actors[0],own.groupId)).studioQuestionExpiry,null);
+ if(accepted){const c=await intake.participantContext(x.actors[0],own.groupId);await intake.closeRoster(x.actors[0],{commandId:randomUUID(),groupId:c.groupId,expectedRevision:c.revision,memberIds:x.ids});assert.equal((await intake.plan(x.actors[0],c.groupId)).result.state,'MERCHANT_REVIEW_REQUIRED');}
+ }
+});
+test('ordinary modal words work with matching roster names, while actual name references stay blocked',()=>{
+ const names=['Will','May','Can'];
+ for(const text of ['Will this session have step-free access?','May I use latex-free gloves?','Can I use a stool?','I may need a stool at the work area.','The session will include step-free access?'])assert.doesNotThrow(()=>checkQuestionPrivacy(text,names),text);
+ for(const text of ['Will needs step-free access.','May will join us.','Can May use a stool?','Will this work for May?','Will: I need a stool.','May, please help.','Ｗｉｌｌ needs access.','My budget is $60.','Email me@example.invalid'])assert.throws(()=>checkQuestionPrivacy(text,names),/QUESTION_PRIVACY/,text);
+});
+test('ordinary modal questions pass the real command unchanged, including an AI template with a friend named Can',async()=>{
+ const x=await setup();for(const [id,name]of [[x.ids[1],'Will'],[x.ids[2],'May'],[x.ids[4],'Can']])await pool.query('UPDATE planning_members SET display_name=$2 WHERE id=$1',[id,name]);
+ const text='Will this session have step-free access?',q=await ask(x,{question:text});assert.equal((await questions.inbox(x.merchant)).questions[0].question,text);assert.equal((await questions.own(x.actors[3],x.group.groupId)).question?.id,q.id);
+ const y=await setup();await pool.query("UPDATE planning_members SET display_name='Can' WHERE id=$1",[y.ids[1]]);const c=await intake.participantContext(y.actors[3],y.group.groupId),service=new StudioQuestionService(pool,async input=>({status:'QUESTION_DRAFT',draft:{schemaVersion:1,preferenceRevisionId:input.revisionId,sourceStart:0,sourceEnd:input.text.length,sourceSpan:input.text}}),true);
+ const result=await service.draft(y.actors[3],{commandId:randomUUID(),groupId:c.groupId,sourcePreferenceId:c.preference!.revisionId,offeringId:'handbuild',slotId:'thu-evening',modelProcessingAgreed:true});assert.equal(result.status,'READY');assert.match(result.question??'',/^Can you accommodate/);
+});
+test('AI unavailable and review outcomes remain distinct through persistence, retry and fallback',async()=>{
+ for(const reason of ['UNAVAILABLE','REVIEW'] as const){const x=await setup(),c=await intake.participantContext(x.actors[3],x.group.groupId);let calls=0;
+ const service=new StudioQuestionService(pool,async()=>{calls++;return {status:'NEEDS_REVIEW',reason};},true),p={commandId:randomUUID(),groupId:c.groupId,sourcePreferenceId:c.preference!.revisionId,offeringId:'handbuild',slotId:'thu-evening',modelProcessingAgreed:true};
+ const result=await service.draft(x.actors[3],p);assert.equal(result.status,'REVIEW');assert.equal(result.reviewReason,reason);assert.deepEqual(await service.draft(x.actors[3],p),result);assert.equal(calls,1);assert.equal((await intake.participantContext(x.actors[3],c.groupId)).preference!.extraRequirement,'MERCHANT_REVIEW_REQUIRED');assert.ok((await ask(x)).id);
+ }
+});
+test('interrupted drafts become unavailable without another dispatch or a late result overwriting the outcome',async()=>{
+ const x=await setup(),c=await intake.participantContext(x.actors[3],x.group.groupId);let entered!:()=>void,release!:()=>void,calls=0;const started=new Promise<void>(r=>entered=r),wait=new Promise<void>(r=>release=r);
+ const service=new StudioQuestionService(pool,async input=>{calls++;entered();await wait;return {status:'QUESTION_DRAFT',draft:{schemaVersion:1,preferenceRevisionId:input.revisionId,sourceStart:0,sourceEnd:input.text.length,sourceSpan:input.text}};},true),p={commandId:randomUUID(),groupId:c.groupId,sourcePreferenceId:c.preference!.revisionId,offeringId:'handbuild',slotId:'thu-evening',modelProcessingAgreed:true};
+ const first=service.draft(x.actors[3],p);await started;
+ try{await pool.query('ALTER TABLE studio_question_drafts DISABLE TRIGGER studio_question_draft_identity');await pool.query("UPDATE studio_question_drafts SET created_at=clock_timestamp()-interval '2 minutes',expires_at=clock_timestamp()+interval '28 minutes' WHERE member_id=$1",[x.ids[3]]);await pool.query('ALTER TABLE studio_question_drafts ENABLE TRIGGER studio_question_draft_identity');const retry=await service.draft(x.actors[3],p);assert.equal(retry.status,'REVIEW');assert.equal(retry.reviewReason,'UNAVAILABLE');assert.equal(calls,1);}
+ finally{release();}
+ const late=await first;assert.equal(late.status,'REVIEW');assert.equal(late.reviewReason,'UNAVAILABLE');assert.equal(late.question,null);assert.equal(calls,1);
+});
 test('private studio relay resolves a need only after the owner reviews a session-bound answer',async()=>{
  const x=await setup(),q=await ask(x);assert.equal((await intake.participantContext(x.actors[3],x.group.groupId)).preference!.extraRequirement,'MERCHANT_REVIEW_REQUIRED');
  const queue=await questions.inbox(x.merchant);assert.equal(queue.questions.length,1);const serialized=JSON.stringify(queue);for(const secret of [note,x.ids[3],x.actors[3].userId,'Riley','budgetMinor','availableSlotIds'])assert.ok(!serialized.includes(secret),secret);
@@ -90,6 +142,7 @@ test('expired exchanges are hidden before cleanup and cleanup cannot touch finan
  assert.equal((await questions.own(x.actors[3],x.group.groupId)).question,null);assert.equal((await questions.inbox(x.merchant)).questions.length,0);assert.equal((await intake.participantContext(x.actors[3],x.group.groupId)).preference!.extraRequirement,'MERCHANT_REVIEW_REQUIRED');
  await pool.query("UPDATE preference_revisions SET private_text_expires_at=clock_timestamp()-interval '1 hour' WHERE member_id=$1 AND private_text_expires_at IS NULL",[x.ids[3]]);
  const expiredOwner=await intake.participantContext(x.actors[3],x.group.groupId);assert.equal(expiredOwner.optionalText,null);assert.equal(contextNextStep(expiredOwner).kind,'NOTE');assert.equal((await intake.plans(x.actors[3])).plans[0].nextStep?.kind,'NOTE');
+ assert.equal(studioQuestionAgreed(expiredOwner.preference!,expiredOwner.wordingBound,x.catalog),false,'A past-dated marker is never a currently agreed studio answer.');
  await pool.query('SELECT purge_expired_private_text(100)');const row=(await pool.query('SELECT question,reply FROM studio_questions WHERE id=$1',[q.id])).rows[0];assert.equal(row.question,null);assert.equal(row.reply,null);
  await assert.rejects(pool.query("UPDATE studio_questions SET question='resurrected' WHERE id=$1",[q.id]),/immutable|expired|redacted/i);
 });

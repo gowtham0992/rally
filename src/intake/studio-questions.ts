@@ -6,6 +6,7 @@ import {assertWorkspaceScope} from '../demo/scope.ts';
 import {catalogSchema,matchingSessions,preferenceSchema} from '../planning/domain.ts';
 import {fingerprint} from '../payments/types.ts';
 import {IntakeService,IntakeError,type IntakeActor} from './service.ts';
+import {studioQuestionExpiries} from './studio-question-state.ts';
 import {dailyAiCalls} from './ai-allowance.ts';
 import {draftStudioQuestion,validateQuestionEvidence,questionFromEvidence,type QuestionInput,type QuestionDraft} from '../ai/studio-question.ts';
 const uuid=z.uuid(),key=z.string().min(1).max(100),command=z.strictObject({commandId:uuid,groupId:uuid,sourcePreferenceId:uuid});
@@ -16,14 +17,23 @@ const answerSchema=z.strictObject({commandId:uuid,questionId:uuid,decision:z.enu
 const acceptSchema=command.extend({questionId:uuid,confirmsAllEssentials:z.literal(true),replyReviewed:z.literal(true)});
 const draftSchema=command.extend({offeringId:key,slotId:key,modelProcessingAgreed:z.literal(true)});
 export type StudioQuestion={id:string;question:string;decision:'CAN_ACCOMMODATE'|'CANNOT_ACCOMMODATE'|'NEEDS_DISCUSSION'|null;reply:string|null;accepted:boolean;activity:string;startAt:string;timezone:string;offeringId:string;slotId:string};
-// This is a fail-closed check for known roster identities and obvious contact /
-// financial text, not a claim that free text can be made perfectly anonymous.
+function ordinaryModalUse(text:string,start:number,end:number,word:string){
+ if(!['will','may','can'].includes(word))return false;
+ // Only recognizable grammatical uses are exempt. Person references such as
+ // “Can Will help?”, “May will join” and “Will: I need…” remain blocked.
+ const subject='(?:i|we|you|they|it|there|(?:this|that)(?:\\s+(?:session|studio|room|space|workshop|entrance|work area))?|the\\s+(?:session|studio|room|space|workshop|entrance|work area))';
+ const verb='(?:be|have|need|use|include|provide|allow|offer|work|bring|wear|sit|stand|arrive|leave|contain|help|get|ask|accommodate|make|fit|keep|confirm|check|explain|access|collect|pick)\\b';
+ const before=text.slice(0,start),after=text.slice(end);
+ if(/(?:^|[.!?]\s*)[“"‘'(]*\s*$/u.test(before)&&new RegExp('^\\s+'+subject+'\\s+'+verb,'u').test(after))return true;
+ return word!=='can'&&new RegExp('(?:^|[.!?]\\s*)'+subject+'\\s+$','u').test(before)&&new RegExp('^\\s+'+verb,'u').test(after);
+}
+// Check identity references, not a blanket whitelist of names that are also
+// English modals. Ambiguous uses and obvious contact/financial text fail closed.
 export function checkQuestionPrivacy(text:string,names:string[]){
  const normalized=text.normalize('NFKC').toLocaleLowerCase();
  if(/[@$€£¥]|https?:|www\.|\b(?:usd|dollars?|budget|spending limit)\b|\d[\d\s().+-]{5,}\d|[\u0000-\u001f\u007f]/iu.test(normalized))throw new IntakeError('QUESTION_PRIVACY');
- for(const name of names)for(const word of name.normalize('NFKC').toLocaleLowerCase().split(/[^\p{L}\p{N}]+/u).filter(s=>s.length>=2)){
-  if(normalized.split(/[^\p{L}\p{N}]+/u).includes(word))throw new IntakeError('QUESTION_PRIVACY');
- }
+ const words=new Set(names.flatMap(name=>name.normalize('NFKC').toLocaleLowerCase().split(/[^\p{L}\p{N}]+/u).filter(s=>s.length>=2)));
+ for(const match of normalized.matchAll(/[\p{L}\p{N}]+/gu))if(words.has(match[0])&&!ordinaryModalUse(normalized,match.index!,match.index!+match[0].length,match[0]))throw new IntakeError('QUESTION_PRIVACY');
 }
 export class StudioQuestionService{
  private intake:IntakeService;
@@ -37,9 +47,10 @@ export class StudioQuestionService{
  private projection(row:any,g:any):StudioQuestion{const {catalog,offering,slot}=this.session(g,row.offering_id,row.slot_id);return {id:row.id,question:row.question,decision:row.decision,reply:row.reply,accepted:Boolean(row.accepted_preference_id),activity:offering.name,startAt:slot.startAt,timezone:catalog.timezone,offeringId:offering.id,slotId:slot.id};}
  async own(a:IntakeActor,groupId:string){return transaction(this.pool,async c=>{const {group,member}=await this.owned(c,a,groupId);
   const q=(await c.query('SELECT * FROM studio_questions WHERE member_id=$1 AND (source_preference_id=$2 OR accepted_preference_id=$2) AND studio_id=$3 AND catalog_version_id=$4 AND expires_at>clock_timestamp() AND question IS NOT NULL ORDER BY created_at DESC,id DESC LIMIT 1',[member.id,member.current_preference_id,group.catalog.studioId,group.catalog.versionId])).rows[0];
+  const expiry=(await studioQuestionExpiries(c,[member.id])).get(member.id)??null;
   const catalog=catalogSchema.parse(group.catalog),sessions=member.confirmed?matchingSessions(catalog,[preferenceSchema.parse(member.confirmed)],group.target_size).filter(s=>Date.parse(s.startAt)>Date.now()):[];
   const studio=(await c.query('SELECT 1 FROM merchant_catalog_versions WHERE studio_id=$1 AND version_id=$2 AND catalog=$3::jsonb',[catalog.studioId,catalog.versionId,JSON.stringify(catalog)])).rowCount;
-  return {question:q?this.projection(q,group):null,available:Boolean(studio)&&this.relayEnabled,aiDraftAvailable:this.aiDraftEnabled&&this.relayEnabled,sessions:sessions.map(s=>({offeringId:s.offeringId,slotId:s.slotId,activity:s.activity,startAt:s.startAt,timezone:s.timezone}))};
+  return {question:q?this.projection(q,group):null,expiry,available:Boolean(studio)&&this.relayEnabled&&!expiry,aiDraftAvailable:this.aiDraftEnabled&&this.relayEnabled&&!expiry,sessions:sessions.map(s=>({offeringId:s.offeringId,slotId:s.slotId,activity:s.activity,startAt:s.startAt,timezone:s.timezone}))};
  });}
  async ask(a:IntakeActor,value:unknown){const p=askSchema.parse(value);if(!this.relayEnabled)throw new IntakeError('QUESTION_UNAVAILABLE');return this.intake.recordCommand(a,p.commandId,{kind:'ASK_STUDIO_QUESTION',...p,question:fingerprint(p.question)},async c=>{
   const {group,member}=await this.owned(c,a,p.groupId);this.editable(group);if(member.current_preference_id!==p.sourcePreferenceId)throw new IntakeError('STALE_PREFERENCE');
@@ -115,16 +126,21 @@ export class StudioQuestionService{
    await c.query("UPDATE studio_question_drafts SET status='DISPATCHED' WHERE id=$1",[row.id]);
    const catalog=catalogSchema.parse(group.catalog);return {revisionId:row.id,text:member.optional_text as string,catalog:{...catalog,offerings:catalog.offerings.filter(o=>o.id===p.offeringId)}};
   });
-  if(input){let result:QuestionDraft;try{result=await this.model(input);}catch{result={status:'NEEDS_REVIEW'};}
+  if(input){let result:QuestionDraft;try{result=await this.model(input);}catch{result={status:'NEEDS_REVIEW',reason:'UNAVAILABLE'};}
    await transaction(this.pool,async c=>{
     const {group,member}=await this.owned(c,a,p.groupId);const row=(await c.query('SELECT *,expires_at>clock_timestamp() AS fresh FROM studio_question_drafts WHERE id=$1 FOR UPDATE',[reserved.id])).rows[0];if(!row||row.status!=='DISPATCHED')return;
     if(!row.fresh||member.current_preference_id!==row.source_preference_id||!['COLLECTING','CLOSED','MERCHANT_REVIEW'].includes(group.state)||member.optional_text!==input.text||member.private_text_expires_at&&new Date(member.private_text_expires_at).getTime()<=Date.now()){await c.query("UPDATE studio_question_drafts SET status='STALE',result=NULL WHERE id=$1",[row.id]);return;}
-    let question:string|null=null;try{if(result.status==='QUESTION_DRAFT'){question=questionFromEvidence(validateQuestionEvidence(result.draft,input));checkQuestionPrivacy(question,(await c.query('SELECT display_name FROM planning_members WHERE group_id=$1',[group.id])).rows.map(r=>r.display_name));}}catch{question=null;}
-    await c.query('UPDATE studio_question_drafts SET status=$2,result=$3 WHERE id=$1',[row.id,question?'READY':'REVIEW',question?JSON.stringify({question}):null]);
+    let question:string|null=null,reviewReason:'UNAVAILABLE'|'REVIEW'=result.status==='NEEDS_REVIEW'&&result.reason==='REVIEW'?'REVIEW':'UNAVAILABLE';
+    try{if(result.status==='QUESTION_DRAFT'){question=questionFromEvidence(validateQuestionEvidence(result.draft,input));checkQuestionPrivacy(question,(await c.query('SELECT display_name FROM planning_members WHERE group_id=$1',[group.id])).rows.map(r=>r.display_name));}}catch(e){question=null;if(e instanceof IntakeError&&e.code==='QUESTION_PRIVACY')reviewReason='REVIEW';}
+    await c.query('UPDATE studio_question_drafts SET status=$2,result=$3 WHERE id=$1',[row.id,question?'READY':'REVIEW',JSON.stringify(question?{question}:{reviewReason})]);
    });
   }
-  return transaction(this.pool,async c=>{const {member}=await this.owned(c,a,p.groupId),row=(await c.query('SELECT status,result,source_preference_id,expires_at>clock_timestamp() AS fresh FROM studio_question_drafts WHERE id=$1 AND member_id=$2',[reserved.id,member.id])).rows[0];
-   return {id:reserved.id,status:row?.fresh&&member.current_preference_id===row.source_preference_id?row.status as string:'STALE',question:row?.fresh&&row.status==='READY'&&member.current_preference_id===row.source_preference_id?row.result?.question as string:null};
+  return transaction(this.pool,async c=>{const {member}=await this.owned(c,a,p.groupId);
+   // A terminated request is unavailable, not a semantic model refusal. This
+   // retires the old attempt without redispatch or renewed quota.
+   await c.query("UPDATE studio_question_drafts SET status='REVIEW',result=$2 WHERE id=$1 AND member_id=$3 AND status IN ('RESERVED','DISPATCHED') AND created_at<clock_timestamp()-interval '45 seconds' AND expires_at>clock_timestamp()",[reserved.id,JSON.stringify({reviewReason:'UNAVAILABLE'}),member.id]);
+   const row=(await c.query('SELECT status,result,source_preference_id,expires_at>clock_timestamp() AS fresh FROM studio_question_drafts WHERE id=$1 AND member_id=$2',[reserved.id,member.id])).rows[0],status=row?.fresh&&member.current_preference_id===row.source_preference_id?row.status as string:'STALE';
+   return {id:reserved.id,status,question:status==='READY'?row.result?.question as string:null,reviewReason:status==='REVIEW'?(row.result?.reviewReason==='REVIEW'?'REVIEW' as const:'UNAVAILABLE' as const):null};
   });
  }
 }

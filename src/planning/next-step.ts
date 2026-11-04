@@ -6,7 +6,7 @@ export interface StepFacts {
  pickupAnswer:boolean;pickupRequesterName?:string;pickupAsk:boolean;pickupWaiting:boolean;ownChoicesNeedReview:boolean;
  memberCount:number;readyCount:number;allowedSizes:readonly number[];candidateState?:string|null;
  studioDeclined?:boolean;studioReviewNeedsRefresh?:boolean;offerId?:string|null;bookingState?:string|null;
- noPaymentActivity?:boolean;draftPending?:boolean;participationNeedsConfirmation?:boolean;studioQuestionState?:'WAITING'|'ANSWERED'|null;
+ noPaymentActivity?:boolean;draftPending?:boolean;participationNeedsConfirmation?:boolean;studioQuestionState?:'WAITING'|'ANSWERED'|null;studioQuestionConflict?:boolean;studioQuestionExpiry?:'ANSWER_EXPIRED'|'QUESTION_EXPIRED'|null;
 }
 export interface NextStep {kind:NextStepKind;title:string;stage:PlanStage}
 export function nextStep(f:StepFacts):NextStep {
@@ -25,6 +25,8 @@ export function nextStep(f:StepFacts):NextStep {
  if(f.draftPending)return step('DRAFT','Finish your message draft');
  if(!f.ownReady)return step('DETAILS','Add what works for you');
  if(f.pickupAnswer)return step('PICKUP_ANSWER',`${f.pickupRequesterName??'A friend'} asked you to pick up their piece`);
+ if(f.studioQuestionExpiry)return step('NOTE',f.studioQuestionExpiry==='ANSWER_EXPIRED'?'Your studio answer has expired':'Your studio question has expired');
+ if(f.studioQuestionConflict)return step('NOTE','Review the session your studio answer covers');
  if(f.ownChoicesNeedReview)return step('CHOICES','Review what works for you');
  if(f.noteNeedsReview)return step('NOTE',f.studioQuestionState==='WAITING'?'Waiting for the studio’s reply':f.studioQuestionState==='ANSWERED'?'Read the studio’s answer':'Check what your note means');
  if(f.pickupAsk)return step('PICKUP_ASK','Who could pick up your piece?');

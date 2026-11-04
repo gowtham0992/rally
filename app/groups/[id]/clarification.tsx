@@ -9,12 +9,12 @@ import StudioQuestionPanel from './studio-question';
 import {questions,label} from '../../lib/requirement-labels';
 const errors:Record<string,string>={STALE_REVISION:'The plan has changed. Your saved details are safe. Load the latest plan before continuing.',STALE_CLARIFICATION:'This answer belongs to an earlier version of the plan. Load the latest plan before continuing.',CLARIFICATION_LIMIT:'You’ve reached the note-check limit for now. Update your selections or shorten your note. No request has been sent to the studio.',NOTE_TOO_LONG:'Shorten your note to 1,500 characters for this check. No request has been sent to the studio.',NOTE_ALREADY_REVIEWED:'Your note has already been confirmed. Load the latest plan to see your choices.'};
 
-export default function ClarificationPanel({groupId,revision,preferenceId,note,reviewed,disabled,structuredOnly,refresh,onBusyChange,onSessionExpired,externalConfirmed=false,studioQuestionConfirmed=false,studioQuestionState,studioName,studioContactEmail,priorReviewReason,onStudioConfirmed,reagreementName,embedded=false,primary=true}:{embedded?:boolean;primary?:boolean;externalConfirmed?:boolean;studioQuestionConfirmed?:boolean;studioQuestionState?:'WAITING'|'ANSWERED'|null;studioName:string;studioContactEmail?:string;priorReviewReason?:'UNSUPPORTED'|'CONFLICT'|'UNAVAILABLE'|null;onStudioConfirmed?:()=>Promise<void>;reagreementName?:string;groupId:string;revision:number;preferenceId:string;note:string;reviewed:boolean;disabled:boolean;structuredOnly:boolean;refresh:()=>void;onBusyChange:(busy:boolean)=>void;onSessionExpired:()=>void}){
+export default function ClarificationPanel({groupId,revision,preferenceId,note,reviewed,disabled,structuredOnly,refresh,onBusyChange,onSessionExpired,externalConfirmed=false,studioQuestionConfirmed=false,studioQuestionState,studioQuestionExpiry,studioQuestionConflict,studioName,studioContactEmail,priorReviewReason,onStudioConfirmed,reagreementName,embedded=false,primary=true}:{embedded?:boolean;primary?:boolean;externalConfirmed?:boolean;studioQuestionConfirmed?:boolean;studioQuestionState?:'WAITING'|'ANSWERED'|null;studioQuestionExpiry?:'ANSWER_EXPIRED'|'QUESTION_EXPIRED'|null;studioQuestionConflict?:boolean;studioName:string;studioContactEmail?:string;priorReviewReason?:'UNSUPPORTED'|'CONFLICT'|'UNAVAILABLE'|null;onStudioConfirmed?:()=>Promise<void>;reagreementName?:string;groupId:string;revision:number;preferenceId:string;note:string;reviewed:boolean;disabled:boolean;structuredOnly:boolean;refresh:()=>void;onBusyChange:(busy:boolean)=>void;onSessionExpired:()=>void}){
  const [view,setView]=useState<ClarificationView|null>(null),[loading,setLoading]=useState(!reviewed),[busy,setBusy]=useState(false),[error,setError]=useState(''),[answer,setAnswer]=useState<string|null>(null),[structuredConfirmed,setStructuredConfirmed]=useState(false),[studioConfirmed,setStudioConfirmed]=useState(false),[reload,setReload]=useState(0),[stale,setStale]=useState(false);
  const command=useRef<{fingerprint:string;id:string}|null>(null),mounted=useRef(true);
  useEffect(()=>{mounted.current=true;return()=>{mounted.current=false;};},[]);
  useEffect(()=>{
-  if(reviewed)return;
+  if(reviewed||studioQuestionState||studioQuestionExpiry||studioQuestionConflict)return;
   const controller=new AbortController();let timer:ReturnType<typeof setTimeout>|undefined;
   async function read(){try{
    const r=await apiFetch(`/api/groups/${groupId}/clarification`,{signal:controller.signal,cache:'no-store'});
@@ -25,7 +25,7 @@ export default function ClarificationPanel({groupId,revision,preferenceId,note,r
    if(result&&['RESERVED','DISPATCHED'].includes(result.status))timer=setTimeout(read,3000);
   }catch(e){if(!controller.signal.aborted){setError(e instanceof Error?e.message:'Connection interrupted.');setLoading(false);}}}
   void read();return()=>{controller.abort();clearTimeout(timer);};
- },[groupId,revision,preferenceId,reviewed,reload]);
+ },[groupId,revision,preferenceId,reviewed,reload,studioQuestionState,studioQuestionExpiry,studioQuestionConflict]);
  async function act(action:'START'|'ANSWER'|'DECLINE'|'STRUCTURED',extra:Record<string,unknown>){
   if(disabled||busy)return;setBusy(true);onBusyChange(true);setError('');setStale(false);
   const payload={groupId,expectedRevision:revision,preferenceId,...extra},fingerprint=JSON.stringify({action,payload});
@@ -43,7 +43,7 @@ export default function ClarificationPanel({groupId,revision,preferenceId,note,r
  }
  if(!note)return null;
  const relay=<StudioQuestionPanel key={preferenceId} groupId={groupId} preferenceId={preferenceId} studioName={studioName} disabled={disabled} primary={primary} resolved={studioQuestionConfirmed} onDone={refresh} onBusyChange={onBusyChange} onSessionExpired={onSessionExpired}/>;
- if(studioQuestionState||reviewed&&studioQuestionConfirmed)return relay;
+ if(studioQuestionState||studioQuestionExpiry||studioQuestionConflict||reviewed&&studioQuestionConfirmed)return relay;
  if(reviewed)return <section className="clarification"><p className="saved-note">{externalConfirmed?'You confirmed these needs with the studio yourself. Rally hasn’t verified them.':'✓ Your saved note is covered by your confirmed choices.'}</p></section>;
  const proposal=view?.proposal,question=proposal?.question,pending=busy||loading||Boolean(view&&['RESERVED','DISPATCHED'].includes(view.status)),ready=view?.status==='READY'&&proposal;
  return <section id="private-note-review" tabIndex={-1} className="clarification" aria-label="Review your private note">{!embedded&&<h3>Let’s make sure we’ve got you.</h3>}<p className="muted">Your saved note stays private. You choose whether to share a separate question with the studio. Your choices won’t change until you confirm them.</p>

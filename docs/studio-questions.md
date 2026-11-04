@@ -40,6 +40,11 @@ The exchange does not reserve a session, create an offer, approve a hold or move
 money. Existing PayPal approvals and payment verification remain separate.
 Other friends and the organizer do not receive the exchange or its reason.
 
+If that exact session no longer fits the group, only the owner sees a notice
+identifying the session their answer covers. The answer is never widened to a
+different session, and nobody else’s choices are disclosed. Review your own
+details before asking about another session; your needs remain in force.
+
 ## Optional AI help
 
 The hosted preview enables optional AI question drafting. The manual exchange
@@ -69,9 +74,18 @@ availability fields, the roster and studio contact details are excluded. A
 spending limit or name typed into the note is still sent with that note.
 
 AI selects a literal quoted requirement. The application checks its evidence,
-rejects known roster names, obvious contact details and financial wording, and
+rejects known roster-name references, obvious contact details and financial wording, and
 places a question in an editable text box. This is not a guarantee of anonymity
-or correct interpretation. Review every word before consenting to send it.
+or correct interpretation. Ordinary grammatical uses of “will”, “may” and “can”
+are allowed in recognized question or sentence patterns, even when a friend has
+that name; actual name references remain blocked. This is not a blanket name
+exception. Review every word before consenting to send it.
+
+An unavailable service or invalid response is labelled “AI drafting is
+unavailable”. An explicit model review result instead asks you to write the
+question yourself. Both preserve the note and any typed question. An interrupted
+request stops appearing as pending after 45 seconds when checked again, without
+starting another model call. The same request cannot be silently retried.
 
 Model failure leaves the manual question available. No model interprets the
 studio's reply. Drafts share the existing member, daily and global AI limits,
@@ -86,6 +100,12 @@ and replies expire after at most 30 days, or earlier if the source note already
 has an earlier retention deadline. Expired wording is hidden immediately and
 removed by the existing bounded cleanup job. Quota and consent metadata remain;
 payment records and immutable booking terms are not changed by cleanup.
+
+A question or answer can expire before the note itself. Rally shows an explicit
+expiry notice and requires fresh saved details and a new studio review; an old
+acceptance cannot make the friend ready. Database expiry is authoritative even
+if a retained acceptance marker has a later timestamp. This affects planning;
+issued offers retain their existing payment and recovery actions.
 
 ## Implementation and verification
 
@@ -110,7 +130,8 @@ The worker adds a `QUESTION` purpose behind the existing bearer-token check.
 Release the compatible worker before enabling the new optional drafting path in
 the web application. The manual relay needs no worker deployment. An older or
 unavailable worker fails closed to manual entry. `/health` reports
-`questionDraftVersion: 1` when the worker supports the question contract; health
+`questionDraftVersion: 2` when the worker supports distinct unavailable/review
+results in the question contract; health
 alone does not establish actual model availability.
 
 `test/studio-questions.test.ts` exercises the relay, privacy boundaries,

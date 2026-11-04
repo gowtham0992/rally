@@ -41,7 +41,17 @@ test('question gateway sends only the consented note and public facts with a bou
 test('QUESTION worker purpose preserves bearer protection and never dispatches malformed or private form fields',async()=>{
  let calls=0;const server=createAiWorker({token,questionModel:async value=>{calls++;assert.deepEqual(value,input);return {status:'QUESTION_DRAFT',draft};}});await new Promise<void>(r=>server.listen(0,'127.0.0.1',r));const address=server.address();if(!address||typeof address==='string')throw Error('LOCAL_SERVER');const origin=`http://127.0.0.1:${address.port}`;
  const send=(value:unknown,auth='Bearer '+token)=>fetch(origin+'/interpret',{method:'POST',headers:{Authorization:auth,'Content-Type':'application/json'},body:JSON.stringify(value)});
- try{assert.deepEqual(await (await fetch(origin+'/health')).json(),{ready:true,questionDraftVersion:1});assert.equal((await send({purpose:'QUESTION',input},'bad')).status,403);assert.equal((await send({purpose:'QUESTION',input:{...input,budgetMinor:7500}})).status,400);assert.equal(calls,0);assert.deepEqual(await (await send({purpose:'QUESTION',input})).json(),{status:'QUESTION_DRAFT',draft});assert.equal(calls,1);}finally{await new Promise<void>(r=>server.close(()=>r()));}
+ try{assert.deepEqual(await (await fetch(origin+'/health')).json(),{ready:true,questionDraftVersion:2});assert.equal((await send({purpose:'QUESTION',input},'bad')).status,403);assert.equal((await send({purpose:'QUESTION',input:{...input,budgetMinor:7500}})).status,400);assert.equal(calls,0);assert.deepEqual(await (await send({purpose:'QUESTION',input})).json(),{status:'QUESTION_DRAFT',draft});assert.equal(calls,1);}finally{await new Promise<void>(r=>server.close(()=>r()));}
+});
+test('failure categories survive the gateway, authenticated worker and application bridge without raw error data',async()=>{
+ let mode:'outage'|'review'|'invalid'='outage';const logs:string[]=[];
+ const server=createAiWorker({token,log:s=>logs.push(s),questionModel:(value,_config,_transport,diagnostic)=>draftStudioQuestion(value,config,async()=>mode==='outage'?new Response('private provider body',{status:503}):Response.json({choices:[{finish_reason:'stop',message:{content:mode==='review'?'```json\n{"status":"NEEDS_REVIEW"}\n```':'not JSON'}}]}),diagnostic)});
+ await new Promise<void>(r=>server.listen(0,'127.0.0.1',r));const address=server.address();if(!address||typeof address==='string')throw Error('LOCAL_SERVER');const local=`http://127.0.0.1:${address.port}`;
+ const bridge=workerQuestionDrafter({url:'https://worker.example',token},(_url,init)=>fetch(local+'/interpret',init));
+ try{for(const [value,reason]of [['outage','UNAVAILABLE'],['review','REVIEW'],['invalid','UNAVAILABLE']] as const){mode=value;assert.deepEqual(await bridge(input),{status:'NEEDS_REVIEW',reason});}for(const value of [input.text,token,'private provider body'])assert.ok(!logs.join('').includes(value));}
+ finally{await new Promise<void>(r=>server.close(()=>r()));}
+ assert.deepEqual(await workerQuestionDrafter({url:'https://worker.example',token},async()=>Response.json({status:'NEEDS_REVIEW'}))(input),{status:'NEEDS_REVIEW',reason:'UNAVAILABLE'});
+ assert.deepEqual(await workerQuestionDrafter({url:'https://worker.example',token},async()=>Response.json({status:'NEEDS_REVIEW',reason:'raw private error'}))(input),{status:'NEEDS_REVIEW',reason:'UNAVAILABLE'});
 });
 test('question-worker diagnostics discard private fields and never log notes or credentials',async()=>{
  const logs:string[]=[],server=createAiWorker({token,log:line=>logs.push(line),questionModel:async(...args)=>{args[3]?.({stage:'VALIDATION',validation:'JSON',note:input.text,credential:token,response:'private provider body'} as any);return {status:'NEEDS_REVIEW'};}});

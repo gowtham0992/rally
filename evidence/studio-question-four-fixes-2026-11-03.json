@@ -1,0 +1,56 @@
+{
+  "date": "2026-11-03",
+  "scope": "Local PostgreSQL 18 UTC, Node 22.23.4, controlled identities and providers; no new real model calls, emails, accounts, hosted judge claims or PayPal operations.",
+  "checks": {
+    "tests": {
+      "passed": 268,
+      "failed": 0
+    },
+    "mutationGuards": {
+      "caught": 88,
+      "total": 88
+    },
+    "typecheck": "passed",
+    "applicationBuild": "passed",
+    "workerBundle": "passed",
+    "phoneWidth": {
+      "viewport": "375x812",
+      "scope": "Actual components and disposable database, simulated identity/model boundaries; not independent people or hosted Auth.",
+      "sessionMismatch": "Owner sees exact bound session and private explanation; review preserves needs and saved details. Peers receive no reason or exchange.",
+      "expiry": "Answer expiry visible while note remains, readiness requires review, fresh details invalidate old binding; database expiry independently guards planner.",
+      "modalWords": "Actual friend reference rejected without clearing text; ordinary Will question accepted unchanged after explicit consent.",
+      "draftFailures": "Unavailable and model-review messages differ at draft button; typed question preserved and manual sharing works with explicit consent."
+    },
+    "workerImage": {
+      "scope": "Exact local worker image, Node 22 Alpine, private test-only HTTPS gateway, fictional token; zero model/provider calls.",
+      "checks": [
+        "health-v2",
+        "unauthenticated-denied",
+        "authenticated-malformed-denied",
+        "UNAVAILABLE",
+        "REVIEW",
+        "QUESTION_DRAFT",
+        "bounded-logs-no-input-or-credentials"
+      ],
+      "passed": 7,
+      "failed": 0,
+      "imageId": "sha256:0ab7e57d7db13f232693412e28312e0bcffe2098be1936d09c97bb249e8bb5ba"
+    }
+  },
+  "fixes": {
+    "privateSessionMismatch": "Exact session restriction retained; no other person’s choices disclosed.",
+    "explicitExpiry": "Question/answer expiry metadata only; expired wording excluded, fresh preference required, issued-offer financial actions remain first.",
+    "modalNameHandling": "Recognized grammatical Will/May/Can frames allowed; actual names including Unicode forms still blocked. Contact and money filters unchanged.",
+    "draftFailureCategories": "Producer, worker v2, bridge, persistent draft and interface distinguish UNAVAILABLE from REVIEW. Interrupted requests retire without redispatch; late results cannot overwrite."
+  },
+  "unchanged": [
+    "Payment settlement and recovery",
+    "Sharing and AI disclosure consent",
+    "Authorization and workspace boundaries",
+    "Literal evidence and strict response schemas",
+    "Session and catalog binding",
+    "Quota and token caps",
+    "No automatic model retries",
+    "Existing Free services and plans"
+  ]
+}

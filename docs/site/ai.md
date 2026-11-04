@@ -33,7 +33,10 @@ studio question.
 
 The studio answers in its own words. You read any conditions and decide whether
 the answer covers every essential need in your note for that exact session.
-An unconfirmed reply leaves the need unresolved. Older discussion replies have
+An unconfirmed reply leaves the need unresolved. If the accepted session no
+longer fits the group, its owner privately sees which session the answer covers.
+An expired question or answer requires fresh details and another studio review;
+an old answer never widens to another session. Older discussion replies have
 no in-app follow-up thread. AI does not
 interpret the reply, reserve a place or approve a payment.
 [Privacy and personal needs](/docs/privacy) explains the sharing boundaries.
@@ -58,7 +61,11 @@ studio answers. People create commitments; the model supplies a proposal.
 ## If the check cannot finish
 
 Your work stays available for review. Provider failure has a different state
-from an unsupported need. Retrying is explicit and quota-limited, with no
+from a model result that needs your review: “AI drafting is unavailable” means
+the service or response could not be used; “This draft needs your review” means
+no usable question was proposed. Your note and typed question stay available
+for manual entry. An interrupted request can stop appearing as pending without
+starting another model call. Retrying is explicit and quota-limited, with no
 automatic model retries. A changed preference, expired draft or late response
 cannot confirm an older version of your choices.
 

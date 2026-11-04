@@ -23,6 +23,23 @@ Auth/model/payment fixtures. It does not require Supabase, PayPal or Astropods
 credentials, and it does not send email or create real payments. Follow the
 [local test path](../docs/development.md#test-without-external-accounts).
 
+## Four studio-question corrections · 3 November
+
+The [four-issue verification](studio-question-four-fixes-2026-11-03.json)
+records **268 passing local tests**, **88/88 caught mutation guards**, typecheck,
+the production build and worker bundle. It covers owner-only session mismatch
+guidance, database-authoritative question/answer expiry, ordinary grammatical
+modal words versus actual name references, and distinct AI unavailable/review
+results through the worker, saved draft and interface.
+
+Phone-width rehearsals used the actual components and disposable PostgreSQL 18
+with simulated identity/model boundaries. They preserved typed text, required
+fresh review after expiry and kept manual sharing consent explicit. This is
+controlled integration evidence, not independent human or hosted Auth proof.
+The exact packaged worker image passed seven controlled HTTPS-gateway and
+authentication checks. The correction uses no new real model calls or PayPal
+operations.
+
 ## Studio reply outcomes · 3 November
 
 The [minimal reply correction](studio-reply-outcomes-2026-11-03.json) removes the

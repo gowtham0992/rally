@@ -7,7 +7,7 @@ export function contextNextStep(c:Context){
  const owner=c.collectionRequests.find(r=>r.role==='OWNER'),p=c.preference;
  const ask=p?.collection==='NOMINEE_LATER'&&(!owner||owner.revoked||!owner.ownerAgreed);
  return nextStep({state:c.state,excluded:c.excluded,isOrganizer:c.isOrganizer,ownReady:Boolean(p),
-  noteNeedsReview:Boolean((c.optionalText||c.wordingBound?.studioQuestion)&&p?.extraRequirement==='MERCHANT_REVIEW_REQUIRED'),studioQuestionState:c.studioQuestionState,
+  noteNeedsReview:Boolean((c.optionalText||c.wordingBound?.studioQuestion)&&p?.extraRequirement==='MERCHANT_REVIEW_REQUIRED'),studioQuestionState:c.studioQuestionState,studioQuestionConflict:c.studioQuestionConflict,studioQuestionExpiry:c.studioQuestionExpiry,
   pickupRequesterName:c.collectionRequests.find(r=>r.role==='NOMINEE'&&!r.revoked&&!r.nomineeAgreed)?.ownerName,
   pickupAnswer:c.collectionRequests.some(r=>r.role==='NOMINEE'&&!r.revoked&&!r.nomineeAgreed),pickupAsk:Boolean(ask),
   pickupWaiting:Boolean(owner&&!owner.revoked&&owner.ownerAgreed&&!owner.nomineeAgreed),
