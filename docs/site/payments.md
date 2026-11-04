@@ -1,7 +1,6 @@
 Each friend approves their own share through PayPal. This demo uses one
 configured PayPal sandbox merchant account for the studio; the organizer does
 not collect a pooled balance.
-The organizer does not collect a group balance or cover another person's share.
 
 ## Review the exact offer
 

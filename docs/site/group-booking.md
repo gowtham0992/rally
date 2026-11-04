@@ -15,6 +15,19 @@ Sometimes everyone's choices work individually but do not overlap as a group.
 Discuss the options in your group chat. Rally does not reveal private answers
 or choose whose needs should matter less.
 
+## Ask about a need outside the form
+
+Keep essential access, materials or other unsupported needs in your private
+note. You can ask the studio about a specific session in Rally, with optional
+AI help to draft the question. Review the text and explicitly agree to share it.
+Your original note and private form answers are not attached.
+
+The studio replies in its own words. Read every condition and continue only if
+the answer covers every essential need in your note for that exact session.
+Negative answers and requests for discussion stay unresolved. An answer does
+not reserve a place or approve a payment. [Privacy and consent](/docs/privacy)
+explains who can see the exchange.
+
 ## Agree on pickup
 
 Pottery is fired after the visit. If you cannot pick up your piece later, ask a
