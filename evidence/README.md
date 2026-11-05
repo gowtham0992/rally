@@ -6,8 +6,9 @@ production build and worker build. These checks use disposable PostgreSQL and
 controlled providers. They do not establish real studio demand or independent
 friend-group usability.
 
-Start with the [2:45 video](https://youtu.be/5PE5RJzngpA), recorded on 1 November,
-for the newer interface and a separate six-buyer sandbox booking. Then use the
+Start with the [2:45 video](https://youtu.be/7RRgzfhbguA), updated 4 November.
+It combines the 1 November six-buyer sandbox booking with a separate live
+studio-question example recorded 4 November. Then use the
 records below to inspect the implementation and its verification boundaries.
 [Product documentation](../docs/README.md) explains how to use or run Rally.
 
@@ -139,9 +140,10 @@ email addresses; OCR is not a guarantee that every pixel was interpreted.
 Raw logs remain private. These source checks made no live model calls, payments,
 emails or hosted changes and do not replace the dated provider evidence below.
 
-The [2:45 demo](https://youtu.be/5PE5RJzngpA) records the newer interface and a
-separate six-buyer sandbox booking. The October journey and provider reports
-above preserve their original dates and scopes.
+The [2:45 demo](https://youtu.be/7RRgzfhbguA) combines the 1 November six-buyer
+sandbox booking and the separate 4 November studio-question exchange. The
+October journey and provider reports above preserve their original dates and
+scopes.
 
 ## Historical release verification
 

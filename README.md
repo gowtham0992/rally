@@ -10,7 +10,7 @@ messages and helps phrase studio questions. People review the proposals and
 explicitly approve each commitment.
 
 [Try the prepared group](https://rally.gowthamsarveswaran.com/demo) ·
-[Watch the 2:45 demo](https://youtu.be/5PE5RJzngpA) ·
+[Watch the 2:45 demo](https://youtu.be/7RRgzfhbguA) ·
 [Guides](https://rally.gowthamsarveswaran.com/docs) ·
 [Developer setup](docs/development.md) ·
 [Verification](evidence/README.md)
@@ -18,7 +18,8 @@ explicitly approve each commitment.
 <p><img src="docs/images/booking-confirmed.jpg" alt="Earlier interface, recorded 3 October 2026: six fictional friends booked at $48 each after verified PayPal sandbox payments" width="900"></p>
 
 *Recorded PayPal sandbox booking, 3 October 2026 · earlier interface. The linked
-2:45 video was recorded on 1 November and shows a separate sandbox booking.*
+2:45 video combines a 1 November sandbox booking with a separate 4 November
+studio-question example.*
 
 ## A shared plan without a shared wallet
 

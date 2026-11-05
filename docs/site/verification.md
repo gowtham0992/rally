@@ -22,9 +22,13 @@ they do not establish a completed group booking.
 
 ## Recorded PayPal sandbox payments
 
-The 2:45 video was recorded on 1 November and shows a separate six-buyer sandbox
-booking in the newer interface. It is linked from the repository README and
-prepared demo entry.
+The current 2:45 video combines the six-buyer sandbox booking recorded on
+1 November with a separate studio-question exchange recorded on 4 November.
+The newer segment shows a live AI draft, separate sharing consent, the studio’s
+exact reply and the owner’s explicit acceptance in a fictional hosted workspace.
+This coached, owner-operated role-switching demonstration is not an independent
+friend-group trial or a real studio capability check. The video is linked from
+the repository README and prepared demo entry.
 
 The more detailed 3 October hosted record contains **six distinct sandbox
 buyers, six $48 captures and $288 gross**. All required authorizations preceded

@@ -24,5 +24,5 @@ capability.
 six-buyer PayPal sandbox booking. The identities and studio are fictional.
 The [journey manifest](../../public/journey/manifest.json) and
 [settlement record](../../evidence/web/hosted-six-friend-settlement.json) preserve
-that run’s provenance. The 1 November video records a separate booking in the
-newer interface.
+that run’s provenance. The current video combines a separate 1 November
+booking in the newer interface with a 4 November studio-question recording.
